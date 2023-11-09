@@ -13,6 +13,36 @@ import { BehaviorSubject } from 'rxjs';
 })
 
 export class StepsServiceService {
+  private exerciceStepService: BehaviorSubject<any>;
+  private titleOfExercice: BehaviorSubject<any>;
+  constructor(
 
-  constructor() { }
+  ) {
+    this.exerciceStepService = new BehaviorSubject(null);
+    this.titleOfExercice = new BehaviorSubject('');
+   }
+
+
+  get _stepNumberBase() {
+    return this.exerciceStepService.asObservable();
+  }
+
+  addChangeNumberOfStep(numb: number) {
+    console.log('Step Number: ',numb)
+    this.exerciceStepService.next(numb);
+  }
+
+  substractChangeNumberOfStep(numb: number) {
+    console.log('Step Number: ',numb)
+    this.exerciceStepService.next(numb);
+  }
+
+  get _titleOfexercice() {
+    return this.titleOfExercice.asObservable();
+  }
+
+  updateTitle(title:string){
+    console.log('Title of Exercice: ',title)
+    this.titleOfExercice.next(title)
+  }
 }

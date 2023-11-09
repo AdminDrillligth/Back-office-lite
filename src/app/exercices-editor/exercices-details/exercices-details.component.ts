@@ -1,6 +1,7 @@
 import { Injectable, Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { UtilsService } from '../../../services/utils.service';
 import { Router } from '@angular/router';
+import { StepsServiceService } from '../../../services/steps-service.service';
 
 
 
@@ -13,6 +14,7 @@ export class ExercicesDetailsComponent {
 
 
   constructor(
+    private stepsService:StepsServiceService,
     private utilsService: UtilsService,
     private router: Router )
     {
@@ -26,5 +28,8 @@ export class ExercicesDetailsComponent {
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
   }
 
-
+  updateNameOfExercice(title:string){
+    console.log('Data of Title: ! ', title);
+    this.stepsService.updateTitle(title);
+  }
 }
