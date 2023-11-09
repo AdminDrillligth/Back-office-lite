@@ -1,0 +1,491 @@
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule,FormsModule, NgForm, FormControl, Validators, FormGroupDirective } from '@angular/forms';
+import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule} from '@angular/material/input';
+import { MatSelectModule} from '@angular/material/select';
+import { MatDatepickerModule , } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { BrowserModule, SafeUrl } from '@angular/platform-browser';
+import { FireStoreServiceImages } from '../../services/firebase/firestoreservice-images';
+import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
+import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.service';
+import { EconesService } from '../../services/econes.service';
+import { uid } from 'uid';
+import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule } from '@angular/material/slide-toggle';
+import { UtilsService } from '../../services/utils.service';
+// BUNDLE QR CODE
+import { QRCodeErrorCorrectionLevel } from "qrcode";
+import { QRCodeElementType } from "angularx-qrcode";
+import { FixMeLater } from "../../../angularx-qrcode/src/public-api"
+//ANGULAR TABLE
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+
+
+type ListType = { title: string; val: number }[];
+
+export interface EconeDatas {
+  SeeQrCode:boolean,
+  date:string,
+  dateIso:string,
+  email:string,
+  firstname:string,
+  id:string,
+  name:string,
+  qrdata:string,
+  seeQr:boolean,
+  serial:string,
+  uuid:string,
+  uuidOfCustomer:string
+}
+
+@Component({
+  selector: 'app-econes',
+  templateUrl: './econes.component.html',
+  styleUrls: ['./econes.component.scss'],
+
+
+})
+
+export class EconesComponent implements OnInit {
+  // displayedColumns: string[] = ['id', 'serial', 'name', 'date','client'];
+ 
+  public initial_state = {
+    allowEmptyString: true, alt: "E-cone",
+    ariaLabel: `Qr code`, colorDark: "#031722",
+    colorLight: "#ffffffff", cssClass: "center",
+    elementType: "canvas" as QRCodeElementType,
+    errorCorrectionLevel: "H" as QRCodeErrorCorrectionLevel,
+    imageSrc: "./assets/images/logoD.jpg",
+    imageHeight: 45, imageWidth: 45,
+    margin: 4, qrdata: "https://drilllight.com/Cordobo/angularx-qrcode",
+    scale: 1, version: undefined, title: "E-cone", width: 200,
+  }
+  public data_model = { ...this.initial_state }
+  public allowEmptyString: boolean = false;
+  public alt!: string;
+  public ariaLabel!: string;
+  public colorDark!: string;
+  public colorLight!: string;
+  public cssClass!: string;
+  public elementType: QRCodeElementType = "url";
+  public errorCorrectionLevel: QRCodeErrorCorrectionLevel = "low";
+  public imageSrc?: string
+  public imageHeight?: number
+  public imageWidth?: number
+  public margin!: number;
+  public qrdata!: string;
+  public scale!: number;
+  public title!: string;
+  public width!: number;
+  public qrCodeSrc!: SafeUrl
+  public selectedIndex!: number;
+  public showA11y: boolean = false;
+  public showColors: boolean = false;
+  public showCss: boolean = false;
+  public showImage: boolean = false;
+  displayedColumnsEcones: string[] = [' ','id', 'serial','date','client','actions'];
+  EmpDatasEcones : EconeDatas[] = [];
+
+  @ViewChild('paginatorEcones')
+  paginatorEcones!: MatPaginator;
+
+  resultsLength = 40;
+  constructor(
+    private econesService:EconesService,
+    private userHandlersServiceAdmin:UserHandlersServiceAdmin,
+    private utilsService: UtilsService,
+    public dialog: MatDialog,
+    private router: Router
+  ){
+    this.selectedIndex = 0
+    this.showA11y = true
+    this.showColors = true
+    this.showCss = true
+    this.showImage = true
+    this.allowEmptyString = this.data_model.allowEmptyString
+    this.alt = this.data_model.alt
+    this.ariaLabel = this.data_model.ariaLabel
+    this.colorDark = this.data_model.colorDark
+    this.colorLight = this.data_model.colorLight
+    this.cssClass = this.data_model.cssClass
+    this.elementType = this.data_model.elementType
+    this.errorCorrectionLevel = this.data_model.errorCorrectionLevel
+    this.imageSrc = this.showImage ? this.data_model.imageSrc : undefined
+    this.imageHeight = this.showImage ? this.data_model.imageHeight : undefined
+    this.imageWidth = this.showImage ? this.data_model.imageWidth : undefined
+    this.margin = this.data_model.margin
+    this.qrdata = this.data_model.qrdata
+    this.scale = this.data_model.scale
+    this.title = this.data_model.title
+    this.width = this.data_model.width
+  }
+
+  UserDataAccount:any[]=[];
+  user:any;
+  account:any;
+  Econes:any[any] = [];
+  SeeQrCode:any = false;
+  dataSourceEcones!: MatTableDataSource<EconeDatas>;
+
+  ngOnInit(): void {
+    this.utilsService._templateOptions.subscribe((theme:any) => {
+      console.log('THEME !: ',theme);
+    });
+    this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.account = JSON.parse(localStorage.getItem('account') || '{}');
+    console.log('account : ! ',this.account.privileges)
+    this.getEconesFromDataBase();
+  }
+
+  getEconesFromDataBase(){
+    this.UserDataAccount = [];
+    this.Econes = [];
+    this.econesService.getAllEcones().subscribe((econes:any) => {
+      econes.docs.forEach((econe:any) => {
+        this.Econes.push({ 
+          SeeQrCode:false,
+          id:econe.id,
+          date:econe.data().date,
+          dateIso:econe.data().dateIso,
+          qrdata:econe.data().qrdata,
+          seeQr:econe.data().seeQr,
+          serial:econe.data().serial,
+          uuid:econe.data().uuid,
+          uuidOfCustomer:econe.data().uuidOfCustomer
+          })
+        console.log('ECONES ! : ', econe.data())
+      })
+    });
+    this.utilsService._dataOfAccountsAndPods.subscribe((accounts:any) => {
+      console.log('Accounts !: ', accounts);
+      if(accounts === null){
+        this.userHandlersServiceAdmin.getAccountAdmin().subscribe(e =>{
+          e.docs.forEach(account =>{
+            console.log(account.data());
+            this.UserDataAccount.push(account.data());
+            if(this.UserDataAccount.length === e.docs.length){
+              for(let i = 0; i < this.Econes.length; i++) {
+               this.UserDataAccount.forEach((account:any) =>{
+                    if(account.uuid === this.Econes[i].uuidOfCustomer){
+                      console.log(account.personalinfos.name, account.personalinfos.firstname, account.email )
+                      this.Econes[i].name = account.personalinfos.name;
+                      this.Econes[i].firstname = account.personalinfos.firstname;
+                      this.Econes[i].email = account.email;
+                      
+                    }
+                })
+              }
+              this.dataSourceEcones = new MatTableDataSource(this.Econes);
+              this.dataSourceEcones.paginator = this.paginatorEcones;
+              console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
+            }
+          });
+          console.log('ACCOUNTS', this.UserDataAccount )
+  
+        });
+      }else{
+        let accountsData = accounts.account;
+        console.log(accountsData)
+        accountsData.forEach((account:any) =>{
+          this.UserDataAccount.push(account.data)
+        })  
+      }
+     });
+  }
+
+  search(){
+    const dialogRef = this.dialog.open(DialogSearch, {
+      panelClass: 'bg-color',
+      width:'80%',
+    });
+    dialogRef.afterClosed().subscribe((result:any) => {
+
+    });
+  }
+
+  applyFilter(event: Event) {
+    console.log('LE SEARCH : ',event)
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceEcones.filter = filterValue.trim().toLowerCase();
+    // if (this.dataSource.paginator) {
+    //   this.dataSource.paginator.firstPage();
+    // }
+  }
+
+  parameters(){
+    const dialogRef = this.dialog.open(DialogParameters, {
+      panelClass: 'bg-color',
+      width:'80%',
+    });
+    dialogRef.afterClosed().subscribe((result:any) => {
+
+    });
+  }
+
+  closeModalQr(Econe:any){
+    
+  }
+
+
+  displayQrOfEcone(Econe:any){
+    //  console.log(Econe.id)
+    this.Econes.forEach((econe:any, index:number) => {
+      //  console.log('ECONE ! : ',econe.id,Econe.id, index);
+      if(econe.id === Econe.id){
+        //  console.log('ECONE ! : : ',econe.id,Econe.id, index);
+        if(econe.SeeQrCode == false){
+          // console.log('ECONE ! : : ',econe.SeeQrCode,econe.id,Econe.id, index);
+          this.Econes[index].SeeQrCode = true;
+          //  console.log('ECONE ! : : ',this.Econes);
+        } else{
+          // console.log('ECONE ! : : ',econe.SeeQrCode, econe.id,Econe.id, index);
+          this.Econes[index].SeeQrCode = false;
+          //  console.log('ECONE ! : : ',this.Econes);
+        }
+      }
+    })
+  }
+
+  updateMaster(){
+    const dialogRef = this.dialog.open(DialogUpdateMaster, {
+      panelClass: 'bg-color',
+      width:'80%',
+    });
+    dialogRef.afterClosed().subscribe((result:any) => {
+
+    });
+  }
+
+  addEconesAsAdmin(){
+    const dialogRef = this.dialog.open(addEconesAdmin, {
+      data:this.UserDataAccount,
+      panelClass: 'bg-color',
+      width:'80%',
+    });
+    dialogRef.afterClosed().subscribe((result:any) => {
+      this.getEconesFromDataBase();
+    });
+  }
+
+  onChangeURL(url: SafeUrl) {
+    this.qrCodeSrc = url
+  }
+
+  saveAsImage(parent: FixMeLater, econe:any) {
+    let parentElement = null
+    if (this.elementType === "canvas") {
+      // fetches base 64 data from canvas
+      parentElement = parent.qrcElement.nativeElement
+        .querySelector("canvas")
+        .toDataURL("image/png")
+    } else if (this.elementType === "img" || this.elementType === "url") {
+      // fetches base 64 data from image
+      // parentElement contains the base64 encoded image src
+      // you might use to store somewhere
+      parentElement = parent.qrcElement.nativeElement.querySelector("img").src
+    } else {
+      alert("Set elementType to 'canvas', 'img' or 'url'.")
+    }
+
+    if (parentElement) {
+      // converts base 64 encoded image to blobData
+      let blobData = this.convertBase64ToBlob(parentElement)
+      // saves as image
+      const blob = new Blob([blobData], { type: "image/png" })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      // name of the file
+      link.download = econe.id
+      link.click()
+    }
+  }
+
+  private convertBase64ToBlob(Base64Image: string) {
+    // split into two parts
+    const parts = Base64Image.split(";base64,")
+    // hold the content type
+    const imageType = parts[0].split(":")[1]
+    // decode base64 string
+    const decodedData = window.atob(parts[1])
+    // create unit8array of size same as row data length
+    const uInt8Array = new Uint8Array(decodedData.length)
+    // insert all character code into uint8array
+    for (let i = 0; i < decodedData.length; ++i) {
+      uInt8Array[i] = decodedData.charCodeAt(i)
+    }
+    // return blob image after conversion
+    return new Blob([uInt8Array], { type: imageType })
+  }
+
+
+}
+
+
+
+
+
+@Component({
+  selector: 'dialog-search',
+  templateUrl: './dialog/search.html',
+  styleUrls: ['./econes.component.scss'],
+  standalone: true,
+  imports: [ MatSlideToggleModule,
+    _MatSlideToggleRequiredValidatorModule, ReactiveFormsModule, MatNativeDateModule,MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
+})
+
+export class DialogSearch implements OnInit{
+
+  constructor(
+    private utilsService:UtilsService,
+    private fireStoreServiceImages:FireStoreServiceImages,
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
+    public dialogRef: MatDialogRef<DialogSearch>,
+    @Inject(MAT_DIALOG_DATA) public data:any,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+   console.log('LES DATAS MODALS MODERATE',this.data)
+  }
+
+  find(){
+    this.dialogRef.close();
+  }
+
+}
+
+
+@Component({
+  selector: 'dialog-parameter',
+  templateUrl: './dialog/parameter.html',
+  styleUrls: ['./econes.component.scss'],
+  standalone: true,
+  imports: [ MatSlideToggleModule,
+    _MatSlideToggleRequiredValidatorModule, ReactiveFormsModule, MatNativeDateModule,MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
+})
+
+export class DialogParameters implements OnInit{
+
+  constructor(
+    private utilsService:UtilsService,
+    private fireStoreServiceImages:FireStoreServiceImages,
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
+    public dialogRef: MatDialogRef<DialogParameters>,
+    @Inject(MAT_DIALOG_DATA) public data:any,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+   console.log('LES DATAS MODALS MODERATE',this.data)
+  }
+
+  update(){
+
+  }
+
+}
+
+
+@Component({
+  selector: 'dialog-update-econe',
+  templateUrl: './dialog/update-econe.html',
+  styleUrls: ['./econes.component.scss'],
+  standalone: true,
+  imports: [ MatSlideToggleModule,
+    _MatSlideToggleRequiredValidatorModule, ReactiveFormsModule, MatNativeDateModule,MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
+})
+
+export class DialogUpdateMaster implements OnInit{
+
+  constructor(
+    private econesService:EconesService,
+    private utilsService:UtilsService,
+    private fireStoreServiceImages:FireStoreServiceImages,
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
+    public dialogRef: MatDialogRef<DialogUpdateMaster>,
+    @Inject(MAT_DIALOG_DATA) public data:any,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+   //console.log('LES DATAS MODALS MODERATE',this.data)
+  }
+
+  update(){
+
+  }
+
+}
+
+
+@Component({
+  selector: 'dialog-add-econes',
+  templateUrl: './dialog/add-econes.html',
+  styleUrls: ['./econes.component.scss'],
+  standalone: true,
+  imports: [ MatSlideToggleModule,
+    _MatSlideToggleRequiredValidatorModule, ReactiveFormsModule, MatNativeDateModule,MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
+})
+
+export class addEconesAdmin implements OnInit{
+  serialNumber = new FormControl('', [ Validators.required ]);
+  Customers :any[]=[];
+  selectedCustomer:any ='';
+
+
+  constructor(
+    private econesService:EconesService,
+    private utilsService:UtilsService,
+    private fireStoreServiceImages:FireStoreServiceImages,
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
+    public dialogRef: MatDialogRef<addEconesAdmin>,
+    @Inject(MAT_DIALOG_DATA) public data:any,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+   console.log('LES DATAS MODALS NEW ECONES ',this.data);
+   this.data.forEach((customer:any) =>{
+    console.log(customer);
+    if(customer.privileges.role !== 'Administrateur'){
+      this.Customers.push(customer);
+      console.log(this.Customers);
+    }
+   })
+  }
+
+  close(){
+    console.log(this.serialNumber.value, this.selectedCustomer)
+    if(this.selectedCustomer !== undefined){
+      console.log(this.serialNumber.value, this.selectedCustomer)
+      this.econesService.addEconesToDatabaseWithCustomer(this.serialNumber.value, this.selectedCustomer);
+    }
+    else{
+      if(this.selectedCustomer.uuid === undefined){
+        console.log(this.serialNumber.value)
+        this.econesService.addEconesToDatabase(this.serialNumber.value);
+      }
+    }
+    this.dialogRef.close();
+  }
+
+  selectChangeClient(event:any){
+    console.log(event.value);
+    this.selectedCustomer = event.value;
+    this.selectedCustomer = this.selectedCustomer.uuid
+  }
+
+}

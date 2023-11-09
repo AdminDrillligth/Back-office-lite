@@ -1,0 +1,61 @@
+.container-main{
+  position: relative;
+  left:5%;
+  width: 90%!important;
+  max-width: 100%!important;
+}
+
+.display-left{
+  width: 30%;
+  height: 500px;
+  background-color: aliceblue;
+  text-align: center;
+  display: inline-block;
+}
+
+.display-right{
+  width: 69%;
+  height: 500px;
+  background-color: rgb(172, 173, 174);
+  display: inline-block;
+}
+
+.mg-btm-del{
+  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.bottom-btn{
+  width:100%;
+  text-align: end;
+}
+
+.btn-delete{
+  background:#DC4C64;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+}
+
+.btn-modifie{
+  background:#a1eafb;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+}
+
+.btn-export{
+  background:#14A44D;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+}
+
+
+.container-img-display{
+  height: 150px;
+  width: 100%;
+  display: block;
+}
+
+.container-img-avatar{
+  max-width:40%;
+}

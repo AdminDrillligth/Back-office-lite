@@ -1,0 +1,27 @@
+
+<div class="container-global">
+<div class="video-container" *ngIf="url !== ''">
+<video [ngStyle]="{width: '90%'}" controls id="videoplayer"
+#videoplayer (play)="playVideo($event)" (pause)="playVideo($event)" (timeupdate)="onTimeUpdate($event)">
+<source #video [src]="url"/> Your browser does not support the video tag.
+</video>
+<div class="div-btncontainer">
+  <div class="button-container">
+    <button mat-fab color="warn" aria-label="Example icon button with a home icon">
+      <mat-icon>add_to_queue</mat-icon>
+    </button>
+  </div>
+  
+  <div class="button-container">
+    <button mat-fab color="warn" aria-label="Example icon button with a home icon">
+      <mat-icon>speaker_notes</mat-icon>
+    </button>
+  </div>
+  <div class="button-container">
+    <button  (click)="openDialog()" mat-fab color="warn" aria-label="Example icon button with a home icon">
+      <mat-icon>flag</mat-icon>
+    </button>
+  </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,69 @@
+<div class="container-main" >
+
+<div>
+  <h1 style='text-align:center;'>Paramêtres de compte & Contact</h1><br/>
+  <h3 style='text-align:center;'>Paramêtres de compte</h3>
+  <div class="col-12 divdial" mat-dialog-content>
+    <h4 style='text-align:center;'>Adresse Email Actuel</h4><br/>
+    <mat-form-field class="display-input">
+      <mat-label style="color:black">Email</mat-label>
+      <input required matInput placeholder="Ex: Votre Email actuel" >
+    </mat-form-field>
+  </div>
+  <div class="col-12 divdial" style='text-align:center;' mat-dialog-content>
+    <h4 style='text-align:center;'>Mettre à jour votre adresse Email</h4><br/>
+    <mat-form-field class="display-input">
+      <mat-label style="color:black">Nouvel email</mat-label>
+      <input required matInput placeholder="Ex: Votre nouvel Email" >
+    </mat-form-field >
+    <button mat-button  mat-dialog-close class="btn-modifie mg-btm-del" >Envoyer la demande</button>
+
+  </div>
+    <form [formGroup]="form" (ngSubmit)="onFormSubmit()"> 
+      <p>Minimum 8 Caractères</p><hr>
+      <p>Minimum 1 Chiffre</p><hr>
+      <p>Minimum 1 Minuscule et une Majuscule</p><hr>
+      <p>Minimum 1 Caracttère spécial</p><hr>
+      <div class="col-12 divdial" style="text-align: center;" mat-dialog-content>
+        <h4 style='text-align:center;'>Changement de mot de passe</h4><br/>
+        <mat-form-field class="display-input">
+          <mat-label style="color:black">Nouveau mot de passe</mat-label>
+          <input formControlName="password" type="password"
+          name="password" required matInput placeholder="Ex: *****" >
+        </mat-form-field>
+        <mat-form-field class="display-input">
+          <mat-label style="color:black">Confirmer mot de passe</mat-label>
+          <input formControlName="samepassword" type="password"
+          name="samepassword" required matInput placeholder="Ex: *****" >
+        </mat-form-field>
+        <p>{{form.get('password').errors?.pattern | json}}</p><hr>
+        <p>{{form.get('samepassword').errors?.pattern | json}}</p><hr>
+        <button mat-button  mat-dialog-close class="btn-modifie mg-btm-del" >Modifier</button>
+      </div>
+      
+  </form>
+  </div>
+
+<div>
+  <h3 style='text-align:center;'>Contact</h3>
+
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field class="display-input">
+        <mat-label>Raison</mat-label>
+
+        <p>https://fr.gravatar.com/</p>
+          <mat-select [(ngModel)]="reasonOfContact" (selectionChange)="selectChangeReason($event)">
+            <mat-option *ngFor="let reason of contactFor" [value]="reason">{{reason}}</mat-option>
+          </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field class="display-input">
+        <mat-label>Raison de la demande</mat-label>
+        <textarea matInput placeholder="La raison de ma demande est ..."></textarea>
+      </mat-form-field>
+    </div>
+    <button mat-button  mat-dialog-close class="btn-modifie mg-btm-del" >Envoyer la demande</button>
+
+</div>
+</div>

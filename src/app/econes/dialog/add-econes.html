@@ -1,0 +1,22 @@
+<div class="background-modal">
+    <h5 class="title-modal">Ajouter un E-cone en tant qu'administrateur</h5>
+      <div class="col-12 divdial" mat-dialog-content>
+        <mat-form-field class="form-fielder">
+          <mat-label style="color:black">Numéro de série : </mat-label>
+          <input [formControl]="serialNumber" maxlength="13" required matInput placeholder="xxxxxxx">
+        </mat-form-field>
+      </div>
+      <div class="col-12 divdial" mat-dialog-content>
+        <mat-form-field class="form-fielder">
+          <mat-label>Clients</mat-label>
+          <mat-select  [(ngModel)]="selectedCustomer" (selectionChange)="selectChangeClient($event)">
+            <mat-option  *ngFor="let Customer of Customers" [value]="Customer">{{Customer.personalinfos.name + ' ' + Customer.personalinfos.firstname}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="bottom-btn">
+        <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Annuler</button>
+        <button mat-button  (click)='close()' class="btn-delete mg-btm-del" >Ajouter un E-cone</button>
+      </div>
+</div>
+  

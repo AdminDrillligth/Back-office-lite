@@ -1,0 +1,63 @@
+
+<div class="background-modal">
+  <h5 class="title-modal">Informations principales</h5>
+  <hr>
+  <div style="--bs-gutter-x: 0;margin-left: 30px;margin-top: 20px;" class="row">
+    <div>
+      <div class=" col-4 divdial" mat-dialog-content>
+        <mat-form-field>
+          <mat-label style="color:black">Titre de la vidéo</mat-label>
+          <input [formControl]="title" [errorStateMatcher]="matcher" matInput required placeholder="Ex: Titre de la vidéo" >
+        </mat-form-field>
+      </div>
+      <div class="  col-8 divdial" mat-dialog-content>
+        <mat-form-field class="formline" >
+          <mat-label style="color:black">Commentaire</mat-label>
+          <input [formControl]="comment" [errorStateMatcher]="matcher" matInput required placeholder="Ex: Moments clés à la douxième minute" >
+        </mat-form-field>
+      </div>
+
+    </div>
+    <div class="sticker-name" *ngFor="let item of selectedTraineds"><p style="margin: inherit;" >{{item.name+' '+ item.firstname }}</p>
+    </div>
+    <div class=" col-12 " mat-dialog-content>
+
+      <mat-form-field>
+        <mat-label>Choix des entraînés</mat-label>
+         <mat-select  [(ngModel)]="selectedTraineds" (selectionChange)="selectChange($event)" multiple>
+          <mat-option *ngFor="let trained of traineds" [value]="trained">{{trained.name + ' '+ trained.firstname}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <form>
+        <mat-form-field class="sizing-tags">
+          <mat-label>Ajouter des étiquettes</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Fruit selection">
+            <mat-chip-row *ngFor="let eti of etiquette" (removed)="remove(eti)">
+              {{eti}}
+              <button matChipRemove [attr.aria-label]="'remove ' + eti">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          </mat-chip-grid>
+          <input placeholder="Ex: Passe à droite" #etiquetage [formControl]="tagCtrl"
+            [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="add($event)"/>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+              {{tag}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+    </div>
+  </div>
+<mat-dialog-actions align="end">
+  <button class="btn-delete" mat-button mat-dialog-close>Supprimer la vidéo</button>
+  <button (click)="closeModal()" class="btn-export" mat-button [mat-dialog-close]="true" cdkFocusInitial>Mettre à jour</button>
+</mat-dialog-actions>
+
+
+</div>

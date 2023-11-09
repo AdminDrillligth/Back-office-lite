@@ -1,0 +1,20 @@
+
+<div class="background-modal">
+  <h5 class="title-modal">Update E-cone</h5>
+      <div class="col-6 divdial" mat-dialog-content>
+        <mat-label style="width:150px;display:block;color:rgb(255, 255, 255)">Upload Firmware</mat-label>
+          <input type="file" class="file-upload">
+      </div>
+      <div class="col-6 divdial" mat-dialog-content>
+        <mat-label style="width:150px;display:block;color:rgb(255, 255, 255)">Upload Dashboard</mat-label>
+          <input type="file" class="file-upload">
+      </div>
+      <div class="col-6 divdial" mat-dialog-content>
+        <mat-label style="width:150px;display:block;color:rgb(255, 255, 255)">Upload Exercices</mat-label>
+          <input type="file" class="file-upload">
+      </div>
+    <div class="bottom-btn">
+      <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Annuler</button>
+      <button mat-button (click)="update()"  class="btn-delete mg-btm-del" >Update Master</button>
+    </div>
+  </div>

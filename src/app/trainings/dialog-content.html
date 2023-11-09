@@ -1,0 +1,26 @@
+
+<div class="background-modal">
+
+<mat-dialog-content class="invisible-scrollbar mat-typography">
+  <div class="container-title"><h1 class="title">{{data.item.text}}</h1></div>
+
+  <img class="img-dialog" src="{{data.item.image}}">
+  <p  class="desc-dialog" >{{data.item.description}}</p>
+  <p  class="title">{{data.item.state}}</p>
+  <div  class="title" *ngFor="let categorie of data.item.categorie">{{categorie}}</div>
+  <p></p>
+  <div  class="title" *ngFor="let thematic of data.item.thematic">{{thematic}}</div>
+  <p></p>
+  <div  class="title" *ngFor="let sport of data.item.sports">{{sport}}</div>
+  <p></p>
+  <div  class="title" *ngFor="let age_category of data.item.age_category">{{age_category.name}}</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="btn-delete" (click)="addVideoToExercice(data)" mat-button mat-dialog-close>Ajouter une vidéo</button>
+  <button class="btn-delete" mat-button mat-dialog-close>Supprimer</button>
+  <button class="btn-modifie" mat-button mat-dialog-close>Modifier</button>
+  <button class="btn-export" mat-button [mat-dialog-close]="true" cdkFocusInitial>Exporter</button>
+</mat-dialog-actions>
+
+
+</div>

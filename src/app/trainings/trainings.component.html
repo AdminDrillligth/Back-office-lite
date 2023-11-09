@@ -1,0 +1,95 @@
+<div class="container-main">
+  <h3 style="color:white">Entraînements</h3>
+  <mat-form-field style="width:100%">
+    <mat-label>Chercher par noms, catégories, dates, ... </mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+  </mat-form-field>
+
+  <div class="row">
+    <div (click)="select(item)" *ngFor="let item of itemsNav" style="color:white" class="col-md-2">
+      <mat-card  class="card-dashboard">
+        <mat-card-header>
+          <mat-card-title>{{item.value}}</mat-card-title>
+        </mat-card-header>
+        </mat-card>
+        <hr *ngIf="item.selected !== false" class="hr-line" >
+    </div>
+    <div class="btn-add" (click)="createExercice()" ><button class="btn-add-ex">Créer un exercice</button></div>
+    <div class="btn-add" (click)="subscribes()" ><button class="btn-card">S'abonner au bouquet d'exercices</button></div>
+  </div>
+  <!-- LIST OF EXERCIES OF DRILLLIGHT -->
+  <div *ngIf="chooseType === 'Exercices'">
+  <!-- <h4 class="title">Bouquet d'exercices Drilllight</h4>
+  <div class="row">
+    <mat-card class="card-exo col-md-2">
+      <mat-card-header>
+        <mat-card-title class="title-card">Exemple d'exercice</mat-card-title>
+      </mat-card-header>
+      <span [ngClass]="audience === 'public' ? 'public' : 'private'" class="audience">Public</span>
+      <img class="img-card" mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+      <mat-card-content>
+        <p> The Shiba Inu is </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div mat-card-avatar class="header-image"></div>
+        <button class="btn-card" mat-button><img src="../../assets/icons/dots-vertical.png"></button>
+      </mat-card-actions>
+    </mat-card>
+  </div> -->
+  <!-- "Pré-formation" -->
+  <h4 *ngIf="categoryOneTrainings.cards.length > 0" class="title">Pré-formation</h4>
+  <div  class="row scroll">
+    <mat-card  *ngFor="let item of categoryOneTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
+      <mat-card-header>
+        <mat-card-title class="title-card">{{item.text}}</mat-card-title>
+      </mat-card-header>
+      <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
+      <img class="img-card" mat-card-image src="{{item.image}}" alt="">
+      <mat-card-content>
+        <p class="invisible-scrollbar paragraphe">{{item.description}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div mat-card-avatar class="header-image"></div>
+        <p *ngIf="item.author === undefined" class="paragraph-card" >Drilllight</p>
+        <button (click)="openDialog(item)" class="btn-card" mat-button><mat-icon> list_alt</mat-icon></button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- "Formation" -->
+  <h4 *ngIf="categoryTwoTrainings.cards.length > 0" class="title">Formation</h4>
+  <div  class="row">
+    <mat-card  *ngFor="let item of categoryTwoTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
+      <mat-card-header>
+        <mat-card-title class="title-card">{{item.text}}</mat-card-title>
+      </mat-card-header>
+      <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
+      <img class="img-card" mat-card-image src="{{item.image}}" alt="">
+      <mat-card-content>
+        <p class="invisible-scrollbar paragraphe">{{item.description}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div mat-card-avatar class="header-image"></div>
+        <button (click)="openDialog(item)" class="btn-card" mat-button><img class="im-card-btn" src="../../assets/icons/dots-vertical.png"></button>
+      </mat-card-actions>
+    </mat-card>
+  </div><!-- "Séniors" -->
+  <h4 *ngIf="categoryTreeTrainings.cards.length > 0" class="title">Séniors</h4>
+  <div  class="row">
+    <mat-card  *ngFor="let item of categoryTreeTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
+      <mat-card-header>
+        <mat-card-title class="title-card">{{item.text}}</mat-card-title>
+      </mat-card-header>
+      <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
+      <img class="img-card" mat-card-image src="{{item.image}}" alt="">
+      <mat-card-content>
+        <p class="invisible-scrollbar paragraphe">{{item.description}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div mat-card-avatar class="header-image"></div>
+        <button (click)="openDialog(item)" class="btn-card" mat-button><img class="im-card-btn" src="../../assets/icons/dots-vertical.png"></button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  </div>
+</div>

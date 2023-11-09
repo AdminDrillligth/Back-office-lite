@@ -1,0 +1,110 @@
+<div class="container-main">
+  <div class="row">
+    <div id="main"></div>
+    <h3 style="color:white">Actions rapides</h3>
+    <div style="color:white" class="col-md-4">
+      <mat-card class="card-dashboard">
+        <mat-card-header>
+          <mat-icon class="icon-dashboard">add_circle</mat-icon>
+          <mat-card-title>Créer un exercice</mat-card-title>
+          </mat-card-header>
+        <mat-card-content>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div style="color:white" class="col-md-4">
+      <mat-card (click)="addVideo()" class="card-dashboard">
+        <mat-card-header>
+          <mat-icon class="icon-dashboard">add_circle</mat-icon>
+          <mat-card-title>Ajouter une vidéo</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div style="color:white" class="col-md-4">
+      <mat-card (click)="createClient()" class="card-dashboard">
+        <mat-card-header>
+          <mat-icon class="icon-dashboard">add_circle</mat-icon>
+          <mat-card-title>Ajouter un client</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <h3 style="color:white">Statistiques</h3>
+    <div id="cardChart" style="color:white" class="card-hight col-md-6">
+      <mat-card  class="card-dashboard">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>Données générales</mat-card-title>
+        </mat-card-header>
+          <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
+        <mat-card-content *ngIf="saleData.length !== 0">
+          <ngx-charts-bar-vertical
+            [view]="[widthcard,heigthCard]"
+            [results]="saleData"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [xAxis]="true"
+            [yAxis]="true"
+            [gradient]="true">
+          </ngx-charts-bar-vertical>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- <h1 style="color:white">Actions rapides</h1> -->
+    <div style="color:white" class="card-hight col-md-6">
+      <mat-card class="card-dashboard">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>Shiba Inu</mat-card-title>
+        </mat-card-header>
+          <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
+        <mat-card-content  *ngIf="saleData.length !== 0">
+          <ngx-charts-pie-chart
+            [results]="saleData"
+            [view]="[widthcard,heigthCard]"
+            [labels]="true" >
+          </ngx-charts-pie-chart>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div id="cardChart" style="color:white" class="card-hight col-md-6">
+
+      <mat-card  class="card-dashboard">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>Données générales</mat-card-title>
+        </mat-card-header>
+          <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
+        <mat-card-content *ngIf="saleData.length !== 0">
+          <ngx-charts-gauge
+            [view]="[widthcard,heigthCard/1.5]"
+            [results]="DataUsers"
+          >
+          </ngx-charts-gauge>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- <h1 style="color:white">Actions rapides</h1> -->
+    <div style="color:white" class="card-hight col-md-6">
+      <mat-card class="card-dashboard">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>Shiba Inu</mat-card-title>
+        </mat-card-header>
+          <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
+        <mat-card-content  *ngIf="saleData.length !== 0">
+          <ngx-charts-advanced-pie-chart
+            [results]="saleData"
+            [gradient]="true"
+            [view]="[widthcard,heigthCard/1.5]"
+            >
+          </ngx-charts-advanced-pie-chart>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+</div>

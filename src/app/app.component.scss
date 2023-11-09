@@ -1,0 +1,101 @@
+.main {
+  // background: url("/../../../assets/images/login-bg.png") no-repeat;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  .container-app {
+    height: 100%;
+  }
+}
+
+.status-ranking{
+  font-weight:600;
+  margin-left: 5px;
+  margin-bottom: 0px;
+}
+
+.container-side{
+  // background: url("/../../../assets/images/login-bg.png") no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+
+.sidenav{
+  // color:white;
+  // background-color: #0c0f20;
+  background-size: cover;
+}
+
+.image-logo{
+  width: 200px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+.button-nav{
+  display: block;
+  height: 10%;
+  width: 100%;
+  vertical-align: middle!important;
+}
+
+.btn-nav{
+  // color: white!important;
+  // background-color: #252836!important;
+  width:100%!important;
+
+}
+
+.btn-nav-bottom{
+  width: 100%;
+  bottom: 20px;
+  position: absolute;
+
+}
+
+.btn-bottom{
+  width:100%!important;
+  // color: white!important;
+  // background-color: #252836!important;
+}
+
+.sidenav-content{
+  position: fixed;
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+.mdc-button__label{
+  width: 100%!important;
+}
+
+.mdc-button{
+    align-items: left;
+    justify-content: left;
+    vertical-align: middle!important;
+}
+
+.span-btn{
+  // margin-bottom: 5px;
+  position: relative;
+  left: 15px;
+}
+
+.mat-mdc-raised-button:hover {
+  border: 1px solid white;
+}
+
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .button-nav{
+    height: 4%;
+  }
+  
+}

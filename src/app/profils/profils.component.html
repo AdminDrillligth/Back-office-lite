@@ -1,0 +1,28 @@
+
+<div class="container-main">
+  <div class="col-12" style="text-align: center;" mat-dialog-content>
+    <h2>Votre profil</h2>
+  </div>
+  <div class="display-left">
+    <div class="container-img-display">
+    
+      <img *ngIf="urlImg !== undefined" class="container-img-avatar" src="{{urlImg}}">
+      <img *ngIf="urlImg === undefined" class="container-img-avatar" src="../../assets/images/profile.png" alt="">
+    </div>
+      <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+      <button mat-button class="btn-modifie" (click)="fileInput.click()">Choisir l'avatar</button>
+      <button mat-button class="btn-export" *ngIf="selectedFile" (click)="onUpload()">Télécharger!</button>
+      <div>
+        <h4>Mes infos</h4>
+        <div>
+          
+        </div>
+      </div>
+    </div>
+  <!-- <div class="display-right">
+
+  </div> -->
+
+
+
+</div>

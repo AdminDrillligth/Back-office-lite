@@ -1,0 +1,32 @@
+.container-main{
+  margin-top: 25px;
+  position: relative;
+  left:5%;
+  width: 90%!important;
+  max-width: 100%!important;
+}
+
+.top-align{
+  display: inline-block;
+  width: 49%;
+}
+
+.icon-close-right{
+  position: relative;
+  left: 100%;
+}
+
+.btn-next-step{
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.outline-btn-next{
+  position: relative;
+  left: 75%;
+  padding-top: 6px;
+  width: 20%;
+  height: 40px;
+  border: 1px solid var(--gray-scale-600, #202B32);
+  border-radius: 8px;
+}

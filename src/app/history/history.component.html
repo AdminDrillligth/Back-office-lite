@@ -1,0 +1,18 @@
+<div class="container-main">
+<mat-card  *ngFor="let history of historyData" class="card-history">
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>{{history.title}}</mat-card-title>
+        <mat-card-subtitle>{{history.dateparse}}</mat-card-subtitle>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <button (click)="seeDetailOfExercice(history)" mat-raised-button color="primary">Voir le détail</button>
+      <!-- gfgiyfgyiguyfhyfgbh_yughu -->
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+<router-outlet></router-outlet>

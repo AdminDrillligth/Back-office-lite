@@ -1,0 +1,148 @@
+
+<div class="background-modal">
+  <h5 class="title-modal">Informations principales</h5>
+  <hr>
+  <div style="--bs-gutter-x: 0;margin-left: 30px;margin-top: 20px;" class="row">
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Nom</mat-label>
+        <input [formControl]="name"  required matInput placeholder="Ex: Martin ">
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Prénom</mat-label>
+        <input [formControl]="firstname"  required matInput placeholder="Ex: Morgan" >
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Email</mat-label>
+        <input [formControl]="email"  required matInput type="email" placeholder="Ex: exemple@gmail.com" >
+      </mat-form-field>
+    </div>
+    <div
+     class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Taille</mat-label>
+        <input [formControl]="size" type="number" [min]="0" [max]="230" required matInput placeholder="Ex: exemple@gmail.com" >
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+     <mat-form-field>
+       <mat-label style="color:black">Poids de départ</mat-label>
+       <input [formControl]="weight" type="number" [min]="0" [max]="350" required matInput placeholder="Ex: exemple@gmail.com" >
+     </mat-form-field>
+   </div>
+   <div class="col-12 divdial" mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Latéralité</mat-label>
+      <mat-select [(ngModel)]="selectedManuality" [placeholder]="selectedManuality" (selectionChange)="selectChangeManuality($event)" >
+        <mat-option *ngFor="let Manuality of Manualitys" [value]="Manuality">{{Manuality}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col-12 divdial" mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Genre</mat-label>
+      <mat-select [(ngModel)]="selectedGender" [placeholder]="selectedGender" (selectionChange)="selectChangeGender($event)" >
+        <mat-option *ngFor="let gender of Genders" [value]="gender">{{gender}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field class="example-form-field">
+        <mat-label>Date de naissance</mat-label>
+        <input (dateInput)="dateChange($event)" placeholder="JJ/MM/AAAA" matInput [matDatepicker]="datepicker">
+        <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Annuler</button>
+            <button mat-raised-button color="primary" matDatepickerApply>Valider</button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+  <h5  class="title-modal">Coordonnées</h5>
+  <hr>
+  <div style="--bs-gutter-x: 0;margin-left: 30px;" class="row">
+    <div class="col-12  divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Adresse</mat-label>
+        <input [formControl]="address"  required matInput placeholder="Ex: 33 rue de l'exemple" >
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">ZIP code</mat-label>
+        <input [formControl]="zip"  required matInput  maxlength="5" placeholder="Ex: 75000" >
+      </mat-form-field>
+    </div>
+    <div class="col-12  divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Ville</mat-label>
+        <input [formControl]="city"  required matInput type="city" maxlength="20" placeholder="Ex: Paris" >
+      </mat-form-field>
+    </div>
+    <div class="col-12  divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Numéro de téléphone</mat-label>
+        <input [formControl]="phone"  required matInput required  maxlength="10" placeholder="Ex: xxxxxxxxxx" >
+      </mat-form-field>
+    </div>
+    <div style="text-align: center;" class="container-avat">
+    <div (click)="chooseAvatar('assets/icons/avatars/man1.svg')" class="container-avatar"><img style="width: 90px!important; position: relative; left: -50px;" src="assets/icons/avatars/man1.svg"></div>
+    <div (click)="chooseAvatar('assets/icons/avatars/man2.svg')" class="container-avatar"><img style="width: 90px!important; position: relative; left: 8px;" src="assets/icons/avatars/man2.svg"></div>
+    <div (click)="chooseAvatar('assets/icons/avatars/woman1.svg')" class="container-avatar"><img style="width: 90px!important; position: relative; left: -34px;" src="assets/icons/avatars/woman1.svg"></div>
+    <div (click)="chooseAvatar('assets/icons/avatars/woman2.svg')" class="container-avatar"><img style="width: 90px!important; position: relative; left: -14px;" src="assets/icons/avatars/woman2.svg"></div>
+    </div>
+    <div class="col-12" style="text-align: center;" mat-dialog-content>
+      <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+      <div *ngIf="urlImg !== undefined" class="container-img-display">
+      <img class="container-img-avatar" src="{{urlImg}}">
+      </div>
+      <button mat-button class="btn-modifie mg-btm"  (click)="fileInput.click()">Choisir l'avatar</button>
+      <button mat-button class="btn-export" *ngIf="selectedFile" (click)="onUpload()">Télécharger!</button>
+  </div>
+  </div>
+  <h5  class="title-modal">Droits et fonctions Administrateur</h5>
+  <hr>
+  <div style="--bs-gutter-x: 0;margin-left: 30px;" class="row">
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label>Disciplines</mat-label>
+        <mat-select [(ngModel)]="selectedDiscipline" (selectionChange)="selectChangeDiscipline($event)" multiple>
+          <mat-option *ngFor="let Discipline of Disciplines" [value]="Discipline">{{Discipline}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label>Objectifs</mat-label>
+        <mat-select [(ngModel)]="selectedObjectifs" (selectionChange)="selectChangeObjectifs($event)" multiple>
+          <mat-option *ngFor="let Objectif of Objectifs" [value]="Objectif">{{Objectif}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label>Niveau</mat-label>
+        <mat-select [(ngModel)]="selectedLevel" [placeholder]="selectedLevel" (selectionChange)="selectChangeLevel($event)" >
+          <mat-option *ngFor="let level of Levels" [value]="level">{{level}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12  divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Commentaires</mat-label>
+        <input [formControl]="comment" matInput  placeholder="Ex: un commentaire" >
+      </mat-form-field>
+    </div>
+  </div>
+<mat-dialog-actions align="end">
+  <button class="btn-warn"  mat-button mat-dialog-close>Supprimer</button>
+  <button class="btn-delete" (click)="confirmModeration()" mat-button mat-dialog-close>Modérer le client !</button>
+  <button (click)="closeModal()" class="btn-export" mat-button [mat-dialog-close]="true" cdkFocusInitial>Valider</button>
+</mat-dialog-actions>
+</div>

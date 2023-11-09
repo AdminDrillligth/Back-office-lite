@@ -1,0 +1,30 @@
+.container-main{
+  margin-top: 25px;
+  position: relative;
+  left:5%;
+  width: 90%!important;
+  max-width: 100%!important;
+}
+
+
+.display-input{
+  display: block;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.display-input div{
+  background-color: antiquewhite!important;
+}
+
+.btn-modifie{
+  background:#a1eafb;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+}
+
+.mat-mdc-text-field-wrapper {
+  width: 100%;
+  background-color: bisque!important;
+}

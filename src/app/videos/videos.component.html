@@ -1,0 +1,59 @@
+<div class="container-main">
+  <h3 style="color:white">Vidéos</h3>
+  <!-- style='top:0px;width:100%;height: 100%;position:absolute;'  -->
+  <div class="upload-container">
+  <div class="upload-container__placeholder upload_img">
+    <!-- <img class="upload-container__placeholder__upload-icon" src="assets/icons/upload-video.svg" alt="upload"/> -->
+    <p style="font-size: 14px;margin-bottom: 5px;"> Glissez, déposez la vidéo souhaitée </p>
+    <mat-icon class="ico-video" >subscriptions</mat-icon>
+    <p>{{ title }}</p>
+    <small style="margin-top:3px!important;font-size:10px;">{{ text }} </small>
+
+  </div>
+  <div>
+    <div #UploadDiv id='UploadDiv' *ngIf="upload === 1" >
+      <progress style='width:100%;height:40px;' value="{{ uploadPercent | async }}" max="100"></progress>
+    </div>
+    <input type="file" accept="video/mp4" (change)="useVideo($event)" />
+  </div>
+
+  <div *ngIf="upload === 1" class="upload-container__image-box" >
+    <div  class="d-flex align-items-center">
+      <video class="upload-container__image-box__picture"  width="250">
+        <source [src]="uploadedVideo.data" type="video/mp4" />
+      </video>
+      <div  class="d-flex flex-column justify-content-center">
+        <h4>{{ uploadedVideo.propretys.name }}</h4>
+        <label>{{ uploadedVideo.propretys.size }} ko</label>
+      </div>
+    </div>
+    <img class="upload-container__image-box__delete-icon" src="assets/icons/delete-icon.png"
+      alt="delete"
+      style="cursor: pointer"
+      (click)="removeVideo()"
+    />
+  </div>
+  <div class="container-slider">
+    <h4 *ngIf="allVideos.cards.length > 0" class="title">Pré-formation</h4>
+    <div  class="row">
+      <mat-card  *ngFor="let item of allVideos.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
+        <mat-card-header>
+          <mat-card-title  *ngIf="item.title === undefined" class="title-card">{{item.text}}</mat-card-title>
+          <mat-card-title  *ngIf="item.title !== undefined" class="title-card">{{item.title}}</mat-card-title>
+        </mat-card-header>
+        <!-- <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span> -->
+        <img class="img-card" mat-card-image src="{{item.image}}" alt="">
+        <mat-card-content>
+          <p class="invisible-scrollbar paragraphe">{{item.description}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <div mat-card-avatar class="header-image"></div>
+          <p *ngIf="item.author === undefined" class="paragraph-card" >Drilllight</p>
+          <button (click)="openDialog(item)" class="btn-card" mat-button><mat-icon class="btn-icon"> list_alt</mat-icon></button>
+          <button (click)="navigateToEdit(item)" class="btn-card-edit" mat-button><mat-icon class="btn-icon">edit</mat-icon></button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  <!-- "Pré-formation" -->
+  </div>
+</div>

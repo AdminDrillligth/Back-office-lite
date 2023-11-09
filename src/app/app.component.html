@@ -1,0 +1,38 @@
+<div class="main">
+  <div class="container-app">
+    <mat-drawer-container class="container-side" autosize>
+      <mat-drawer #drawer class="sidenav" mode="push">
+        <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  />
+        <p *ngIf="AccountOfUser" class='status-ranking'>Statut : {{AccountOfUser.privileges.role}}</p>
+        <div class="button-nav" *ngFor="let item of sideBarItems">
+          <button (click)="navigateTo(item)" class="btn-nav" mat-raised-button>
+            <img src="{{item.icone}}">
+            <span class="span-btn">{{item.name}}</span>
+          </button>
+        </div>
+        <mat-toolbar color="primary">
+          <div class="flex-stretch"></div>
+          <mat-icon class="mr-8">brightness_5</mat-icon>
+          <mat-slide-toggle [formControl]="toggleControl" class="mr-8">
+          </mat-slide-toggle>
+          <mat-icon>bedtime</mat-icon>
+        </mat-toolbar>
+      <div class="btn-nav-bottom">
+        <button (click)="logOut()" class="btn-bottom" mat-raised-button>
+          <img src="assets/icons/logout.svg">
+          <span class="span-btn">Se déconnecter</span>
+        </button>
+      </div>
+      </mat-drawer>
+
+      <div class="sidenav-content">
+        <button type="button" mat-mini-fab color="accent" (click)="drawer.toggle();updateData()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <button *ngIf="seeAsAdmin" style="margin-left: 10px;" type="button" mat-mini-fab color="accent" (click)="comeBackToAdmin()">
+          <mat-icon>visibility_off</mat-icon>
+        </button>
+      </div>
+      <router-outlet></router-outlet>
+    </mat-drawer-container>
+  </div></div>

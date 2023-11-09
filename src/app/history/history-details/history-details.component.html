@@ -1,0 +1,102 @@
+<div style="margin-bottom:40px;" *ngIf="historyDataDetail.modeType !== 'time'" class="container-main">
+  <h1>HISTORY DETAILS</h1>
+
+  <h2>{{historyDataDetail.title}}</h2>
+  <p style="font-weight:500; width:20%;display:inline-block">{{historyDataDetail.dateparse}}</p>
+  <h5>Nombre de répétitions : <span style="font-weight:500;">{{historyDataDetail.loopEnd.length-1}}</span></h5>
+  <p style="font-weight:300; width:20%;display:inline-block">Nombre de Jump :        <img  style="width:20px;display:inline-block;margin-right:5px" src="../../../assets/icons/dashboard/repeat-white.png"> <span style="font-weight:500;">{{historyDataDetail.countJump}}</span></p>
+  <p style="font-weight:300;width:20%;display:inline-block">Nombre de pass 360 : <img  style="width:20px;display:inline-block;margin-right:5px" src="../../../assets/icons/dashboard/pass360-white.png"><span style="font-weight:500;">{{historyDataDetail.countPass360}}</span></p>
+  <p style="font-weight:300;width:20%;display:inline-block">Nombre de pass 360i : <img  style="width:20px;display:inline-block;margin-right:5px" src="../../../assets/icons/dashboard/pass360i-white.png"><span style="font-weight:500;">{{historyDataDetail.countPass360i}}</span></p>
+  <p style="font-weight:300;width:20%;display:inline-block">Nombre de touch : <img  style="width:20px;display:inline-block;margin-right:5px" src="../../../assets/icons/dashboard/touch-white.png"><span style="font-weight:500;">{{historyDataDetail.countTouch}}</span></p>
+  <p style="font-weight:300;width:20%;display:inline-block">Temps total : <img  style="width:20px;display:inline-block;margin-right:5px" src="../../../assets/icons/dashboard/schedule-white.png"><span style="font-weight:500;">{{historyDataDetail.totalTime}}</span></p>
+
+
+  <div [hidden]="first[i]" *ngFor="let historyData of historyDataDetail.loopEnd;index as i" #card{{i}} id="card{{i}}" class="card-history">
+  <mat-card style="padding-top:20px;padding-left:15px;display:block">
+    <!-- <mat-card-header> -->
+      <div  *ngIf="i !== 0">
+      <p>Répétition : {{i}}</p>
+      <!-- <mat-card-title-group> -->
+
+        <img  style="width:20px;display:inline-block;" src="../../../assets/icons/dashboard/participant-white.png"><p  style="width:60%;display:inline-block;">{{historyDataDetail.DataBinding[i-1].person}}</p><br>
+        <p style="top: 2px; position: relative;display:inline-block;min-width: 20.5%;font-weight:500;">00:00:00</p>
+        <img style="width: 20px;margin-left:2px;display:inline-block;" src="../../../assets/icons/dashboard/loop-white.png" alt="">{{i}}
+        <br>
+        <div style="width:100%;display:block;" *ngFor="let binding of historyDataDetail.DataBinding" >
+
+          <div style="width:29%;display:inline-block;" *ngIf="binding.loop === i">
+
+            <p  style="min-width: 70%;font-weight:500;display:inline-block;" >
+              {{binding.chrono}}
+            </p>
+            <img style="width: 20px;margin-left:2px;display:inline-block;" src="../../../assets/icons/dashboard/e-cone-white.png" alt="">
+          </div>
+          <div style="width:29%;display:inline-block;" *ngIf="binding.loop === i">
+            <img style="width: 20px;    margin-right: 5px;margin-left:2px;display:inline-block;" src="../../../assets/icons/dashboard/{{binding.img}}" alt="">
+
+            <p  style="min-width: 70%;font-weight:500;display:inline-block;">
+              {{binding.totaltime}}
+            </p>
+            
+            </div>
+          <div style="width:29%;display:inline-block;" *ngIf="binding.loop === i">
+            <p  style="min-width: 70%;font-weight:500;color: greenyellow;">
+              {{binding.timeprevious}}
+            </p>
+          </div>
+        </div>
+      </div>
+  </mat-card>
+</div>
+
+</div>
+<div style="margin-bottom:40px;" *ngIf="historyDataDetail.modeType == 'time'" class="container-main">
+  <h1>HISTORY DETAILS</h1>
+
+  <h2>{{historyDataDetail.title}}</h2>
+  <h5>Nombre de répétitions : {{historyDataDetail.loopEnd.length-1}}</h5>
+  <p style="width:20%;display:inline-block">Nombre de Jump : {{historyDataDetail.countJump}}</p>
+  <p style="width:20%;display:inline-block">Nombre de pass 360 : {{historyDataDetail.countPass360}}</p>
+  <p style="width:20%;display:inline-block">Nombre de pass 360i : {{historyDataDetail.countPass360i}}</p>
+  <p style="width:20%;display:inline-block">Nombre de touch : {{historyDataDetail.countTouch}}</p>
+  <p style="width:20%;display:inline-block">Temps total : {{historyDataDetail.totalTime}}</p>
+
+
+  <!-- <div *ngFor="let historyData of historyDataDetail.loopEnd;index as i" class="card-history"> -->
+  <mat-card style="display:block">
+    <!-- <mat-card-header> -->
+      <!-- <div *ngIf="i !== 0">
+      <p>Répétition : {{i}}</p> -->
+      <!-- <mat-card-title-group> -->
+
+        <!-- <p  style="width:60%;display:block;">{{historyDataDetail.DataBinding[i-1].person}}</p> -->
+        <p style="top: 2px; position: relative;display:inline-block;width: 20%;">00:00:00</p>
+        <img style="width: 15px;margin-left:2px;display:inline-block;" src="../../../assets/icons/dashboard/loop-white.png" alt="">
+        <br>
+        <div style="width:100%;display:block;" *ngFor="let binding of historyDataDetail.DataBinding" >
+
+          <div style="width:29%;display:inline-block;">
+
+           <p  >
+              {{binding.chrono}}
+            </p>
+           </div>
+          <div style="width:29%;display:inline-block;" >
+
+            <p  style="display:inline-block;">
+              {{binding.totaltime}}
+            </p>
+            <img style="width: 15px;margin-left:2px;display:inline-block;" src="../../../assets/icons/dashboard/{{binding.img}}" alt="">
+
+            </div>
+          <div style="width:29%;display:inline-block;" >
+            <p  >
+              {{binding.timeprevious}}
+            </p>
+         </div>
+        </div>
+      <!-- </div> -->
+  </mat-card>
+<!-- </div> -->
+
+</div>
