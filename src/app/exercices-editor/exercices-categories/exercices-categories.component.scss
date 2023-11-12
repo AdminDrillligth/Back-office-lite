@@ -1,0 +1,23 @@
+.container-main{
+  margin-top: 25px;
+  position: relative;
+  left:5%;
+  width: 90%!important;
+  max-width: 100%!important;
+}
+
+.btn-select{
+  min-width:100%;
+  transition: border-radius 0.3s  ease-in-out, width 0.5s ease-in-out, height 0.5s ease-in-out;
+ 
+}
+
+.btn-select:hover{
+  min-width:100%;
+  border-radius:16px;
+}
+
+.btn-select-div{
+  display:inline-block;
+  margin-bottom: 5px;
+} 

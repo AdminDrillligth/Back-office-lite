@@ -1,0 +1,19 @@
+<div class="container-main">
+
+
+<div  class="btn-select-div col-lg-3 col-md-3 col-4 col-sm-4" *ngFor="let item of thematics" >
+  <button  [ngClass]="{'active': item.select ==  true}" (click)="selectTehematics(item)" class="{{item.class}} btn-select" mat-raised-button>{{item.name}}
+    <button *ngIf="item.delete == true" type="button" class="close-button btn btn-link btn-sm btn-rounded">
+      <mat-icon class="" >close</mat-icon>
+    </button>
+  </button>
+</div>
+<div  class="btn-select-div col-lg-3 col-md-3 col-4 col-sm-4"  ><button   (click)="addOther()" [ngClass]="{'active': other.select ==  true}" class="btn-select" mat-raised-button>{{other.name}}</button></div>
+  <div *ngIf="other.select">
+    <mat-form-field style="width:100%; margin-top: 20px;">
+    <mat-label>Thématique : </mat-label>
+      <input  matInput placeholder="Ajouter une thématique" #inputThematik>
+    </mat-form-field>
+    <button (click)="addToThematiks(inputThematik.value)" class="btn-add-them" mat-raised-button>Ajouter une thématique</button>
+  </div>
+</div>

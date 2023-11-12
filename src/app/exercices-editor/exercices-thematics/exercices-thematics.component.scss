@@ -1,0 +1,40 @@
+.container-main{
+  margin-top: 25px;
+  position: relative;
+  left:5%;
+  width: 90%!important;
+  max-width: 100%!important;
+}
+
+.btn-select-div{
+  display:inline-block;
+  margin-bottom: 5px;
+} 
+
+.btn-select{
+  min-width:100%;
+  transition: border-radius 0.3s  ease-in-out, width 0.5s ease-in-out, height 0.5s ease-in-out;
+ 
+}
+
+.btn-select:hover{
+  min-width:100%;
+  border-radius:16px;
+}
+
+.active{
+  border-radius:18px;
+  border: 1px solid white;
+}
+
+.btn-add-them{
+  margin-bottom: 10px;
+}
+
+
+.close-button{
+  position: relative;
+  top: 5px;
+  right: -75%;
+}
+

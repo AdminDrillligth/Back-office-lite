@@ -62,6 +62,9 @@ import { ExercicesEditorComponent } from './exercices-editor/exercices-editor.co
 import { SubscribesComponent } from './subscribes/subscribes.component';
 import { ExercicesDetailsComponent } from './exercices-editor/exercices-details/exercices-details.component';
 import { ExercicesSportSelectComponent } from './exercices-editor/exercices-sport-select/exercices-sport-select.component';
+import { ExercicesThematicsComponent } from './exercices-editor/exercices-thematics/exercices-thematics.component';
+import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categories/exercices-categories.component';
+import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
 
 
 @Injectable()
@@ -100,7 +103,10 @@ export class HammerConfig extends HammerGestureConfig {
     ExercicesEditorComponent,
     SubscribesComponent,
     ExercicesDetailsComponent,
-    ExercicesSportSelectComponent
+    ExercicesSportSelectComponent,
+    ExercicesThematicsComponent,
+    ExercicesCategoriesComponent,
+    ExercicesDrawerComponent
 
   ],
   imports: [

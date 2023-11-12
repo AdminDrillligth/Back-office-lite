@@ -1,0 +1,30 @@
+.container-main{
+  margin-top: 25px;
+  position: relative;
+  left:5%;
+  width: 90%!important;
+  max-width: 100%!important;
+}
+
+.paragraphe{
+  margin-top:3px;
+  text-align:center;
+  color:white;
+
+}
+
+.card-fields{
+  margin-bottom: 3px;
+  transition: border-radius 0.5s  ease-in-out, width 0.5s ease-in-out, height 0.5s ease-in-out;
+  border-radius:3px;
+}
+
+.card-fields:hover{
+  border-radius:12px;
+  margin-bottom: 3px;
+}
+
+.active{
+  border-radius:15px;
+  border: 1px solid white;
+}

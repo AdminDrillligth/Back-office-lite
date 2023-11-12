@@ -17,6 +17,9 @@ import { HistoryDetailsComponent } from './history/history-details/history-detai
 import { ExercicesEditorComponent } from './exercices-editor/exercices-editor.component';
 import { ExercicesDetailsComponent } from './exercices-editor/exercices-details/exercices-details.component';
 import { ExercicesSportSelectComponent } from './exercices-editor/exercices-sport-select/exercices-sport-select.component';
+import { ExercicesThematicsComponent } from './exercices-editor/exercices-thematics/exercices-thematics.component';
+import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categories/exercices-categories.component';
+import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
 import { SubscribesComponent } from './subscribes/subscribes.component';
 
 
@@ -71,8 +74,20 @@ const routes: Routes = [
         path: 'exercices-sport-select', // child route path
         component: ExercicesSportSelectComponent, // child route component that the router renders
       },
+      {
+        path: 'exercices-thematics', // child route path
+        component: ExercicesThematicsComponent, // child route component that the router renders
+      },
+      {
+        path: 'exercices-categories', // child route path
+        component: ExercicesCategoriesComponent, // child route component that the router renders
+      },
+      {
+        path: 'exercices-drawer', // child route path
+        component: ExercicesDrawerComponent, // child route component that the router renders
+      },
 
-
+      
       
     ]
   },
