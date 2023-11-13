@@ -57,7 +57,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HistoryComponent } from './history/history.component';
 import { HistoryDetailsComponent } from './history/history-details/history-details.component';
 import { SubscribeComponent } from './administration/subscribe/subscribe.component';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { ExercicesEditorComponent } from './exercices-editor/exercices-editor.component';
 import { SubscribesComponent } from './subscribes/subscribes.component';
 import { ExercicesDetailsComponent } from './exercices-editor/exercices-details/exercices-details.component';
@@ -65,6 +65,8 @@ import { ExercicesSportSelectComponent } from './exercices-editor/exercices-spor
 import { ExercicesThematicsComponent } from './exercices-editor/exercices-thematics/exercices-thematics.component';
 import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categories/exercices-categories.component';
 import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @Injectable()
@@ -122,6 +124,7 @@ export class HammerConfig extends HammerGestureConfig {
     AngularFireAuthModule,
     MatButtonModule,
     MatCardModule,
+    MatBadgeModule,
     MatFormFieldModule,
     MatToolbarModule,
     MatInputModule,
@@ -134,6 +137,7 @@ export class HammerConfig extends HammerGestureConfig {
     MatSidenavModule,
     NgxChartsModule,
     MatDatepickerModule,
+    DragDropModule,
     MatNativeDateModule,
     MatSliderModule,
     MatDialogModule,

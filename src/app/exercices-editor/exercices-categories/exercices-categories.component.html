@@ -1,12 +1,12 @@
 <div class="container-main">
 <p>Catégories</p>
-<div  class="btn-select-div col-lg-2 col-md-2 col-2 col-sm-4" *ngFor="let item of categorys" >
-  <button  mat-raised-button>{{item.name}}
+<div (click)="selectCategories(item)" class="btn-select-div col-lg-2 col-md-2 col-2 col-sm-4" *ngFor="let item of categorys" >
+  <button [ngClass]="{'active': item.select ==  true}" class="{{item.class}} btn-select" mat-raised-button>{{item.name}}
  </button>
 </div>
 <p>Ages</p>
-<div  class="btn-select-div col-lg-1 col-md-1 col-1 col-sm-4" *ngFor="let items of ages_categorys" >
-  <button  mat-raised-button>{{items.name}}
+<div (click)="selectAgeCategories(items)" class="btn-select-div col-lg-1 col-md-1 col-1 col-sm-4" *ngFor="let items of ages_categorys" >
+  <button [ngClass]="{'active': items.select ==  true}" class="{{items.class}} btn-select" mat-raised-button>{{items.name}}
  </button>
 </div>
 

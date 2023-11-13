@@ -9,7 +9,40 @@ import { StepsServiceService } from '../../../services/steps-service.service';
   styleUrls: ['./exercices-drawer.component.scss']
 })
 export class ExercicesDrawerComponent {
-
+  btnDrawer = [
+    {name:'Conception', select:true},
+    {name:'Animation', select:false},
+  ]
+  hidden = false;
+  listOfEquipments = [
+    {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
+    {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/png/Plot.png'},
+    {id:2, name:'Cerceaux', class:'cerceaux', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
+    {id:3, name:'Échelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/png/ladder.png'},
+    {id:4, name:'Coupelle', class:'coupelle', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
+    {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/png/flag.png'},
+    {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/png/rebounder.png'},
+    {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/png/barrier.png'},
+    {id:7, name:'Jalons', class:'jalon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
+    {id:7, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/png/Actor.png'},
+  ]
+  selectedEquipments = [
+    [{name:'', number:0}]
+  ]
+  btnAdderList : any[] = [];
+  equipHidden = false;
+  econes :any[]= [];
+  actors :any[]= [];
+  balls : any[]= [];
+  plots: any[] =[];
+  Cerceaux : any[] =[];
+  Échelle : any[] =[];
+  Coupelle : any[] =[];
+  flags : any[] =[];
+  rebounders : any[] =[];
+  Mini : any[] =[];
+  jalons : any[] =[];
+  Mannequin : any[] =[];
   constructor(
     private stepsService:StepsServiceService,
     private utilsService: UtilsService,
@@ -24,6 +57,111 @@ export class ExercicesDrawerComponent {
     });
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
+  }
+
+  addEcones(){
+    this.econes.push(
+      {name:'Econe'+this.econes.length+1, number:this.econes.length+1}
+    )
+    console.log('LES ECONES : ! ! ',this.econes)
+    // this.selectedEquipments.push(
+    //   {name:'Econe', number}
+    // );
+  }
+
+  addActor(){
+    this.actors.push(
+      {name:'actor'+this.actors.length+1, number:this.actors.length+1}
+    )
+    console.log('LES ACTEURS : ! ! ',this.actors)
+  }
+
+  addEquip(item:any){
+    console.log('LES ECONES : ! ! ',item.name)
+    if(item.name === 'Ballon'){
+      this.balls.push(
+        {name:'actor'+this.balls.length+1, number:this.balls.length+1}
+      )
+    }
+    if(item.name === 'Plot'){
+      this.plots.push(
+        {name:'plot'+this.plots.length+1, number:this.plots.length+1}
+      )
+    }
+    if(item.name === 'Drapeau'){
+      this.flags.push(
+        {name:'flag'+this.plots.length+1, number:this.flags.length+1}
+      )
+    }
+    if(item.name === 'Rebounder'){
+      this.rebounders.push(
+        {name:'rebounder'+this.plots.length+1, number:this.rebounders.length+1}
+      )
+    }
+    if(item.name === 'Jalons'){
+      this.jalons.push(
+        {name:'jalon'+this.plots.length+1, number:this.jalons.length+1}
+      )
+    }
+
+    // console.log('LES PLOTS : ! ! ',this.plots)
+  }
+
+  addElementEquipment(item:any){
+    this.equipHidden = false;
+    console.log(item)
+    if(item.name === 'Plot'){
+      this.btnAdderList.push(
+        {name:'Plot', src:'../../../assets/icons/exercices/png/Plot.png', array:this.plots}
+      )
+    }
+    if(item.name === 'Ballon'){
+      this.btnAdderList.push(
+        {name:'Ballon', src:'../../../assets/icons/exercices/png/ball.png', array:this.balls}
+      )
+    }
+    if(item.name === 'Drapeau'){
+      this.btnAdderList.push(
+        {name:'Drapeau', src:'../../../assets/icons/exercices/png/flag.png', array:this.flags}
+      )
+    }
+    if(item.name === 'Rebounder'){
+      this.btnAdderList.push(
+        {name:'Rebounder', src:'../../../assets/icons/exercices/png/rebounder.png', array:this.rebounders}
+      )
+    }
+    if(item.name === 'Jalons'){
+      this.btnAdderList.push(
+        {name:'Jalons', src:'../../../assets/icons/exercices/png/ball.png', array:this.jalons}
+      )
+    }
+// Cerceaux
+// Échelle
+// Coupelle
+// Mini
+// Mannequin
+  }
+
+  addElement(){
+    this.equipHidden = true;
+  }
+
+  changeNavConceptionNavigation(btnChoose:any){
+    this.btnDrawer.forEach(btn =>{
+      if(btn.name === btnChoose.name){
+        if(btn.select == false){
+          btn.select = true
+        }else{
+          btn.select = false
+        }
+      }else{
+        if(btn.select == false){
+          btn.select = true
+        }else{
+          btn.select = false
+        }
+      }
+    })
   }
 
 }
