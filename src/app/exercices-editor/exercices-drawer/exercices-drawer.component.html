@@ -8,14 +8,17 @@
 <div class="fields-container">
   <div *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></div>
   <div *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></div>
-  <div *ngFor="let ball of balls" matBadge="{{ball.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/ball.png" alt=""></div>
-  <div *ngFor="let plot of plots" matBadge="{{plot.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div>
-  <div *ngFor="let flag of flags" matBadge="{{flag.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/flag.png" alt=""></div>
-  <div *ngFor="let rebounder of rebounders" matBadge="{{rebounder.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/rebounder.png" alt=""></div>
+  <div *ngFor="let ball of balls" matBadge="{{ball.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/ball.png" alt=""></div>
+  <div *ngFor="let plot of plots" matBadge="{{plot.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div>
+  <div *ngFor="let flag of flags" matBadge="{{flag.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/flag.png" alt=""></div>
+  <div *ngFor="let rebounder of rebounders" matBadge="{{rebounder.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/rebounder.png" alt=""></div>
   <!-- <div *ngFor="let jalon of jalons" matBadge="{{jalon.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div> -->
 
 </div>
 <div class="container-btn">
+<img src="../../../assets/icons/lines/line.png">
+<img src="../../../assets/icons/lines/line-cut.png">
+<img src="../../../assets/icons/lines/line-round.png">
 <button (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></button>
 <button (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></button>
 <button (click)="addEquip(itemEquip)" type="button" matBadge="{{itemEquip.array.length}}" [matBadgeHidden]="hidden" mat-raised-button class="add-drawer btn btn-sm btn-rounded" *ngFor="let itemEquip of btnAdderList">{{itemEquip.name}}</button>

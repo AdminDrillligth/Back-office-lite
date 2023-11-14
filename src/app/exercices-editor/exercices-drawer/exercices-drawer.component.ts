@@ -12,7 +12,9 @@ export class ExercicesDrawerComponent {
   btnDrawer = [
     {name:'Conception', select:true},
     {name:'Animation', select:false},
-  ]
+  ];
+  
+  hiddenNumb = true;
   hidden = false;
   listOfEquipments = [
     {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
