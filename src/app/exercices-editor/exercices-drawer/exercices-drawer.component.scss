@@ -6,11 +6,19 @@
   max-width: 100%!important;
 }
 
+.fields-container-background{
+  width: 100%;
+  overflow: hidden;
+  height: 500px;
+  background-color: rgb(45, 44, 54);
+}
+
 .fields-container{
+  transform: scale(10.5);
   text-align: center;
   width: 100%;
   height: 500px;
-  background-color: rgb(45, 44, 54);
+  background: url("../../../assets/icons/exercices/interface/background-elipse.svg") repeat;
 }
 
 .container-btn{
@@ -39,7 +47,11 @@
 .add-drawer{
   margin-top: 10px;
   margin-right: 15px;
-  background-color: darkgrey;
+  border-radius: 8px;
+  border: 0.5px solid var(--line-gradients-card, #202B32);
+
+  background: var(--gray-scale-900, #0D1A21);
+  box-shadow: 0px 2px 16px 0px #050C10;
 }
 
 .active-btn-select{
@@ -48,6 +60,11 @@
 }
 
 .regular-type{
+  border-radius: 8px;
+  border: 0.5px solid var(--line-gradients-primary-gradient, #336DC8);
+  background: var(--fills-gradients-primary-gradient, linear-gradient(180deg, #0048BA 0%, #003A95 98.36%));
+  /* Mixed shadows/Primary */
+  box-shadow: 0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset, 0px 1px 0px 0px #050C10, 0px -1px 1px 0px #002B70 inset;
   margin-bottom:10px;
 }
 
@@ -66,4 +83,24 @@
   padding-top: 6px;
   background-color: darkgrey;
   border-radius: 5px;
+}
+
+.container-actions{
+  z-index: 99999999999999999;
+  width: 20%;
+  height: 70%;
+  position: relative;
+  border-radius: 8px;
+  border: 0.5px solid var(--fills-gradients-accessory-lights-on, #202B32);
+  background: var(--gray-scale-900, #0D1A21);
+  box-shadow: 0px 2px 16px 0px rgba(5, 12, 16, 0.50);
+}
+
+.text-btn-add{
+  color: var(--blue-500, #336DC8);
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 19.6px */
 }

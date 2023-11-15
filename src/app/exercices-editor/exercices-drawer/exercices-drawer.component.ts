@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Injectable, Component, OnInit, Inject, ViewChild , OnChanges , HostListener  } from '@angular/core';
 import { UtilsService } from '../../../services/utils.service';
 import { Router } from '@angular/router';
 import { StepsServiceService } from '../../../services/steps-service.service';
@@ -8,12 +8,42 @@ import { StepsServiceService } from '../../../services/steps-service.service';
   templateUrl: './exercices-drawer.component.html',
   styleUrls: ['./exercices-drawer.component.scss']
 })
-export class ExercicesDrawerComponent {
+export class ExercicesDrawerComponent implements OnInit, OnChanges {
   btnDrawer = [
     {name:'Conception', select:true},
     {name:'Animation', select:false},
   ];
-  
+  zoom = 10;
+  ZOOM_SPEED = 0.5;
+  @HostListener('wheel', ['$event'])
+  onMouseWheel(event:any) {
+
+    console.log('mouse wheel ',event, event.deltaY)
+    if(event.srcElement !== null){
+      if(event.srcElement.attributes[1].nodeValue === 'fields-container'){
+        let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+        event.preventDefault();
+        event.stopPropagation();
+        console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
+        if(event.deltaY > 0){
+          console.log(event.deltaY)
+          if(zoomElement !== null){
+            zoomElement.style.transform = `scale(${this.zoom -= this.ZOOM_SPEED})`;
+           
+          }
+           
+        }else{
+          console.log(event.deltaY)
+          if(zoomElement !== null){
+            zoomElement.style.transform = `scale(${this.zoom += this.ZOOM_SPEED})`;
+          }
+            
+        }
+      }
+    }
+
+  // do something with the mouse wheel event
+  }
   hiddenNumb = true;
   hidden = false;
   listOfEquipments = [
@@ -53,12 +83,19 @@ export class ExercicesDrawerComponent {
 
     }
 
+
+
   ngOnInit(): void {
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
     });
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
+   
+  }
+
+
+  ngOnChanges(){
   }
 
   addEcones(){
@@ -69,6 +106,14 @@ export class ExercicesDrawerComponent {
     // this.selectedEquipments.push(
     //   {name:'Econe', number}
     // );
+  }
+
+  pinchIn(){
+    console.log('onpoinchIN !!! ')
+  }
+
+  pinchOut(){
+    console.log('onpoinchOUT !!! ')
   }
 
   addActor(){

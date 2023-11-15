@@ -23,10 +23,10 @@ export class ExercicesEditorComponent {
   stepService: any[]= [];
   stepNumber: number = 1;
   ngOnInit(): void {
-    this.stepNumber = 1;
+    this.stepNumber = 5;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
-    this.router.navigate(['exercices-editor/exercices-details']);
+    // this.router.navigate(['exercices-editor/exercices-details']);
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
     });
@@ -61,7 +61,7 @@ export class ExercicesEditorComponent {
 
 
   goTOcreate(){
-    
+
   }
 
   previousStep(){
@@ -74,9 +74,9 @@ export class ExercicesEditorComponent {
       setTimeout(() => {
         btnPrevious.style.backgroundColor = 'rgba(255, 255, 255, 0)';
       }, 1000);
-   
+
     }
-    this.stepsService.substractChangeNumberOfStep(this.stepNumber-1) 
+    this.stepsService.substractChangeNumberOfStep(this.stepNumber-1)
   }
 
   nextStep(){
@@ -86,10 +86,10 @@ export class ExercicesEditorComponent {
       setTimeout(() => {
         btnNext.style.backgroundColor = 'rgba(255, 255, 255, 0)';
       }, 1000);
-   
+
     }
 
 
-    this.stepsService.addChangeNumberOfStep(this.stepNumber+1)    
+    this.stepsService.addChangeNumberOfStep(this.stepNumber+1)
   }
 }
