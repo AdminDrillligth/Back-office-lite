@@ -10,8 +10,8 @@ import { StepsServiceService } from '../../../services/steps-service.service';
 })
 export class ExercicesDrawerComponent implements OnInit, OnChanges {
   btnDrawer = [
-    {name:'Conception', select:true},
-    {name:'Animation', select:false},
+    {name:'Conception', select:true, src:'../../../assets/icons/exercices/interface/reverse-left.svg'},
+    {name:'Animation', select:false , src:'../../../assets/icons/exercices/interface/reverse-right.svg'},
   ];
   zoom = 10;
   ZOOM_SPEED = 0.5;
@@ -28,7 +28,12 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         if(event.deltaY > 0){
           console.log(event.deltaY)
           if(zoomElement !== null){
-            zoomElement.style.transform = `scale(${this.zoom -= this.ZOOM_SPEED})`;
+           if(this.zoom - this.ZOOM_SPEED >= 6){
+              zoomElement.style.transform = `scale(${this.zoom -= this.ZOOM_SPEED})`;
+              console.log('ZOOM OUT', this.zoom - this.ZOOM_SPEED)
+              this.scale = `scale(${Math.round(this.zoom -= this.ZOOM_SPEED)})`;
+            }
+           
            
           }
            
@@ -36,6 +41,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           console.log(event.deltaY)
           if(zoomElement !== null){
             zoomElement.style.transform = `scale(${this.zoom += this.ZOOM_SPEED})`;
+            console.log('ZOOM IN',this.zoom + this.ZOOM_SPEED)
+            this.scale = `scale(${Math.round(this.zoom += this.ZOOM_SPEED)})`;
           }
             
         }
@@ -108,12 +115,94 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     // );
   }
 
-  pinchIn(){
-    console.log('onpoinchIN !!! ')
+  pinchIn(event:any){
+    console.log('onpoinchIN !!! ',event)
+    let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
+      console.log(event.deltaY)            
+      if(zoomElement !== null){ 
+          zoomElement.style.transform = `scale(${this.zoom += 0.1})`;
+          this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
+          console.log('ZOOM IN', this.zoom - 0.1)
+       
+       
+    }
   }
 
-  pinchOut(){
-    console.log('onpoinchOUT !!! ')
+  pinchOut(event:any){
+    console.log('onpoinchOUT !!! ',event)
+    // if(event.srcElement.attributes[1].nodeValue === 'fields-container'){
+    let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+      // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
+        console.log(event.deltaY)            
+        if(zoomElement !== null){ 
+         if(this.zoom - this.ZOOM_SPEED >= 6){
+            zoomElement.style.transform = `scale(${this.zoom -= 0.1})`;
+            this.scale = `scale(${Math.round(this.zoom -= 0.1)})`;
+            console.log('ZOOM OUT', this.zoom - 0.1)
+          }
+         
+         
+      }
+    // }
+  }
+  scale= 'scale(10.5)';
+  xgo = 0;
+  ygo = 0;
+
+  swipeEventRight(event:any){
+    let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    let zoomElementAll = document.querySelectorAll(".fields-container");
+    this.xgo = this.xgo + 1;
+    this.ygo = this.ygo;
+    let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
+    if(zoomElement !== null){
+      console.log('we swipe Right:', event, event.distance, zoomElement.style, zoomElementAll)
+      console.log(zoomElement.style.transform, newtranslate, this.scale)
+      zoomElement.style.transform = this.scale + newtranslate;
+    }
+    
+    
+  }
+
+
+  swipeEventLeft(event:any){
+    let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    // console.log('we swipe Left:', event, event.distance)
+    // let newtranslate = "translate3d("+xgo+"px,"+ygo+"px,0px)";
+    this.xgo = this.xgo - 1;
+    this.ygo = this.ygo;
+    let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
+    if(zoomElement !== null){
+      console.log('we swipe left:', event, event.distance, zoomElement)
+      // console.log('we swipe Right:', event, event.distance, zoomElement.style, zoomElementAll)
+      console.log(zoomElement.style.transform, newtranslate, this.scale)
+      zoomElement.style.transform = this.scale + newtranslate;
+    //   zoomElement.style.transform = 
+    }
+  }
+
+  
+  swipeEventUp(event:any){
+    let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    this.xgo = this.xgo ;
+    this.ygo = this.ygo + 1;
+    let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
+    if(zoomElement !== null){
+      console.log('we swipe Right:', event, event.distance, zoomElement)
+      zoomElement.style.transform = this.scale + newtranslate;
+    }
+  }
+
+  swipeEventDown(event:any){
+    let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    this.xgo = this.xgo ;
+    this.ygo = this.ygo - 1;
+    let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
+    if(zoomElement !== null){
+      console.log('we swipe Right:', event, event.distance, zoomElement)
+      zoomElement.style.transform = this.scale + newtranslate;
+    }
   }
 
   addActor(){
