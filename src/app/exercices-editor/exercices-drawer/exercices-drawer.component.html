@@ -27,22 +27,22 @@
   <!-- <div (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></div> -->
   
   <span (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
-    <img *ngIf="econe.active" (click)="selectTopDrawer(econe)" class="top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
-    <img *ngIf="econe.active" class="bottom{{econe.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
-    <img *ngIf="econe.active" class="right{{econe.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
-    <img *ngIf="econe.active" class="left{{econe.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': econe.topactif ==  true}" *ngIf="econe.active" (click)="selectTopDrawer(econe)" class="top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': econe.bottomactif ==  true}" *ngIf="econe.active" (click)="selectBottomDrawer(econe)" class="bottom{{econe.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': econe.rightactif ==  true}" *ngIf="econe.active" (click)="selectRightDrawer(econe)" class="right{{econe.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': econe.leftactif ==  true}" *ngIf="econe.active" (click)="selectLeftDrawer(econe)" class="left{{econe.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img class="polygon-on-map" src="../../../assets/icons/exercices/interface/Polygon-background.svg">
     <img class='img-inside-polygon-on-map' src="../../../assets/icons/exercices/png/E-cone.png" alt="">
   </span>
   <span  (click)="displayUtils(actor)"  (cdkDragStarted)='getStartMoove($event, actor)' (cdkDragEnded)='getEndMoove($event, actor)' (cdkDragMoved)="changePlaceItem($event, actor)" *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{actor.name}} container-equip-live-on-map">
-    <img *ngIf="actor.active" (click)="selectTopDrawer(actor)" class="top{{actor.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
-    <img *ngIf="actor.active" class="bottom{{actor.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
-    <img *ngIf="actor.active" class="right{{actor.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
-    <img *ngIf="actor.active" class="left{{actor.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': actor.topactif ==  true}" *ngIf="actor.active" (click)="selectTopDrawer(actor)" class="top{{actor.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': actor.bottomactif ==  true}" *ngIf="actor.active" (click)="selectBottomDrawer(actor)" class="bottom{{actor.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': actor.rightactif ==  true}" *ngIf="actor.active" (click)="selectRightDrawer(actor)" class="right{{actor.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': actor.leftactif ==  true}" *ngIf="actor.active" (click)="selectLeftDrawer(actor)" class="left{{actor.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img class="polygon-on-map" src="../../../assets/icons/exercices/interface/Polygon-background.svg">
     <img class='img-inside-polygon-on-map' src="../../../assets/icons/exercices/svg/Actor.svg" alt="">
   </span>
-  
+  <svg width="500" height="500"><line x1="50" y1="50" x2="350" y2="350" stroke="black"/></svg>
   <!-- <div *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></div>
   <div *ngFor="let ball of balls" matBadge="{{ball.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/ball.png" alt=""></div>
   <div *ngFor="let plot of plots" matBadge="{{plot.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div>

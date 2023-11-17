@@ -33,10 +33,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               console.log('ZOOM OUT', this.zoom - this.ZOOM_SPEED)
               this.scale = `scale(${Math.round(this.zoom -= this.ZOOM_SPEED)})`;
             }
-           
-           
           }
-           
         }else{
           console.log(event.deltaY)
           if(zoomElement !== null){
@@ -44,13 +41,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             console.log('ZOOM IN',this.zoom + this.ZOOM_SPEED)
             this.scale = `scale(${Math.round(this.zoom += this.ZOOM_SPEED)})`;
           }
-            
         }
       }
     }
-
-  // do something with the mouse wheel event
   }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    console.log('EVENT KEYBOARD : ! ',event);
+    if(event.key == 'ArrowDown'){
+      // Your row selection code
+      console.log('ON DOWN : ',event.key);
+    }
+  }
+
   hiddenNumb = true;
   hidden = false;
   listOfEquipments = [
@@ -116,7 +120,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         topactif:false,
         bottomactif:false,
         leftactif:false,
-        rightactif:false
+        rightactif:false,
+        // allfalse:true;
       }
     )
     console.log('LES ECONES : ! ! ',this.econes)
@@ -131,15 +136,103 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   
     if(artefact.active == true){
       artefact.active = false;
+      artefact.topactif = false;
+      artefact.bottomactif = false;
+      artefact.leftactif = false;
+      artefact.rightactif = false;
+
     }else{
       artefact.active = true;
     }
     
   }
 
-  selectTopDrawer(econe:any){
-    console.log('select top drawer', econe)
-    econe.topactif = true;
+  selectTopDrawer(artefact:any){
+    console.log('select top drawer', artefact)
+    let topPointSelect = document.querySelector<HTMLElement>(".top"+artefact.name);
+    if(topPointSelect !== null){
+      console.log(topPointSelect.getBoundingClientRect())
+    }
+    setTimeout(() => {
+      if(artefact.topactif == true){
+        artefact.topactif = false;
+      }else{
+        artefact.leftactif = false;
+        artefact.rightactif = false;
+        artefact.bottomactif = false;
+        artefact.topactif = true;
+        artefact.active = true;
+      }
+      console.log('select top drawer', artefact)
+    }, 500);
+  }
+
+  selectBottomDrawer(artefact:any){
+    console.log('select top drawer 1', artefact)
+    let bottomPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
+    if(bottomPointSelect !== null){
+      console.log(bottomPointSelect.getBoundingClientRect())
+    }
+
+    setTimeout(() => {
+      if(artefact.bottomactif == false){
+        artefact.leftactif = false;
+        artefact.rightactif = false;
+        artefact.bottomactif = true;
+        artefact.topactif = false;
+        artefact.active = true;
+        console.log('false')
+      }else if(artefact.bottomactif == true){
+        console.log('true')
+        artefact.bottomactif = false;
+      }
+      console.log('select Bottom drawer 2', artefact)
+    }, 500);
+  }
+
+  selectRightDrawer(artefact:any){
+    console.log('select top drawer', artefact)
+    let rightPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
+    if(rightPointSelect !== null){
+      console.log(rightPointSelect.getBoundingClientRect())
+    }
+    setTimeout(() => {
+      if(artefact.rightactif == true){
+        artefact.rightactif = false;
+      }else{
+        artefact.leftactif = false;
+        artefact.rightactif = true;
+        artefact.bottomactif = false;
+        artefact.topactif = false;
+        artefact.active = true;
+      }
+      console.log('select Right drawer', artefact)
+    }, 500);
+  }
+
+  selectLeftDrawer(artefact:any){
+    console.log('select top drawer', artefact)
+    let leftPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
+    if(leftPointSelect !== null){
+      console.log(leftPointSelect.getBoundingClientRect())
+    }
+    setTimeout(() => {
+      if(artefact.leftactif == true){
+        artefact.leftactif = false;
+      }else{
+        artefact.leftactif = true;
+        artefact.rightactif = false;
+        artefact.bottomactif = false;
+        artefact.topactif = false;
+        artefact.active = true;
+      }
+     
+      console.log('select Right drawer', artefact)
+    }, 500);
+  }
+
+  drawLineBetween(){
+    
   }
 
   pinchIn(event:any){
