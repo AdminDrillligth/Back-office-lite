@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, Inject, ViewChild , OnChanges , HostListener  } from '@angular/core';
+import { Injectable, Component, OnInit, Inject, ViewChild , OnChanges , HostListener, ElementRef  } from '@angular/core';
 import { UtilsService } from '../../../services/utils.service';
 import { Router } from '@angular/router';
 import { StepsServiceService } from '../../../services/steps-service.service';
@@ -13,6 +13,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     {name:'Conception', select:false, src:'../../../assets/icons/exercices/interface/reverse-left.svg'},
     {name:'Animation', select:false , src:'../../../assets/icons/exercices/interface/reverse-right.svg'},
   ];
+
+  @ViewChild('connection-canvas')
+  canvas!: ElementRef<HTMLCanvasElement>;
+  context!: CanvasRenderingContext2D;
+
   zoom = 10;
   ZOOM_SPEED = 0.5;
   @HostListener('wheel', ['$event'])
@@ -125,6 +130,22 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       }
     )
     console.log('LES ECONES : ! ! ',this.econes)
+  }
+
+  // CANVAS DISPLAY 
+  lastSelection:any;
+  // p1, p2
+  drawLine() {
+    const canvas = document.getElementById('connection-canvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+  //   var canvas = document.getElementById("connection-canvas");
+     if(this.canvas !== null){
+        //  var ctx = this.canvas.getContext("2d");
+  //     ctx.beginPath();
+  //     ctx.moveTo(p1.x, p1.y);
+  //     ctx.lineTo(p2.x, p2.y);
+  //     ctx.stroke();
+     }
   }
 
   displayUtils(artefact:any){

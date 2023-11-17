@@ -22,6 +22,7 @@
   <div>
 
   </div>
+  <canvas id="connection-canvas" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0"></canvas>
   <!-- [ngStyle]="{'transform': transformData}"  -->
 <div (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
   <!-- <div (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></div> -->
