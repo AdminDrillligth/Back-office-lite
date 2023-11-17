@@ -68,6 +68,13 @@
   top: 11px;
 }
 
+.add-drawer-actor{
+  border: none;
+  position: absolute;
+  top: 11px;
+  left: 170px;
+}
+
 .btn-next-back{
   background-color: #34454f;
 }
@@ -114,6 +121,18 @@
   padding-top: 6px;
 }
 
+// .container-equip-live-on-map-actor{
+//   position: absolute;
+//   width: 40px;
+//   height: 40px;
+//   margin-left: auto;
+//   top: 39%;
+//   left: 60%;
+//   scale:0.08;
+//   margin-right: auto;
+//   padding-top: 6px;
+// }
+
 .container-actions{
   width: 16%;
   float: right;
@@ -150,4 +169,28 @@
   position: inherit;
   left: 10px;
   top: 14px;
+}
+
+.point-top{
+  position: absolute;
+  top: -3px;
+  left: 16px;
+}
+
+.point-bottom{
+  position: absolute;
+  bottom: -11px;
+  left: 17px;
+}
+
+.point-left{
+  position: absolute;
+  bottom: 12px;
+  right: 40px;
+}
+
+.point-right{
+  position: absolute;
+  bottom: 12px;
+  left: 40px;
 }

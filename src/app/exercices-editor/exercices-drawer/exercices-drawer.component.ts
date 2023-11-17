@@ -108,12 +108,38 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   addEcones(){
     this.econes.push(
-      {name:'Econe'+(Number(this.econes.length)+1), number:this.econes.length+1, transform:'scale(0.08)'}
+      {
+        name:'Econe'+(Number(this.econes.length)+1), 
+        number:this.econes.length+1, 
+        transform:'scale(0.08)', 
+        active:false,
+        topactif:false,
+        bottomactif:false,
+        leftactif:false,
+        rightactif:false
+      }
     )
     console.log('LES ECONES : ! ! ',this.econes)
-    // this.selectedEquipments.push(
-    //   {name:'Econe', number}
-    // );
+  }
+
+  displayUtils(artefact:any){
+    let Element = document.querySelector<HTMLElement>("."+artefact.name);
+    let ElementAll = document.querySelectorAll("."+artefact.name);
+    if(Element !== null){
+      console.log(Element, Element.offsetLeft, ElementAll)
+    }
+  
+    if(artefact.active == true){
+      artefact.active = false;
+    }else{
+      artefact.active = true;
+    }
+    
+  }
+
+  selectTopDrawer(econe:any){
+    console.log('select top drawer', econe)
+    econe.topactif = true;
   }
 
   pinchIn(event:any){
@@ -208,7 +234,15 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   addActor(){
     this.actors.push(
-      {name:'actor'+this.actors.length+1, number:this.actors.length+1}
+      {
+        name:'Actor'+(Number(this.econes.length)+1), 
+        number:this.actors.length+1,
+        active:false,
+        topactif:false,
+        bottomactif:false,
+        leftactif:false,
+        rightactif:false
+      }
     )
     console.log('LES ACTEURS : ! ! ',this.actors)
   }
