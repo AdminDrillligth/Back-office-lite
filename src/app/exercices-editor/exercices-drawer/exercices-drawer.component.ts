@@ -10,7 +10,7 @@ import { StepsServiceService } from '../../../services/steps-service.service';
 })
 export class ExercicesDrawerComponent implements OnInit, OnChanges {
   btnDrawer = [
-    {name:'Conception', select:true, src:'../../../assets/icons/exercices/interface/reverse-left.svg'},
+    {name:'Conception', select:false, src:'../../../assets/icons/exercices/interface/reverse-left.svg'},
     {name:'Animation', select:false , src:'../../../assets/icons/exercices/interface/reverse-right.svg'},
   ];
   zoom = 10;
@@ -18,13 +18,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   @HostListener('wheel', ['$event'])
   onMouseWheel(event:any) {
 
-    console.log('mouse wheel ',event, event.deltaY)
+    // console.log('mouse wheel ',event, event.deltaY)
     if(event.srcElement !== null){
       if(event.srcElement.attributes[1].nodeValue === 'fields-container'){
         let zoomElement = document.querySelector<HTMLElement>(".fields-container");
         event.preventDefault();
         event.stopPropagation();
-        console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
+        // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
         if(event.deltaY > 0){
           console.log(event.deltaY)
           if(zoomElement !== null){
@@ -98,16 +98,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     });
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
-   
+    // console.log('LA HAUTEUR :: ! ',window.innerHeight/3.2)
+    // this.heightContainer   = window.innerHeight/3.2;
   }
-
+  heightContainer = 0;
 
   ngOnChanges(){
   }
 
   addEcones(){
     this.econes.push(
-      {name:'Econe'+this.econes.length+1, number:this.econes.length+1}
+      {name:'Econe'+(Number(this.econes.length)+1), number:this.econes.length+1, transform:'scale(0.08)'}
     )
     console.log('LES ECONES : ! ! ',this.econes)
     // this.selectedEquipments.push(
@@ -116,7 +117,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   pinchIn(event:any){
-    console.log('onpoinchIN !!! ',event)
+    // console.log('onpoinchIN !!! ',event)
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
       console.log(event.deltaY)            
@@ -130,7 +131,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   pinchOut(event:any){
-    console.log('onpoinchOUT !!! ',event)
+    // console.log('onpoinchOUT !!! ',event)
     // if(event.srcElement.attributes[1].nodeValue === 'fields-container'){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
       // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
@@ -153,7 +154,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   swipeEventRight(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     let zoomElementAll = document.querySelectorAll(".fields-container");
-    this.xgo = this.xgo + 1;
+    this.xgo = this.xgo + 3;
     this.ygo = this.ygo;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
@@ -170,7 +171,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     // console.log('we swipe Left:', event, event.distance)
     // let newtranslate = "translate3d("+xgo+"px,"+ygo+"px,0px)";
-    this.xgo = this.xgo - 1;
+    this.xgo = this.xgo - 3;
     this.ygo = this.ygo;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
@@ -186,7 +187,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   swipeEventUp(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     this.xgo = this.xgo ;
-    this.ygo = this.ygo + 1;
+    this.ygo = this.ygo + 3;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
       console.log('we swipe Right:', event, event.distance, zoomElement)
@@ -197,7 +198,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   swipeEventDown(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     this.xgo = this.xgo ;
-    this.ygo = this.ygo - 1;
+    this.ygo = this.ygo - 3;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
       console.log('we swipe Right:', event, event.distance, zoomElement)
@@ -280,6 +281,31 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   addElement(){
     this.equipHidden = true;
+  }
+
+  changePlaceItem(event:any,econe:any){
+    console.log('PLACE',event,econe)
+    let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    if(zoomElement !== null){
+      console.log(zoomElement.style.transform)
+      // zoomElement.style.transform = 'scale(0.08) translate3d(0px, 0px, 0px)';
+    }
+  }
+
+  getStartMoove(event:any,econe:any){
+    console.log('START',event,econe)
+    let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    if(zoomElement !== null){
+      // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px,'+event.distance.y+'px, 0px)';
+    }
+  }
+
+  getEndMoove(event:any,econe:any){
+    console.log('END',event,econe)
+    let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    if(zoomElement !== null){
+      // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px, -9px, 0px)';
+    }
   }
 
   changeNavConceptionNavigation(btnChoose:any){

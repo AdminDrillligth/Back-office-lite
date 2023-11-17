@@ -8,16 +8,29 @@
 </div>
 
 <div class="fields-container-background">
+  
   <div class="container-bottom-btn" >
+    <img src="../../../assets/icons/lines/line.png">
+    <img src="../../../assets/icons/lines/line-cut.png">
+    <img src="../../../assets/icons/lines/line-round.png">
+    <!-- <button (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></button> -->
+    <span (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/png/E-cone.png" alt=""></span>
+  
     <button type="button" mat-raised-button class="btn-add-accesories btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter un accessoire</button>
   </div>
+  <div>
+
+  </div>
+  <!-- [ngStyle]="{'transform': transformData}"  -->
 <div (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
-  <div *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></div>
-  <div *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></div>
-  <div *ngFor="let ball of balls" matBadge="{{ball.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/ball.png" alt=""></div>
-  <div *ngFor="let plot of plots" matBadge="{{plot.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div>
-  <div *ngFor="let flag of flags" matBadge="{{flag.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/flag.png" alt=""></div>
-  <div *ngFor="let rebounder of rebounders" matBadge="{{rebounder.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/rebounder.png" alt=""></div>
+  <!-- <div (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></div> -->
+  <span (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map"><img class="polygon-on-map" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon-on-map' src="../../../assets/icons/exercices/png/E-cone.png" alt=""></span>
+  
+  <!-- <div *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></div>
+  <div *ngFor="let ball of balls" matBadge="{{ball.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/ball.png" alt=""></div>
+  <div *ngFor="let plot of plots" matBadge="{{plot.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div>
+  <div *ngFor="let flag of flags" matBadge="{{flag.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/flag.png" alt=""></div>
+  <div *ngFor="let rebounder of rebounders" matBadge="{{rebounder.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/rebounder.png" alt=""></div> -->
   <!-- <div *ngFor="let jalon of jalons" matBadge="{{jalon.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div> -->
 
 </div>
@@ -29,12 +42,12 @@
 <img src="../../../assets/icons/lines/line.png">
 <img src="../../../assets/icons/lines/line-cut.png">
 <img src="../../../assets/icons/lines/line-round.png">
-<button (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></button>
+
 <button (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></button>
 <button (click)="addEquip(itemEquip)" type="button" matBadge="{{itemEquip.array.length}}" [matBadgeHidden]="hidden" mat-raised-button class="add-drawer btn btn-sm btn-rounded" *ngFor="let itemEquip of btnAdderList">{{itemEquip.name}}</button>
 <button (click)="addElement()" type="button" class="add-drawer"><span class="text-btn-add"></span>Ajouter un accessoire</button>
 <div  *ngIf="equipHidden" class="container-equip">
   <button (click)="addElementEquipment(item)" *ngFor="let item of listOfEquipments" type="button" mat-raised-button class="btn-add-equip btn-sm btn-rounded"><img src="{{item.src}}" alt="">{{item.name}}</button>
 </div>
-</div> -->
 </div>
+</div> -->
