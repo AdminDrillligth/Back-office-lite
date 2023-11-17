@@ -2,7 +2,8 @@ import { Injectable, Component, OnInit, Inject, ViewChild , OnChanges , HostList
 import { UtilsService } from '../../../services/utils.service';
 import { Router } from '@angular/router';
 import { StepsServiceService } from '../../../services/steps-service.service';
-
+import 'leader-line';
+declare var LeaderLine: any;
 @Component({
   selector: 'app-exercices-drawer',
   templateUrl: './exercices-drawer.component.html',
@@ -135,17 +136,34 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   // CANVAS DISPLAY 
   lastSelection:any;
   // p1, p2
+  line:any
   drawLine() {
-    const canvas = document.getElementById('connection-canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-  //   var canvas = document.getElementById("connection-canvas");
-     if(this.canvas !== null){
-        //  var ctx = this.canvas.getContext("2d");
-  //     ctx.beginPath();
-  //     ctx.moveTo(p1.x, p1.y);
-  //     ctx.lineTo(p2.x, p2.y);
-  //     ctx.stroke();
-     }
+
+    const startingElement = document.querySelector('#Econe1');
+    const endingElement = document.querySelector('#Econe2');
+    console.log('love je reussi ')
+    // New leader line has red color and size 8.
+    this.line = new LeaderLine(startingElement, endingElement);
+    // https://stackoverflow.com/questions/39685298/draw-a-line-between-2-divs-once-2-consequence-div-clicked-using-angularjs
+  //   const canvas = document.getElementById('connection-canvas') as HTMLCanvasElement;
+  //   const ctx = canvas.getContext('2d');
+    
+  // //   var canvas = document.getElementById("connection-canvas");
+  //    if(this.canvas !== null){
+  //     if(ctx !== null){
+  //       console.log('we gonna draw', ctx)
+  //       //  var ctx = this.canvas.getContext("2d");
+  //       // ctx.beginPath();
+  //       // // this.selector[0].x
+  //       //      ctx.moveTo(this.selector[0].p1x, this.selector[0].p1y);
+  //       //      ctx.lineTo(this.selector[1].p2x, this.selector[1].p2y);
+  //       //      ctx.stroke();
+
+  //            ctx.rect(10, 10, 150, 100);
+  //           ctx.stroke();
+  //     }
+
+  //    }
   }
 
   displayUtils(artefact:any){
@@ -168,12 +186,22 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     
   }
 
+
+  selector:any=[]
   selectTopDrawer(artefact:any){
     console.log('select top drawer', artefact)
     let topPointSelect = document.querySelector<HTMLElement>(".top"+artefact.name);
     if(topPointSelect !== null){
-      console.log(topPointSelect.getBoundingClientRect())
+      console.log(topPointSelect.getBoundingClientRect().x, topPointSelect.getBoundingClientRect().y)
+      if(this.selector.length === 0){
+        this.selector.push({artefact:artefact, p1x:topPointSelect.getBoundingClientRect().x, p1y:topPointSelect.getBoundingClientRect().y})
+ 
+      }else{
+        this.selector.push({artefact:artefact, p2x:topPointSelect.getBoundingClientRect().x, p2y:topPointSelect.getBoundingClientRect().y})
+ 
+      }
     }
+    console.log('le selecteur', this.selector)
     setTimeout(() => {
       if(artefact.topactif == true){
         artefact.topactif = false;
@@ -193,8 +221,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     let bottomPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
     if(bottomPointSelect !== null){
       console.log(bottomPointSelect.getBoundingClientRect())
+      if(this.selector.length === 0){
+        this.selector.push({artefact:artefact, p1x:bottomPointSelect.getBoundingClientRect().x, p1y:bottomPointSelect.getBoundingClientRect().y})
+ 
+      }else{
+        this.selector.push({artefact:artefact, p2x:bottomPointSelect.getBoundingClientRect().x, p2y:bottomPointSelect.getBoundingClientRect().y})
+        if(this.selector.length === 2){
+          this.drawLine()
+        }
+      }
     }
-
+    console.log('le selecteur', this.selector)
     setTimeout(() => {
       if(artefact.bottomactif == false){
         artefact.leftactif = false;
@@ -443,6 +480,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   getStartMoove(event:any,econe:any){
     console.log('START',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    this.line.remove()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px,'+event.distance.y+'px, 0px)';
     }
@@ -451,6 +489,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   getEndMoove(event:any,econe:any){
     console.log('END',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    
+
+    this.drawLine()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px, -9px, 0px)';
     }
