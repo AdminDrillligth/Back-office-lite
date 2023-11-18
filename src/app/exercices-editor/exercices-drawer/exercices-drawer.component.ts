@@ -11,10 +11,11 @@ declare var LeaderLine: any;
 })
 export class ExercicesDrawerComponent implements OnInit, OnChanges {
   btnDrawer = [
-    {name:'Conception', select:false, src:'../../../assets/icons/exercices/interface/reverse-left.svg'},
-    {name:'Animation', select:false , src:'../../../assets/icons/exercices/interface/reverse-right.svg'},
+    {name:'back', select:false, src:'../../../assets/icons/exercices/interface/reverse-left.svg'},
+    {name:'next', select:false , src:'../../../assets/icons/exercices/interface/reverse-right.svg'},
   ];
 
+  historical:any[]=[];
   @ViewChild('connection-canvas')
   canvas!: ElementRef<HTMLCanvasElement>;
   context!: CanvasRenderingContext2D;
@@ -23,14 +24,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   ZOOM_SPEED = 0.5;
   @HostListener('wheel', ['$event'])
   onMouseWheel(event:any) {
-
-    // console.log('mouse wheel ',event, event.deltaY)
     if(event.srcElement !== null){
       if(event.srcElement.attributes[1].nodeValue === 'fields-container'){
         let zoomElement = document.querySelector<HTMLElement>(".fields-container");
         event.preventDefault();
         event.stopPropagation();
-        // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
         if(event.deltaY > 0){
           console.log(event.deltaY)
           if(zoomElement !== null){
@@ -59,34 +57,45 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // Your row selection code
       console.log('ON DOWN : ',event.key);
     }
+    if(event.key == 'ArrowUp'){
+      // Your row selection code
+      console.log('ON UP : ',event.key);
+    }
+    if(event.key == 'ArrowLeft'){
+      // Your row selection code
+      console.log('ON LEFT : ',event.key);
+    }
+    if(event.key == 'ArrowRight'){
+      // Your row selection code
+      console.log('ON RIGHT : ',event.key);
+    }
   }
 
   hiddenNumb = true;
   hidden = false;
   listOfEquipments = [
-
-    {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg'},
-    {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-plot.svg'},
-    {id:2, name:'Goal', class:'goal', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-goal.svg'},
-    {id:3, name:'Échelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg'},
+    {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',total:0},
+    {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',total:0},
+    {id:2, name:'Goal', class:'goal', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-goal.svg',total:0},
+    {id:3, name:'Échelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',total:0},
     // {id:4, name:'Coupelle', class:'coupelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg'},
-    {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-flag.svg'},
-    {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg'},
-    {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg'},
-    {id:8, name:'Marker', class:'marker', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-marker.svg'},
-    {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-player.svg'},
+    {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-flag.svg',total:0},
+    {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg',total:0},
+    {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',total:0},
+    {id:8, name:'Marker', class:'marker', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',total:0},
+    {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-player.svg',total:0},
   ]
 
   listOfEquipmentsPrinciple = [];
-  
-  selectedEquipments = [
-    [{name:'', number:0}]
-  ]
+  selectedEquipments = [[{name:'', number:0}]];
   btnAdderList : any[] = [];
   equipHidden = false;
   econes :any[]= [];
   actors :any[]= [];
+  players :any[]= [];
+  goals : any[] = [];
   balls : any[]= [];
+  ladders: any[]= [];
   plots: any[] =[];
   Cerceaux : any[] =[];
   Échelle : any[] =[];
@@ -133,9 +142,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         rightactif:false,
         classColor:'',
         action:'',
-        stepTotal:'',
-
-        // allfalse:true;
+        stepTotal:''
       }
     )
     console.log('LES ECONES : ! ! ',this.econes)
@@ -143,17 +150,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   // CANVAS DISPLAY 
   lastSelection:any;
-  // p1, p2
   line:any
   drawLine() {
-
     const startingElement = document.querySelector('#Econe1');
     const endingElement = document.querySelector('#Econe2');
-    console.log('love je reussi ')
-    // New leader line has red color and size 8.
-    // this.line.color = 'rgba(30, 130, 250, 0.5)';
-    // 
-    // 
+    console.log('love je reussi ') 
     this.line = new LeaderLine(startingElement, endingElement);
     this.line.size = 1;
     this.line.color = 'grey';
@@ -162,7 +163,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       startPlug: 'disc',
       endPlug: 'arrow3'
     });
-    // https://stackoverflow.com/questions/39685298/draw-a-line-between-2-divs-once-2-consequence-div-clicked-using-angularjs
   }
 
   displayUtils(artefact:any){
@@ -391,79 +391,101 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         topactif:false,
         bottomactif:false,
         leftactif:false,
-        rightactif:false
+        rightactif:false,
+        classColor:''
       }
     )
     console.log('LES ACTEURS : ! ! ',this.actors)
   }
 
-  addEquip(item:any){
-    console.log('LES ECONES : ! ! ',item.name)
+  addElementEquipment(item:any){
+    this.equipHidden = false;
+    console.log('L`équipement choisi mon coeur je reussi nous reussissons  : ! ! ',item.name)
+    this.listOfEquipments.forEach(equip =>{
+      if(equip.name === item.name){
+        equip.total = equip.total+1; 
+      }
+      
+    })
     if(item.name === 'Ballon'){
       this.balls.push(
-        {name:'actor'+this.balls.length+1, number:this.balls.length+1}
+        {
+          name:'ball'+(this.balls.length+1), 
+          number:this.balls.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
       )
     }
     if(item.name === 'Plot'){
       this.plots.push(
-        {name:'plot'+this.plots.length+1, number:this.plots.length+1}
+        {
+          name:'plot'+(this.plots.length+1), 
+          number:this.plots.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
       )
     }
     if(item.name === 'Drapeau'){
       this.flags.push(
-        {name:'flag'+this.plots.length+1, number:this.flags.length+1}
+        {
+          name:'flag'+(this.plots.length+1), 
+          number:this.flags.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-flag.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
       )
     }
     if(item.name === 'Rebounder'){
       this.rebounders.push(
-        {name:'rebounder'+this.plots.length+1, number:this.rebounders.length+1}
+        {
+          name:'rebounder'+(this.plots.length+1),
+          number:this.rebounders.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
       )
     }
-    if(item.name === 'Jalons'){
-      this.jalons.push(
-        {name:'jalon'+this.plots.length+1, number:this.jalons.length+1}
+    if(item.name === 'Player'){
+      this.players.push(
+        {
+          name:'player'+(this.players.length+1), 
+          number:this.players.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-player.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
       )
     }
-
-    // console.log('LES PLOTS : ! ! ',this.plots)
-  }
-
-  addElementEquipment(item:any){
     this.equipHidden = false;
-    console.log(item)
-    if(item.name === 'Plot'){
-      this.btnAdderList.push(
-        {name:'Plot', src:'../../../assets/icons/exercices/png/Plot.png', array:this.plots}
-      )
-    }
-    if(item.name === 'Ballon'){
-      this.btnAdderList.push(
-        {name:'Ballon', src:'../../../assets/icons/exercices/png/ball.png', array:this.balls}
-      )
-    }
-    if(item.name === 'Drapeau'){
-      this.btnAdderList.push(
-        {name:'Drapeau', src:'../../../assets/icons/exercices/png/flag.png', array:this.flags}
-      )
-    }
-    if(item.name === 'Rebounder'){
-      this.btnAdderList.push(
-        {name:'Rebounder', src:'../../../assets/icons/exercices/png/rebounder.png', array:this.rebounders}
-      )
-    }
-    if(item.name === 'Jalons'){
-      this.btnAdderList.push(
-        {name:'Jalons', src:'../../../assets/icons/exercices/png/ball.png', array:this.jalons}
-      )
-    }
-// Cerceaux
-// Échelle
-// Coupelle
-// Mini
-// Mannequin
   }
 
-  addElement(){
+  addAccessories(){
     this.equipHidden = true;
   }
 

@@ -17,18 +17,18 @@
     <span (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/png/E-cone.png" alt=""></span>
     <span (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer-actor btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/svg/Actor.svg" alt=""></span>
   
-    <button type="button" mat-raised-button class="btn-add-accesories btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter un accessoire</button>
+    <button (click)="addAccessories()" type="button" mat-raised-button class="btn-add-accesories btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter un accessoire</button>
 
   </div>
-  <div class="container-selector-utilities">
+  <div  [ngClass]="{'active-selector-utilities': equipHidden ==  true}" *ngIf="equipHidden"  class="container-selector-utilities">
      
-        <h4>Badges Default</h4>
+        <h4 style="margin-left: 7px;">Badges Default</h4>
       <div class="container-accesories">
         <p style="margin-left: 7px;">Accessories</p>
-        <span class="accesories" *ngFor="let equipment of listOfEquipments"  ><img src="{{equipment.src}}"></span>
+        <span class="accesories" matBadge="{{equipment.total}}" [matBadgeHidden]="hidden" (click)="addElementEquipment(equipment)" *ngFor="let equipment of listOfEquipments"  ><img src="{{equipment.src}}"></span>
       </div>
       <div class="container-accesories">
-        <p style="margin-left: 7px;">Principle elements</p>
+        <p style="top: 37px;position: absolute;">Principle elements</p>
         <span class="accesories"  ><img src=""></span>
       </div>
   </div>
@@ -57,7 +57,13 @@
     <img class='img-inside-polygon-on-map' src="../../../assets/icons/exercices/svg/Actor.svg" alt="">
   </span>
   
-
+  <span id="{{ball.name}}" (click)="displayUtils(ball)" (cdkDragStarted)='getStartMoove($event, ball)' (cdkDragEnded)='getEndMoove($event, ball)' (cdkDragMoved)="changePlaceItem($event, ball)" *ngFor="let ball of balls" cdkDragBoundary=".fields-container-background" cdkDrag class="{{ball.name}} container-equip-live-on-map">
+    <img [ngClass]="{'point-active': ball.topactif ==  true}" *ngIf="ball.active" (click)="selectTopDrawer(ball)" class="top{{ball.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': ball.bottomactif ==  true}" *ngIf="ball.active" (click)="selectBottomDrawer(ball)" class="bottom{{ball.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': ball.rightactif ==  true}" *ngIf="ball.active" (click)="selectRightDrawer(ball)" class="right{{ball.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': ball.leftactif ==  true}" *ngIf="ball.active" (click)="selectLeftDrawer(ball)" class="left{{ball.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img class="polygon-on-map" src="{{ball.src}}">
+  </span>
   <!-- <div *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></div>
   <div *ngFor="let ball of balls" matBadge="{{ball.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/ball.png" alt=""></div>
   <div *ngFor="let plot of plots" matBadge="{{plot.number}}" [matBadgeHidden]="hiddenNumb" cdkDragBoundary=".fields-container-background" cdkDrag class="container-equip-live"><img src="../../../assets/icons/exercices/png/Plot.png" alt=""></div>
