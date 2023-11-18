@@ -209,3 +209,60 @@
   width: 100%;
   height: 100%;
 }
+
+.yellow-right{
+  box-shadow: 6px 0px 7px 0px #ffff0057;
+  border-radius: 100%;
+}
+
+.yellow-left{
+  box-shadow: -6px 0px 7px 0px #ffff0057;
+  border-radius: 100%;
+}
+
+.green-right{
+  box-shadow: 6px 0px 7px 0px #37ff0057;
+  border-radius: 100%;
+}
+
+.green-left{
+  box-shadow: -6px 0px 7px 0px #37ff0057;
+  border-radius: 100%;
+}
+
+.red-right{
+  box-shadow: 6px 0px 7px 0px #ff000057;
+  border-radius: 100%;
+}
+
+.red-left{
+  box-shadow: -6px 0px 7px 0px #ff000057;
+  border-radius: 100%;
+}
+
+.blue-right{
+  box-shadow: 6px 0px 7px 0px #001aff57;
+  border-radius: 100%;
+}
+
+.blue-left{
+  box-shadow: -6px 0px 7px 0px #001aff57;
+  border-radius: 100%;
+}
+
+.purple-right{
+  box-shadow: 6px 0px 7px 0px #ff00d057;
+  border-radius: 100%;
+}
+
+.purple-left{
+  box-shadow: -6px 0px 7px 0px #ff00d057;
+  border-radius: 100%;
+}
+
+
+.container-selector-utilities{
+  background: var(--gray-scale-1100, #071218);
+  width: 308px;
+  height: 397px;
+}

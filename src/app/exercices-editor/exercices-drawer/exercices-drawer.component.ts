@@ -72,8 +72,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/png/flag.png'},
     {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/png/rebounder.png'},
     {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/png/barrier.png'},
-    {id:7, name:'Jalons', class:'jalon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
-    {id:7, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/png/Actor.png'},
+    {id:8, name:'Jalons', class:'jalon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
+    {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/png/Actor.png'},
   ]
   selectedEquipments = [
     [{name:'', number:0}]
@@ -127,6 +127,10 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         bottomactif:false,
         leftactif:false,
         rightactif:false,
+        classColor:'',
+        action:'',
+        stepTotal:'',
+
         // allfalse:true;
       }
     )
@@ -143,27 +147,18 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     const endingElement = document.querySelector('#Econe2');
     console.log('love je reussi ')
     // New leader line has red color and size 8.
+    // this.line.color = 'rgba(30, 130, 250, 0.5)';
+    // 
+    // 
     this.line = new LeaderLine(startingElement, endingElement);
+    this.line.size = 1;
+    this.line.color = 'grey';
+    this.line.path = 'fluid';
+    this.line.setOptions({
+      startPlug: 'disc',
+      endPlug: 'arrow3'
+    });
     // https://stackoverflow.com/questions/39685298/draw-a-line-between-2-divs-once-2-consequence-div-clicked-using-angularjs
-  //   const canvas = document.getElementById('connection-canvas') as HTMLCanvasElement;
-  //   const ctx = canvas.getContext('2d');
-    
-  // //   var canvas = document.getElementById("connection-canvas");
-  //    if(this.canvas !== null){
-  //     if(ctx !== null){
-  //       console.log('we gonna draw', ctx)
-  //       //  var ctx = this.canvas.getContext("2d");
-  //       // ctx.beginPath();
-  //       // // this.selector[0].x
-  //       //      ctx.moveTo(this.selector[0].p1x, this.selector[0].p1y);
-  //       //      ctx.lineTo(this.selector[1].p2x, this.selector[1].p2y);
-  //       //      ctx.stroke();
-
-  //            ctx.rect(10, 10, 150, 100);
-  //           ctx.stroke();
-  //     }
-
-  //    }
   }
 
   displayUtils(artefact:any){
