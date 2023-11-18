@@ -76,6 +76,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     {id:8, name:'Marker', class:'marker', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-marker.svg'},
     {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-player.svg'},
   ]
+
+  listOfEquipmentsPrinciple = [];
+  
   selectedEquipments = [
     [{name:'', number:0}]
   ]

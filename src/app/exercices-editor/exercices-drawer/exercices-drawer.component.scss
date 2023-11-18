@@ -262,7 +262,22 @@
 
 
 .container-selector-utilities{
-  background: var(--gray-scale-1100, #071218);
+  background: #0c181e;
   width: 308px;
   height: 397px;
+  position: absolute;
+  left: 48%;
+  top: 7%;
+  color: grey;
+  transition: height 0.75s ease-out;
+}
+
+.container-accesories{
+  margin-left: 7px;
+  width: 48%;
+}
+
+.accesories{
+  display: inline-block;
+  margin: 9px;
 }
