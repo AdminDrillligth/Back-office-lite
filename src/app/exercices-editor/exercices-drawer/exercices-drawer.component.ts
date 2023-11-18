@@ -64,16 +64,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   hiddenNumb = true;
   hidden = false;
   listOfEquipments = [
-    {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
-    {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/png/Plot.png'},
-    {id:2, name:'Cerceaux', class:'cerceaux', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
-    {id:3, name:'Échelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/png/ladder.png'},
-    {id:4, name:'Coupelle', class:'coupelle', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
-    {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/png/flag.png'},
-    {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/png/rebounder.png'},
-    {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/png/barrier.png'},
-    {id:8, name:'Jalons', class:'jalon', select:'false',  src:'../../../assets/icons/exercices/png/ball.png'},
-    {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/png/Actor.png'},
+
+    {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg'},
+    {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-plot.svg'},
+    {id:2, name:'Goal', class:'goal', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-goal.svg'},
+    {id:3, name:'Échelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg'},
+    // {id:4, name:'Coupelle', class:'coupelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg'},
+    {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-flag.svg'},
+    {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg'},
+    {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg'},
+    {id:8, name:'Marker', class:'marker', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-marker.svg'},
+    {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-player.svg'},
   ]
   selectedEquipments = [
     [{name:'', number:0}]
