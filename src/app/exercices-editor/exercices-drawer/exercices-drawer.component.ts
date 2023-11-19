@@ -105,6 +105,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   Mini : any[] =[];
   jalons : any[] =[];
   Mannequin : any[] =[];
+
+  lines: any[] = [];
   constructor(
     private stepsService:StepsServiceService,
     private utilsService: UtilsService,
@@ -152,6 +154,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   lastSelection:any;
   line:any
   drawLine() {
+
+
     const startingElement = document.querySelector('#Econe1');
     const endingElement = document.querySelector('#Econe2');
     console.log('love je reussi ') 
@@ -163,6 +167,15 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       startPlug: 'disc',
       endPlug: 'arrow3'
     });
+  }
+
+  drawLines(){
+    // Here draw and redraw all lines
+    if(this.lines.length !== 0){
+      this.lines.forEach(line => {
+        console.log('DRAW LINES : ',line)
+      })
+    }
   }
 
   displayUtils(artefact:any){
@@ -190,15 +203,24 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   selectTopDrawer(artefact:any){
     console.log('select top drawer', artefact)
     let topPointSelect = document.querySelector<HTMLElement>(".top"+artefact.name);
+    let selector = document.querySelector(".top"+artefact.name);
     if(topPointSelect !== null){
       console.log(topPointSelect.getBoundingClientRect().x, topPointSelect.getBoundingClientRect().y)
-      if(this.selector.length === 0){
-        this.selector.push({artefact:artefact, p1x:topPointSelect.getBoundingClientRect().x, p1y:topPointSelect.getBoundingClientRect().y})
- 
+      if(this.selector.length < 2){
+        if(this.selector.length === 0){
+          this.selector.push({selector: selector,artefact:artefact, p1x:topPointSelect.getBoundingClientRect().x, p1y:topPointSelect.getBoundingClientRect().y})
+   
+        }else{
+          this.selector.push({selector: selector,artefact:artefact, p2x:topPointSelect.getBoundingClientRect().x, p2y:topPointSelect.getBoundingClientRect().y})
+          // this.drawLine()   
+        }
       }else{
-        this.selector.push({artefact:artefact, p2x:topPointSelect.getBoundingClientRect().x, p2y:topPointSelect.getBoundingClientRect().y})
- 
+        this.lines.push({points:this.selector})
+        this.selector.length = 0;
+        this.selector.push({selector: selector,artefact:artefact, p1x:topPointSelect.getBoundingClientRect().x, p1y:topPointSelect.getBoundingClientRect().y})
       }
+
+
     }
     console.log('le selecteur', this.selector)
     setTimeout(() => {
@@ -218,17 +240,23 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   selectBottomDrawer(artefact:any){
     console.log('select top drawer 1', artefact)
     let bottomPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
+    let selector = document.querySelector(".bottom"+artefact.name);
     if(bottomPointSelect !== null){
       console.log(bottomPointSelect.getBoundingClientRect())
-      if(this.selector.length === 0){
-        this.selector.push({artefact:artefact, p1x:bottomPointSelect.getBoundingClientRect().x, p1y:bottomPointSelect.getBoundingClientRect().y})
- 
-      }else{
-        this.selector.push({artefact:artefact, p2x:bottomPointSelect.getBoundingClientRect().x, p2y:bottomPointSelect.getBoundingClientRect().y})
-        if(this.selector.length === 2){
-          this.drawLine()
+      if(this.selector.length <2){
+        if(this.selector.length === 0){
+          this.selector.push({selector: selector,artefact:artefact, p1x:bottomPointSelect.getBoundingClientRect().x, p1y:bottomPointSelect.getBoundingClientRect().y})
+   
+        }else{
+          this.selector.push({selector: selector,artefact:artefact, p2x:bottomPointSelect.getBoundingClientRect().x, p2y:bottomPointSelect.getBoundingClientRect().y})
         }
+      }else{
+        this.lines.push({points:this.selector})
+        this.selector.length = 0;
+        this.selector.push({selector: selector,artefact:artefact, p1x:bottomPointSelect.getBoundingClientRect().x, p1y:bottomPointSelect.getBoundingClientRect().y})
+        
       }
+
     }
     console.log('le selecteur', this.selector)
     setTimeout(() => {
@@ -250,9 +278,27 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   selectRightDrawer(artefact:any){
     console.log('select top drawer', artefact)
     let rightPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
+    let selector = document.querySelector(".bottom"+artefact.name);
     if(rightPointSelect !== null){
       console.log(rightPointSelect.getBoundingClientRect())
+      if(this.selector.length <2){
+        if(this.selector.length === 0){
+          this.selector.push({selector: selector,artefact:artefact, p1x:rightPointSelect.getBoundingClientRect().x, p1y:rightPointSelect.getBoundingClientRect().y})
+   
+        }else{
+          this.selector.push({selector: selector,artefact:artefact, p2x:rightPointSelect.getBoundingClientRect().x, p2y:rightPointSelect.getBoundingClientRect().y})
+          if(this.selector.length === 2){
+          }
+        }
+      }else{
+        this.lines.push({points:this.selector})
+        this.selector.length = 0;
+        this.selector.push({selector: selector,artefact:artefact, p1x:rightPointSelect.getBoundingClientRect().x, p1y:rightPointSelect.getBoundingClientRect().y})
+        
+      }
+
     }
+    console.log('le selecteur', this.selector)
     setTimeout(() => {
       if(artefact.rightactif == true){
         artefact.rightactif = false;
@@ -270,9 +316,26 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   selectLeftDrawer(artefact:any){
     console.log('select top drawer', artefact)
     let leftPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
+    let selector = document.querySelector(".bottom"+artefact.name);
     if(leftPointSelect !== null){
       console.log(leftPointSelect.getBoundingClientRect())
+      if(this.selector.length <2){
+        if(this.selector.length === 0){
+          this.selector.push({selector: selector,artefact:artefact, p1x:leftPointSelect.getBoundingClientRect().x, p1y:leftPointSelect.getBoundingClientRect().y})
+   
+        }else{
+          this.selector.push({selector: selector,artefact:artefact, p2x:leftPointSelect.getBoundingClientRect().x, p2y:leftPointSelect.getBoundingClientRect().y})
+          if(this.selector.length === 2){
+          }
+        }
+      }else{
+        this.lines.push({points:this.selector})
+        this.selector.length = 0;
+        this.selector.push({selector: selector,artefact:artefact, p1x:leftPointSelect.getBoundingClientRect().x, p1y:leftPointSelect.getBoundingClientRect().y})
+      }
     }
+    console.log('le selecteur', this.selector)
+    
     setTimeout(() => {
       if(artefact.leftactif == true){
         artefact.leftactif = false;
@@ -288,14 +351,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     }, 500);
   }
 
-  drawLineBetween(){
-    
-  }
 
   pinchIn(event:any){
-    // console.log('onpoinchIN !!! ',event)
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
-    // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
       console.log(event.deltaY)            
       if(zoomElement !== null){ 
           zoomElement.style.transform = `scale(${this.zoom += 0.1})`;
@@ -307,10 +365,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   pinchOut(event:any){
-    // console.log('onpoinchOUT !!! ',event)
-    // if(event.srcElement.attributes[1].nodeValue === 'fields-container'){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
-      // console.log('CLASSNAME :: ',event.srcElement.attributes[1].nodeValue)
         console.log(event.deltaY)            
         if(zoomElement !== null){ 
          if(this.zoom - this.ZOOM_SPEED >= 6){
@@ -318,8 +373,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             this.scale = `scale(${Math.round(this.zoom -= 0.1)})`;
             console.log('ZOOM OUT', this.zoom - 0.1)
           }
-         
-         
       }
     // }
   }
