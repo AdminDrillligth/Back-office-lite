@@ -77,11 +77,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',total:0},
     {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',total:0},
     {id:2, name:'Goal', class:'goal', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-goal.svg',total:0},
-    {id:3, name:'Échelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',total:0},
+    {id:3, name:'Echelle', class:'echelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',total:0},
     // {id:4, name:'Coupelle', class:'coupelle', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg'},
     {id:5, name:'Drapeau', class:'drapeau', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-flag.svg',total:0},
     {id:6, name:'Rebounder', class:'rebounder', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg',total:0},
-    {id:7, name:'Mini haie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',total:0},
+    {id:7, name:'Minihaie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',total:0},
     {id:8, name:'Marker', class:'marker', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',total:0},
     {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-player.svg',total:0},
   ]
@@ -93,6 +93,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   econes :any[]= [];
   actors :any[]= [];
   players :any[]= [];
+  markers:any[]= [];
   goals : any[] = [];
   balls : any[]= [];
   ladders: any[]= [];
@@ -102,7 +103,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   Coupelle : any[] =[];
   flags : any[] =[];
   rebounders : any[] =[];
-  Mini : any[] =[];
+  minihaies : any[] =[];
   jalons : any[] =[];
   Mannequin : any[] =[];
 
@@ -222,16 +223,18 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
 
     }
-    console.log('le selecteur', this.selector)
+    console.log('le selecteur', this.selector,'les lines', this.lines)
     setTimeout(() => {
       if(artefact.topactif == true){
-        artefact.topactif = false;
+         artefact.topactif = false;
+         return;
       }else{
         artefact.leftactif = false;
         artefact.rightactif = false;
         artefact.bottomactif = false;
         artefact.topactif = true;
         artefact.active = true;
+        return;
       }
       console.log('select top drawer', artefact)
     }, 500);
@@ -258,18 +261,21 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       }
 
     }
-    console.log('le selecteur', this.selector)
+    console.log('le selecteur', this.selector,'les lines', this.lines)
     setTimeout(() => {
       if(artefact.bottomactif == false){
+        
         artefact.leftactif = false;
         artefact.rightactif = false;
         artefact.bottomactif = true;
         artefact.topactif = false;
         artefact.active = true;
+        return;
         console.log('false')
       }else if(artefact.bottomactif == true){
         console.log('true')
         artefact.bottomactif = false;
+        return;
       }
       console.log('select Bottom drawer 2', artefact)
     }, 500);
@@ -277,8 +283,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   selectRightDrawer(artefact:any){
     console.log('select top drawer', artefact)
-    let rightPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
-    let selector = document.querySelector(".bottom"+artefact.name);
+    let rightPointSelect = document.querySelector<HTMLElement>(".right"+artefact.name);
+    let selector = document.querySelector(".right"+artefact.name);
     if(rightPointSelect !== null){
       console.log(rightPointSelect.getBoundingClientRect())
       if(this.selector.length <2){
@@ -298,16 +304,18 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       }
 
     }
-    console.log('le selecteur', this.selector)
+    console.log('le selecteur', this.selector,'les lines', this.lines)
     setTimeout(() => {
       if(artefact.rightactif == true){
         artefact.rightactif = false;
+        return;
       }else{
         artefact.leftactif = false;
         artefact.rightactif = true;
         artefact.bottomactif = false;
         artefact.topactif = false;
         artefact.active = true;
+        return;
       }
       console.log('select Right drawer', artefact)
     }, 500);
@@ -315,8 +323,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   selectLeftDrawer(artefact:any){
     console.log('select top drawer', artefact)
-    let leftPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
-    let selector = document.querySelector(".bottom"+artefact.name);
+    let leftPointSelect = document.querySelector<HTMLElement>(".left"+artefact.name);
+    let selector = document.querySelector(".left"+artefact.name);
     if(leftPointSelect !== null){
       console.log(leftPointSelect.getBoundingClientRect())
       if(this.selector.length <2){
@@ -334,17 +342,19 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         this.selector.push({selector: selector,artefact:artefact, p1x:leftPointSelect.getBoundingClientRect().x, p1y:leftPointSelect.getBoundingClientRect().y})
       }
     }
-    console.log('le selecteur', this.selector)
+    console.log('le selecteur', this.selector,'les lines', this.lines)
     
     setTimeout(() => {
       if(artefact.leftactif == true){
         artefact.leftactif = false;
+        return;
       }else{
         artefact.leftactif = true;
         artefact.rightactif = false;
         artefact.bottomactif = false;
         artefact.topactif = false;
         artefact.active = true;
+        return;
       }
      
       console.log('select Right drawer', artefact)
@@ -526,6 +536,67 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'player'+(this.players.length+1), 
           number:this.players.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-player.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
+      )
+    }
+    if(item.name === 'Goal'){
+      this.goals.push(
+        {
+          name:'goal'+(this.goals.length+1), 
+          number:this.goals.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-goal.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
+      )
+    }
+    if(item.name === 'Echelle'){
+      this.ladders.push(
+        {
+          name:'ladder'+(this.ladders.length+1), 
+          number:this.ladders.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
+      )
+    }
+    if(item.name === 'Minihaie'){
+      this.minihaies.push(
+        {
+          name:'minihaie'+(this.minihaies.length+1), 
+          number:this.minihaies.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',
+          active:false,
+          topactif:false,
+          bottomactif:false,
+          leftactif:false,
+          rightactif:false,
+          classColor:''
+        }
+      )
+    }
+    
+    if(item.name === 'Marker'){
+      this.markers.push(
+        {
+          name:'marker'+(this.markers.length+1), 
+          number:this.markers.length+1,
+          src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',
           active:false,
           topactif:false,
           bottomactif:false,
