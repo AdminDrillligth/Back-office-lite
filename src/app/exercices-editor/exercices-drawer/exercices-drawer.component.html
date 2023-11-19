@@ -44,7 +44,7 @@
     <img class='img-inside-polygon-on-map' src="../../../assets/icons/exercices/png/E-cone.png" alt="">
   </span>
   
-  <span  (click)="displayUtils(actor)"  (cdkDragStarted)='getStartMoove($event, actor)' (cdkDragEnded)='getEndMoove($event, actor)' (cdkDragMoved)="changePlaceItem($event, actor)" *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{actor.name}} container-equip-live-on-map">
+  <span id="{{actor.name}}" (click)="displayUtils(actor)"  (cdkDragStarted)='getStartMoove($event, actor)' (cdkDragEnded)='getEndMoove($event, actor)' (cdkDragMoved)="changePlaceItem($event, actor)" *ngFor="let actor of actors" matBadge="{{actor.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{actor.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': actor.topactif ==  true}" *ngIf="actor.active" (click)="selectTopDrawer(actor)" class="top{{actor.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': actor.bottomactif ==  true}" *ngIf="actor.active" (click)="selectBottomDrawer(actor)" class="bottom{{actor.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': actor.rightactif ==  true}" *ngIf="actor.active" (click)="selectRightDrawer(actor)" class="right{{actor.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
