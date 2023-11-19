@@ -101,6 +101,31 @@
     <img class="polygon-on-map" src="{{goal.src}}">
   </span>
 
+  <span id="{{ladder.name}}" (click)="displayUtils(ladder)" (cdkDragStarted)='getStartMoove($event, ladder)' (cdkDragEnded)='getEndMoove($event, ladder)' (cdkDragMoved)="changePlaceItem($event, ladder)" *ngFor="let ladder of ladders" cdkDragBoundary=".fields-container-background" cdkDrag class="{{ladder.name}} container-equip-live-on-map">
+    <img [ngClass]="{'point-active': ladder.topactif ==  true}" *ngIf="ladder.active" (click)="selectTopDrawer(ladder)" class="top{{ladder.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': ladder.bottomactif ==  true}" *ngIf="ladder.active" (click)="selectBottomDrawer(ladder)" class="bottom{{ladder.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': ladder.rightactif ==  true}" *ngIf="ladder.active" (click)="selectRightDrawer(ladder)" class="right{{ladder.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': ladder.leftactif ==  true}" *ngIf="ladder.active" (click)="selectLeftDrawer(ladder)" class="left{{ladder.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img class="polygon-on-map" src="{{ladder.src}}">
+  </span>
+
+  
+  <span id="{{minihaie.name}}" (click)="displayUtils(minihaie)" (cdkDragStarted)='getStartMoove($event, minihaie)' (cdkDragEnded)='getEndMoove($event, minihaie)' (cdkDragMoved)="changePlaceItem($event, minihaie)" *ngFor="let minihaie of minihaies" cdkDragBoundary=".fields-container-background" cdkDrag class="{{minihaie.name}} container-equip-live-on-map">
+    <img [ngClass]="{'point-active': minihaie.topactif ==  true}" *ngIf="minihaie.active" (click)="selectTopDrawer(minihaie)" class="top{{minihaie.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': minihaie.bottomactif ==  true}" *ngIf="minihaie.active" (click)="selectBottomDrawer(minihaie)" class="bottom{{minihaie.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': minihaie.rightactif ==  true}" *ngIf="minihaie.active" (click)="selectRightDrawer(minihaie)" class="right{{minihaie.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': minihaie.leftactif ==  true}" *ngIf="minihaie.active" (click)="selectLeftDrawer(minihaie)" class="left{{minihaie.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img class="polygon-on-map" src="{{minihaie.src}}">
+  </span>
+
+  <span id="{{marker.name}}" (click)="displayUtils(marker)" (cdkDragStarted)='getStartMoove($event, marker)' (cdkDragEnded)='getEndMoove($event, marker)' (cdkDragMoved)="changePlaceItem($event, marker)" *ngFor="let marker of markers" cdkDragBoundary=".fields-container-background" cdkDrag class="{{marker.name}} container-equip-live-on-map">
+    <img [ngClass]="{'point-active': marker.topactif ==  true}" *ngIf="marker.active" (click)="selectTopDrawer(marker)" class="top{{marker.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': marker.bottomactif ==  true}" *ngIf="marker.active" (click)="selectBottomDrawer(marker)" class="bottom{{marker.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': marker.rightactif ==  true}" *ngIf="marker.active" (click)="selectRightDrawer(marker)" class="right{{marker.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img [ngClass]="{'point-active': marker.leftactif ==  true}" *ngIf="marker.active" (click)="selectLeftDrawer(marker)" class="left{{marker.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
+    <img class="polygon-on-map" src="{{marker.src}}">
+  </span>
+
 </div>
 
 
