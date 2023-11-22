@@ -5,6 +5,7 @@ import { StepsServiceService } from '../../../services/steps-service.service';
 import 'leader-line';
 import { uid } from 'uid';
 
+declare const PlainDraggable: any;
 declare var LeaderLine: any;
 @Component({
   selector: 'app-exercices-drawer',
@@ -21,7 +22,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   @ViewChild('connection-canvas')
   canvas!: ElementRef<HTMLCanvasElement>;
   context!: CanvasRenderingContext2D;
-
+  @ViewChild('fieldscontainer') fieldscontainer!: ElementRef;
   zoom = 10;
   ZOOM_SPEED = 0.5;
   @HostListener('wheel', ['$event'])
@@ -86,6 +87,12 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     {id:7, name:'Minihaie', class:'minihaie', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',total:0},
     {id:8, name:'Marker', class:'marker', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',total:0},
     {id:9, name:'Mannequin', class:'model', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-player.svg',total:0},
+  ]
+
+  btnLinesStyle= [
+    {style:'normal', linestyle : true, src:'../../../assets/icons/lines/line.png' },
+    {style:'dash', linestyle : false, src:'../../../assets/icons/lines/line-cut.png'},
+    {style:'curve', linestyle : false, src:'../../../assets/icons/lines/line-round.png'}
   ]
 
   listOfEquipmentsPrinciple = [];
@@ -172,62 +179,114 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     });
   }
 
+  container!:any;
   drawLines(){
     console.log('LES LINES : ! ',this.lines)
-    const boxes = document.querySelectorAll('.leader-line');
-    console.log('1',boxes)
-
-    // console.log(this.line)
-  
-    // this.line.forEach((el:any) =>{
-    //   console.log(el)
-    //   el.remove();
-    // //   this.line[el._id-1].remove()
-    // //   // el.remove()
-    // //   // el.remove();
-    // })
-      boxes.forEach((boxe:any,index:number) =>{
-      console.log(boxe, index)
-      
-     
-      boxe.remove();
-
-      // el.remove()
-      // el.remove();
-    })
-
-    // const boxes2 = document.querySelectorAll('.leader-line');
-    // console.log('2',boxes2)
-    // Here draw and redraw all lines
-  
     let liner :any[]= [];
+    // this.eraseLines()
+    this.container = document.getElementsByClassName("fields-container");
+
     if(this.lines.length !== 0){
        setTimeout(() => {
       this.lines.forEach(line => {
-    //     console.log('DRAW LINES : ', this.lines,line)
-        
+          if(this.container !== null){
+            console.log(this.container)
+          //   this.container.appendChild('<span>GOGOGOGOGO</span>');
+          }
           const startingElement = document.querySelector('#'+line.select[0].name);
           const endingElement = document.querySelector('#'+line.select[1].name);
-    //       // moove at over the line LeaderLine.pointAnchor()
-    //       // new LeaderLine(LeaderLine.mouseHoverAnchor(startElement), endElement);
-    //       setTimeout(() => {
             liner.push(new LeaderLine(startingElement, endingElement));
-
-            // liner[this.line.length-1].size = 2;
-            // liner[this.line.length-1].color = 'grey';
-            // liner[this.line.length-1].path = 'fluid';
-            // liner[this.line.length-1].setOptions({
-            //   startPlug: 'disc',
-            //   endPlug: 'arrow3'
-            // });
-
-        
+            liner[liner.length-1].size = 2;
+            liner[liner.length-1].color = 'grey';
+            liner[liner.length-1].path = 'fluid';
+            liner[liner.length-1].setOptions({
+              startPlug: 'disc',
+              endPlug: 'arrow3'
+            });
+            if(startingElement !== null){
+              startingElement.addEventListener('click', () => { this.selectLine(liner[liner.length-1]); });
+              startingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1]); });
+              startingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1]); });
+             
+             
+            }
+            if(endingElement !== null){
+              endingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1]); });
+              endingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1]); });
+            }
        })
-     }, 1000);
+     }, 100);
     }
   }
 
+  fixLine(line:any) {
+    line.position();
+  }
+  
+
+  // eraseLines(){
+  //   const boxes = document.querySelectorAll('.leader-line');
+  //   // this.fieldscontainer.nativeElement.appendChild()
+  //   console.log('SELECTOR , ',this.fieldscontainer.nativeElement,  boxes)
+  //   boxes.forEach((boxe:any,index:number) =>{
+  //     boxe.remove();
+
+  //   });
+  // }
+
+  changeFormatLineAtStart(item:any){
+    console.log('Le style choisi: ',item)
+    this.btnLinesStyle.forEach(line =>{
+      if(item.style === line.style){
+        line.linestyle = true;
+      }else{
+        line.linestyle = false;
+      }
+      if(item.style === 'dash'){
+        this.selectedItem.dash = true; 
+      }
+      if(item.style === 'normal'){
+        this.selectedItem.path = 'straight';
+        this.selectedItem.dash = false; 
+      }
+      if(item.style === 'curve'){
+        this.selectedItem.path = 'magnet';
+        this.selectedItem.dash = false; 
+      }
+    });
+  
+
+  }
+  
+
+  // chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.unecatef.fr/uploads/Animation%20de%20syst%C3%A8me137.pdf
+  selectedItem:any;
+  selectLine(item:any) {
+    this.selectedItem = item; 
+    console.log('ON CHOISI CETTE LIGNE : ! ',item)
+    // item.dash = true;
+
+    // if (unselect) {
+    //   item.line.setOptions({outline: false, endPlugOutline: false});
+    //   item.isSelected = false;
+    //   selectedItem = null;
+    // } else if (item.line) {
+    //   if (selectedItem) { select(selectedItem, true); }
+    //   item.line.setOptions({
+    //     outline: true,
+    //     outlineColor: '#2ca4fa',
+    //     endPlugOutline: true
+    //   });
+    //   item.isSelected = true;
+    //   selectedItem = item;
+    // }
+  }
+
+
+  ifEconeSelect = false
+  econeSelect :any = null
   displayUtils(artefact:any){
+    console.log(artefact.name.includes("Econe"));
     let Element = document.querySelector<HTMLElement>("."+artefact.name);
     let ElementAll = document.querySelectorAll("."+artefact.name);
     if(Element !== null){
@@ -235,6 +294,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     }
   
     if(artefact.active == true){
+      this.econeSelect = null;
+      this.ifEconeSelect = false;
       artefact.active = false;
       artefact.topactif = false;
       artefact.bottomactif = false;
@@ -242,6 +303,10 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       artefact.rightactif = false;
 
     }else{
+      if(artefact.name.includes("Econe") == true ){
+        this.ifEconeSelect = true;
+        this.econeSelect = artefact;
+      }
       artefact.active = true;
     }
     
@@ -262,6 +327,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           this.lines.push({select:this.selector})
           console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
+          // this.eraseLines();
+          this.drawLines();
           this.last=true;
       }
       if(this.selector.length === 0 && this.last === false){
@@ -298,6 +365,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           this.last=true;
+          // this.eraseLines();
+          this.drawLines();
       }
       if(this.selector.length === 0 && this.last === false){
 
@@ -336,6 +405,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           this.last=true;
+          // this.eraseLines();
+          this.drawLines();
       }
       if(this.selector.length === 0 && this.last === false){
 
@@ -371,6 +442,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           this.last=true;
+          // this.eraseLines();
+          this.drawLines();
       }
       if(this.selector.length === 0 && this.last === false){
 
@@ -651,10 +724,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   getStartMoove(event:any,econe:any){
     console.log('START',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
-
-    // boxes.forEach(box => {
-    //   box.remove();
-    // });
+    // this.eraseLines()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px,'+event.distance.y+'px, 0px)';
     }
@@ -663,10 +733,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   getEndMoove(event:any,econe:any){
     console.log('END',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
-    
-
-    // this.drawLine()
-    this.drawLines()
+    // this.drawLines()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px, -9px, 0px)';
     }

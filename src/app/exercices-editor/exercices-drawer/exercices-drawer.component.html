@@ -6,13 +6,27 @@
 <div class="container-actions">
   <button type="button" mat-raised-button class="regular-type btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/save-icon.svg">Enregistrer l’exerice</button>
 </div>
+<!--  -->
+<div  class="fields-container-background">
+  <div *ngIf="ifEconeSelect && econeSelect !== null" class="container-econe-param">
+    <h4 style="margin-left:10px">#{{econeSelect.name}}</h4>
+    <span></span>
+    <mat-form-field style="width:100%; margin-top: 20px;">
+      <mat-label>Délai avant action : </mat-label>
+      <input type="number" matInput placeholder="0" #inputDelay>
+    </mat-form-field>
+    <mat-form-field style="width:100%; margin-top: 20px;">
+      <mat-label>Temps de passage : </mat-label>
+      <input type="number" matInput placeholder="0" #inputDelayByStep>
+    </mat-form-field>
+    <button type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button>
 
-<div class="fields-container-background">
-  
+  </div>  
   <div class="container-bottom-btn" >
-    <img src="../../../assets/icons/lines/line.png">
-    <img src="../../../assets/icons/lines/line-cut.png">
-    <img src="../../../assets/icons/lines/line-round.png">
+    <img *ngFor="let item of btnLinesStyle" class="line-class" [ngClass]="{'active-selector-line': item.linestyle ==  true}" (click)="changeFormatLineAtStart(item)" src="{{item.src}}">
+    <!-- <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('normal')" src="../../../assets/icons/lines/line.png">
+    <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('dash')" src="../../../assets/icons/lines/line-cut.png">
+    <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('curve')" src="../../../assets/icons/lines/line-round.png"> -->
     <!-- <button (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></button> -->
     <span (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/png/E-cone.png" alt=""></span>
     <span (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer-actor btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/svg/Actor.svg" alt=""></span>
@@ -34,7 +48,7 @@
   </div>
   <div>
   </div>
-<div (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
+<div #fieldscontainer (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
   <span id="{{econe.name}}" (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': econe.topactif ==  true}" *ngIf="econe.active" (click)="selectTopDrawer(econe)" class="top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': econe.bottomactif ==  true}" *ngIf="econe.active" (click)="selectBottomDrawer(econe)" class="bottom{{econe.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
