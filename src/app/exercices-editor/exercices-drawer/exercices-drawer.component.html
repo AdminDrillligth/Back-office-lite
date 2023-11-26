@@ -42,7 +42,8 @@
                 cdkAutosizeMaxRows="59"></textarea>
     </mat-form-field>
   </div>  
-  <div **ngIf="Property"  class="container-change tree-btn start-equip">
+  <!-- [ngStyle]="{'left.px':displayChangeStart.x,'top.px':displayChangeStart.y}" -->
+  <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y}" *ngIf="ifActorSelect && actorSelect !== null"  class="container-change tree-btn start-equip">
     <span class="treebtnimg" *ngFor="let btnStart of btnListStartActor"><img src="{{btnStart.src}}"></span>
   </div>
   <div class="container-change tree-btn merge-equip">

@@ -161,6 +161,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   heightContainer = 0;
 
   ngOnChanges(){
+  
   }
 
 
@@ -352,9 +353,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   // Display this Actif ? 
   passing = false;
   
+  displayChangeStart:any=[{x:0,y:0}]
+
   displayUtils(artefact:any){
     console.log('LE NOM DE L\'ARTEFACT',artefact.name);
     let Element = document.querySelector<HTMLElement>("."+artefact.name);
+    const ElementSelectBound = document.querySelector('#'+artefact.name);
+    if(ElementSelectBound !== null){
+      console.log('START BOUND !!', Math.round(ElementSelectBound.getBoundingClientRect().x-30),Math.round(ElementSelectBound.getBoundingClientRect().y-30))
+      this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+      this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+    }
     let ElementAll = document.querySelectorAll("."+artefact.name);
     if(Element !== null){
       console.log(Element, Element.offsetLeft, ElementAll)
@@ -383,6 +392,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         this.ifEconeSelect = true;
         this.ifActorSelect = false;
         this.econeSelect = artefact;
+
+       
       }
       if(artefact.name.includes("Actor") == true ){
         this.ifActorSelect = true;
