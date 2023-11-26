@@ -39,6 +39,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               zoomElement.style.transform = `scale(${this.zoom -= this.ZOOM_SPEED})`;
               console.log('ZOOM OUT', this.zoom - this.ZOOM_SPEED)
               this.scale = `scale(${Math.round(this.zoom -= this.ZOOM_SPEED)})`;
+              this.eraseLines()
+              this.drawLines()
             }
           }
         }else{
@@ -47,6 +49,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             zoomElement.style.transform = `scale(${this.zoom += this.ZOOM_SPEED})`;
             console.log('ZOOM IN',this.zoom + this.ZOOM_SPEED)
             this.scale = `scale(${Math.round(this.zoom += this.ZOOM_SPEED)})`;
+            this.eraseLines()
+            this.drawLines()
           }
         }
       }
@@ -310,13 +314,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           const endingElement = document.querySelector('#'+line.select[1].name);
           console.log('LE NOM DU DEPART : ',line.select[0].name)
             liner.push(new LeaderLine(startingElement, endingElement));
-            liner[liner.length-1].size = 2;
-            liner[liner.length-1].color = 'grey';
-            liner[liner.length-1].path = 'fluid';
-            liner[liner.length-1].setOptions({
-              startPlug: 'disc',
-              endPlug: 'arrow3'
-            });
+
             if(line.select[0].name.includes("Econe") == true ){
       
             }
@@ -350,8 +348,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               liner[liner.length-1].color = 'grey';
             }
             // if(line.select[0].name === 'Actor')
+            liner[liner.length-1].size = 2;
 
-            if(startingElement !== null){
+            liner[liner.length-1].path = 'fluid';
+            liner[liner.length-1].setOptions({
+              startPlug: 'disc',
+              endPlug: 'arrow3'
+            });
+            if(startingElement !== null && endingElement !== null){
               console.log(container, containerAll)
               console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
             
@@ -361,6 +365,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 startingElement.addEventListener('mousemove', () => { this.fixLine(line); });
                 startingElement.addEventListener('ondrag', () => { this.fixLine(line); });
                 startingElement.addEventListener('touchmove', () => { this.fixLine(line); });
+
+                endingElement.addEventListener('click', () => { this.selectLine(line); });
+                endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
+                endingElement.addEventListener('ondrag', () => { this.fixLine(line); });
+                endingElement.addEventListener('touchmove', () => { this.selectLine(line); });
               })
 
                 // let div = document.createElement("div");
@@ -373,21 +382,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 // containerAll[0].innerHTML = '<div style="position: absolute;width: 46px; height: 100px;color: white;background: black;top: 113px;left: 332px;"><p style="top: 37px;position: absolute;">Principle elements</p><span class="accesories"  ></span></div>';
                 // console.log(div.childNodes, div, containerAll);
     
-              }
-              
-             
-             
-             
+              }   
             }
-            if(endingElement !== null){
-              liner.forEach((line) =>{ 
-                endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
-                endingElement.addEventListener('touchmove', () => { this.selectLine(line); });
-                endingElement.addEventListener('click', () => { this.selectLine(line); });
-                endingElement.addEventListener('ondrag', () => { this.fixLine(line); });
-              })
+            // if(endingElement !== null){
+            //   liner.forEach((line) =>{ 
+      
+            //   })
 
-            }
+            // }
     
 
        })
@@ -689,6 +691,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
           // console.log('ZOOM IN', this.zoom - 0.1);
     }
+    this.eraseLines()
+    this.drawLines()
   }
 
   pinchOut(event:any){
@@ -702,6 +706,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           }
       }
     // }
+    this.eraseLines()
+    this.drawLines()
   }
   scale= 'scale(10.5)';
   xgo = 0;
