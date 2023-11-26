@@ -96,7 +96,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   ];
 
   btnListStartActor = [
-    {btn:'color', src:'../../assets/icons/exercices/interface/Icon-button-white.svg', active:'false'},
+    // {btn:'color', src:'../../assets/icons/exercices/interface/Icon-button-white.svg', active:'false'},
     {btn:'flag', src:'../../assets/icons/exercices/interface/flag-start.svg', active:'false'},
     {btn:'bucket', src:'../../assets/icons/exercices/interface/bucket.svg', active:'false'}
   ];
@@ -116,7 +116,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   ];
 
-
+  flagerStart : any = null;
   listOfEquipmentsPrinciple = [];
   selectedEquipments = [[{name:'', number:0}]];
   btnAdderList : any[] = [];
@@ -167,11 +167,29 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
 
   displayColor = false;
-  displayColors(stateColor:any){
-    if(stateColor.btn === 'color'){
-      this.displayColor = true;
-      console.log('IS COLOR SELECTED : !',stateColor.btn, 'actor', this.actorSelect)
+  
+  displayStartAndColors(state:any){
+
+    if(state === 'flag'){
+      console.log('IS SELECTED : !',state);
+      console.log('IS SELECTED : !',state, 'actor', this.actorSelect)
+      const ActorXY = document.querySelector('#'+this.actorSelect.name);
+      let ActorXYElem = document.querySelector<HTMLElement>('.'+this.actorSelect.name);
+      if(ActorXY !== null){
+        if(ActorXYElem !== null){
+          console.log('TRANSFORM', ActorXYElem.style.transform)
+        }
+
+        console.log('START BOUND !!', ActorXY.getBoundingClientRect())
+        this.flagerStart = {transform:'',left: ActorXY.getBoundingClientRect().left,top: ActorXY.getBoundingClientRect().top,startBy:this.actorSelect}
+        console.log('FLAGGER START !!', this.flagerStart)
+      }
     }
+    if(state === 'color'){
+        this.displayColor = true;
+    }
+  
+
 
   }
 
@@ -182,19 +200,24 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       if(color.btn === equipColor.btn){
         this.actorSelect.color = equipColor.btn;
         if(equipColor.btn === 'green'){
-          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-greenn.svg';
+          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-green.svg';
+          this.actorSelect.srcActor = '../../assets/icons/exercices/interface/Actor-green.svg';
         }
         if(equipColor.btn === 'red'){
           this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-red.svg';
+          this.actorSelect.srcActor = '../../assets/icons/exercices/interface/Actor-red.svg';
         }
         if(equipColor.btn === 'yellow'){
           this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-yellow.svg';
+          this.actorSelect.srcActor = '../../assets/icons/exercices/interface/Actor-yellow.svg';
         }
         if(equipColor.btn === 'blue'){
           this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-blue.svg';
+          this.actorSelect.srcActor = '../../assets/icons/exercices/interface/Actor-blue.svg';
         }
         if(equipColor.btn === 'white'){
           this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-white.svg';
+          this.actorSelect.srcActor = '../../assets/icons/exercices/interface/Actor-white.svg';
         }
         console.log('LA SLECTION DE LA COLORATION : !',this.actorSelect,equipColor.btn)
       }
@@ -219,6 +242,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         number:this.econes.length+1, 
         transform:'scale(0.08)', 
         color:'white',
+        srcEcone:'',
         srcColor:'Icon-button-white.svg',
         active:false,
         topactif:false,
@@ -237,7 +261,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     console.log('ADD ACTION! : ', econeSelect)
     console.log(econeSelect.action)
     econeSelect.action.push({
-
     });
     if(econeSelect.action.length !== 0){
       econeSelect.action.forEach((action:any) =>{
@@ -285,9 +308,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           const startingElement = document.querySelector('#'+line.select[0].name);
           const startingelementAll = document.querySelector<HTMLElement>('#'+line.select[0].name);
           const endingElement = document.querySelector('#'+line.select[1].name);
+          console.log('LE NOM DU DEPART : ',line.select[0].name)
             liner.push(new LeaderLine(startingElement, endingElement));
-
-            
             liner[liner.length-1].size = 2;
             liner[liner.length-1].color = 'grey';
             liner[liner.length-1].path = 'fluid';
@@ -295,12 +317,53 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               startPlug: 'disc',
               endPlug: 'arrow3'
             });
-            if(startingElement !== null){
-             if(container !== null){
-                console.log(container, containerAll)
-                console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+            if(line.select[0].name.includes("Econe") == true ){
+      
+            }
+            if(line.select[0].name.includes("Actor") == true ){
+              console.log('COLOR OF ACTOR: ',line.select[0].name)
+              this.actors.forEach((actor:any)=>{
+                if(actor.name === line.select[0].name){
+                  console.log('CHAQUE ACTEUR : ! ',actor)
+                  console.log('CHAQUE ACTEUR : ! ',actor.color)
+                  if(actor.color === 'red'){
+                    liner[liner.length-1].color = '#D3614E';
+                  }
+                  if(actor.color === 'yellow'){
+                    liner[liner.length-1].color = '#F8FF74';
+                  }
+                  if(actor.color === 'green'){
+                    liner[liner.length-1].color = '#17D899';
+                  }
+                  if(actor.color === 'blue'){
+                    liner[liner.length-1].color = '#3CC9E1';
+                  }
+                  if(actor.color === 'white'){
+                    liner[liner.length-1].color = 'grey';
+                  }
+                }
+                // console.log('CHAQUE ACTEUR : ! ',actor)
+              })
+
               
-                let div = document.createElement("div");
+            }else{
+              liner[liner.length-1].color = 'grey';
+            }
+            // if(line.select[0].name === 'Actor')
+
+            if(startingElement !== null){
+              console.log(container, containerAll)
+              console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+            
+             if(container !== null){
+              liner.forEach((line) =>{
+                startingElement.addEventListener('click', () => { this.selectLine(line); });
+                startingElement.addEventListener('mousemove', () => { this.fixLine(line); });
+                startingElement.addEventListener('ondrag', () => { this.fixLine(line); });
+                startingElement.addEventListener('touchmove', () => { this.fixLine(line); });
+              })
+
+                // let div = document.createElement("div");
                 // this.boundingBoxVectorStarts.push()
                 // div.classList.add("container-drag");
                 // div.style.background="black"
@@ -312,37 +375,42 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     
               }
               
-              startingElement.addEventListener('click', () => { this.selectLine(liner[liner.length-1]); });
-              startingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1]); });
-              startingElement.addEventListener('ondrag', () => { this.fixLine(liner[liner.length-1]); });
-              startingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1]); });
+             
              
              
             }
             if(endingElement !== null){
-              // console.log('END BOUND',endingElement.getBoundingClientRect() )
-              endingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1]); });
-              endingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1]); });
+              liner.forEach((line) =>{ 
+                endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
+                endingElement.addEventListener('touchmove', () => { this.selectLine(line); });
+                endingElement.addEventListener('click', () => { this.selectLine(line); });
+                endingElement.addEventListener('ondrag', () => { this.fixLine(line); });
+              })
+
             }
+    
+
        })
-     }, 100);
+      //  console.log('ON PARCOURS LES LINERS: ',liner)
+     }, 50);
     }
   }
 
   fixLine(line:any) {
+    console.log('CETTE LIGNE : ',line)
     line.position();
   }
   
 
-  // eraseLines(){
-  //   const boxes = document.querySelectorAll('.leader-line');
-  //   // this.fieldscontainer.nativeElement.appendChild()
-  //   console.log('SELECTOR , ',this.fieldscontainer.nativeElement,  boxes)
-  //   boxes.forEach((boxe:any,index:number) =>{
-  //     boxe.remove();
+  eraseLines(){
+    const boxes = document.querySelectorAll('.leader-line');
+    // this.fieldscontainer.nativeElement.appendChild()
+    console.log('SELECTOR  ',  boxes)
+    // boxes.forEach((boxe:any,index:number) =>{
+    //   boxe.remove();
 
-  //   });
-  // }
+    // });
+  }
 
   changeFormatLineAtStart(item:any){
     console.log('Le style choisi: ',item)
@@ -373,7 +441,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   selectedItem:any;
   selectLine(item:any) {
     this.selectedItem = item; 
-    console.log('ON CHOISI CETTE LIGNE : ! ',item)
+    // console.log('ON CHOISI CETTE LIGNE : ! ',item)
 
     // item.dash = true;
 
@@ -694,7 +762,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         name:'Actor'+(Number(this.actors.length)+1), 
         number:this.actors.length+1,
         color:'white',
-        srcColor:'Icon-button-white.svg',
+        srcActor:'../../assets/icons/exercices/interface/Actor-white.svg',
+        srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
         active:false,
         topactif:false,
         bottomactif:false,
@@ -897,7 +966,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   getEndMoove(event:any,econe:any){
     // console.log('END',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
-    // this.drawLines()
+    this.eraseLines()
+    this.drawLines()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px, -9px, 0px)';
     }

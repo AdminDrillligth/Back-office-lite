@@ -42,33 +42,24 @@
                 cdkAutosizeMaxRows="59"></textarea>
     </mat-form-field>
   </div>  
-  <!-- [ngStyle]="{'left.px':displayChangeStart.x,'top.px':displayChangeStart.y}" -->
   <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y}" *ngIf="ifActorSelect && actorSelect !== null"  class="container-change tree-btn start-equip">
-    <span  (click)="displayColors(btnStart)"  class="treebtnimg" *ngFor="let btnStart of btnListStartActor"><img src="{{btnStart.src}}"></span>
+    <span (click)="displayStartAndColors('color')"  class="treebtnimg" ><img src="{{actorSelect.srcColor}}"></span>
+    <span (click)="displayStartAndColors(btnStart.btn)"  class="treebtnimg" *ngFor="let btnStart of btnListStartActor"><img src="{{btnStart.src}}"></span>
   </div>
-  <div class="container-change tree-btn merge-equip">
+  <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y}" *ngIf="ifEconeSelect && econeSelect !== null"  class="container-change tree-btn merge-equip">
     <span class="treebtnimgmerge"  *ngFor="let btnDupli of btnDuplicateEquipment"><img src="{{btnDupli.src}}"></span>
   </div>
-
-  
   <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y-50}" *ngIf="displayColor && actorSelect !== null" class="container-change five-btn">
     <span (click)="chooseColors(color)" class="fivebtnimg" *ngFor="let color of btnColorEquipment"><img src="{{color.src}}"></span>
   </div>
   <div class="container-bottom-btn" >
     <img *ngFor="let item of btnLinesStyle" class="line-class" [ngClass]="{'active-selector-line': item.linestyle ==  true}" (click)="changeFormatLineAtStart(item)" src="{{item.src}}">
-    <!-- <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('normal')" src="../../../assets/icons/lines/line.png">
-    <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('dash')" src="../../../assets/icons/lines/line-cut.png">
-    <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('curve')" src="../../../assets/icons/lines/line-round.png"> -->
-    <!-- <button (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></button> -->
     <span (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/png/E-cone.png" alt=""></span>
     <span (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer-actor btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/svg/Actor.svg" alt=""></span>
-
     <button (click)="addAccessories()" type="button" mat-raised-button class="btn-add-accesories btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter un accessoire</button>
-
   </div>
   <div  [ngClass]="{'active-selector-utilities': equipHidden ==  true}" *ngIf="equipHidden"  class="container-selector-utilities">
-     
-        <h4 style="margin-left: 7px;">Badges Default</h4>
+      <h4 style="margin-left: 7px;">Badges Default</h4>
       <div class="container-accesories">
         <p style="margin-left: 7px;">Accessories</p>
         <span class="accesories" matBadge="{{equipment.total}}" [matBadgeHidden]="hidden" (click)="addElementEquipment(equipment)" *ngFor="let equipment of listOfEquipments"  ><img src="{{equipment.src}}"></span>
@@ -99,7 +90,7 @@
     <img [ngClass]="{'point-active': actor.rightactif ==  true}" *ngIf="actor.active" (click)="selectRightDrawer(actor)" class="right{{actor.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': actor.leftactif ==  true}" *ngIf="actor.active" (click)="selectLeftDrawer(actor)" class="left{{actor.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img class="polygon-on-map" src="../../../assets/icons/exercices/interface/Polygon-background.svg">
-    <img class='img-inside-polygon-on-map' src="../../../assets/icons/exercices/svg/Actor.svg" alt="">
+    <img class='img-inside-polygon-on-map' src="{{actor.srcActor}}" alt="">
   </span>
   
   <span id="{{ball.name}}" (click)="displayUtils(ball)" (cdkDragStarted)='getStartMoove($event, ball)' (cdkDragEnded)='getEndMoove($event, ball)' (cdkDragMoved)="changePlaceItem($event, ball)" *ngFor="let ball of balls" cdkDragBoundary=".fields-container-background" cdkDrag class="{{ball.name}} container-equip-live-on-map">
@@ -174,7 +165,10 @@
     <img [ngClass]="{'point-active': marker.leftactif ==  true}" *ngIf="marker.active" (click)="selectLeftDrawer(marker)" class="left{{marker.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img class="polygon-on-map" src="{{marker.src}}">
   </span>
-
+  <!-- [ngStyle]="{'left.px': flagerStart.x, 'top.px':flagerStart.y}"  -->
+  <span [ngStyle]="{'left.px':'50%', 'top.px':'39%'}"  *ngIf="flagerStart !== null "  cdkDragBoundary=".fields-container-background" cdkDrag class=" container-equip-live-on-map">
+    <img src="../../assets/icons/exercices/interface/flag-start.svg">
+  </span>
 </div>
 
 
