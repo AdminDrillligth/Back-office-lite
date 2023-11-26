@@ -7,7 +7,7 @@
   <button type="button" mat-raised-button class="regular-type btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/save-icon.svg">Enregistrer l’exerice</button>
 </div>
 <!--  -->
-<div  class="fields-container-background">
+<div (click)="logkey($event)" class="fields-container-background">
   <div *ngIf="ifEconeSelect && econeSelect !== null" class="container-econe-param">
     <h4 style="margin-left:10px">#{{econeSelect.name}}</h4>
     <span></span>
@@ -44,13 +44,15 @@
   </div>  
   <!-- [ngStyle]="{'left.px':displayChangeStart.x,'top.px':displayChangeStart.y}" -->
   <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y}" *ngIf="ifActorSelect && actorSelect !== null"  class="container-change tree-btn start-equip">
-    <span class="treebtnimg" *ngFor="let btnStart of btnListStartActor"><img src="{{btnStart.src}}"></span>
+    <span  (click)="displayColors(btnStart)"  class="treebtnimg" *ngFor="let btnStart of btnListStartActor"><img src="{{btnStart.src}}"></span>
   </div>
   <div class="container-change tree-btn merge-equip">
     <span class="treebtnimgmerge"  *ngFor="let btnDupli of btnDuplicateEquipment"><img src="{{btnDupli.src}}"></span>
   </div>
-  <div class="container-change five-btn">
-    <span class="fivebtnimg" *ngFor="let color of btnColorEquipment"><img src="{{color.src}}"></span>
+
+  
+  <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y-50}" *ngIf="displayColor && actorSelect !== null" class="container-change five-btn">
+    <span (click)="chooseColors(color)" class="fivebtnimg" *ngFor="let color of btnColorEquipment"><img src="{{color.src}}"></span>
   </div>
   <div class="container-bottom-btn" >
     <img *ngFor="let item of btnLinesStyle" class="line-class" [ngClass]="{'active-selector-line': item.linestyle ==  true}" (click)="changeFormatLineAtStart(item)" src="{{item.src}}">

@@ -157,8 +157,27 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
     // console.log('LA HAUTEUR :: ! ',window.innerHeight/3.2)
     // this.heightContainer   = window.innerHeight/3.2;
+  
   }
   heightContainer = 0;
+
+  logkey(e:any){
+    console.log('CLIENT X AND Y : ',e.clientX, e.clientY)
+  }
+
+
+  displayColor = false;
+  displayColors(stateColor:any){
+    if(stateColor.btn === 'color'){
+      this.displayColor = true;
+      console.log('IS COLOR SELECTED : !',stateColor.btn, 'actor', this.actorSelect)
+    }
+  }
+
+  chooseColors(color:any){
+    console.log('COULEUR CHOISI : ! ',color.btn);
+    this.displayColor = false;
+  }
 
   ngOnChanges(){
   
