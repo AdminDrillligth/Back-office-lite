@@ -11,17 +11,46 @@
   <div *ngIf="ifEconeSelect && econeSelect !== null" class="container-econe-param">
     <h4 style="margin-left:10px">#{{econeSelect.name}}</h4>
     <span></span>
-    <mat-form-field style="width:100%; margin-top: 20px;">
+    <mat-form-field class="input-of-infos">
       <mat-label>Délai avant action : </mat-label>
       <input type="number" matInput placeholder="0" #inputDelay>
     </mat-form-field>
-    <mat-form-field style="width:100%; margin-top: 20px;">
+    <mat-form-field class="input-of-infos" >
       <mat-label>Temps de passage : </mat-label>
       <input type="number" matInput placeholder="0" #inputDelayByStep>
     </mat-form-field>
-    <button type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button>
-
+    <div *ngFor="let action of econeSelect.action" ></div>
+    <button (click)="addAction(econeSelect)" type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button>
   </div>  
+  <div *ngIf="ifActorSelect && actorSelect !== null" class="container-econe-param">
+    <h4 style="margin-left:10px">#{{actorSelect.name}}</h4>
+    <span></span>
+     <mat-form-field class="input-of-infos">
+      <mat-label>Position de départ : </mat-label>
+      <mat-select>
+        <mat-option>Debout</mat-option>
+        <mat-option>Accroupi</mat-option>
+        <mat-option>Assis</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="input-of-infos">
+      <mat-label>Instructions</mat-label>
+      <textarea matInput
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="10"
+                cdkAutosizeMaxRows="59"></textarea>
+    </mat-form-field>
+  </div>  
+  <div **ngIf="Property"  class="container-change tree-btn start-equip">
+    <span class="treebtnimg" *ngFor="let btnStart of btnListStartActor"><img src="{{btnStart.src}}"></span>
+  </div>
+  <div class="container-change tree-btn merge-equip">
+    <span class="treebtnimgmerge"  *ngFor="let btnDupli of btnDuplicateEquipment"><img src="{{btnDupli.src}}"></span>
+  </div>
+  <div class="container-change five-btn">
+    <span class="fivebtnimg" *ngFor="let color of btnColorEquipment"><img src="{{color.src}}"></span>
+  </div>
   <div class="container-bottom-btn" >
     <img *ngFor="let item of btnLinesStyle" class="line-class" [ngClass]="{'active-selector-line': item.linestyle ==  true}" (click)="changeFormatLineAtStart(item)" src="{{item.src}}">
     <!-- <img [ngClass]="{'active-selector-line': linestyle ==  true}" (click)="changeFormatLineAtStart('normal')" src="../../../assets/icons/lines/line.png">
@@ -30,7 +59,7 @@
     <!-- <button (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/E-cone.png" alt=""></button> -->
     <span (click)="addEcones()" type="button" mat-raised-button matBadge="{{econes.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/png/E-cone.png" alt=""></span>
     <span (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer-actor btn btn-sm btn-rounded"><img class="polygon" src="../../../assets/icons/exercices/interface/Polygon-background.svg"><img class='img-inside-polygon' src="../../../assets/icons/exercices/svg/Actor.svg" alt=""></span>
-  
+
     <button (click)="addAccessories()" type="button" mat-raised-button class="btn-add-accesories btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter un accessoire</button>
 
   </div>
@@ -49,6 +78,9 @@
   <div>
   </div>
 <div #fieldscontainer (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
+  <!-- container of drag vectors -->
+  <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span>
+  
   <span id="{{econe.name}}" (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': econe.topactif ==  true}" *ngIf="econe.active" (click)="selectTopDrawer(econe)" class="top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': econe.bottomactif ==  true}" *ngIf="econe.active" (click)="selectBottomDrawer(econe)" class="bottom{{econe.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
