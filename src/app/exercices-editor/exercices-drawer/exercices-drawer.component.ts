@@ -391,7 +391,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     
 
        })
-      //  console.log('ON PARCOURS LES LINERS: ',liner)
+       console.log('ON PARCOURS LES LINERS: ',liner)
      }, 50);
     }
   }
@@ -406,10 +406,10 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     const boxes = document.querySelectorAll('.leader-line');
     // this.fieldscontainer.nativeElement.appendChild()
     console.log('SELECTOR  ',  boxes)
-    // boxes.forEach((boxe:any,index:number) =>{
-    //   boxe.remove();
+    boxes.forEach((boxe:any,index:number) =>{
+      boxe.remove();
 
-    // });
+    });
   }
 
   changeFormatLineAtStart(item:any){
@@ -441,7 +441,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   selectedItem:any;
   selectLine(item:any) {
     this.selectedItem = item; 
-    // console.log('ON CHOISI CETTE LIGNE : ! ',item)
+    console.log('ON CHOISI CETTE LIGNE : ! ',item)
 
     // item.dash = true;
 
