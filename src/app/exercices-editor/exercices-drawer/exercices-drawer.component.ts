@@ -172,10 +172,37 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       this.displayColor = true;
       console.log('IS COLOR SELECTED : !',stateColor.btn, 'actor', this.actorSelect)
     }
+
   }
 
   chooseColors(color:any){
-    console.log('COULEUR CHOISI : ! ',color.btn);
+    //   ../../assets/icons/exercices/interface/
+    console.log('COULEUR CHOISI : ! ',this.btnListStartActor, color.btn, this.actorSelect);
+    this.btnColorEquipment.forEach((equipColor:any)=>{
+      if(color.btn === equipColor.btn){
+        this.actorSelect.color = equipColor.btn;
+        if(equipColor.btn === 'green'){
+          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-greenn.svg';
+        }
+        if(equipColor.btn === 'red'){
+          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-red.svg';
+        }
+        if(equipColor.btn === 'yellow'){
+          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-yellow.svg';
+        }
+        if(equipColor.btn === 'blue'){
+          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-blue.svg';
+        }
+        if(equipColor.btn === 'white'){
+          this.actorSelect.srcColor = '../../assets/icons/exercices/interface/Icon-button-white.svg';
+        }
+        console.log('LA SLECTION DE LA COLORATION : !',this.actorSelect,equipColor.btn)
+      }
+    })
+
+    // this.btnListStartActor.src
+    // this.btnListStartActor.btn
+    
     this.displayColor = false;
   }
 
@@ -191,6 +218,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         name:'Econe'+(Number(this.econes.length)+1), 
         number:this.econes.length+1, 
         transform:'scale(0.08)', 
+        color:'white',
+        srcColor:'Icon-button-white.svg',
         active:false,
         topactif:false,
         bottomactif:false,
@@ -664,6 +693,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       {
         name:'Actor'+(Number(this.actors.length)+1), 
         number:this.actors.length+1,
+        color:'white',
+        srcColor:'Icon-button-white.svg',
         active:false,
         topactif:false,
         bottomactif:false,
@@ -690,6 +721,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'ball'+(this.balls.length+1), 
           number:this.balls.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -705,6 +738,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'plot'+(this.plots.length+1), 
           number:this.plots.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -720,6 +755,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'flag'+(this.plots.length+1), 
           number:this.flags.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-flag.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -735,6 +772,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'rebounder'+(this.plots.length+1),
           number:this.rebounders.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -750,6 +789,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'player'+(this.players.length+1), 
           number:this.players.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-player.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -765,6 +806,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'goal'+(this.goals.length+1), 
           number:this.goals.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-goal.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -780,6 +823,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'ladder'+(this.ladders.length+1), 
           number:this.ladders.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -795,6 +840,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'minihaie'+(this.minihaies.length+1), 
           number:this.minihaies.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -811,6 +858,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           name:'marker'+(this.markers.length+1), 
           number:this.markers.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',
+          color:'white',
+          srcColor:'Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
