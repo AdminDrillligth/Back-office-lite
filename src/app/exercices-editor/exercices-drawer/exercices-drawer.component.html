@@ -11,15 +11,31 @@
   <div *ngIf="ifEconeSelect && econeSelect !== null" class="container-econe-param">
     <h4 style="margin-left:10px">#{{econeSelect.name}}</h4>
     <span></span>
-    <mat-form-field class="input-of-infos">
+    <!-- <mat-form-field class="input-of-infos"> -->
+    <div>
       <mat-label>Délai avant action : </mat-label>
-      <input type="number" matInput placeholder="0" #inputDelay>
-    </mat-form-field>
-    <mat-form-field class="input-of-infos" >
+    </div>
+    <div>
+      <span>
+        <label data-domain="Sec">
+        <input class="input-number" type="number" matInput placeholder="0" #inputDelay>
+        </label>
+      </span>
+    </div>
+    <!-- </mat-form-field> -->
+    <!-- <mat-form-field class="input-of-infos" > -->
+    <div>
       <mat-label>Temps de passage : </mat-label>
-      <input type="number" matInput placeholder="0" #inputDelayByStep>
-    </mat-form-field>
-    <div *ngFor="let action of econeSelect.action" ></div>
+    </div>
+    <div>
+        <span>
+          <label data-domain="Sec">
+          <input class="input-number"  type="number" matInput placeholder="0" #inputDelayByStep>
+          </label>
+        </span>
+    </div>
+        <!-- </mat-form-field> -->
+    <div *ngFor="let action of econeSelect.action" >{{action.name}}</div>
     <button (click)="addAction(econeSelect)" type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button>
   </div>  
   <div *ngIf="ifActorSelect && actorSelect !== null" class="container-econe-param">
@@ -68,6 +84,11 @@
         <p style="top: 37px;position: absolute;">Principle elements</p>
         <span class="accesories"  ><img src=""></span>
       </div>
+  </div>
+  <div  class="container-selector-actions">
+    <p style="margin-left: 7px;">Temps</p>
+    <p style="margin-left: 7px;">Mouvements</p>
+
   </div>
   <div>
   </div>

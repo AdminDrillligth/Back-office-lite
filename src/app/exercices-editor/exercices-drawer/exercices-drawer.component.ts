@@ -265,6 +265,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     console.log('ADD ACTION! : ', econeSelect)
     console.log(econeSelect.action)
     econeSelect.action.push({
+      id:(econeSelect.action.length+1),
+      name:'#Action'+(econeSelect.action.length+1),
+      moove:[],
+      sound:false,
+      color:'white'
     });
     if(econeSelect.action.length !== 0){
       econeSelect.action.forEach((action:any) =>{
@@ -277,8 +282,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   lastSelection:any;
   line:any = [];
   drawLine() {
-
-
     const startingElement = document.querySelector('#Econe1');
     const endingElement = document.querySelector('#Econe2');
     console.log('love je reussi ') 
@@ -303,18 +306,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(this.lines.length !== 0){
        setTimeout(() => {
       this.lines.forEach(line => {
-      
           let container = document.querySelector<HTMLElement>(".fields-container");
           let containerAll = document.querySelectorAll(".fields-container");
-
-      
-
           const startingElement = document.querySelector('#'+line.select[0].name);
           const startingelementAll = document.querySelector<HTMLElement>('#'+line.select[0].name);
           const endingElement = document.querySelector('#'+line.select[1].name);
           console.log('LE NOM DU DEPART : ',line.select[0].name)
             liner.push(new LeaderLine(startingElement, endingElement));
-
             if(line.select[0].name.includes("Econe") == true ){
       
             }
@@ -341,20 +339,18 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                   }
                 }
                 // console.log('CHAQUE ACTEUR : ! ',actor)
-              })
-
-              
+              }) 
             }else{
               liner[liner.length-1].color = 'grey';
             }
             // if(line.select[0].name === 'Actor')
             liner[liner.length-1].size = 2;
-
             liner[liner.length-1].path = 'fluid';
             liner[liner.length-1].setOptions({
               startPlug: 'disc',
               endPlug: 'arrow3'
             });
+
             if(startingElement !== null && endingElement !== null){
               console.log(container, containerAll)
               console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
@@ -365,33 +361,25 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 startingElement.addEventListener('mousemove', () => { this.fixLine(line); });
                 startingElement.addEventListener('ondrag', () => { this.fixLine(line); });
                 startingElement.addEventListener('touchmove', () => { this.fixLine(line); });
-
-                endingElement.addEventListener('click', () => { this.selectLine(line); });
+                // endingElement.addEventListener('click', () => { this.selectLine(line); });
                 endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
                 endingElement.addEventListener('ondrag', () => { this.fixLine(line); });
                 endingElement.addEventListener('touchmove', () => { this.selectLine(line); });
-              })
-
+              });
                 // let div = document.createElement("div");
                 // this.boundingBoxVectorStarts.push()
                 // div.classList.add("container-drag");
                 // div.style.background="black"
                 // div.innerHTML = '<div style="position: abslute;width: 6px; height: 6px;color: white;background: black;top:'+Math.round(startingElement.getBoundingClientRect().top)+'px;left: 200px;"></div>';
                 // containerAll[0].append(div)
-              
                 // containerAll[0].innerHTML = '<div style="position: absolute;width: 46px; height: 100px;color: white;background: black;top: 113px;left: 332px;"><p style="top: 37px;position: absolute;">Principle elements</p><span class="accesories"  ></span></div>';
                 // console.log(div.childNodes, div, containerAll);
-    
               }   
             }
             // if(endingElement !== null){
             //   liner.forEach((line) =>{ 
-      
             //   })
-
             // }
-    
-
        })
        console.log('ON PARCOURS LES LINERS: ',liner)
      }, 50);
@@ -410,7 +398,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     console.log('SELECTOR  ',  boxes)
     boxes.forEach((boxe:any,index:number) =>{
       boxe.remove();
-
     });
   }
 
@@ -466,8 +453,10 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   ifEconeSelect = false;
   ifActorSelect = false;
+  ifUltilsSelect = false;
   econeSelect :any = null;
-  actorSelect:any = null;
+  actorSelect :any = null;
+  utilsSelect :any = null;
   // Display this Actif ? 
   passing = false;
   
@@ -514,10 +503,16 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
        
       }
       if(artefact.name.includes("Actor") == true ){
-        this.ifActorSelect = true;
-        this.ifEconeSelect = false;
-        this.actorSelect = artefact;
+          this.ifActorSelect = true;
+          this.ifEconeSelect = false;
+          this.actorSelect = artefact;
       }
+      // else{
+      //   this.ifActorSelect = true;
+      //   this.ifEconeSelect = false;
+      //   this.actorSelect = artefact;
+      // }
+      
 
 
       
@@ -797,7 +792,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.balls.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -814,7 +809,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.plots.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -831,7 +826,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.flags.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-flag.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -848,7 +843,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.rebounders.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-rebounder.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -865,7 +860,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.players.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-player.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -882,7 +877,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.goals.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-goal.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -899,7 +894,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.ladders.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -916,7 +911,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.minihaies.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
@@ -934,7 +929,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           number:this.markers.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',
           color:'white',
-          srcColor:'Icon-button-white.svg',
+          srcColor:'../../assets/icons/exercices/interface/Icon-button-white.svg',
           active:false,
           topactif:false,
           bottomactif:false,
