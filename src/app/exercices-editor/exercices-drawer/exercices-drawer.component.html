@@ -12,34 +12,24 @@
     <h4 style="margin-left:10px">#{{econeSelect.name}}</h4>
     <span></span>
     <!-- <mat-form-field class="input-of-infos"> -->
-    <div>
-      <mat-label>Délai avant action : </mat-label>
-    </div>
+    <div><mat-label>Délai avant action : </mat-label></div>
     <div>
       <span>
-        <label data-domain="Sec">
-        <input class="input-number" type="number" matInput placeholder="0" #inputDelay>
-        </label>
+        <label data-domain="Sec"><input class="input-number" type="number" matInput placeholder="0" #inputDelay></label>
       </span>
     </div>
-    <!-- </mat-form-field> -->
-    <!-- <mat-form-field class="input-of-infos" > -->
-    <div>
-      <mat-label>Temps de passage : </mat-label>
-    </div>
+    <div><mat-label>Temps de passage : </mat-label></div>
     <div>
         <span>
-          <label data-domain="Sec">
-          <input class="input-number"  type="number" matInput placeholder="0" #inputDelayByStep>
-          </label>
+          <label data-domain="Sec"><input class="input-number"  type="number" matInput placeholder="0" #inputDelayByStep></label>
         </span>
     </div>
-        <!-- </mat-form-field> -->
-    <div *ngFor="let action of econeSelect.action" >{{action.name}}</div>
+    <h6 style="margin-top:10px">Actions {{econeSelect.action.length}}</h6>
+    <div (click)="editAction(action)" class="container-actions-inside" *ngFor="let action of econeSelect.action" >{{action.name}}</div>
     <button (click)="addAction(econeSelect)" type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button>
   </div>  
   <div *ngIf="ifActorSelect && actorSelect !== null" class="container-econe-param">
-    <h4 style="margin-left:10px">#{{actorSelect.name}}</h4>
+    <h6 style="margin-left:10px">#{{actorSelect.name}}</h6>
     <span></span>
      <mat-form-field class="input-of-infos">
       <mat-label>Position de départ : </mat-label>
@@ -85,10 +75,12 @@
         <span class="accesories"  ><img src=""></span>
       </div>
   </div>
-  <div  class="container-selector-actions">
-    <p style="margin-left: 7px;">Temps</p>
-    <p style="margin-left: 7px;">Mouvements</p>
-
+  <div *ngIf="showActions" class="container-selector-actions">
+    <!-- <p style="margin-left: 7px;">Temps</p> -->
+    <span *ngFor="let time of listOfActionsEconesPanel"><p  ></p></span>
+    <!-- <p style="margin-left: 7px;">Mouvements</p> -->
+    <span  *ngFor="let action of listOfActionsEconesPanel"><p >{{action.name}}<img style="margin-left:10px;" src="{{action.src}}"></p></span>
+    
   </div>
   <div>
   </div>

@@ -96,7 +96,7 @@
 .btn-add-actions{
   margin-top: 7px;
   border-radius: 6px;
-  width: 100%;
+  width: 95%;
   background: var(--alpha-blue, rgba(0, 72, 186, 0.15));
   // margin-right: 5px;
 }
@@ -263,16 +263,18 @@
   height: 0;
   display: none;
   position: absolute;
+  border-radius:6px;
   left: 48%;
   top: 7%;
   z-index: 9;
   color: grey;
   transition: height .5s ease-in-out;
+  box-shadow: 0px 2px 16px 0px rgba(5, 12, 16, 0.50);
 }
 
 .container-selector-actions{
   background: #0c181e;
-  width: 250px;
+  width: 200px;
   height: 400px;
   // display: none;
   position: absolute;
@@ -280,8 +282,9 @@
   top: 7%;
   z-index: 9;
   border-radius:6px;
-  color: grey;
+  color: white;
   transition: height .5s ease-in-out;
+  box-shadow: 0px 2px 16px 0px rgba(5, 12, 16, 0.50);
 }
 
 .container-econe-param{
@@ -310,6 +313,16 @@
   border: 0.5px solid #202B32;
   background: var(--gray-scale-900, #0D1A21);
   box-shadow: 0px 2px 16px 0px rgba(5, 12, 16, 0.50);
+}
+
+.container-actions-inside{
+  margin-top: 10px;
+  border: 1px solid white;
+  border-radius: 6px;
+  width: 95%;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tree-btn{

@@ -80,6 +80,21 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   hiddenNumb = true;
   hidden = false;
+
+
+  showActions =false;
+  listOfActionsEconesPanel = [
+    // {id:0, name:'delay', class:'', select:false, src:'',alt:''},
+    // {id:1, name:'time', class:'', select:false, src:'',alt:''},
+    {id:2, name:'right', class:'pass_right', select:false, src:'../../../assets/icons/exercices/interface/corner-right-up-white.svg',alt:''},
+    {id:3, name:'left', class:'pass_left', select:false, src:'../../../assets/icons/exercices/interface/corner-left-up-white.svg',alt:''},
+    {id:4, name:'random', class:'pass_random', select:false, src:'../../../assets/icons/exercices/interface/shuffle-white.svg',alt:''},
+    {id:5, name:'360', class:'pass_360', select:false, src:'../../../assets/icons/exercices/interface/refresh-white.svg',alt:''},
+    {id:6, name:'360i', class:'pass_360i', select:false, src:'../../../assets/icons/exercices/interface/refresh-back-white.svg',alt:''},
+    {id:7, name:'360random', class:'pass_360_random', select:false, src:'../../../assets/icons/exercices/interface/shuffle-white.svg',alt:''},
+    {id:8, name:'touch', class:'touch', select:false, src:'../../../assets/icons/exercices/interface/hand-white.svg',alt:''}
+  ]
+
   listOfEquipments = [
     {id:0, name:'Ballon', class:'ballon', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',total:0},
     {id:1, name:'Plot', class:'plot', select:'false',  src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',total:0},
@@ -169,6 +184,15 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     console.log('CLIENT X AND Y : ',e.clientX, e.clientY)
   }
 
+
+  editAction(action:any){
+    console.log('ON EDIT CETTE ACTION: ! ',action)
+    if(this.showActions){
+      this.showActions = false;
+    }else{
+      this.showActions = true;
+    }
+  }
 
   displayColor = false;
   
@@ -393,12 +417,12 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   
 
   eraseLines(){
-    const boxes = document.querySelectorAll('.leader-line');
-    // this.fieldscontainer.nativeElement.appendChild()
-    console.log('SELECTOR  ',  boxes)
-    boxes.forEach((boxe:any,index:number) =>{
-      boxe.remove();
-    });
+    // const boxes = document.querySelectorAll('.leader-line');
+    // // this.fieldscontainer.nativeElement.appendChild()
+    // console.log('SELECTOR  ',  boxes)
+    // boxes.forEach((boxe:any,index:number) =>{
+    //   boxe.remove();
+    // });
   }
 
   changeFormatLineAtStart(item:any){
@@ -421,8 +445,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         this.selectedItem.dash = false; 
       }
     });
-  
-
   }
   
 
@@ -701,8 +723,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           }
       }
     // }
-    this.eraseLines()
-    this.drawLines()
+    // this.eraseLines()
+    // this.drawLines()
   }
   scale= 'scale(10.5)';
   xgo = 0;
@@ -967,8 +989,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   getEndMoove(event:any,econe:any){
     // console.log('END',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
-    this.eraseLines()
-    this.drawLines()
+    // this.eraseLines()
+    // this.drawLines()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px, -9px, 0px)';
     }
