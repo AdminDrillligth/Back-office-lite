@@ -174,9 +174,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     });
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER EXERCICES EDITO :! : ', AccountOfUser);
-    // console.log('LA HAUTEUR :: ! ',window.innerHeight/3.2)
-    // this.heightContainer   = window.innerHeight/3.2;
-  
+    // console.log('LA HAUTEUR :: ! ',window.innerHeight)
+    this.heightContainer   = window.innerHeight;
+
   }
   heightContainer = 0;
 
@@ -195,7 +195,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   displayColor = false;
-  
+
   displayStartAndColors(state:any){
 
     if(state === 'flag'){
@@ -216,7 +216,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(state === 'color'){
         this.displayColor = true;
     }
-  
+
 
 
   }
@@ -253,12 +253,12 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
     // this.btnListStartActor.src
     // this.btnListStartActor.btn
-    
+
     this.displayColor = false;
   }
 
   ngOnChanges(){
-  
+
   }
 
 
@@ -266,9 +266,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   addEcones(){
     this.econes.push(
       {
-        name:'Econe'+(Number(this.econes.length)+1), 
-        number:this.econes.length+1, 
-        transform:'scale(0.08)', 
+        name:'Econe'+(Number(this.econes.length)+1),
+        number:this.econes.length+1,
+        transform:'scale(0.08)',
         color:'white',
         srcEcone:'',
         srcColor:'Icon-button-white.svg',
@@ -301,14 +301,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       });
     }
   }
-  
-  // CANVAS DISPLAY 
+
+  // CANVAS DISPLAY
   lastSelection:any;
   line:any = [];
   drawLine() {
     const startingElement = document.querySelector('#Econe1');
     const endingElement = document.querySelector('#Econe2');
-    console.log('love je reussi ') 
+    console.log('love je reussi ')
     this.line = new LeaderLine(startingElement, endingElement);
     this.line.size = 1;
     this.line.color = 'grey';
@@ -338,7 +338,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           console.log('LE NOM DU DEPART : ',line.select[0].name)
             liner.push(new LeaderLine(startingElement, endingElement));
             if(line.select[0].name.includes("Econe") == true ){
-      
+
             }
             if(line.select[0].name.includes("Actor") == true ){
               console.log('COLOR OF ACTOR: ',line.select[0].name)
@@ -363,7 +363,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                   }
                 }
                 // console.log('CHAQUE ACTEUR : ! ',actor)
-              }) 
+              })
             }else{
               liner[liner.length-1].color = 'grey';
             }
@@ -374,21 +374,21 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               startPlug: 'disc',
               endPlug: 'arrow3'
             });
-
-            if(startingElement !== null && endingElement !== null){
+            // this.displayLineInsideDiv(line)
+            if(startingElement !== null){
               console.log(container, containerAll)
-              console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
-            
-             if(container !== null){
+              // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+
+            //  if(container !== null){
               liner.forEach((line) =>{
-                startingElement.addEventListener('click', () => { this.selectLine(line); });
-                startingElement.addEventListener('mousemove', () => { this.fixLine(line); });
-                startingElement.addEventListener('ondrag', () => { this.fixLine(line); });
-                startingElement.addEventListener('touchmove', () => { this.fixLine(line); });
+                
+                // startingElement.addEventListener('click', () => { this.selectLine(line); });
+                startingElement.addEventListener('mousemove', () => { this.fixLine(line, 'start'); });
+                startingElement.addEventListener('ondrag', () => { this.fixLine(line, 'start'); });
+                startingElement.addEventListener('touchmove', () => { this.fixLine(line, 'start'); });
                 // endingElement.addEventListener('click', () => { this.selectLine(line); });
-                endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
-                endingElement.addEventListener('ondrag', () => { this.fixLine(line); });
-                endingElement.addEventListener('touchmove', () => { this.selectLine(line); });
+                // endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
+
               });
                 // let div = document.createElement("div");
                 // this.boundingBoxVectorStarts.push()
@@ -398,26 +398,45 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 // containerAll[0].append(div)
                 // containerAll[0].innerHTML = '<div style="position: absolute;width: 46px; height: 100px;color: white;background: black;top: 113px;left: 332px;"><p style="top: 37px;position: absolute;">Principle elements</p><span class="accesories"  ></span></div>';
                 // console.log(div.childNodes, div, containerAll);
-              }   
+              // }
             }
-            // if(endingElement !== null){
-            //   liner.forEach((line) =>{ 
-            //   })
-            // }
+            if(endingElement !== null){
+              // if(container !== null){
+                liner.forEach((line) =>{
+                  endingElement.addEventListener('ondrag', () => { this.fixLine(line,'end'); });
+                  endingElement.addEventListener('touchmove', () => { this.fixLine(line,'end'); });
+                  endingElement.addEventListener('mousemove', () => { this.fixLine(line, 'end'); });
+                })
+              // }
+
+            }
        })
-       console.log('ON PARCOURS LES LINERS: ',liner)
+      
+       //  console.log('ON PARCOURS LES LINERS: ',liner)
      }, 50);
     }
   }
 
-  fixLine(line:any) {
-    console.log('CETTE LIGNE : ',line)
+  fixLine(line:any,type:any) {
+    console.log('CETTE LIGNE : ',line, type)
     line.position();
   }
-  
+
+  displayLineInsideDiv(line:any){
+    // const boxes = document.querySelectorAll('.leader-line');
+    // // let container = document.querySelector<HTMLElement>(".fields-container");
+    // // document.getElementsByClassName('fields-container').appendChild(document.querySelector('.leader-line'));
+    // let box=document.getElementsByClassName('fields-container')
+    // boxes.forEach((boxe:any,index:number) =>{
+     
+    //   box[0].appendChild(boxe);
+    //   line.position();
+    //     //   boxe.remove();
+    // });
+  }
 
   eraseLines(){
-    // const boxes = document.querySelectorAll('.leader-line');
+
     // // this.fieldscontainer.nativeElement.appendChild()
     // console.log('SELECTOR  ',  boxes)
     // boxes.forEach((boxe:any,index:number) =>{
@@ -426,7 +445,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   changeFormatLineAtStart(item:any){
-    console.log('Le style choisi: ',item)
+    // console.log('Le style choisi: ',item)
     this.btnLinesStyle.forEach(line =>{
       if(item.style === line.style){
         line.linestyle = true;
@@ -434,25 +453,25 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         line.linestyle = false;
       }
       if(item.style === 'dash'){
-        this.selectedItem.dash = true; 
+        this.selectedItem.dash = true;
       }
       if(item.style === 'normal'){
         this.selectedItem.path = 'straight';
-        this.selectedItem.dash = false; 
+        this.selectedItem.dash = false;
       }
       if(item.style === 'curve'){
         this.selectedItem.path = 'magnet';
-        this.selectedItem.dash = false; 
+        this.selectedItem.dash = false;
       }
     });
   }
-  
+
 
   // chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.unecatef.fr/uploads/Animation%20de%20syst%C3%A8me137.pdf
   selectedItem:any;
   selectLine(item:any) {
-    this.selectedItem = item; 
-    console.log('ON CHOISI CETTE LIGNE : ! ',item)
+    this.selectedItem = item;
+    // console.log('ON CHOISI CETTE LIGNE : ! ',item)
 
     // item.dash = true;
 
@@ -479,17 +498,22 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   econeSelect :any = null;
   actorSelect :any = null;
   utilsSelect :any = null;
-  // Display this Actif ? 
+  // Display this Actif ?
   passing = false;
-  
+
   displayChangeStart:any=[{x:0,y:0}]
+
+  closeModalParam(){
+    this.ifEconeSelect = false;
+    this.econeSelect = null;
+  }
 
   displayUtils(artefact:any){
     console.log('LE NOM DE L\'ARTEFACT',artefact.name);
     let Element = document.querySelector<HTMLElement>("."+artefact.name);
     const ElementSelectBound = document.querySelector('#'+artefact.name);
     if(ElementSelectBound !== null){
-      console.log('START BOUND !!', Math.round(ElementSelectBound.getBoundingClientRect().x-30),Math.round(ElementSelectBound.getBoundingClientRect().y-30))
+      // console.log('START BOUND !!', Math.round(ElementSelectBound.getBoundingClientRect().x-30),Math.round(ElementSelectBound.getBoundingClientRect().y-30))
       this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
       this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
     }
@@ -497,10 +521,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(Element !== null){
       console.log(Element, Element.offsetLeft, ElementAll)
     }
-
-    if(artefact.active == true){
+    console.log('LE ARTEFACT : : ! ',artefact)
+    if( this.econeSelect !== null ){
+      console.log('LE ARTEFACT A TRUE: : ! ',artefact)
       this.passing=true;
-      console.log('on est à true')
+      // console.log('on est à true')
       this.econeSelect = null;
       this.ifEconeSelect = false;
       artefact.active = false;
@@ -510,8 +535,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       artefact.rightactif = false;
       this.ifActorSelect = false;
     }else{
+      console.log('LE ARTEFACT : A FALSE : ! ',artefact)
       if(artefact.active == false && this.passing == false){
-        console.log('on active')
+        // console.log('on active')
         this.passing=true;
         artefact.active = true;
         this.econeSelect = artefact;
@@ -522,7 +548,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         this.ifActorSelect = false;
         this.econeSelect = artefact;
 
-       
+
       }
       if(artefact.name.includes("Actor") == true ){
           this.ifActorSelect = true;
@@ -534,12 +560,12 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       //   this.ifEconeSelect = false;
       //   this.actorSelect = artefact;
       // }
-      
 
 
-      
+
+
     }
-    
+
     this.passing=false;
   }
 
@@ -548,7 +574,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   last = false;
   selectTopDrawer(artefact:any){
     this.last = false;
-    console.log('select top drawer', artefact,  this.selector)
+    // console.log('select top drawer', artefact,  this.selector)
     let topPointSelect = document.querySelector<HTMLElement>(".top"+artefact.name);
     let selector = document.querySelector("#"+artefact.name);
     if(topPointSelect !== null){
@@ -556,7 +582,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       if(this.selector.length === 1){
           this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
           this.lines.push({select:this.selector})
-          console.log('le selecteur', this.selector,'les lines', this.lines)
+          // console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           // this.eraseLines();
           this.drawLines();
@@ -566,9 +592,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
         this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
       }
-      console.log(artefact.name, this.selector)
+      // console.log(artefact.name, this.selector)
     }
-    console.log('le selecteur', this.selector,'les lines', this.lines)
+    // console.log('le selecteur', this.selector,'les lines', this.lines)
     setTimeout(() => {
       if(artefact.topactif == true){
          artefact.topactif = false;
@@ -579,13 +605,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         artefact.topactif = true;
         artefact.active = true;
       }
-      console.log('select top drawer', artefact)
+      // console.log('select top drawer', artefact)
     }, 500);
   }
 
   selectBottomDrawer(artefact:any){
     this.last = false;
-    console.log('select top drawer 1', artefact)
+    // console.log('select top drawer 1', artefact)
     let bottomPointSelect = document.querySelector<HTMLElement>(".bottom"+artefact.name);
     let selector = document.querySelector("#"+artefact.name);
     if(bottomPointSelect !== null){
@@ -593,7 +619,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       if(this.selector.length === 1){
           this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
           this.lines.push({select:this.selector})
-          console.log('le selecteur', this.selector,'les lines', this.lines)
+          // console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           this.last=true;
           // this.eraseLines();
@@ -603,29 +629,29 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
         this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
       }
-      console.log(artefact.name, this.selector)
+      // console.log(artefact.name, this.selector)
     }
-    console.log('le selecteur', this.selector,'les lines', this.lines)
+    // console.log('le selecteur', this.selector,'les lines', this.lines)
     setTimeout(() => {
       if(artefact.bottomactif == false){
-        
+
         artefact.leftactif = false;
         artefact.rightactif = false;
         artefact.bottomactif = true;
         artefact.topactif = false;
         artefact.active = true;
-        console.log('false')
+        // console.log('false')
       }else if(artefact.bottomactif == true){
-        console.log('true')
+        // console.log('true')
         artefact.bottomactif = false;
       }
-      console.log('select Bottom drawer 2', artefact)
+      // console.log('select Bottom drawer 2', artefact)
     }, 500);
   }
 
   selectRightDrawer(artefact:any){
     this.last = false;
-    console.log('select top drawer', artefact)
+    // console.log('select top drawer', artefact)
     let rightPointSelect = document.querySelector<HTMLElement>(".right"+artefact.name);
     let selector = document.querySelector("#"+artefact.name);
     if(rightPointSelect !== null){
@@ -633,7 +659,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       if(this.selector.length === 1){
           this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
           this.lines.push({select:this.selector})
-          console.log('le selecteur', this.selector,'les lines', this.lines)
+          // console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           this.last=true;
           // this.eraseLines();
@@ -645,7 +671,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       }
       console.log(artefact.name, this.selector)
     }
-    console.log('le selecteur', this.selector,'les lines', this.lines)
+    // console.log('le selecteur', this.selector,'les lines', this.lines)
     setTimeout(() => {
       if(artefact.rightactif == true){
         artefact.rightactif = false;
@@ -656,7 +682,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         artefact.topactif = false;
         artefact.active = true;
       }
-      console.log('select Right drawer', artefact)
+      // console.log('select Right drawer', artefact)
     }, 500);
   }
 
@@ -670,7 +696,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       if(this.selector.length === 1){
           this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
           this.lines.push({select:this.selector})
-          console.log('le selecteur', this.selector,'les lines', this.lines)
+          // console.log('le selecteur', this.selector,'les lines', this.lines)
           this.selector = [];
           this.last=true;
           // this.eraseLines();
@@ -680,10 +706,10 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
         this.selector.push({name:artefact.name,selector: selector,artefact:artefact})
       }
-      console.log(artefact.name, this.selector)
+      // console.log(artefact.name, this.selector)
     }
-    console.log('le selecteur', this.selector,'les lines', this.lines)
-    
+    // console.log('le selecteur', this.selector,'les lines', this.lines)
+
     setTimeout(() => {
       if(artefact.leftactif == true){
         artefact.leftactif = false;
@@ -694,28 +720,28 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         artefact.topactif = false;
         artefact.active = true;
       }
-     
-      console.log('select Right drawer', artefact)
+
+      // console.log('select Right drawer', artefact)
     }, 500);
   }
 
 
   pinchIn(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
-      console.log(event.deltaY)            
-      if(zoomElement !== null){ 
+      console.log(event.deltaY)
+      if(zoomElement !== null){
           zoomElement.style.transform = `scale(${this.zoom += 0.1})`;
           this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
           // console.log('ZOOM IN', this.zoom - 0.1);
     }
-    this.eraseLines()
-    this.drawLines()
+    // this.eraseLines()
+    // this.drawLines()
   }
 
   pinchOut(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
-        console.log(event.deltaY)            
-        if(zoomElement !== null){ 
+        console.log(event.deltaY)
+        if(zoomElement !== null){
          if(this.zoom - this.ZOOM_SPEED >= 6){
             zoomElement.style.transform = `scale(${this.zoom -= 0.1})`;
             this.scale = `scale(${Math.round(this.zoom -= 0.1)})`;
@@ -756,14 +782,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     }
   }
 
-  
+
   swipeEventUp(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     this.xgo = this.xgo ;
     this.ygo = this.ygo + 3;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
-      console.log('we swipe Right:', event, event.distance, zoomElement)
+      // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
     }
   }
@@ -774,7 +800,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     this.ygo = this.ygo - 3;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
-      console.log('we swipe Right:', event, event.distance, zoomElement)
+      // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
     }
   }
@@ -782,7 +808,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   addActor(){
     this.actors.push(
       {
-        name:'Actor'+(Number(this.actors.length)+1), 
+        name:'Actor'+(Number(this.actors.length)+1),
         number:this.actors.length+1,
         color:'white',
         srcActor:'../../assets/icons/exercices/interface/Actor-white.svg',
@@ -795,7 +821,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         classColor:''
       }
     )
-    console.log('LES ACTEURS : ! ! ',this.actors)
+    // console.log('LES ACTEURS : ! ! ',this.actors)
   }
 
   addElementEquipment(item:any){
@@ -803,14 +829,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     console.log('L`équipement choisi mon coeur je reussi nous reussissons  : ! ! ',item.name)
     this.listOfEquipments.forEach(equip =>{
       if(equip.name === item.name){
-        equip.total = equip.total+1; 
+        equip.total = equip.total+1;
       }
-      
+
     })
     if(item.name === 'Ballon'){
       this.balls.push(
         {
-          name:'ball'+(this.balls.length+1), 
+          name:'ball'+(this.balls.length+1),
           number:this.balls.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-ball.svg',
           color:'white',
@@ -827,7 +853,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(item.name === 'Plot'){
       this.plots.push(
         {
-          name:'plot'+(this.plots.length+1), 
+          name:'plot'+(this.plots.length+1),
           number:this.plots.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-plot.svg',
           color:'white',
@@ -844,7 +870,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(item.name === 'Drapeau'){
       this.flags.push(
         {
-          name:'flag'+(this.plots.length+1), 
+          name:'flag'+(this.plots.length+1),
           number:this.flags.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-flag.svg',
           color:'white',
@@ -878,7 +904,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(item.name === 'Player'){
       this.players.push(
         {
-          name:'player'+(this.players.length+1), 
+          name:'player'+(this.players.length+1),
           number:this.players.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-player.svg',
           color:'white',
@@ -895,7 +921,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(item.name === 'Goal'){
       this.goals.push(
         {
-          name:'goal'+(this.goals.length+1), 
+          name:'goal'+(this.goals.length+1),
           number:this.goals.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-goal.svg',
           color:'white',
@@ -912,7 +938,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(item.name === 'Echelle'){
       this.ladders.push(
         {
-          name:'ladder'+(this.ladders.length+1), 
+          name:'ladder'+(this.ladders.length+1),
           number:this.ladders.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-ladder.svg',
           color:'white',
@@ -929,7 +955,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(item.name === 'Minihaie'){
       this.minihaies.push(
         {
-          name:'minihaie'+(this.minihaies.length+1), 
+          name:'minihaie'+(this.minihaies.length+1),
           number:this.minihaies.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-barrier.svg',
           color:'white',
@@ -943,11 +969,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         }
       )
     }
-    
+
     if(item.name === 'Marker'){
       this.markers.push(
         {
-          name:'marker'+(this.markers.length+1), 
+          name:'marker'+(this.markers.length+1),
           number:this.markers.length+1,
           src:'../../../assets/icons/exercices/interface/Equipement-marker.svg',
           color:'white',

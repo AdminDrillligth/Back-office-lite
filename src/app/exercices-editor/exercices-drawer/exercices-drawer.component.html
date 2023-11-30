@@ -4,24 +4,29 @@
 <!-- <button type="button" [ngClass]="{'active': item.select ==  true}" mat-raised-button class="regular-type btn btn-sm btn-rounded">Animation</button> -->
 </div>
 <div class="container-actions">
-  <button type="button" mat-raised-button class="regular-type btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/save-icon.svg">Enregistrer l’exerice</button>
+  <button type="button" style="padding-top: 10px" mat-raised-button class="regular-type btn btn-sm btn-rounded"><img style="display: inline-block; margin-right: 5px;" src="../../../assets/icons/exercices/interface/save-icon.svg"><p style="font-size:0.6em;  display: inline-block;">Enregistrer l’exerice</p></button>
 </div>
 <!--  -->
-<div (click)="logkey($event)" class="fields-container-background">
+<div [ngStyle]="{'height.px': heightContainer}" (click)="logkey($event)" class="fields-container-background">
   <div *ngIf="ifEconeSelect && econeSelect !== null" class="container-econe-param">
-    <h4 style="margin-left:10px">#{{econeSelect.name}}</h4>
-    <span></span>
+    <div>
+      <h4 style="color:white;margin-top:10px;  display:inline-block;margin-left:10px">#{{econeSelect.name}}</h4>
+      <span  (click)="closeModalParam()" style="cursor: pointer; position: relative;display: inline-block;left: 50px;">
+        <img style="width:20px" src="../../assets/icons/dashboard/close-white.png">
+      </span>
+    </div>
+    
     <!-- <mat-form-field class="input-of-infos"> -->
     <div><mat-label>Délai avant action : </mat-label></div>
     <div>
       <span>
-        <label data-domain="Sec"><input class="input-number" type="number" matInput placeholder="0" #inputDelay></label>
+        <label data-domain="Sec"><input min="0" class="input-number" type="number" matInput placeholder="0" #inputDelay></label>
       </span>
     </div>
     <div><mat-label>Temps de passage : </mat-label></div>
     <div>
         <span>
-          <label data-domain="Sec"><input class="input-number"  type="number" matInput placeholder="0" #inputDelayByStep></label>
+          <label data-domain="Sec"><input min="0" class="input-number"  type="number" matInput placeholder="0" #inputDelayByStep></label>
         </span>
     </div>
     <h6 style="margin-top:10px">Actions {{econeSelect.action.length}}</h6>
@@ -44,8 +49,8 @@
       <textarea matInput
                 cdkTextareaAutosize
                 #autosize="cdkTextareaAutosize"
-                cdkAutosizeMinRows="10"
-                cdkAutosizeMaxRows="59"></textarea>
+                cdkAutosizeMinRows="5"
+                cdkAutosizeMaxRows="35"></textarea>
     </mat-form-field>
   </div>  
   <div [ngStyle]="{'left.px': displayChangeStart[0].x, 'top.px':displayChangeStart[0].y}" *ngIf="ifActorSelect && actorSelect !== null"  class="container-change tree-btn start-equip">
@@ -76,10 +81,11 @@
       </div>
   </div>
   <div *ngIf="showActions" class="container-selector-actions">
-    <!-- <p style="margin-left: 7px;">Temps</p> -->
+    <p style="margin-left: 7px;color:grey;margin-bottom: 3px;">Temps</p>
     <span *ngFor="let time of listOfActionsEconesPanel"><p  ></p></span>
-    <!-- <p style="margin-left: 7px;">Mouvements</p> -->
-    <span  *ngFor="let action of listOfActionsEconesPanel"><p >{{action.name}}<img style="margin-left:10px;" src="{{action.src}}"></p></span>
+
+    <p style="margin-left: 7px;color:grey;margin-bottom: 3px;">Mouvements</p>
+    <span  *ngFor="let action of listOfActionsEconesPanel"><p style="margin-bottom: 3px;margin-left: 10px;">{{action.name}}<img style="margin-left:10px;" src="{{action.src}}"></p></span>
     
   </div>
   <div>
