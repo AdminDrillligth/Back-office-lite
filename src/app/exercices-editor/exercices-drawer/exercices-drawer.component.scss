@@ -122,7 +122,7 @@
   width: 40px;
   height: 40px;
   margin-left: auto;
-  top: 49%;
+  top: 35%;
   left: 50%;
   scale:0.08;
   margin-right: auto;
@@ -275,7 +275,7 @@
 .container-selector-actions{
   background: #0c181e;
   width: 200px;
-  height: 285px;
+  height: 290px;
   // display: none;
   position: absolute;
   left: 300px;
@@ -339,6 +339,57 @@
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  height: 30px;
+  padding-top: 2px;
+}
+
+.mat-expansion-indicator::after {
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  content: "";
+  display: inline-block;
+  color: white!important;
+  margin-bottom: 20px;
+
+  padding: 3px;
+  transform: rotate(45deg);
+  vertical-align: middle;
+}
+
+::ng-deep .mat-expansion-indicator, .mat-expansion-indicator:after {
+  color: white;
+  margin-bottom: 20px;
+
+}
+
+.headers-align{
+    height: 40px;
+    padding-top: 14px;
+    color: white;
+    background: #1a303b;
+}
+
+.mat-expansion-panel-header {
+  height: 35px!important;
+  padding-top: 15px!important;
+  background: #1a303b;
+  color: white;
+}
+
+.container-choose-actions{
+  margin: 3px;
+  height: 30px;
+  width: 90%;
+  background: #1a303b;
+  color: white;
+  right: -35px;
+  border: 0.4px solid wrgba(255, 255, 255, 0.237);
+  box-shadow: 0px 2px 16px 0px rgba(5, 12, 16, 0.5);
+  position: relative;
+}
+
+::ng-deep .mat-expansion-panel-content {
+  background: #0c181e!important;
 }
 
 .tree-btn{

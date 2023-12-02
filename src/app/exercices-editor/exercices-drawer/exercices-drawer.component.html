@@ -29,9 +29,29 @@
           <label data-domain="Sec"><input min="0" class="input-number"  type="number" matInput placeholder="0" #inputDelayByStep></label>
         </span>
     </div>
-    <h6 style="margin-top:10px">Actions {{econeSelect.action.length}}</h6>
+    <!-- <h6 style="margin-top:10px">Actions {{econeSelect.action.length}}</h6>
     <div (click)="editAction(action)" class="container-actions-inside" *ngFor="let action of econeSelect.action" >{{action.name}}</div>
-    <button (click)="addAction(econeSelect)" type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button>
+    <button (click)="addAction(econeSelect)" type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button> -->
+    <h6 style="color:white;margin-top:10px;">Actions : {{econeSelect.action.length}}</h6>
+    <!-- 
+      <img style="display:inline-block;position: relative;left: 70px;" src="../../../assets/icons/exercices/interface/chevron-right-white.svg">
+   
+    </div> -->
+    <mat-accordion (click)="editAction(action)" class="headers-align" *ngFor="let action of econeSelect.action" multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <p style="position:relative;display: inline-block;">{{action.name}}</p>
+            <span><img src="../../../assets/icons/exercices/interface/E-cone-white.svg"></span>
+        </mat-expansion-panel-header>
+        <div class="container-choose-actions">
+          <img style="display: inline-block;margin-top: -3px;" src="../../assets/icons/exercices/interface/Icon-button-white.svg">
+          <p style="display: inline-block;">Blanc</p>
+        </div>
+        <div style="padding-top: 3px;" class="container-choose-actions">Clignotant</div>
+        <div style="padding-top: 3px;" class="container-choose-actions">Pas de son</div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div><button (click)="addAction(econeSelect)" type="button" mat-raised-button class="btn-add-actions btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter une action</button></div>
   </div>  
   <div *ngIf="ifActorSelect && actorSelect !== null" class="container-econe-param">
     <h6 style="margin-left:10px">#{{actorSelect.name}}</h6>
@@ -82,18 +102,21 @@
   </div>
   <div *ngIf="showActions" class="container-selector-actions">
     <p style="margin-left: 7px;color:grey;margin-bottom: 3px;">Temps</p>
-    <span *ngFor="let time of listOfActionsEconesPanel"><p  ></p></span>
-
+    <span><p style="margin-bottom: 3px;margin-left: 10px;">Délai</p></span>
+    <span><p style="margin-bottom: 3px;margin-left: 10px;">Temps</p></span>
     <p style="margin-left: 7px;color:grey;margin-bottom: 3px;">Mouvements</p>
     <span  *ngFor="let action of listOfActionsEconesPanel"><p style="margin-bottom: 3px;margin-left: 10px;">{{action.name}}<img style="margin-left:10px;" src="{{action.src}}"></p></span>
     
   </div>
   <div>
   </div>
+  <div style="width:100%;height: 100%;position: relative;" class="fieldsvector">
+    <!-- <span [ngStyle]="{'left.px': box.left, 'top.px':box.top, 'transform':''}" *ngFor="let box of containerLineBounder"  class="container-utils-onmap" cdkDragBoundary=".fields-container-background" cdkDrag>jgiugogh</span> -->
+  </div>
 <div #fieldscontainer (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
   <!-- container of drag vectors -->
-  <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span>
-  
+  <!-- <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span> -->
+
   <span id="{{econe.name}}" (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': econe.topactif ==  true}" *ngIf="econe.active" (click)="selectTopDrawer(econe)" class="top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': econe.bottomactif ==  true}" *ngIf="econe.active" (click)="selectBottomDrawer(econe)" class="bottom{{econe.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">

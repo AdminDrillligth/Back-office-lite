@@ -321,6 +321,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   container!:any;
   boundingBoxVectorStarts:any[]=[];
+  containerLineBounder:any[]=[];
   drawLines(){
     console.log('LES LINES : ! ',this.lines)
     let liner :any[]= [];
@@ -336,7 +337,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           const startingelementAll = document.querySelector<HTMLElement>('#'+line.select[0].name);
           const endingElement = document.querySelector('#'+line.select[1].name);
           console.log('LE NOM DU DEPART : ',line.select[0].name)
-            liner.push(new LeaderLine(startingElement, endingElement));
+            liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
+              y: -40
+            }),  LeaderLine.pointAnchor(endingElement, {
+              y: -40
+            })));
             if(line.select[0].name.includes("Econe") == true ){
 
             }
@@ -374,7 +379,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               startPlug: 'disc',
               endPlug: 'arrow3'
             });
-            // this.displayLineInsideDiv(line)
+            this.displayLineInsideDiv(line)
             if(startingElement !== null){
               console.log(container, containerAll)
               // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
@@ -418,22 +423,25 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   fixLine(line:any,type:any) {
-    console.log('CETTE LIGNE : ',line, type)
+    // console.log('CETTE LIGNE : ',line, type)
     line.position();
   }
 
   displayLineInsideDiv(line:any){
-    // const boxes = document.querySelectorAll('.leader-line');
-    // // let container = document.querySelector<HTMLElement>(".fields-container");
-    // // document.getElementsByClassName('fields-container').appendChild(document.querySelector('.leader-line'));
-    // let box=document.getElementsByClassName('fields-container')
-    // boxes.forEach((boxe:any,index:number) =>{
-     
-    //   box[0].appendChild(boxe);
-    //   line.position();
-    //     //   boxe.remove();
-    // });
+    const boxes = document.querySelectorAll('.leader-line');
+    const boxStyle = document.querySelector('.leader-line');
+    // let container = document.querySelector<HTMLElement>(".fields-container");
+    // document.getElementsByClassName('fields-container').appendChild(document.querySelector('.leader-line'));
+    let box=document.getElementsByClassName('fieldsvector');
+    console.log('BOXES ; :: ! ',boxes)
+    boxes.forEach((boxe:any,index:number) =>{
+      console.log('BOXES  :: ',boxe, boxe.style.transform,boxe.getBoundingClientRect())
+      boxe.style.transform = 'translate3d(0px, -40px, 0px);'
+      box[0].appendChild(boxe);
+      // line.position();
+    });
   }
+
 
   eraseLines(){
 
@@ -519,7 +527,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     }
     let ElementAll = document.querySelectorAll("."+artefact.name);
     if(Element !== null){
-      console.log(Element, Element.offsetLeft, ElementAll)
+      // console.log(Element, Element.offsetLeft, ElementAll)
     }
     console.log('LE ARTEFACT : : ! ',artefact)
     if( this.econeSelect !== null ){
