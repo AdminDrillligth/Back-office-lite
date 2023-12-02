@@ -330,94 +330,107 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
     if(this.lines.length !== 0){
        setTimeout(() => {
-      this.lines.forEach(line => {
-          let container = document.querySelector<HTMLElement>(".fields-container");
-          let containerAll = document.querySelectorAll(".fields-container");
-          const startingElement = document.querySelector('#'+line.select[0].name);
-          const startingelementAll = document.querySelector<HTMLElement>('#'+line.select[0].name);
-          const endingElement = document.querySelector('#'+line.select[1].name);
-          console.log('LE NOM DU DEPART : ',line.select[0].name)
-            liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
-              y: -40
-            }),  LeaderLine.pointAnchor(endingElement, {
-              y: -40
-            })));
-            if(line.select[0].name.includes("Econe") == true ){
+        console.log('LE NOMBRE DE LINES :: ',this.lines)
 
-            }
-            if(line.select[0].name.includes("Actor") == true ){
-              console.log('COLOR OF ACTOR: ',line.select[0].name)
-              this.actors.forEach((actor:any)=>{
-                if(actor.name === line.select[0].name){
-                  console.log('CHAQUE ACTEUR : ! ',actor)
-                  console.log('CHAQUE ACTEUR : ! ',actor.color)
-                  if(actor.color === 'red'){
-                    liner[liner.length-1].color = '#D3614E';
-                  }
-                  if(actor.color === 'yellow'){
-                    liner[liner.length-1].color = '#F8FF74';
-                  }
-                  if(actor.color === 'green'){
-                    liner[liner.length-1].color = '#17D899';
-                  }
-                  if(actor.color === 'blue'){
-                    liner[liner.length-1].color = '#3CC9E1';
-                  }
-                  if(actor.color === 'white'){
-                    liner[liner.length-1].color = 'grey';
-                  }
-                }
-                // console.log('CHAQUE ACTEUR : ! ',actor)
-              })
-            }else{
-              liner[liner.length-1].color = 'grey';
-            }
-            // if(line.select[0].name === 'Actor')
-            liner[liner.length-1].size = 2;
-            liner[liner.length-1].path = 'fluid';
-            liner[liner.length-1].setOptions({
-              startPlug: 'disc',
-              endPlug: 'arrow3'
-            });
-            this.displayLineInsideDiv(line)
-            if(startingElement !== null){
-              console.log(container, containerAll)
-              // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+        let lastLine = this.lines.pop()
+        console.log('LINE AND INDEX :  ',lastLine)
+        const startingElement = document.querySelector('#'+lastLine.select[0].name);
+        const startingelementAll = document.querySelector<HTMLElement>('#'+lastLine.select[0].name);
+        const endingElement = document.querySelector('#'+lastLine.select[1].name);
+        liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
+              y: -40
+        }),  LeaderLine.pointAnchor(endingElement, {
+              y: -40
+        })));
+    //   this.lines.forEach((line:any, index:number) => {
+    //       console.log('LINE AND INDEX :  ',line ,index)
+    //       let container = document.querySelector<HTMLElement>(".fields-container");
+    //       let containerAll = document.querySelectorAll(".fields-container");
+    //       const startingElement = document.querySelector('#'+line.select[0].name);
+    //       const startingelementAll = document.querySelector<HTMLElement>('#'+line.select[0].name);
+    //       const endingElement = document.querySelector('#'+line.select[1].name);
+    //       console.log('LE NOM DU DEPART : ',line.select[0].name)
+    //         liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
+    //           y: -40
+    //         }),  LeaderLine.pointAnchor(endingElement, {
+    //           y: -40
+    //         })));
+    //         if(line.select[0].name.includes("Econe") == true ){
 
-            //  if(container !== null){
-              liner.forEach((line) =>{
+    //         }
+    //         if(line.select[0].name.includes("Actor") == true ){
+    //           console.log('COLOR OF ACTOR: ',line.select[0].name)
+    //           this.actors.forEach((actor:any)=>{
+    //             if(actor.name === line.select[0].name){
+    //               console.log('CHAQUE ACTEUR : ! ',actor)
+    //               console.log('CHAQUE ACTEUR : ! ',actor.color)
+    //               if(actor.color === 'red'){
+    //                 liner[liner.length-1].color = '#D3614E';
+    //               }
+    //               if(actor.color === 'yellow'){
+    //                 liner[liner.length-1].color = '#F8FF74';
+    //               }
+    //               if(actor.color === 'green'){
+    //                 liner[liner.length-1].color = '#17D899';
+    //               }
+    //               if(actor.color === 'blue'){
+    //                 liner[liner.length-1].color = '#3CC9E1';
+    //               }
+    //               if(actor.color === 'white'){
+    //                 liner[liner.length-1].color = 'grey';
+    //               }
+    //             }
+    //             // console.log('CHAQUE ACTEUR : ! ',actor)
+    //           })
+    //         }else{
+    //           liner[liner.length-1].color = 'grey';
+    //         }
+    //         // if(line.select[0].name === 'Actor')
+    //         liner[liner.length-1].size = 2;
+    //         liner[liner.length-1].path = 'fluid';
+    //         liner[liner.length-1].setOptions({
+    //           startPlug: 'disc',
+    //           endPlug: 'arrow3'
+    //         });
+    //         this.displayLineInsideDiv(line)
+    //         if(startingElement !== null){
+    //           console.log(container, containerAll)
+    //           // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+
+    //         //  if(container !== null){
+    //           liner.forEach((line) =>{
                 
-                // startingElement.addEventListener('click', () => { this.selectLine(line); });
-                startingElement.addEventListener('mousemove', () => { this.fixLine(line, 'start'); });
-                startingElement.addEventListener('ondrag', () => { this.fixLine(line, 'start'); });
-                startingElement.addEventListener('touchmove', () => { this.fixLine(line, 'start'); });
-                // endingElement.addEventListener('click', () => { this.selectLine(line); });
-                // endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
+    //             // startingElement.addEventListener('click', () => { this.selectLine(line); });
+    //             startingElement.addEventListener('mousemove', () => { this.fixLine(line, 'start'); });
+    //             startingElement.addEventListener('ondrag', () => { this.fixLine(line, 'start'); });
+    //             startingElement.addEventListener('touchmove', () => { this.fixLine(line, 'start'); });
+    //             // endingElement.addEventListener('click', () => { this.selectLine(line); });
+    //             // endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
 
-              });
-                // let div = document.createElement("div");
-                // this.boundingBoxVectorStarts.push()
-                // div.classList.add("container-drag");
-                // div.style.background="black"
-                // div.innerHTML = '<div style="position: abslute;width: 6px; height: 6px;color: white;background: black;top:'+Math.round(startingElement.getBoundingClientRect().top)+'px;left: 200px;"></div>';
-                // containerAll[0].append(div)
-                // containerAll[0].innerHTML = '<div style="position: absolute;width: 46px; height: 100px;color: white;background: black;top: 113px;left: 332px;"><p style="top: 37px;position: absolute;">Principle elements</p><span class="accesories"  ></span></div>';
-                // console.log(div.childNodes, div, containerAll);
-              // }
-            }
-            if(endingElement !== null){
-              // if(container !== null){
-                liner.forEach((line) =>{
-                  endingElement.addEventListener('ondrag', () => { this.fixLine(line,'end'); });
-                  endingElement.addEventListener('touchmove', () => { this.fixLine(line,'end'); });
-                  endingElement.addEventListener('mousemove', () => { this.fixLine(line, 'end'); });
-                })
-              // }
+    //           });
+    //             // let div = document.createElement("div");
+    //             // this.boundingBoxVectorStarts.push()
+    //             // div.classList.add("container-drag");
+    //             // div.style.background="black"
+    //             // div.innerHTML = '<div style="position: abslute;width: 6px; height: 6px;color: white;background: black;top:'+Math.round(startingElement.getBoundingClientRect().top)+'px;left: 200px;"></div>';
+    //             // containerAll[0].append(div)
+    //             // containerAll[0].innerHTML = '<div style="position: absolute;width: 46px; height: 100px;color: white;background: black;top: 113px;left: 332px;"><p style="top: 37px;position: absolute;">Principle elements</p><span class="accesories"  ></span></div>';
+    //             // console.log(div.childNodes, div, containerAll);
+    //           // }
+    //         }
+    //         if(endingElement !== null){
+    //           // if(container !== null){
+    //             liner.forEach((line) =>{
+    //               endingElement.addEventListener('ondrag', () => { this.fixLine(line,'end'); });
+    //               endingElement.addEventListener('touchmove', () => { this.fixLine(line,'end'); });
+    //               endingElement.addEventListener('mousemove', () => { this.fixLine(line, 'end'); });
+    //             })
+    //           // }
 
-            }
-       })
+    //         }
+    //    })
       
-       //  console.log('ON PARCOURS LES LINERS: ',liner)
+    //    //  console.log('ON PARCOURS LES LINERS: ',liner)
      }, 50);
     }
   }
