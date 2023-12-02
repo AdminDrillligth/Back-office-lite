@@ -342,7 +342,57 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         }),  LeaderLine.pointAnchor(endingElement, {
               y: -40
         })));
-    //   this.lines.forEach((line:any, index:number) => {
+        if(lastLine.select[0].name.includes("Econe") == true ){
+
+        }
+        if(lastLine.select[0].name.includes("Actor") == true ){
+          console.log('COLOR OF ACTOR: ',lastLine.select[0].name)
+                    this.actors.forEach((actor:any)=>{
+                      if(actor.name === lastLine.select[0].name){
+                        console.log('CHAQUE ACTEUR : ! ',actor)
+                        console.log('CHAQUE ACTEUR : ! ',actor.color)
+                        if(actor.color === 'red'){
+                          liner[liner.length-1].color = '#D3614E';
+                        }
+                        if(actor.color === 'yellow'){
+                          liner[liner.length-1].color = '#F8FF74';
+                        }
+                        if(actor.color === 'green'){
+                          liner[liner.length-1].color = '#17D899';
+                        }
+                        if(actor.color === 'blue'){
+                          liner[liner.length-1].color = '#3CC9E1';
+                        }
+                        if(actor.color === 'white'){
+                          liner[liner.length-1].color = 'grey';
+                        }
+                      }
+                      // console.log('CHAQUE ACTEUR : ! ',actor)
+                    }) 
+        }else{
+            liner[liner.length-1].color = 'grey';
+        }
+            liner[liner.length-1].size = 2;
+            liner[liner.length-1].path = 'fluid';
+            liner[liner.length-1].setOptions({
+              startPlug: 'disc',
+              endPlug: 'arrow3'
+            });
+            this.displayLineInsideDiv(liner[liner.length-1])
+            if(startingElement !== null){
+              // console.log(container, containerAll)
+                startingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1], 'start'); });
+                startingElement.addEventListener('ondrag', () => { this.fixLine(liner[liner.length-1], 'start'); });
+                startingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1], 'start'); });
+              // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+            }
+            if(endingElement !== null){
+                endingElement.addEventListener('ondrag', () => { this.fixLine(liner[liner.length-1],'end'); });
+                endingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1],'end'); });
+                endingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1], 'end'); });
+          
+              }
+        //   this.lines.forEach((line:any, index:number) => {
     //       console.log('LINE AND INDEX :  ',line ,index)
     //       let container = document.querySelector<HTMLElement>(".fields-container");
     //       let containerAll = document.querySelectorAll(".fields-container");
