@@ -39,8 +39,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               zoomElement.style.transform = `scale(${this.zoom -= this.ZOOM_SPEED})`;
               console.log('ZOOM OUT', this.zoom - this.ZOOM_SPEED)
               this.scale = `scale(${Math.round(this.zoom -= this.ZOOM_SPEED)})`;
-              this.eraseLines()
-              this.drawLines()
+              this.fixAllLines()
             }
           }
         }else{
@@ -49,8 +48,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             zoomElement.style.transform = `scale(${this.zoom += this.ZOOM_SPEED})`;
             console.log('ZOOM IN',this.zoom + this.ZOOM_SPEED)
             this.scale = `scale(${Math.round(this.zoom += this.ZOOM_SPEED)})`;
-            this.eraseLines()
-            this.drawLines()
+            this.fixAllLines()
           }
         }
       }
@@ -305,6 +303,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   // CANVAS DISPLAY
   lastSelection:any;
   line:any = [];
+  allLines:any = []
   drawLine() {
     const startingElement = document.querySelector('#Econe1');
     const endingElement = document.querySelector('#Econe2');
@@ -322,25 +321,22 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   container!:any;
   boundingBoxVectorStarts:any[]=[];
   containerLineBounder:any[]=[];
+  //#  This method draw lines after click on blue points : -->
   drawLines(){
     console.log('LES LINES : ! ',this.lines)
     let liner :any[]= [];
-    // this.eraseLines()
-    // this.container = document.getElementsByClassName("fields-container");
-
     if(this.lines.length !== 0){
        setTimeout(() => {
         console.log('LE NOMBRE DE LINES :: ',this.lines)
-
         let lastLine = this.lines.pop()
         console.log('LINE AND INDEX :  ',lastLine)
         const startingElement = document.querySelector('#'+lastLine.select[0].name);
         const startingelementAll = document.querySelector<HTMLElement>('#'+lastLine.select[0].name);
         const endingElement = document.querySelector('#'+lastLine.select[1].name);
         liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
-              y: -40
+              y: -30
         }),  LeaderLine.pointAnchor(endingElement, {
-              y: -40
+              y: -30
         })));
         if(lastLine.select[0].name.includes("Econe") == true ){
 
@@ -376,7 +372,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             liner[liner.length-1].path = 'fluid';
             liner[liner.length-1].setOptions({
               startPlug: 'disc',
-              endPlug: 'arrow3'
+              endPlug: 'arrow3',
             });
             this.displayLineInsideDiv(liner[liner.length-1])
             if(startingElement !== null){
@@ -384,103 +380,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 startingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1], 'start'); });
                 startingElement.addEventListener('ondrag', () => { this.fixLine(liner[liner.length-1], 'start'); });
                 startingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1], 'start'); });
-              // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
+                startingElement.addEventListener('touch', () => { this.fixLine(liner[liner.length-1], 'start'); }); console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
             }
             if(endingElement !== null){
                 endingElement.addEventListener('ondrag', () => { this.fixLine(liner[liner.length-1],'end'); });
                 endingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1],'end'); });
                 endingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1], 'end'); });
+                endingElement.addEventListener('touch', () => { this.fixLine(liner[liner.length-1], 'start'); });
           
               }
-        //   this.lines.forEach((line:any, index:number) => {
-    //       console.log('LINE AND INDEX :  ',line ,index)
-    //       let container = document.querySelector<HTMLElement>(".fields-container");
-    //       let containerAll = document.querySelectorAll(".fields-container");
-    //       const startingElement = document.querySelector('#'+line.select[0].name);
-    //       const startingelementAll = document.querySelector<HTMLElement>('#'+line.select[0].name);
-    //       const endingElement = document.querySelector('#'+line.select[1].name);
-    //       console.log('LE NOM DU DEPART : ',line.select[0].name)
-    //         liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
-    //           y: -40
-    //         }),  LeaderLine.pointAnchor(endingElement, {
-    //           y: -40
-    //         })));
-    //         if(line.select[0].name.includes("Econe") == true ){
-
-    //         }
-    //         if(line.select[0].name.includes("Actor") == true ){
-    //           console.log('COLOR OF ACTOR: ',line.select[0].name)
-    //           this.actors.forEach((actor:any)=>{
-    //             if(actor.name === line.select[0].name){
-    //               console.log('CHAQUE ACTEUR : ! ',actor)
-    //               console.log('CHAQUE ACTEUR : ! ',actor.color)
-    //               if(actor.color === 'red'){
-    //                 liner[liner.length-1].color = '#D3614E';
-    //               }
-    //               if(actor.color === 'yellow'){
-    //                 liner[liner.length-1].color = '#F8FF74';
-    //               }
-    //               if(actor.color === 'green'){
-    //                 liner[liner.length-1].color = '#17D899';
-    //               }
-    //               if(actor.color === 'blue'){
-    //                 liner[liner.length-1].color = '#3CC9E1';
-    //               }
-    //               if(actor.color === 'white'){
-    //                 liner[liner.length-1].color = 'grey';
-    //               }
-    //             }
-    //             // console.log('CHAQUE ACTEUR : ! ',actor)
-    //           })
-    //         }else{
-    //           liner[liner.length-1].color = 'grey';
-    //         }
-    //         // if(line.select[0].name === 'Actor')
-    //         liner[liner.length-1].size = 2;
-    //         liner[liner.length-1].path = 'fluid';
-    //         liner[liner.length-1].setOptions({
-    //           startPlug: 'disc',
-    //           endPlug: 'arrow3'
-    //         });
-    //         this.displayLineInsideDiv(line)
-    //         if(startingElement !== null){
-    //           console.log(container, containerAll)
-    //           // console.log('START BOUND !!', startingElement.getBoundingClientRect(),startingElement, startingelementAll)
-
-    //         //  if(container !== null){
-    //           liner.forEach((line) =>{
-                
-    //             // startingElement.addEventListener('click', () => { this.selectLine(line); });
-    //             startingElement.addEventListener('mousemove', () => { this.fixLine(line, 'start'); });
-    //             startingElement.addEventListener('ondrag', () => { this.fixLine(line, 'start'); });
-    //             startingElement.addEventListener('touchmove', () => { this.fixLine(line, 'start'); });
-    //             // endingElement.addEventListener('click', () => { this.selectLine(line); });
-    //             // endingElement.addEventListener('mousemove', () => { this.selectLine(line); });
-
-    //           });
-    //             // let div = document.createElement("div");
-    //             // this.boundingBoxVectorStarts.push()
-    //             // div.classList.add("container-drag");
-    //             // div.style.background="black"
-    //             // div.innerHTML = '<div style="position: abslute;width: 6px; height: 6px;color: white;background: black;top:'+Math.round(startingElement.getBoundingClientRect().top)+'px;left: 200px;"></div>';
-    //             // containerAll[0].append(div)
-    //             // containerAll[0].innerHTML = '<div style="position: absolute;width: 46px; height: 100px;color: white;background: black;top: 113px;left: 332px;"><p style="top: 37px;position: absolute;">Principle elements</p><span class="accesories"  ></span></div>';
-    //             // console.log(div.childNodes, div, containerAll);
-    //           // }
-    //         }
-    //         if(endingElement !== null){
-    //           // if(container !== null){
-    //             liner.forEach((line) =>{
-    //               endingElement.addEventListener('ondrag', () => { this.fixLine(line,'end'); });
-    //               endingElement.addEventListener('touchmove', () => { this.fixLine(line,'end'); });
-    //               endingElement.addEventListener('mousemove', () => { this.fixLine(line, 'end'); });
-    //             })
-    //           // }
-
-    //         }
-    //    })
-      
-    //    //  console.log('ON PARCOURS LES LINERS: ',liner)
+        console.log('ON PARCOURS LES LINERS: ',liner)
+        this.allLines = liner
      }, 50);
     }
   }
@@ -489,6 +399,15 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     // console.log('CETTE LIGNE : ',line, type)
     line.position();
   }
+
+  fixAllLines() {
+    // console.log('CETTE LIGNE : ',line, type)
+    this.allLines.forEach((line:any) =>{
+      line.position();
+    })
+    
+  }
+
 
   displayLineInsideDiv(line:any){
     const boxes = document.querySelectorAll('.leader-line');
@@ -593,39 +512,74 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log(Element, Element.offsetLeft, ElementAll)
     }
     console.log('LE ARTEFACT : : ! ',artefact)
-    if( this.econeSelect !== null ){
-      console.log('LE ARTEFACT A TRUE: : ! ',artefact)
-      this.passing=true;
-      // console.log('on est à true')
-      this.econeSelect = null;
-      this.ifEconeSelect = false;
-      artefact.active = false;
-      artefact.topactif = false;
-      artefact.bottomactif = false;
-      artefact.leftactif = false;
-      artefact.rightactif = false;
-      this.ifActorSelect = false;
-    }else{
-      console.log('LE ARTEFACT : A FALSE : ! ',artefact)
-      if(artefact.active == false && this.passing == false){
-        // console.log('on active')
-        this.passing=true;
-        artefact.active = true;
-        this.econeSelect = artefact;
-      }
-
+    
       if(artefact.name.includes("Econe") == true ){
-        this.ifEconeSelect = true;
-        this.ifActorSelect = false;
-        this.econeSelect = artefact;
+          this.econes.forEach((econe:any)=>{
+            if(econe.name === artefact.name){
+              if(econe.active === true ){
+              console.log('TRUE',econe)
+              console.log('LE ARTEFACT A TRUE: : ! ',artefact)
+              artefact.active = false;
+              this.econeSelect = null;
+            }else{
+              console.log('FALSE',econe)
+              console.log('LE ARTEFACT A false: : ! ',artefact)
+              artefact.active = true;
+              this.econeSelect = artefact;
+            }
+          }
+          })
+        }
+          if(artefact.name.includes("Actor") == true ){
+            this.actors.forEach((actor:any)=>{
+              if(actor.name === artefact.name){
+                if(actor.active === true ){
+                console.log('TRUE',actor)
+                console.log('LE ARTEFACT A TRUE: : ! ',artefact)
+                artefact.active = false;
+                this.actorSelect = null;
+              }else{
+                console.log('FALSE',actor)
+                console.log('LE ARTEFACT A false: : ! ',artefact)
+                artefact.active = true;
+                this.actorSelect = artefact;
+              }
+            }
+            })
+          }
+          // this.passing=true;
+          // console.log('on est à true')
+          // this.econeSelect = null;
+          // this.ifEconeSelect = false;
+          // artefact.active = false;
+          // artefact.topactif = false;
+          // artefact.bottomactif = false;
+          // artefact.leftactif = false;
+          // artefact.rightactif = false;
+          // this.ifActorSelect = false;
+      //   }else{
+      //     console.log('LE ARTEFACT : A FALSE : ! ',artefact)
+
+      //     this.econes.forEach((econe:any)=>{
+            
+      //       if(econe.name === artefact.name){
+            
+      //       }
+      //     })
+      //     // if(artefact.active == false && this.passing == false){
+      //     //   // console.log('on active')
+      //     //   this.passing=true;
+      //     //   artefact.active = true;
+      //     //   this.econeSelect = artefact;
+      //     // }
+    
+      //   // this.ifEconeSelect = true;
+      //   // this.ifActorSelect = false;
+      //   // this.econeSelect = artefact;
 
 
-      }
-      if(artefact.name.includes("Actor") == true ){
-          this.ifActorSelect = true;
-          this.ifEconeSelect = false;
-          this.actorSelect = artefact;
-      }
+      // }
+      
       // else{
       //   this.ifActorSelect = true;
       //   this.ifEconeSelect = false;
@@ -635,7 +589,6 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
 
 
-    }
 
     this.passing=false;
   }
@@ -805,6 +758,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
           // console.log('ZOOM IN', this.zoom - 0.1);
     }
+    this.fixAllLines()
     // this.eraseLines()
     // this.drawLines()
   }
@@ -819,6 +773,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             // console.log('ZOOM OUT', this.zoom - 0.1);
           }
       }
+      this.fixAllLines()
     // }
     // this.eraseLines()
     // this.drawLines()
@@ -838,6 +793,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log(zoomElement.style.transform, newtranslate, this.scale)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+    this.fixAllLines()
   }
 
 
@@ -851,6 +807,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log(zoomElement.style.transform, newtranslate, this.scale)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+    this.fixAllLines()
   }
 
 
@@ -863,6 +820,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+    this.fixAllLines()
   }
 
   swipeEventDown(event:any){
@@ -874,6 +832,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+    this.fixAllLines()
   }
 
   addActor(){

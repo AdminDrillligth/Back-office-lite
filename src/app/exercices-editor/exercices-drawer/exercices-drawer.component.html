@@ -110,14 +110,14 @@
   </div>
   <div>
   </div>
-  <div style="width:100%;height: 100%;position: relative;" class="fieldsvector">
+
     <!-- <span [ngStyle]="{'left.px': box.left, 'top.px':box.top, 'transform':''}" *ngFor="let box of containerLineBounder"  class="container-utils-onmap" cdkDragBoundary=".fields-container-background" cdkDrag>jgiugogh</span> -->
-  </div>
+    <div style="width:100%;height: 100%;position: relative;" class="fieldsvector">  </div>
 <div #fieldscontainer (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
   <!-- container of drag vectors -->
   <!-- <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span> -->
-
-  <span id="{{econe.name}}" (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
+  
+  <span id="{{econe.name}}" (touch)="displayUtils(econe)" (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': econe.topactif ==  true}" *ngIf="econe.active" (click)="selectTopDrawer(econe)" class="top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': econe.bottomactif ==  true}" *ngIf="econe.active" (click)="selectBottomDrawer(econe)" class="bottom{{econe.name}} point-bottom" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img [ngClass]="{'point-active': econe.rightactif ==  true}" *ngIf="econe.active" (click)="selectRightDrawer(econe)" class="right{{econe.name}} point-right" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
