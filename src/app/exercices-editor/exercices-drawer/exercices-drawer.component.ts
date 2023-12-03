@@ -603,6 +603,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     this.passing=false;
   }
 
+  doMergeOrDuplicateAction(btnDupli:any){
+    console.log('BTN DUPLI DETAIL; : ',btnDupli)
+  }
 
   selector:any=[]
   last = false;
@@ -762,11 +765,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   pinchIn(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
       console.log(event.deltaY)
       if(zoomElement !== null){
           zoomElement.style.transform = `scale(${this.zoom += 0.1})`;
           this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
           // console.log('ZOOM IN', this.zoom - 0.1);
+      }
+      if(zoomElementRepeat !== null){
+        zoomElementRepeat.style.transform = `scale(${this.zoom += 0.1})`;
+        this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
+        // console.log('ZOOM IN', this.zoom - 0.1);
     }
     this.fixAllLines()
     // this.eraseLines()
@@ -775,6 +784,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   pinchOut(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
         console.log(event.deltaY)
         if(zoomElement !== null){
          if(this.zoom - this.ZOOM_SPEED >= 6){
@@ -782,11 +792,16 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             this.scale = `scale(${Math.round(this.zoom -= 0.1)})`;
             // console.log('ZOOM OUT', this.zoom - 0.1);
           }
+        }
+          if(zoomElementRepeat !== null){
+            if(this.zoom - this.ZOOM_SPEED >= 6){
+              zoomElementRepeat.style.transform = `scale(${this.zoom -= 0.1})`;
+               this.scale = `scale(${Math.round(this.zoom -= 0.1)})`;
+               // console.log('ZOOM OUT', this.zoom - 0.1);
+             }
+          
       }
       this.fixAllLines()
-    // }
-    // this.eraseLines()
-    // this.drawLines()
   }
   scale= 'scale(10.5)';
   xgo = 0;
@@ -795,7 +810,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   swipeEventRight(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     let zoomElementAll = document.querySelectorAll(".fields-container");
-    this.xgo = this.xgo + 3;
+    let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
+    this.xgo = this.xgo + 5;
     this.ygo = this.ygo;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
@@ -803,13 +819,17 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log(zoomElement.style.transform, newtranslate, this.scale)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+    if(zoomElementRepeat !== null){
+      zoomElementRepeat.style.transform = this.scale + newtranslate;
+    }
     this.fixAllLines()
   }
 
 
   swipeEventLeft(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
-    this.xgo = this.xgo - 3;
+    let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
+    this.xgo = this.xgo - 5;
     this.ygo = this.ygo;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
@@ -817,30 +837,41 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log(zoomElement.style.transform, newtranslate, this.scale)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+    if(zoomElementRepeat !== null){
+      zoomElementRepeat.style.transform = this.scale + newtranslate;
+    }
     this.fixAllLines()
   }
 
 
   swipeEventUp(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
     this.xgo = this.xgo ;
-    this.ygo = this.ygo + 3;
+    this.ygo = this.ygo + 5;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
       // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
+    }
+    if(zoomElementRepeat !== null){
+      zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
     this.fixAllLines()
   }
 
   swipeEventDown(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
+    let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
     this.xgo = this.xgo ;
-    this.ygo = this.ygo - 3;
+    this.ygo = this.ygo - 5;
     let newtranslate = "translate3d("+Math.round(this.xgo)+"px,"+Math.round(this.ygo)+"px,0px)";
     if(zoomElement !== null){
       // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
+    }
+    if(zoomElementRepeat !== null){
+      zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
     this.fixAllLines()
   }
