@@ -176,12 +176,22 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     this.heightContainer   = window.innerHeight;
 
   }
+
+ 
   heightContainer = 0;
 
   logkey(e:any){
     console.log('CLIENT X AND Y : ',e.clientX, e.clientY)
+    setTimeout(()=>{
+      console.log('LOG KEYYY')
+      }
+      ,300)
   }
 
+
+  closeModalAccessories(){
+    this.equipHidden = false;
+  }
 
   editAction(action:any){
     console.log('ON EDIT CETTE ACTION: ! ',action)

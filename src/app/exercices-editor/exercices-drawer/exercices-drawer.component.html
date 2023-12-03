@@ -91,7 +91,10 @@
     <button (click)="addAccessories()" type="button" mat-raised-button class="btn-add-accesories btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/interface/plus.svg">Ajouter un accessoire</button>
   </div>
   <div  [ngClass]="{'active-selector-utilities': equipHidden ==  true}" *ngIf="equipHidden"  class="container-selector-utilities">
-      <h4 style="margin-left: 7px;">Badges Default</h4>
+    <span  (click)="closeModalAccessories()" style="cursor: pointer;position: absolute; display: inline-block; left: 90%;">
+      <img style="width:20px" src="../../assets/icons/dashboard/close-white.png">
+    </span>
+    <h4 style="color:white;margin-top: 5px;margin-left: 7px;">Badges Default</h4>
       <div class="container-accesories">
         <p style="margin-left: 7px;">Accessories</p>
         <span class="accesories" matBadge="{{equipment.total}}" [matBadgeHidden]="hidden" (click)="addElementEquipment(equipment)" *ngFor="let equipment of listOfEquipments"  ><img src="{{equipment.src}}"></span>

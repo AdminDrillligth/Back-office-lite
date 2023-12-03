@@ -17,6 +17,7 @@
 }
 
 .background-repeat{
+  // transition: transform 0.5s;
   transform: scale(10.5);
   width: 100%;
   height: 500px;
@@ -29,6 +30,7 @@
   text-align: center;
   width: 100%;
   height: 500px;
+  // transition: all 0.5s;
   // background: url("../../../assets/icons/exercices/interface/background-elipse.svg") repeat;
 }
 
@@ -289,13 +291,13 @@
 
 .container-selector-actions{
   background: #0c181e;
+  z-index: 9999;
   width: 200px;
   height: 350px;
   // display: none;
   position: absolute;
   left: 300px;
   top: 70px;
-  z-index: 9;
   border-radius:6px;
   color: white;
   transition: height .5s ease-in-out;
@@ -422,7 +424,7 @@
 
 .active-selector-utilities{
   display:block;
-  height: 397px;
+  height: 380px;
 }
 
 .active-selector-actions{
