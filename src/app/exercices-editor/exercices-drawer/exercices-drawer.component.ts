@@ -334,9 +334,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         const startingelementAll = document.querySelector<HTMLElement>('#'+lastLine.select[0].name);
         const endingElement = document.querySelector('#'+lastLine.select[1].name);
         liner.push(new LeaderLine( LeaderLine.pointAnchor(startingElement, {
-              y: -30
+              y: -40
         }),  LeaderLine.pointAnchor(endingElement, {
-              y: -30
+              y: -40
         })));
         if(lastLine.select[0].name.includes("Econe") == true ){
 
@@ -370,6 +370,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         }
             liner[liner.length-1].size = 2;
             liner[liner.length-1].path = 'fluid';
+            liner[liner.length-1].hoverStyle =  {color:'red'};
             liner[liner.length-1].setOptions({
               startPlug: 'disc',
               endPlug: 'arrow3',
@@ -420,6 +421,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       console.log('BOXES  :: ',boxe, boxe.style.transform,boxe.getBoundingClientRect())
       boxe.style.transform = 'translate3d(0px, -40px, 0px);'
       box[0].appendChild(boxe);
+      const boxesAfterAppend = document.querySelectorAll('.leader-line');
+      console.log('LEADER LINE ::  : ! ',boxesAfterAppend)
       // line.position();
     });
   }
@@ -435,25 +438,25 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   changeFormatLineAtStart(item:any){
-    // console.log('Le style choisi: ',item)
-    this.btnLinesStyle.forEach(line =>{
-      if(item.style === line.style){
-        line.linestyle = true;
-      }else{
-        line.linestyle = false;
-      }
-      if(item.style === 'dash'){
-        this.selectedItem.dash = true;
-      }
-      if(item.style === 'normal'){
-        this.selectedItem.path = 'straight';
-        this.selectedItem.dash = false;
-      }
-      if(item.style === 'curve'){
-        this.selectedItem.path = 'magnet';
-        this.selectedItem.dash = false;
-      }
-    });
+    console.log('Le style choisi: ',item)
+    // this.btnLinesStyle.forEach(line =>{
+    //   if(item.style === line.style){
+    //     line.linestyle = true;
+    //   }else{
+    //     line.linestyle = false;
+    //   }
+    //   if(item.style === 'dash'){
+    //     this.selectedItem.dash = true;
+    //   }
+    //   if(item.style === 'normal'){
+    //     this.selectedItem.path = 'straight';
+    //     this.selectedItem.dash = false;
+    //   }
+    //   if(item.style === 'curve'){
+    //     this.selectedItem.path = 'magnet';
+    //     this.selectedItem.dash = false;
+    //   }
+    // });
   }
 
 
@@ -521,11 +524,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               console.log('LE ARTEFACT A TRUE: : ! ',artefact)
               artefact.active = false;
               this.econeSelect = null;
+              this.ifEconeSelect = false;
             }else{
               console.log('FALSE',econe)
               console.log('LE ARTEFACT A false: : ! ',artefact)
               artefact.active = true;
               this.econeSelect = artefact;
+              this.ifEconeSelect = true;
             }
           }
           })
@@ -538,14 +543,19 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 console.log('LE ARTEFACT A TRUE: : ! ',artefact)
                 artefact.active = false;
                 this.actorSelect = null;
+                this.ifActorSelect = false;
               }else{
                 console.log('FALSE',actor)
                 console.log('LE ARTEFACT A false: : ! ',artefact)
                 artefact.active = true;
                 this.actorSelect = artefact;
+                this.ifActorSelect = true;
               }
             }
             })
+          }
+          else{
+            console.log('LE CHOIX DE L\'ARTEFACT ',artefact.name)
           }
           // this.passing=true;
           // console.log('on est à true')

@@ -12,6 +12,8 @@
   background-color: rgb(45, 44, 54);
 }
 
+
+
 .fields-container{
   transform: scale(10.5);
   text-align: center;
@@ -278,7 +280,7 @@
 .container-selector-actions{
   background: #0c181e;
   width: 200px;
-  height: 290px;
+  height: 350px;
   // display: none;
   position: absolute;
   left: 300px;
@@ -527,4 +529,25 @@ input[type=number]::-webkit-outer-spin-button {
   border-radius: 8px;
   background-color: #131d49;
   border: 1px solid white;
+}
+
+
+svg.leader-line path {
+  pointer-events: all;
+}
+
+svg.leader-line:hover path {
+  fill: rgba(255,236,201,0.50);
+  stroke: rgba(188,235,255,0.90);
+}
+
+.btn-action-modal{
+  width: 100%;
+  margin-bottom: 3px;
+  position: relative;
+  background-color: #1a303b;
+  margin-left: auto;
+  border-radius: 8px;
+  margin-right: auto;
+  border: 1px solid rgba(255, 255, 255, 0.251);
 }

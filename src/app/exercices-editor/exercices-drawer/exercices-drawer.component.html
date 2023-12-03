@@ -37,8 +37,8 @@
       <img style="display:inline-block;position: relative;left: 70px;" src="../../../assets/icons/exercices/interface/chevron-right-white.svg">
    
     </div> -->
-    <mat-accordion (click)="editAction(action)" class="headers-align" *ngFor="let action of econeSelect.action" multi>
-      <mat-expansion-panel>
+    <mat-accordion  (click)="editAction(action)" class="headers-align" *ngFor="let action of econeSelect.action" multi>
+      <mat-expansion-panel style="background-color: #1a303b;">
         <mat-expansion-panel-header>
           <p style="position:relative;display: inline-block;">{{action.name}}</p>
             <span><img src="../../../assets/icons/exercices/interface/E-cone-white.svg"></span>
@@ -105,14 +105,15 @@
     <span><p style="margin-bottom: 3px;margin-left: 10px;">Délai</p></span>
     <span><p style="margin-bottom: 3px;margin-left: 10px;">Temps</p></span>
     <p style="margin-left: 7px;color:grey;margin-bottom: 3px;">Mouvements</p>
-    <span  *ngFor="let action of listOfActionsEconesPanel"><p style="margin-bottom: 3px;margin-left: 10px;">{{action.name}}<img style="margin-left:10px;" src="{{action.src}}"></p></span>
+    <button class="btn-action-modal" *ngFor="let action of listOfActionsEconesPanel"><p style="margin-bottom: 3px;margin-left: 10px;">{{action.name}}<img style="margin-left:10px;" src="{{action.src}}"></p></button>
     
   </div>
   <div>
   </div>
 
+  
     <!-- <span [ngStyle]="{'left.px': box.left, 'top.px':box.top, 'transform':''}" *ngFor="let box of containerLineBounder"  class="container-utils-onmap" cdkDragBoundary=".fields-container-background" cdkDrag>jgiugogh</span> -->
-    <div style="width:100%;height: 100%;position: relative;" class="fieldsvector">  </div>
+<div style="width:100%;height: 100%;position: relative;" class="fieldsvector">  </div>
 <div #fieldscontainer (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
   <!-- container of drag vectors -->
   <!-- <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span> -->
@@ -190,7 +191,6 @@
     <img [ngClass]="{'point-active': ladder.leftactif ==  true}" *ngIf="ladder.active" (click)="selectLeftDrawer(ladder)" class="left{{ladder.name}} point-left" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
     <img class="polygon-on-map" src="{{ladder.src}}">
   </span>
-
   
   <span id="{{minihaie.name}}" (click)="displayUtils(minihaie)" (cdkDragStarted)='getStartMoove($event, minihaie)' (cdkDragEnded)='getEndMoove($event, minihaie)' (cdkDragMoved)="changePlaceItem($event, minihaie)" *ngFor="let minihaie of minihaies" cdkDragBoundary=".fields-container-background" cdkDrag class="{{minihaie.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': minihaie.topactif ==  true}" *ngIf="minihaie.active" (click)="selectTopDrawer(minihaie)" class="top{{minihaie.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
@@ -212,20 +212,4 @@
     <img src="../../assets/icons/exercices/interface/flag-start.svg">
   </span>
 </div>
-
-
-
 </div>
-<!-- <div class="container-btn">
-<img src="../../../assets/icons/lines/line.png">
-<img src="../../../assets/icons/lines/line-cut.png">
-<img src="../../../assets/icons/lines/line-round.png">
-
-<button (click)="addActor()" type="button" mat-raised-button matBadge="{{actors.length}}" [matBadgeHidden]="hidden" class="add-drawer btn btn-sm btn-rounded"><img src="../../../assets/icons/exercices/png/Actor.png" alt=""></button>
-<button (click)="addEquip(itemEquip)" type="button" matBadge="{{itemEquip.array.length}}" [matBadgeHidden]="hidden" mat-raised-button class="add-drawer btn btn-sm btn-rounded" *ngFor="let itemEquip of btnAdderList">{{itemEquip.name}}</button>
-<button (click)="addElement()" type="button" class="add-drawer"><span class="text-btn-add"></span>Ajouter un accessoire</button>
-<div  *ngIf="equipHidden" class="container-equip">
-  <button (click)="addElementEquipment(item)" *ngFor="let item of listOfEquipments" type="button" mat-raised-button class="btn-add-equip btn-sm btn-rounded"><img src="{{item.src}}" alt="">{{item.name}}</button>
-</div>
-</div>
-</div> -->
