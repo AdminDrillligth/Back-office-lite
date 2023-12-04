@@ -1075,9 +1075,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     this.equipHidden = true;
   }
 
-  changePlaceItem(event:any,econe:any){
+  changePlaceItem(event:any,artefact:any){
     // console.log('PLACE',event,econe)
-    let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
+    const ElementSelectBound = document.querySelector('#'+artefact.name);
+    this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
+    this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
+    let zoomElement = document.querySelector<HTMLElement>("."+artefact.name);
     if(zoomElement !== null){
       // console.log(zoomElement.style.transform)
       // zoomElement.style.transform = 'scale(0.08) translate3d(0px, 0px, 0px)';
@@ -1091,8 +1095,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     const ElementSelectBound = document.querySelector('#'+artefact.name);
     this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
     this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
-    this.ifActorSelect =true;
-    this.ifEconeSelect =true;
+    // this.ifActorSelect =true;
+    // this.ifEconeSelect =true;
     // console.log('START',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+artefact.name);
     // this.eraseLines()
@@ -1102,8 +1106,8 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   getEndMoove(event:any,artefact:any){
-    this.ifActorSelect =false;
-    this.ifEconeSelect =false;
+    // this.ifActorSelect =false;
+    // this.ifEconeSelect =false;
     console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
     const ElementSelectBound = document.querySelector('#'+artefact.name);
     this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
