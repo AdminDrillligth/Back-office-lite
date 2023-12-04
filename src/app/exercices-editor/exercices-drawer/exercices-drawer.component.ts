@@ -1084,18 +1084,34 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     }
   }
 
-  getStartMoove(event:any,econe:any){
+  getStartMoove(event:any,artefact:any){
+    this.ifActorSelect =false;
+    this.ifEconeSelect =false;
+    console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
+    const ElementSelectBound = document.querySelector('#'+artefact.name);
+    this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
+    this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
+    this.ifActorSelect =true;
+    this.ifEconeSelect =true;
     // console.log('START',event,econe)
-    let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    let zoomElement = document.querySelector<HTMLElement>("."+artefact.name);
     // this.eraseLines()
     if(zoomElement !== null){
       // zoomElement.style.transform = 'scale(0.08) translate3d('+event.distance.x+'px,'+event.distance.y+'px, 0px)';
     }
   }
 
-  getEndMoove(event:any,econe:any){
+  getEndMoove(event:any,artefact:any){
+    this.ifActorSelect =false;
+    this.ifEconeSelect =false;
+    console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
+    const ElementSelectBound = document.querySelector('#'+artefact.name);
+    this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
+    this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
+    this.ifActorSelect =true;
+    this.ifEconeSelect =true;
     // console.log('END',event,econe)
-    let zoomElement = document.querySelector<HTMLElement>("."+econe.name);
+    let zoomElement = document.querySelector<HTMLElement>("."+artefact.name);
     // this.eraseLines()
     // this.drawLines()
     if(zoomElement !== null){
