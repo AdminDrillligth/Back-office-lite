@@ -39,6 +39,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               zoomElement.style.transform = `scale(${this.zoom -= this.ZOOM_SPEED})`;
               console.log('ZOOM OUT', this.zoom - this.ZOOM_SPEED)
               this.scale = `scale(${Math.round(this.zoom -= this.ZOOM_SPEED)})`;
+              if(this.actorSelect !== null){
+                const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+                if(ElementSelectBound !== null){
+                  this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+                  this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+                }
+              }
+              if(this.econeSelect !== null){
+                const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+                if(ElementSelectBound !== null){
+                  this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+                  this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+                }
+              }
               this.fixAllLines()
             }
           }
@@ -48,6 +62,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
             zoomElement.style.transform = `scale(${this.zoom += this.ZOOM_SPEED})`;
             console.log('ZOOM IN',this.zoom + this.ZOOM_SPEED)
             this.scale = `scale(${Math.round(this.zoom += this.ZOOM_SPEED)})`;
+            if(this.actorSelect !== null){
+              const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+              if(ElementSelectBound !== null){
+                this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+                this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+              }
+            }
+            if(this.econeSelect !== null){
+              const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+              if(ElementSelectBound !== null){
+                this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+                this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+              }
+            }
             this.fixAllLines()
           }
         }
@@ -535,12 +563,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
               artefact.active = false;
               this.econeSelect = null;
               this.ifEconeSelect = false;
+              this.ifActorSelect = false;
             }else{
               console.log('FALSE',econe)
               console.log('LE ARTEFACT A false: : ! ',artefact)
               artefact.active = true;
               this.econeSelect = artefact;
               this.ifEconeSelect = true;
+              this.ifActorSelect = false;
             }
           }
           })
@@ -553,6 +583,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 console.log('LE ARTEFACT A TRUE: : ! ',artefact)
                 artefact.active = false;
                 this.actorSelect = null;
+                this.ifEconeSelect = false;
                 this.ifActorSelect = false;
               }else{
                 console.log('FALSE',actor)
@@ -560,6 +591,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 artefact.active = true;
                 this.actorSelect = artefact;
                 this.ifActorSelect = true;
+                this.ifEconeSelect = false;
               }
             }
             })
@@ -770,13 +802,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
       // console.log('select Right drawer', artefact)
     }, 500);
+    
   }
 
 
   pinchIn(event:any){
     let zoomElement = document.querySelector<HTMLElement>(".fields-container");
     let zoomElementRepeat = document.querySelector<HTMLElement>(".background-repeat");
-      console.log(event.deltaY)
+    console.log(event.deltaY)
       if(zoomElement !== null){
           zoomElement.style.transform = `scale(${this.zoom += 0.1})`;
           this.scale = `scale(${Math.round(this.zoom += 0.1)})`;
@@ -788,6 +821,25 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
         // console.log('ZOOM IN', this.zoom - 0.1);
     }
     this.fixAllLines()
+    console.log('LE SELECT : ! ',this.actorSelect, this.econeSelect)
+    if(this.actorSelect !== null){
+      console.log('LE SELECT : ! ',this.actorSelect)
+      const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+ 
+      if(ElementSelectBound !== null){
+        console.log("on est different de null")
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
+    if(this.econeSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
+
     // this.eraseLines()
     // this.drawLines()
   }
@@ -811,6 +863,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
              }
           
       }
+      if(this.actorSelect !== null){
+        const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+        if(ElementSelectBound !== null){
+          this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+          this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+        }
+      }
+      if(this.econeSelect !== null){
+        const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+        if(ElementSelectBound !== null){
+          this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+          this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+        }
+      }
       this.fixAllLines()
   }
   scale= 'scale(10.5)';
@@ -832,6 +898,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(zoomElementRepeat !== null){
       zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
+    if(this.actorSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
+    if(this.econeSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
     this.fixAllLines()
   }
 
@@ -850,6 +930,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(zoomElementRepeat !== null){
       zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
+    if(this.actorSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
+    if(this.econeSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
     this.fixAllLines()
   }
 
@@ -867,6 +961,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(zoomElementRepeat !== null){
       zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
+    if(this.actorSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
+    if(this.econeSelect !== null){
+      const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+      if(ElementSelectBound !== null){
+        this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+        this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+      }
+    }
     this.fixAllLines()
   }
 
@@ -883,6 +991,20 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(zoomElementRepeat !== null){
       zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
+    if(this.actorSelect !== null){
+        const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
+        if(ElementSelectBound !== null){
+          this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+          this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+        }
+      }
+      if(this.econeSelect !== null){
+        const ElementSelectBound = document.querySelector('#'+this.econeSelect.name);
+        if(ElementSelectBound !== null){
+          this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+          this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+        }
+      }
     this.fixAllLines()
   }
 
@@ -1079,8 +1201,10 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     // console.log('PLACE',event,econe)
     console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
     const ElementSelectBound = document.querySelector('#'+artefact.name);
-    this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
-    this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
+    if(ElementSelectBound !== null){
+      this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+      this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+    }
     let zoomElement = document.querySelector<HTMLElement>("."+artefact.name);
     if(zoomElement !== null){
       // console.log(zoomElement.style.transform)
@@ -1089,12 +1213,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   }
 
   getStartMoove(event:any,artefact:any){
-    this.ifActorSelect =false;
-    this.ifEconeSelect =false;
+    // this.ifActorSelect =false;
+    // this.ifEconeSelect =false;
     console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
     const ElementSelectBound = document.querySelector('#'+artefact.name);
-    this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
-    this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
+    if(ElementSelectBound !== null){
+      this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+      this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+    }
     // this.ifActorSelect =true;
     // this.ifEconeSelect =true;
     // console.log('START',event,econe)
@@ -1110,10 +1236,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     // this.ifEconeSelect =false;
     console.log('ON LOG LA POSITION DU GET START',this.displayChangeStart)
     const ElementSelectBound = document.querySelector('#'+artefact.name);
-    this.displayChangeStart[0].x = Math.round(artefact.getBoundingClientRect().x-30);
-    this.displayChangeStart[0].y = Math.round(artefact.getBoundingClientRect().y-50);
-    this.ifActorSelect =true;
-    this.ifEconeSelect =true;
+    if(ElementSelectBound !== null){
+      this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
+      this.displayChangeStart[0].y = Math.round(ElementSelectBound.getBoundingClientRect().y-50);
+    }
+
+    // this.ifActorSelect =true;
+    // this.ifEconeSelect =true;
     // console.log('END',event,econe)
     let zoomElement = document.querySelector<HTMLElement>("."+artefact.name);
     // this.eraseLines()
