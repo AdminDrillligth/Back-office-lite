@@ -205,7 +205,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   }
 
- 
+
   heightContainer = 0;
 
   logkey(e:any){
@@ -402,7 +402,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                         }
                       }
                       // console.log('CHAQUE ACTEUR : ! ',actor)
-                    }) 
+                    })
         }else{
             liner[liner.length-1].color = 'grey';
         }
@@ -426,7 +426,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                 endingElement.addEventListener('touchmove', () => { this.fixLine(liner[liner.length-1],'end'); });
                 endingElement.addEventListener('mousemove', () => { this.fixLine(liner[liner.length-1], 'end'); });
                 endingElement.addEventListener('touch', () => { this.fixLine(liner[liner.length-1], 'start'); });
-          
+
               }
         console.log('ON PARCOURS LES LINERS: ',liner)
         this.allLines = liner
@@ -444,7 +444,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     this.allLines.forEach((line:any) =>{
       line.position();
     })
-    
+
   }
 
 
@@ -553,7 +553,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log(Element, Element.offsetLeft, ElementAll)
     }
     console.log('LE ARTEFACT : : ! ',artefact)
-    
+
       if(artefact.name.includes("Econe") == true ){
           this.econes.forEach((econe:any)=>{
             if(econe.name === artefact.name){
@@ -613,9 +613,9 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       //     console.log('LE ARTEFACT : A FALSE : ! ',artefact)
 
       //     this.econes.forEach((econe:any)=>{
-            
+
       //       if(econe.name === artefact.name){
-            
+
       //       }
       //     })
       //     // if(artefact.active == false && this.passing == false){
@@ -624,14 +624,14 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       //     //   artefact.active = true;
       //     //   this.econeSelect = artefact;
       //     // }
-    
+
       //   // this.ifEconeSelect = true;
       //   // this.ifActorSelect = false;
       //   // this.econeSelect = artefact;
 
 
       // }
-      
+
       // else{
       //   this.ifActorSelect = true;
       //   this.ifEconeSelect = false;
@@ -802,7 +802,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
       // console.log('select Right drawer', artefact)
     }, 500);
-    
+
   }
 
 
@@ -825,7 +825,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     if(this.actorSelect !== null){
       console.log('LE SELECT : ! ',this.actorSelect)
       const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
- 
+
       if(ElementSelectBound !== null){
         console.log("on est different de null")
         this.displayChangeStart[0].x = Math.round(ElementSelectBound.getBoundingClientRect().x-30);
@@ -861,7 +861,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
                this.scale = `scale(${Math.round(this.zoom -= 0.1)})`;
                // console.log('ZOOM OUT', this.zoom - 0.1);
              }
-          
+
       }
       if(this.actorSelect !== null){
         const ElementSelectBound = document.querySelector('#'+this.actorSelect.name);
@@ -988,6 +988,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
       // console.log('we swipe Right:', event, event.distance, zoomElement)
       zoomElement.style.transform = this.scale + newtranslate;
     }
+
     if(zoomElementRepeat !== null){
       zoomElementRepeat.style.transform = this.scale + newtranslate;
     }
