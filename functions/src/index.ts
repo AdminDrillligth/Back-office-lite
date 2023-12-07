@@ -13,7 +13,6 @@ app.post('/entries', addEntry)
 app.get('/entries', getAllEntries)
 app.patch('/entries/:entryId', updateEntry)
 app.delete('/entries/:entryId', deleteEntry)
-
 app.post('/admin', addAdmin)
 
 
