@@ -135,11 +135,11 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
   ]
 
   btnLinesStyle= [
-    {style:'normal', linestyle : true, src:'../../../assets/icons/lines/line.png' },
+    {style:'normal', linestyle : false, src:'../../../assets/icons/lines/line.png' },
     {style:'dash', linestyle : false, src:'../../../assets/icons/lines/line-cut.png'},
     {style:'curve', linestyle : false, src:'../../../assets/icons/lines/line-round.png'}
   ];
-
+  createElementForLine = false;
   btnListStartActor = [
     // {btn:'color', src:'../../assets/icons/exercices/interface/Icon-button-white.svg', active:'false'},
     {btn:'flag', src:'../../assets/icons/exercices/interface/flag-start.svg', active:'false'},
@@ -207,13 +207,45 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
 
   heightContainer = 0;
-
+  boxOfLines: any= [];
   logkey(e:any){
     console.log('CLIENT X AND Y : ',e.clientX, e.clientY)
-    setTimeout(()=>{
-      console.log('LOG KEYYY')
+    // setTimeout(()=>{
+      if(this.createElementForLine){
+        this.createElementForLine = false;
+        let liners : any[]= []
+        console.log('LOG KEYYY TRUE ',this.createElementForLine)
+        const containerToBoxOfLines = document.getElementsByClassName('fieldsvector');
+        // containerToBoxOfLines[0].appendChild(boxe);
+        console.log('LOG KEYYY TRUE CONTAINER ; : ',containerToBoxOfLines)
+        this.boxOfLines.push({id:"start"+(this.boxOfLines.length+1),start:true,top:e.clientX,left: e.clientY})
+        this.boxOfLines.push({id:"end"+(this.boxOfLines.length+1),start:false,top:e.clientX,left: e.clientY})
+      
+        setTimeout(()=>{
+          const startingElement = document.querySelector('#'+this.boxOfLines[this.boxOfLines.length-2].id);
+          const endingElement = document.querySelector('#'+this.boxOfLines[this.boxOfLines.length-1].id);
+          console.log(startingElement,endingElement,this.boxOfLines )
+          liners.push(new LeaderLine( LeaderLine.pointAnchor(startingElement),  LeaderLine.pointAnchor(endingElement)));
+          if(startingElement !== null){
+            // console.log(container, containerAll)
+              startingElement.addEventListener('mousemove', () => { this.fixLine(liners[liners.length-1], 'start'); });
+              startingElement.addEventListener('ondrag', () => { this.fixLine(liners[liners.length-1], 'start'); });
+              startingElement.addEventListener('touchmove', () => { this.fixLine(liners[liners.length-1], 'start'); });
+              startingElement.addEventListener('touch', () => { this.fixLine(liners[liners.length-1], 'start'); }); 
+          }
+          if(endingElement !== null){
+              endingElement.addEventListener('ondrag', () => { this.fixLine(liners[liners.length-1],'end'); });
+              endingElement.addEventListener('touchmove', () => { this.fixLine(liners[liners.length-1],'end'); });
+              endingElement.addEventListener('mousemove', () => { this.fixLine(liners[liners.length-1], 'end'); });
+              endingElement.addEventListener('touch', () => { this.fixLine(liners[liners.length-1], 'start'); });
+
+            }
+        },300)
+      
       }
-      ,300)
+      
+
+     
   }
 
 
@@ -477,6 +509,13 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
 
   changeFormatLineAtStart(item:any){
     console.log('Le style choisi: ',item)
+    if(!this.createElementForLine){
+         setTimeout(()=>{
+            this.createElementForLine =true;
+          },300)
+    
+    }
+    
     // this.btnLinesStyle.forEach(line =>{
     //   if(item.style === line.style){
     //     line.linestyle = true;

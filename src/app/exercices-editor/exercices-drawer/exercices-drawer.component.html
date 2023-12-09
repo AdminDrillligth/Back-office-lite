@@ -119,8 +119,15 @@
     <!-- <span [ngStyle]="{'left.px': box.left, 'top.px':box.top, 'transform':''}" *ngFor="let box of containerLineBounder"  class="container-utils-onmap" cdkDragBoundary=".fields-container-background" cdkDrag>jgiugogh</span> -->
 <div style="width:100%;height: 100%;position: relative;" class="fieldsvector">  </div>
 <div #fieldscontainer (swipeup)="swipeEventUp($event)" (swipedown)="swipeEventDown($event)" (swipeleft)="swipeEventLeft($event)" (swiperight)="swipeEventRight($event)" (pinchin)="pinchIn($event)" (pinchout)="pinchOut($event)" class="fields-container">
+  <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span> 
+  
   <!-- container of drag vectors -->
-  <!-- <span *ngFor="let boundingBoxVectorStart of boundingBoxVectorStarts" cdkDragBoundary=".fields-container-background" cdkDrag ></span> -->
+  <span [ngStyle]="{'left': '50%', 'top':'28%'}"
+  style=" position: absolute;top: 33%;left: 49%; width: 50px;
+  height: 50px;
+  background: #0000ff33;
+  scale: 0.08;
+  border-radius:50%;" id="{{box.id}}" *ngFor="let box of boxOfLines" cdkDragBoundary=".fields-container-background boxOFLine" cdkDrag ></span>
   
   <span id="{{econe.name}}" (touch)="displayUtils(econe)" (click)="displayUtils(econe)" (cdkDragStarted)='getStartMoove($event, econe)' (cdkDragEnded)='getEndMoove($event, econe)' (cdkDragMoved)="changePlaceItem($event, econe)" *ngFor="let econe of econes" matBadge="{{econe.number}}" [matBadgeHidden]="hidden" cdkDragBoundary=".fields-container-background" cdkDrag class="{{econe.name}} container-equip-live-on-map">
     <img [ngClass]="{'point-active': econe.topactif ==  true}" *ngIf="econe.active" (touch)="selectTopDrawer(econe)" (click)="selectTopDrawer(econe)" class="point top{{econe.name}} point-top" src="../../../assets/icons/exercices/interface/Ellipse-blue.svg">
