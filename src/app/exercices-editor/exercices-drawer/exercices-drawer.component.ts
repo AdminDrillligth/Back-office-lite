@@ -225,7 +225,16 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
           const startingElement = document.querySelector('#'+this.boxOfLines[this.boxOfLines.length-2].id);
           const endingElement = document.querySelector('#'+this.boxOfLines[this.boxOfLines.length-1].id);
           console.log(startingElement,endingElement,this.boxOfLines )
-          liners.push(new LeaderLine( LeaderLine.pointAnchor(startingElement),  LeaderLine.pointAnchor(endingElement)));
+          liners.push(new LeaderLine( LeaderLine.pointAnchor(startingElement),  LeaderLine.pointAnchor(endingElement), {dash: {animation: true}}));
+          liners[liners.length-1].size = 3;
+          liners[liners.length-1].color = 'grey';
+          liners[liners.length-1].path = 'straight';
+          // liners[liners.length-1].path = 'straight';
+          // liners[liners.length-1].dash = true;
+          liners[liners.length-1].setOptions({
+            startPlug: 'disc',
+            endPlug: 'arrow3',
+          });
           if(startingElement !== null){
             // console.log(container, containerAll)
               startingElement.addEventListener('mousemove', () => { this.fixLine(liners[liners.length-1], 'start'); });
@@ -382,6 +391,7 @@ export class ExercicesDrawerComponent implements OnInit, OnChanges {
     this.line.size = 1;
     this.line.color = 'grey';
     this.line.path = 'fluid';
+    
     this.line.setOptions({
       startPlug: 'disc',
       endPlug: 'arrow3'

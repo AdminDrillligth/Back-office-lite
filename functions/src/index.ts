@@ -4,7 +4,7 @@
 import * as functions from 'firebase-functions'
 import * as express from 'express'
 import { addEntry, getAllEntries, updateEntry, deleteEntry } from './entryController'
-import { addAdmin, getAllAdmin, updateAdmin } from './adminController'
+import { addAdmin, getAdmins, updateAdmin, deleteAdmin } from './adminController'
 
 const app = express()
 
@@ -16,8 +16,10 @@ app.patch('/entries/:entryId', updateEntry)
 app.delete('/entries/:entryId', deleteEntry)
 // 
 app.post('/admin', addAdmin)
-app.get('/admin', getAllAdmin)
+app.get('/admin', getAdmins)
 app.patch('/admin', updateAdmin)
+app.delete('/admin', deleteAdmin)
+
 
 
 exports.app = functions.https.onRequest(app)
