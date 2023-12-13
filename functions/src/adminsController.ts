@@ -1,17 +1,22 @@
+//ADMIN PAGE
+// GESTION DES COMPTES ADMINISTEURS
+// CRUD
+
+
 import { Response } from "express"
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
 
-// Model de type Admin
+// Model to SET an User Type Admin
 type AdminModel = {
-  name: string,
-  avatarimages:string,
-  email:string,
-  asAdmin:boolean,
+  name: string, // Required
+  avatarimages:string, //
+  email:string, // Required
+  asAdmin:boolean, //
   personalinfos:{
-    firstname:string,
-    zip:string,
+    firstname:string, // Required
+    zip:string, 
     address:string,
     simplebirthdate:string,
     phone:string,
@@ -19,7 +24,8 @@ type AdminModel = {
     comment:string,
     birthdate:string
   },
-  privileges:{ role:'Administrateur', rights:string },
+  privileges:{ role:'Administrateur', rights:string // required
+  },
   traineds:[],
   staff:[],
   econes:[],
@@ -122,6 +128,7 @@ const updateAdmin = async (req:any, res: Response) => {
   let body = req.body;
   let id = reqs.adminId;
    try {
+
     let adminCollection = db.collection('account-handler').doc(id)
     const currentData = (await adminCollection.get()).data() || {}
     const adminObject = {
