@@ -8,14 +8,11 @@ import { addEntry, getAllEntries, updateEntry, deleteEntry } from './entryContro
 import { addAdmin, getAdmins, updateAdmin, deleteAdmin } from './adminsController';
 import { addUser, getUsers, updateUser, deleteUser } from './usersController';
 import { addEcone, getEcones, updateEcone, deleteEcone } from './econesController';
-import { getToken } from './loggerController';
+import { connectToAccount } from './loggerController';
 // var methods = require("./methods");
 
 const app = express()
-
 //
-// app.get('/', (req, res) => res.status(200).send('ON DEMARRE DRILLLIGHT API !'))
-
 app.get("/",(req, res, next) => {
   res.status(200).send('ON DEMARRE DRILLLIGHT API !')
 });
@@ -31,19 +28,17 @@ app.get('/admin', getAdmins)
 app.patch('/admin', updateAdmin)
 app.delete('/admin', deleteAdmin)
 //
-
 app.post('/user', addUser)
 app.get('/user', getUsers)
 app.patch('/user', updateUser)
 app.delete('/user', deleteUser)
-
-
+//
 app.post('/econe', addEcone)
 app.get('/econe', getEcones)
 app.patch('/econe', updateEcone)
 app.delete('/econe', deleteEcone)
-
-app.get('/login', getToken)
+//
+app.post('/login', connectToAccount)
 
 exports.app = functions.https.onRequest(app)
 

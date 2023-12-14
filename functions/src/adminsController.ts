@@ -24,7 +24,7 @@ type AdminModel = {
     comment:string,
     birthdate:string
   },
-  privileges:{ role:'Administrateur', rights:string // required
+  privileges:{ role:'', rights:string // required
   },
   traineds:[],
   staff:[],

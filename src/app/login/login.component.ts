@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 })
 
 export class LoginComponent implements OnInit{
-  baseURL: string = "http://localhost:3000/";
+  baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
   color: ThemePalette = 'primary';
   mode: ProgressSpinnerMode = 'determinate';
   value :number = 50;
@@ -55,8 +55,7 @@ export class LoginComponent implements OnInit{
     if (this.emailFormControl.valid && this.passwordFormControl.valid) {
     // this.myInterval = setInterval(this.spinTimer, 1000);
     if(this.emailFormControl.value !== null && this.passwordFormControl.value !== null){
-      this.afAuth.signInWithEmailAndPassword(this.emailFormControl.value, this.passwordFormControl.value)
-      .then((loginResponse: any) => {
+      this.afAuth.signInWithEmailAndPassword(this.emailFormControl.value, this.passwordFormControl.value).then((loginResponse: any) => {
         localStorage.setItem('user', JSON.stringify({email:this.emailFormControl.value, timeStamp: '', timerMilli:1200000}));
         console.log('LOGIN  ::: ',loginResponse);
         // const token = await afAuth.currentUser.getIdToken();
@@ -67,16 +66,16 @@ export class LoginComponent implements OnInit{
           console.log(body)
           this.http.post(this.baseURL+'login' , body,{'headers':headers}).subscribe((response:any) => {
             this.dataOfUser = response;
-            console.log('RESPONSE OF POST 3000 : ',response )
-            localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser));
-            localStorage.setItem('account', JSON.stringify(this.dataOfUser.dataOfUser));
-            let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-            console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
-            const headersWithToken = {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.dataOfUser.token}`
-            }
-            this.router.navigate(['dashboard']);
+            console.log('RESPONSE OF POST API : ',response )
+            // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser));
+            // localStorage.setItem('account', JSON.stringify(this.dataOfUser.dataOfUser));
+            // let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            // console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
+            // const headersWithToken = {
+            //   'Content-Type': 'application/json',
+            //   'Authorization': `Bearer ${this.dataOfUser.token}`
+            // }
+            // this.router.navigate(['dashboard']);
             // this.http.get(this.baseURL, {headers: headersWithToken}).subscribe((res:any) => {
             //   console.log('LES REP DU GET : ',res)
             // });

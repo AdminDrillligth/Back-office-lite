@@ -5,12 +5,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Model de type Admin
 type UsersModel = {
-  name: string,
-  avatarimages:string,
+  firstName: string,
+  avatarImages:string,
   email:string,
   asAdmin:boolean,
-  personalinfos:{
-    firstname:string,
+  personalInfos:{
+    familyName:string,
     zip:string,
     address:string,
     simplebirthdate:string,
@@ -25,6 +25,7 @@ type UsersModel = {
   econes:[],
   trainings:[],
   videos:[],
+  //   applicationVersion:string,
   licencied:number,
   date: string,
   dateIso: string,
@@ -56,7 +57,7 @@ const addUser = async (req: Request, res: Response) => {
     name, avatarimages, email,
     asAdmin,
     personalinfos:{ firstname, zip, address, simplebirthdate, phone, city, comment, birthdate },
-    privileges:{ rights },
+    privileges:{role, rights },
     traineds, staff, econes,
     trainings, videos, licencied,
     date, dateIso,
@@ -69,7 +70,7 @@ const addUser = async (req: Request, res: Response) => {
       id: entry.id, name, avatarimages,
       email, asAdmin,
       personalinfos:{ firstname, zip, address, simplebirthdate, phone, city, comment, birthdate },
-      privileges:{ rights },
+      privileges:{role:'Customer', rights },
       traineds, staff, econes,
       trainings, videos, licencied,
       date, dateIso, newUuid,
@@ -79,10 +80,15 @@ const addUser = async (req: Request, res: Response) => {
     res.status(200).send({
       status: 'success',
       message: 'entry Admin added successfully',
-      data: userObject
+      data: userObject,
     })
   } catch(error:any) {
-      res.status(500).json(error.message)
+      res.status(500).send({
+        status: 'Erreur lors du traitement des données',
+        message: 'Une erreur est survenue, vérifiez la validité du fomulaire',
+        messageSub: 'erreur Code 500 veuillez reéssayer',
+        error:error.message,
+      })
   }
 }
 
