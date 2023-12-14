@@ -54,10 +54,10 @@ type Request = { body: UsersModel, params: { userId: string }}
 const addUser = async (req: Request, res: Response) => {
   let newUuid = uuidv4();
   const {
-    name, avatarimages, email,
+    firstName, avatarImages, email,
     asAdmin,
-    personalinfos:{ firstname, zip, address, simplebirthdate, phone, city, comment, birthdate },
-    privileges:{role, rights },
+    personalInfos:{ familyName, zip, address, simplebirthdate, phone, city, comment, birthdate },
+    privileges:{ rights },
     traineds, staff, econes,
     trainings, videos, licencied,
     date, dateIso,
@@ -67,9 +67,9 @@ const addUser = async (req: Request, res: Response) => {
     const entry = db.collection('account-handler')
     const userObject = {
       role:'',
-      id: entry.id, name, avatarimages,
+      id: entry.id, firstName, avatarImages,
       email, asAdmin,
-      personalinfos:{ firstname, zip, address, simplebirthdate, phone, city, comment, birthdate },
+      personalInfos:{ familyName, zip, address, simplebirthdate, phone, city, comment, birthdate },
       privileges:{role:'Customer', rights },
       traineds, staff, econes,
       trainings, videos, licencied,
@@ -131,19 +131,19 @@ const updateUser = async (req:any, res: Response) => {
     let userCollection = db.collection('account-handler').doc(id)
     const currentData = (await userCollection.get()).data() || {}
     const userObject = {
-          name: body.name || currentData.name,
-          avatarimages: body.avatarimages || currentData.avatarimages,
+          firstName: body.firstName || currentData.firstName,
+          avatarImages: body.avatarImages || currentData.avatarImages,
           email: body.email || currentData.email,
           asAdmin: body.asAdmin|| currentData.asAdmin,
-          personalinfos:{
-            firstname:body.personalinfos.firstname || currentData.personalinfos.firstname,
-            zip:body.personalinfos.zip || currentData.personalinfos.zip,
-            address:body.personalinfos.address || currentData.personalinfos.address,
-            simplebirthdate:body.personalinfos.simplebirthdate || currentData.personalinfos.simplebirthdate,
-            phone:body.personalinfos.phone || currentData.personalinfos.phone,
-            city:body.personalinfos.city || currentData.personalinfos.city,
-            comment:body.personalinfos.comment || currentData.personalinfos.comment,
-            birthdate:body.personalinfos.birthdate || currentData.personalinfos.birthdate
+          personalInfos:{
+            familyName:body.personalInfos.familyName || currentData.personalInfos.familyName,
+            zip:body.personalInfos.zip || currentData.personalInfos.zip,
+            address:body.personalInfos.address || currentData.personalInfos.address,
+            simplebirthdate:body.personalInfos.simplebirthdate || currentData.personalInfos.simplebirthdate,
+            phone:body.personalInfos.phone || currentData.personalInfos.phone,
+            city:body.personalInfos.city || currentData.personalInfos.city,
+            comment:body.personalInfos.comment || currentData.personalInfos.comment,
+            birthdate:body.personalInfos.birthdate || currentData.personalInfos.birthdate
           },
           privileges:{
             rights: body.privileges.rights|| currentData.privileges.rights|| ''

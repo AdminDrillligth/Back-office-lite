@@ -1,6 +1,6 @@
 
 // https://blog.logrocket.com/building-rest-api-firebase-cloud-functions-typescript-firestore/#writing-first-cloud-function
-
+var cors = require('cors');
 import * as functions from 'firebase-functions';
 import * as express from 'express';
 // var router = express.Router();
@@ -13,10 +13,12 @@ import { connectToAccount } from './loggerController';
 
 const app = express()
 //
+
+app.use(cors({ origin: ['http://localhost:4200']}));
 app.get("/",(req, res, next) => {
   res.status(200).send('ON DEMARRE DRILLLIGHT API !')
 });
-
+// 
 //
 app.post('/entries', addEntry)
 app.get('/entries', getAllEntries)

@@ -5,18 +5,16 @@ const fs = require('firebase-admin');
 // import * as express from 'express';
 const db = fs.firestore(); 
 // const usersDblogs = db.collection('logsofconnection'); 
-// const username = "snaimuh@googlemail.com";
+ const username = "snaimuh@googlemail.com";
 // const password = "Deconnecter22";
-const username = "snaimuh@googlemail.com";
+// const username = "snaimuh@googlemail.com";
 // let userhandlerProfils;
 // let dataOfUsers = [];
 const connectToAccount = async (req:any, res:any) => {
-
-
   try {
-    let reqs = req.query;
+    let reqs = req.body;
     let id = reqs.username;
-    let userhandlerProfil = await db.collection('account-handler').where('email', '==', username).get();
+    let userhandlerProfil = await db.collection('account-handler').where('email', '==', id).get();
     let userDetail :any = '';
     if(userhandlerProfil.length !== 0){
       userhandlerProfil.forEach((doc:any) =>{

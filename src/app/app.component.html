@@ -3,7 +3,7 @@
     <mat-drawer-container class="container-side" autosize>
       <mat-drawer #drawer class="sidenav" mode="push">
         <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  />
-        <p *ngIf="AccountOfUser" class='status-ranking'>Statut : {{AccountOfUser.privileges.role}}</p>
+        <!-- <p *ngIf="AccountOfUser" class='status-ranking'>Statut : {{AccountOfUser.privileges.role}}</p> -->
         <div class="button-nav" *ngFor="let item of sideBarItems">
           <button (click)="navigateTo(item)" class="btn-nav" mat-raised-button>
             <img src="{{item.icone}}">

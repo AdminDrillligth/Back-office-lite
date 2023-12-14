@@ -283,34 +283,35 @@ export class AdministrationComponent implements OnInit{
     // })
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
-    if(this.AccountOfUser.privileges.role === 'Administrateur'){
-      this.getAdminCustomerUsers();
-      console.log('ICI ADMIN :: ',this.AccountOfUser)
+    console.log('ACCOUNT OF USER :! : ',this.AccountOfUser)
+    // if(this.AccountOfUser.privileges.role === 'Administrateur'){
+    //   this.getAdminCustomerUsers();
+    //   console.log('ICI ADMIN :: ',this.AccountOfUser)
 
 
-      this.utilsService._getModerateOption.subscribe((moderation:any) => {
-        let getAccounts:any[] = []
-        console.log('MODERATION !: ',this.Accounts, moderation)
-        this.Accounts.forEach((account:any) => {
-          getAccounts.push(account)
-          console.log(account.data.email, moderation.account.data.email)
-          if(account.data.email === moderation.account.data.email){
-            account.data.moderate = moderation.data.moderate;
-            account.moderate = moderation.data.moderate;
-            console.log('ELEMENT REçU DE MODéRATION : ! ',account.data.moderate, moderation.data.moderate)
-            account.data.traineds.forEach((trained:any)=>{
-              console.log('LES ENTRAINES :! :',trained)
-              // trained.moderate.moderatereason.moderate =
-            });
-          }
-          console.log('LES COMPTES: ! ',getAccounts);
-        });
-      });
-    }else{
-      console.log('ICI NON ADMIN :: ',this.AccountOfUser)
-      this.letsee = true;
-      this.ProfilAccount = {data: this.AccountOfUser};
-    }
+    //   this.utilsService._getModerateOption.subscribe((moderation:any) => {
+    //     let getAccounts:any[] = []
+    //     console.log('MODERATION !: ',this.Accounts, moderation)
+    //     this.Accounts.forEach((account:any) => {
+    //       getAccounts.push(account)
+    //       console.log(account.data.email, moderation.account.data.email)
+    //       if(account.data.email === moderation.account.data.email){
+    //         account.data.moderate = moderation.data.moderate;
+    //         account.moderate = moderation.data.moderate;
+    //         console.log('ELEMENT REçU DE MODéRATION : ! ',account.data.moderate, moderation.data.moderate)
+    //         account.data.traineds.forEach((trained:any)=>{
+    //           console.log('LES ENTRAINES :! :',trained)
+    //           // trained.moderate.moderatereason.moderate =
+    //         });
+    //       }
+    //       console.log('LES COMPTES: ! ',getAccounts);
+    //     });
+    //   });
+    // }else{
+    //   console.log('ICI NON ADMIN :: ',this.AccountOfUser)
+    //   this.letsee = true;
+    //   this.ProfilAccount = {data: this.AccountOfUser};
+    // }
   }
 
 

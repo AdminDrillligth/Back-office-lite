@@ -98,15 +98,16 @@ export class AppComponent {
           this.utilsService.changeThemeTemplate(this.className);
         });
         this.utilsService._seeCustumorProfilOptions.subscribe((account:any) => {
-          this.seeAsAccount = account;
-          if(account !== null){
-            console.log('ACCOUNT !: ',account.seeAs, account.account.privileges.rights)
-            if(account.seeAs === true){
-              this.seeAsAdmin = true;
-            }else{
-              this.seeAsAdmin = false;
-            }
-          }
+          // this.seeAsAccount = account;
+          console.log('ACCOUNT : ! ',account);
+          // if(account !== null){
+          //   console.log('ACCOUNT !: ',account.seeAs, account.account.asAdmin)
+          //   if(account.seeAs === true){
+          //     this.seeAsAdmin = true;
+          //   }else{
+          //     this.seeAsAdmin = false;
+          //   }
+          // }
         });
         this.updateData();
   }
@@ -134,14 +135,14 @@ export class AppComponent {
         this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
         //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
         this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-        if(this.AccountOfUser.privileges.role === "Administrateur"){
-          this.userHandlersServiceAdmin.getAccountAdmin().subscribe((allAccount:any) => {
-            allAccount.docs.forEach((account:any) => {
-              this.AllAccount.push({account:account.data(), id:account.id})
-            })
-            localStorage.setItem('allaccount', JSON.stringify(this.AllAccount));
-          })
-        }
+        // if(this.AccountOfUser.privileges.role === "Administrateur"){
+        //   this.userHandlersServiceAdmin.getAccountAdmin().subscribe((allAccount:any) => {
+        //     allAccount.docs.forEach((account:any) => {
+        //       this.AllAccount.push({account:account.data(), id:account.id})
+        //     })
+        //     localStorage.setItem('allaccount', JSON.stringify(this.AllAccount));
+        //   })
+        // }
       });
   }
 }

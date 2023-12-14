@@ -67,6 +67,15 @@ export class LoginComponent implements OnInit{
           this.http.post(this.baseURL+'login' , body,{'headers':headers}).subscribe((response:any) => {
             this.dataOfUser = response;
             console.log('RESPONSE OF POST API : ',response )
+            if(this.dataOfUser.status === "success"){
+              this.router.navigate(['dashboard']);
+              // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser.user));
+              localStorage.setItem('account', JSON.stringify(this.dataOfUser.user));
+              let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+              console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
+            }else{
+              // NO ACCOUNT 
+            }
             // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser));
             // localStorage.setItem('account', JSON.stringify(this.dataOfUser.dataOfUser));
             // let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
@@ -75,7 +84,7 @@ export class LoginComponent implements OnInit{
             //   'Content-Type': 'application/json',
             //   'Authorization': `Bearer ${this.dataOfUser.token}`
             // }
-            // this.router.navigate(['dashboard']);
+            // 
             // this.http.get(this.baseURL, {headers: headersWithToken}).subscribe((res:any) => {
             //   console.log('LES REP DU GET : ',res)
             // });
