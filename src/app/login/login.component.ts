@@ -67,12 +67,23 @@ export class LoginComponent implements OnInit{
           this.http.post(this.baseURL+'login' , body,{'headers':headers}).subscribe((response:any) => {
             this.dataOfUser = response;
             console.log('RESPONSE OF POST API : ',response )
+            let token = this.dataOfUser.encoded;
             if(this.dataOfUser.status === "success"){
               this.router.navigate(['dashboard']);
               // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser.user));
               localStorage.setItem('account', JSON.stringify(this.dataOfUser.user));
               let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
               console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
+              if(AccountOfUser.asAdmin === true){
+                console.log('is an admin')
+                const headersGet = { 'content-type': 'application/json','token':token}
+                this.http.get(this.baseURL+'admin' ,{'params':{'token':token}}).subscribe((response:any) => {
+                  console.log('We get all users : ', response, token)
+                  localStorage.setItem('account-datas', JSON.stringify(response));
+                  let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+                  console.log('ALL ACCOUNTS DETAILS :  !',allAccounts)
+                })
+              }
             }else{
               // NO ACCOUNT 
             }

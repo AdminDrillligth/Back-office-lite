@@ -5,7 +5,7 @@ const fs = require('firebase-admin');
 // import * as express from 'express';
 const db = fs.firestore(); 
 // const usersDblogs = db.collection('logsofconnection'); 
- const username = "snaimuh@googlemail.com";
+//  const username = "snaimuh@googlemail.com";
 // const password = "Deconnecter22";
 // const username = "snaimuh@googlemail.com";
 // let userhandlerProfils;

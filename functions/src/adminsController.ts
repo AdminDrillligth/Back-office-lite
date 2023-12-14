@@ -95,18 +95,37 @@ const addAdmin = async (req: Request, res: Response) => {
 // ON RECUPERE LA LISTE DES ADMINS VIA GET
 // REQUEST TEMPLATE
 // JUST BEARER TOKEN
-const getAdmins = async (req: Request, res: Response) => {
+const getAdmins = async (req: any, res: Response) => {
   try {
+    let reqs =  req.query
+    let token = reqs.token
     const allAdmins: any[] = []
-    const querySnapshot = await db.collection('account-handler').get()
+    const querySnapshot = await db.collection('account-handler').get();
+     jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
+        if (err) {
+                return res.status(200).json({
+                  status: 'success',
+                  message: 'Yo just get ERROR the token',
+                  err: err
+                });
+        }else{
+                return res.status(200).json({
+                  status: 'success',
+                  message: 'Yo just get the token',
+                  decoded: decoded,
+                });
+        }
+      });
     querySnapshot.forEach((doc: any) => {
       let ifAdmin = doc.data();
       if(ifAdmin.asAdmin == true){
         allAdmins.push({data:doc.data(), id: doc.id})
         functions.logger.log("DATA : ! ", allAdmins)
+        functions.logger.log("DATA PARAMS : ! ", token)
       }
+      
     })
-    return res.status(200).json(allAdmins)
+    // return res.status(200).json(allAdmins)
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 
