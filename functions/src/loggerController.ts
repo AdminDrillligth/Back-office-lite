@@ -22,42 +22,36 @@ const connectToAccount = async (req:any, res:any) => {
         jwt.sign({ data: id}, 'secret', { expiresIn: '1h' }, 
         function(err:any, encoded:any) {
           if (err) {
-            return res.status(401).json({
-              status: 'error',
-              message: 'Veuillez vous reconnecter',
-              err: err
-            });
+              return res.status(401).json({
+                status: 'error',
+                message: 'Veuillez vous reconnecter token expiration',
+                err: err
+              });
           }else{
-            jwt.verify(encoded, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
-              if (err) {
-                return res.status(200).json({
-                  status: 'success',
-                  message: 'Yo just get ERROR the token',
-                  err: err
-                });
-              }else{
-                return res.status(200).json({
-                  status: 'success',
-                  message: 'Yo just get the token',
-                  decoded: decoded,
-                  emailUser:id,
-                  encoded:encoded,
-                  user:userDetail,
-                });
-              }
-            });
+              jwt.verify(encoded, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
+                if (err) {
+                  return res.status(200).json({
+                    status: 'success',
+                    message: 'Yo just get ERROR the token',
+                    token: encoded,
+                    err: err
+                  });
+                }else{
+                  return res.status(200).json({
+                    status: 'success',
+                    message: 'Yo just get the token',
+                    decoded: decoded,
+                    emailUser:id,
+                    token:encoded,
+                    user:userDetail,
+                  });
+                }
+              });
           }
         }
       );
       })
-      
-    }else{
-      return res.status(401).json({
-        status: 'error',
-        message: 'Pas d\'utilisateur à cet adresse email',
-      });
     }
-    
   }
   catch(error:any) { 
     return res.status(500).json(error.message) 

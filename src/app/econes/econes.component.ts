@@ -168,17 +168,18 @@ export class EconesComponent implements OnInit {
       console.log('Accounts !: ', accounts);
       if(accounts === null){
         this.userHandlersServiceAdmin.getAccountAdmin().subscribe(e =>{
+          console.log('LES DATAS DU SERVICE ACCOUNT :  ',e );
           e.docs.forEach(account =>{
-            console.log(account.data());
+            console.log('LES DATAS DU ACCOUNT ',this.Econes, account.data());
             this.UserDataAccount.push(account.data());
             if(this.UserDataAccount.length === e.docs.length){
               for(let i = 0; i < this.Econes.length; i++) {
                this.UserDataAccount.forEach((account:any) =>{
                     if(account.uuid === this.Econes[i].uuidOfCustomer){
-                      console.log(account.personalinfos.name, account.personalinfos.firstname, account.email )
-                      this.Econes[i].name = account.personalinfos.name;
-                      this.Econes[i].firstname = account.personalinfos.firstname;
-                      this.Econes[i].email = account.email;
+                      
+                      // this.Econes[i].name = account.personalinfos.name;
+                      // this.Econes[i].firstname = account.personalinfos.firstname;
+                      // this.Econes[i].email = account.email;
                       
                     }
                 })
@@ -193,10 +194,10 @@ export class EconesComponent implements OnInit {
         });
       }else{
         let accountsData = accounts.account;
-        console.log(accountsData)
-        accountsData.forEach((account:any) =>{
-          this.UserDataAccount.push(account.data)
-        })  
+        // console.log('LES ACCOUNTS DATAS : ! ',accountsData)
+        // accountsData.forEach((account:any) =>{
+        //   this.UserDataAccount.push(account.data)
+        // })  
       }
      });
   }

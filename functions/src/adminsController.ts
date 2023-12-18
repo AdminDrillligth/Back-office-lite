@@ -121,16 +121,16 @@ const getAdmins = async (req: any, res: Response) => {
     let reqs =  req.query
     let token = reqs.token
     let decodeds:any;
-    const allAdmins: any[] = []
+    const allAdmins: any[] = [];
     const querySnapshot = await db.collection('account-handler').get();
     jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
-        if (err) {
+        if(err){
           functions.logger.log("DATA DECODED ERROR: ! ", err)
           decodeds = 'err';
-       }else{
+        }else{
           functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
           decodeds = 'no error';
-       }
+        }
     });
     querySnapshot.forEach((doc: any) => {
       let ifAdmin = doc.data();
@@ -139,8 +139,8 @@ const getAdmins = async (req: any, res: Response) => {
         functions.logger.log("DATA : ! ", allAdmins)
         functions.logger.log("DATA PARAMS : ! ", token)
       }
-    })
-    return res.status(200).json({allAdmins :allAdmins, decoded:decodeds })
+    });
+    return res.status(200).json({allAdmins :allAdmins, decoded:decodeds });
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 

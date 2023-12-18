@@ -48,18 +48,22 @@ type ListType = { title: string; val: number }[];
   standalone: true,
   imports: [MatButtonModule, MatSnackBarModule],
 })
+
+
 export class snackComponent {
   snackBarRef = inject(MatSnackBarRef);
 }
 
+
+
 export interface AccountDatas {
-  avatarimages:string,
+  avatarImages:string,
   date:string,
   dateIso:string,
   econes:[],
   email:string,
   moderate:{date: string, lastcodateIso: string, moderatereason: any},
-  personalinfos:{
+  personalInfos:{
     comment: string,
     birthdate: string,
     name: string,
@@ -71,12 +75,13 @@ export interface AccountDatas {
     simplebirthdate:string,
     zip:string,
   },
-  privileges:{role: string, rights: [], licences: number},
+  privileges:{ rights: []},
   staff:[],
   traineds:[],
   update:string,
   uuid:string
 }
+
 
 export interface ProfilAccountDatas{
   avatarimages:string,
@@ -120,11 +125,13 @@ export interface ProfilAccountDatas{
 export class AdministrationComponent implements OnInit{
   panelOpenState = false;
   // ,'date'
-  displayedColumnsAccounts: string[] = ['name', 'role', 'licences', 'date', 'actions', 'moderation'];
-  dataSourceAccounts!: MatTableDataSource<AccountDatas>;
+  displayedColumnsAccounts: string[] = ['firstName', 'familyName', 'date', 'moderation', 'actions'];
+  // 
+  // , 'role', 'licences', 'date', 'actions', 'moderation'
+  dataSourceAccounts!: MatTableDataSource<any>;
 
-  displayedColumnsProfilAccount: string[] = ['name', 'role', 'licences', 'date', 'actions', 'moderation'];
-  dataSourceProfilAccount!: MatTableDataSource<ProfilAccountDatas>;
+  displayedColumnsProfilAccount: string[] = ['firstName', 'role', 'licences', 'date', 'actions', 'moderation'];
+  dataSourceProfilAccount!: MatTableDataSource<any>;
   Accounts:any[]=[];
   ProfilAccount:any;
   name: string ="";
@@ -156,6 +163,7 @@ export class AdministrationComponent implements OnInit{
     "series": [ { "name": 101, "value": 12},{"name": 126,"value": 12}]
     }
   ];
+
   //QR INITIALIZER
   public initial_state = {
     allowEmptyString: true, alt: "E-cone",
@@ -168,6 +176,8 @@ export class AdministrationComponent implements OnInit{
     margin: 4, qrdata: "https://drilllight.com/Cordobo/angularx-qrcode",
     scale: 1, version: undefined, title: "E-cone", width: 200,
   }
+
+
   public data_model = { ...this.initial_state }
   public allowEmptyString: boolean = false;
   public alt!: string;
@@ -192,7 +202,8 @@ export class AdministrationComponent implements OnInit{
   public showCss: boolean = false;
   public showImage: boolean = false;
 
-  resultsLength = 40;
+
+  resultsLength = 0;
   // TABLE INIT
   AccountOfUser:any=[];
   @ViewChild('paginatorAccounts')
@@ -202,6 +213,7 @@ export class AdministrationComponent implements OnInit{
   paginatorProfilAccount!: MatPaginator;
   namer = new FormControl('');
   email = new FormControl('');
+
 
   constructor(
     private stripeServices:StripeServices,
@@ -215,6 +227,7 @@ export class AdministrationComponent implements OnInit{
     private gocardlessService:GocardlessService,
     private router: Router
   ){
+
     // DATA INIT
     Object.assign(this, { single });
     this.selectedIndex = 0
@@ -250,25 +263,32 @@ export class AdministrationComponent implements OnInit{
          if(update == true){
           this.Accounts = [];
           let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-          //     this.AccountOfUser = JSON.parse(localStorage.getItem('account-datas') || '{}');
-          console.log('ACCOUNT OF USERS :! : ', allAccounts, 'le  ACCOUNT ACTUEL : ! ', this.ProfilAccount );
-          this.Accounts = allAccounts;
-          if(this.ProfilAccount !==  undefined && this.ProfilAccount.email !== undefined){
-            this.Accounts.forEach((account:any) =>{
-              // console.log('CE COMPTE  !! ',account)
-              if(this.ProfilAccount.email === account.email){
-                console.log('CE COMPTE EST LE MEME !! ',account);
-                this.ProfilAccount = account;
-              }
-            });
-          }
+          console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
+          // console.log('ICI ADMIN ACOUNTS : !:: ',allAccounts)
+          this.Accounts.length = 0
+          allAccounts.forEach((account:any)=>{
+            this.Accounts.push(account.data)
+            console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+          });
           this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
           this.dataSourceAccounts.paginator = this.paginatorAccounts;
+          this.resultsLength = this.Accounts.length;
+          // console.log('ACCOUNT OF USERS :! : ', allAccounts, 'le  ACCOUNT ACTUEL : ! ', this.ProfilAccount );
+          // this.Accounts = allAccounts;
+          // if(this.ProfilAccount !==  undefined && this.ProfilAccount.email !== undefined){
+          //   this.Accounts.forEach((account:any) =>{
+          //     if(this.ProfilAccount.email === account.email){
+          //       console.log('CE COMPTE EST LE MEME !! ',account);
+          //       this.ProfilAccount = account;
+          //     }
+          //   });
+          // }
+          // this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
+          // this.dataSourceAccounts.paginator = this.paginatorAccounts;
           // if(this.ProfilAccount.email)
           this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
           //     this.letsee = true;
-          //  this.ProfilAccount = {data: this.AccountOfUser};}
-
+          //  this.ProfilAccount = {data: this.AccountOfUser};
         }
       }
     })
@@ -285,36 +305,42 @@ export class AdministrationComponent implements OnInit{
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     // console.log('ACCOUNT OF USER :! : ',this.AccountOfUser)
     if(this.AccountOfUser.asAdmin == true){
-    //   this.getAdminCustomerUsers();
+      // this.getAdminCustomerUsers();
       console.log('ICI ADMIN :: ',this.AccountOfUser)
       let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      console.log('ICI ADMIN ACOUNTS : !:: ',allAccounts)
-      this.Accounts = allAccounts[0].data;
+      // console.log('ICI ADMIN ACOUNTS : !:: ',allAccounts)
+      this.Accounts.length = 0
+      allAccounts.forEach((account:any)=>{
+        this.Accounts.push(account.data)
+        console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+      });
+      console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
       this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
+      this.resultsLength = this.Accounts.length;
       this.dataSourceAccounts.paginator = this.paginatorAccounts;
-      console.log( this.dataSourceAccounts)
-    //   this.utilsService._getModerateOption.subscribe((moderation:any) => {
-    //     let getAccounts:any[] = []
-    //     console.log('MODERATION !: ',this.Accounts, moderation)
-    //     this.Accounts.forEach((account:any) => {
-    //       getAccounts.push(account)
-    //       console.log(account.data.email, moderation.account.data.email)
-    //       if(account.data.email === moderation.account.data.email){
-    //         account.data.moderate = moderation.data.moderate;
-    //         account.moderate = moderation.data.moderate;
-    //         console.log('ELEMENT REçU DE MODéRATION : ! ',account.data.moderate, moderation.data.moderate)
-    //         account.data.traineds.forEach((trained:any)=>{
-    //           console.log('LES ENTRAINES :! :',trained)
-    //           // trained.moderate.moderatereason.moderate =
-    //         });
-    //       }
-    //       console.log('LES COMPTES: ! ',getAccounts);
-    //     });
-    //   });
-    // }else{
-    //   console.log('ICI NON ADMIN :: ',this.AccountOfUser)
-    //   this.letsee = true;
-    //   this.ProfilAccount = {data: this.AccountOfUser};
+      // console.log( this.dataSourceAccounts)
+      //   this.utilsService._getModerateOption.subscribe((moderation:any) => {
+      //     let getAccounts:any[] = []
+      //     console.log('MODERATION !: ',this.Accounts, moderation)
+      //     this.Accounts.forEach((account:any) => {
+      //       getAccounts.push(account)
+      //       console.log(account.data.email, moderation.account.data.email)
+      //       if(account.data.email === moderation.account.data.email){
+      //         account.data.moderate = moderation.data.moderate;
+      //         account.moderate = moderation.data.moderate;
+      //         console.log('ELEMENT REçU DE MODéRATION : ! ',account.data.moderate, moderation.data.moderate)
+      //         account.data.traineds.forEach((trained:any)=>{
+      //           console.log('LES ENTRAINES :! :',trained)
+      //           // trained.moderate.moderatereason.moderate =
+      //         });
+      //       }
+      //       console.log('LES COMPTES: ! ',getAccounts);
+      //     });
+      //   });
+      // }else{
+      //   console.log('ICI NON ADMIN :: ',this.AccountOfUser)
+      //   this.letsee = true;
+      //   this.ProfilAccount = {data: this.AccountOfUser};
     }
   }
 

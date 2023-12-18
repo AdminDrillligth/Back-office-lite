@@ -26,10 +26,7 @@ export class LoginComponent implements OnInit{
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
     private afAuth: AngularFireAuth,
     private router: Router
-
-  ){
- 
-  }
+  ){}
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   passwordFormControl = new FormControl('', [Validators.required]);
   myInterval:any;
@@ -50,7 +47,7 @@ export class LoginComponent implements OnInit{
   }
 
   doLogin(){
-    console.log('value', this.emailFormControl.value, this.passwordFormControl.value)
+    // console.log('value', this.emailFormControl.value, this.passwordFormControl.value)
     // this.value = 1;
     if (this.emailFormControl.valid && this.passwordFormControl.valid) {
     // this.myInterval = setInterval(this.spinTimer, 1000);
@@ -67,26 +64,28 @@ export class LoginComponent implements OnInit{
           this.http.post(this.baseURL+'login' , body,{'headers':headers}).subscribe((response:any) => {
             this.dataOfUser = response;
             console.log('RESPONSE OF POST API : ',response )
-            let token = this.dataOfUser.encoded;
+            let token = this.dataOfUser.token;
+            localStorage.setItem('token', token);
+            let tokenlocal = localStorage.getItem('token') || '{}';
+            console.log('le token: ', tokenlocal)
             if(this.dataOfUser.status === "success"){
               this.router.navigate(['dashboard']);
-              // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser.user));
               localStorage.setItem('account', JSON.stringify(this.dataOfUser.user));
               let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
               console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
               if(AccountOfUser.asAdmin === true){
+                // IF ADMIN == TRUE
                 console.log('is an admin')
                 const headersGet = { 'content-type': 'application/json','token':token}
                 this.http.get(this.baseURL+'admin' ,{'params':{'token':token}}).subscribe((response:any) => {
                   console.log('We get all users : ', response, token)
-                  if(response.decoded !== 'err'){
+                  // if(response.decoded !== 'err'){
                     localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
                     let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
                     console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-                  }else{
+                  // }else{
 
-                  }
-          
+                  // }
                 })
               }else{
                 // IF ADMIN === FALSE
@@ -126,7 +125,6 @@ export class LoginComponent implements OnInit{
           //     this.router.navigate(['dashboard']);
           //    }
           //   }
-           
           // }
         })
       }).catch((error) => {

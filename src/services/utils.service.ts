@@ -14,7 +14,6 @@ export class UtilsService {
   private newAccount: BehaviorSubject<any>;
   private historyData : BehaviorSubject<any>;
   private historyDataDetail: BehaviorSubject<any>;
-  
   constructor() {
     this.templateTheme = new BehaviorSubject(null);
     this.moderationMode = new BehaviorSubject(null);

@@ -6,6 +6,7 @@ import { uid } from 'uid';
 import { Observable } from 'rxjs/internal/Observable';
 import { FireStoreServiceImages } from '../services/firebase/firestoreservice-images';
 import { HttpClient, HttpHeaders  } from '@angular/common/http';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class UserHandlersServiceAdmin {
   user:any;
 
   constructor(
+    private utilsService:UtilsService,
     private http:HttpClient,
     private fireStoreServiceImages:FireStoreServiceImages,
     private router:Router,
@@ -28,21 +30,21 @@ export class UserHandlersServiceAdmin {
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
   addAccountAdmin(data:any){
     const body = JSON.stringify({data:data});
-    console.log('LE BODY DE NOTRE JSON ::  ',body)
-
-    this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ADD ACCOUNT ! ',response)
-      // this.http.get(this.baseURL+'administration/all_users').subscribe((rep:any) =>{
-      //   console.log('LA REP DU ALL USERS : ! ',rep)
-      //   localStorage.setItem('account-datas', JSON.stringify(rep.userhandlerAllProfils));
-      // })
-      //          localStorage.setItem('new-account', JSON.stringify(r.id));
-    //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
-    //          console.log('NEW ACCOUND ID ',newaccount);
-    //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
-    //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-            // }
+    console.log('LE BODY DE NOTRE JSON ::  ',body);
+    this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
+      console.log('LA REP DU SERVEUR : ADD ACCOUNT ! ',response);
+      let token = localStorage.getItem('token') || '{}';
+      console.log('LE TOKEN',token);
+        this.http.get(this.baseURL+'admin' ,{'params':{'token':token}}).subscribe((response:any) => {
+          console.log('We get all users : ', response, token);
+          if(response.decoded !== 'err'){
+            localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
+            let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+            console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+            this.utilsService.sendRequestGetnewAccount(true);
+          }else{
+          }
+        })
     })
   }
 

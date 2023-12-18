@@ -14,7 +14,7 @@ import { connectToAccount } from './loggerController';
 const app = express()
 //
 
-app.use(cors({ origin: ['http://localhost:4200']}));
+app.use(cors({ origin: ['http://localhost:4200','https://drilllight.web.app']}));
 app.use(express.json());
 app.get("/",(req, res, next) => {
   res.status(200).send('ON DEMARRE DRILLLIGHT API !')

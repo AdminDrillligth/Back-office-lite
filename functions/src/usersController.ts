@@ -3,6 +3,11 @@ import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
 
+
+var DateString = new Date().toLocaleDateString();
+var isoDateString = new Date().toISOString();
+// var timeNow = new Date().toLocaleTimeString();
+
 // Model de type Admin
 type UsersModel = {
   firstName: string,
@@ -55,16 +60,6 @@ const addUser = async (req: any, res: Response) => {
   let bodyOfRequest = req.body;
   let dataBodyOfRequest = bodyOfRequest.data; 
   let newUuid = uuidv4();
-  // const {
-  //   firstName, avatarImages, email,
-  //   asAdmin,
-  //   personalInfos:{ familyName, zip, address, simpleBirthdate, phone, city, comment, birthdate },
-  //   privileges:{ rights },
-  //   traineds, staff, econes,
-  //   trainings, videos, licencied,
-  //   date, dateIso,
-  //   update, lastConnexion, lastCodateIso, warning
-  // } = req.body
   try {
     const entry = db.collection('account-handler')
     const userObject = {
@@ -74,9 +69,10 @@ const addUser = async (req: any, res: Response) => {
       privileges:{ rights:dataBodyOfRequest.rights },
       traineds:[], staff:[], econes:[],
       trainings:[], videos:[], licencied:10,
-      date:'', dateIso:'',
+      date:DateString, dateIso:isoDateString,
       update:'', lastConnexion:'', lastCodateIso:'', warning:false
     }
+    functions.logger.log("DATA : ! ", userObject)
     await entry.add(userObject)
     res.status(200).send({
       status: 'success',
@@ -99,16 +95,27 @@ const addUser = async (req: any, res: Response) => {
 // JUST BEARER TOKEN
 const getUsers = async (req: Request, res: Response) => {
   try {
-    const allUsers: any[] = []
-    const querySnapshot = await db.collection('account-handler').get()
+    let reqs =  req.query;
+    let token = reqs.token;
+    let decodeds:any;
+    const allAdmins: any[] = [];
+    const querySnapshot = await db.collection('account-handler').get();
+    jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
+        if(err){
+          functions.logger.log("DATA DECODED ERROR: ! ", err)
+          decodeds = 'err';
+        }else{
+          functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
+          decodeds = 'no error';
+        }
+    });
     querySnapshot.forEach((doc: any) => {
-      let ifAdmin = doc.data();
-      if(ifAdmin.asAdmin == false){
-        allUsers.push({data:doc.data(), id: doc.id})
-        functions.logger.log("DATA : ! ", allUsers)
-      }
-    })
-    return res.status(200).json(allUsers)
+        // let ifAdmin = doc.data();
+        allAdmins.push({data:doc.data(), id: doc.id});
+        functions.logger.log("DATA : ! ", allAdmins);
+        functions.logger.log("DATA PARAMS : ! ", token);
+    });
+    return res.status(200).json({allAdmins :allAdmins, decoded:decodeds });
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 
