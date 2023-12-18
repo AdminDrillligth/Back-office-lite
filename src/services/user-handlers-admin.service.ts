@@ -25,24 +25,24 @@ export class UserHandlersServiceAdmin {
 
   }
   headers = { 'content-type': 'application/json'}
-  baseURL: string = "http://localhost:3000/";
+  baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
   addAccountAdmin(data:any){
     const body = JSON.stringify({data:data});
-    console.log(body)
+    console.log('LE BODY DE NOTRE JSON ::  ',body)
 
-    this.http.post(this.baseURL+'administration/add_administrator' , body,{'headers':this.headers})
+    this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
     .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      this.http.get(this.baseURL+'administration/all_users').subscribe((rep:any) =>{
-        console.log('LA REP DU ALL USERS : ! ',rep)
-        localStorage.setItem('account-datas', JSON.stringify(rep.userhandlerAllProfils));
-      })
+      console.log('LA REP DU SERVEUR : ADD ACCOUNT ! ',response)
+      // this.http.get(this.baseURL+'administration/all_users').subscribe((rep:any) =>{
+      //   console.log('LA REP DU ALL USERS : ! ',rep)
+      //   localStorage.setItem('account-datas', JSON.stringify(rep.userhandlerAllProfils));
+      // })
       //          localStorage.setItem('new-account', JSON.stringify(r.id));
     //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
     //          console.log('NEW ACCOUND ID ',newaccount);
     //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
     //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-    //         }
+            // }
     })
   }
 
@@ -54,9 +54,9 @@ export class UserHandlersServiceAdmin {
     console.log('USE DATA OF ADMIN UPDATE : !',data)
     const body = JSON.stringify({data:data, id:idAccount});
     console.log(body)
-    this.http.post(this.baseURL+'administration/update_administrator' , body,{'headers':this.headers})
+    this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
     .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response,  response.id)
+      console.log('LA REP DU SERVEUR : UPDATE ACCOUNT : ! ',response,  response.id)
     //          localStorage.setItem('new-account', JSON.stringify(r.id));
     //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
     //          console.log('NEW ACCOUND ID ',newaccount);

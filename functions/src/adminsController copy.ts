@@ -2,48 +2,47 @@
 // GESTION DES COMPTES ADMINISTEURS
 // CRUD
 
-// 
+
 import { Response } from "express"
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
-// import { v4 as uuidv4 } from 'uuid';
-var jwt = require("jsonwebtoken");
+import { v4 as uuidv4 } from 'uuid';
+
 // Model to SET an User Type Admin
-// type AdminModel = {
-//   name: string, // Required
-//   avatarimages:string, //
-//   email:string, // Required
-//   asAdmin:boolean, //
-//   personalinfos:{
-//     firstname:string, // Required
-//     zip:string, 
-//     address:string,
-//     simplebirthdate:string,
-//     phone:string,
-//     city:string,
-//     comment:string,
-//     birthdate:string
-//   },
-//   privileges:{ role:'', rights:string // required
-//   },
-//   traineds:[],
-//   staff:[],
-//   econes:[],
-//   trainings:[],
-//   videos:[],
-//   licencied:number,
-//   date: string,
-//   dateIso: string,
-//   uuid:string,
-//   update:string,
-//   lastconnexion:string,
-//   lastcodateIso:string,
-//   warning:boolean
-// }
+type AdminModel = {
+  name: string, // Required
+  avatarimages:string, //
+  email:string, // Required
+  asAdmin:boolean, //
+  personalinfos:{
+    firstname:string, // Required
+    zip:string, 
+    address:string,
+    simplebirthdate:string,
+    phone:string,
+    city:string,
+    comment:string,
+    birthdate:string
+  },
+  privileges:{ role:'Administrateur', rights:string // required
+  },
+  traineds:[],
+  staff:[],
+  econes:[],
+  trainings:[],
+  videos:[],
+  licencied:number,
+  date: string,
+  dateIso: string,
+  uuid:string,
+  update:string,
+  lastconnexion:string,
+  lastcodateIso:string,
+  warning:boolean
+}
 
 // Model De requests
-// type Request = { body: any, params: { adminId: string }}
-  
+type Request = { body: AdminModel, params: { adminId: string }}
 // ON INSERE UN ADMIN EN BASE VIA POST
 // REQUEST TEMPLATE
 // {
@@ -57,56 +56,36 @@ var jwt = require("jsonwebtoken");
 //   "lastconnexion":"","lastcodateIso":"", "warning":false
 // }
 
-const addAdmin = async (req: any, res: Response) => {
-  let bodyOfRequest = req.body;
-  let dataBodyOfRequest = bodyOfRequest.data; 
-  // let newUuid = uuidv4();
-  // const {
-  //   name, 
-  // avatarimages, 
-  // email,
-  // //   asAdmin,
-  // //   personalinfos:{ 
-  //   firstname, 
-  //   zip, 
-  //   address, 
-  //   simplebirthdate, 
-  //   phone, 
-  //   city, 
-  //   comment, 
-  //   birthdate },
-  // //   privileges:{ rights },
-  // //   traineds,
-  //  staff,
-  //   econes,
-  // //   trainings, 
-  // videos, 
-  // licencied,
-  // //   date, 
-  // dateIso,
-  // //   update, 
-  // lastconnexion, 
-  // lastcodateIso, 
-  // warning
-  // } = dataBodyOfRequest
+const addAdmin = async (req: Request, res: Response) => {
+  let newUuid = uuidv4();
+  const {
+    name, avatarimages, email,
+    asAdmin,
+    personalinfos:{ firstname, zip, address, simplebirthdate, phone, city, comment, birthdate },
+    privileges:{ rights },
+    traineds, staff, econes,
+    trainings, videos, licencied,
+    date, dateIso,
+    update, lastconnexion, lastcodateIso, warning
+  } = req.body
   try {
-  //   const entry = db.collection('account-handler')
-  //   const adminObject = {
-  //     role:'Administrateur',
-  //     id: entry.id, name:dataBodyOfRequest.firstName, avatarImages:'',
-  //     email:dataBodyOfRequest.email, asAdmin:,
-  //     personalinfos:{ firstname:dataBodyOfRequest.firstName, zip, address, simplebirthdate, phone, city, comment, birthdate },
-  //     privileges:{ rights },
-  //     traineds, staff, econes,
-  //     trainings, videos, licencied,
-  //     date, dateIso, newUuid,
-  //     update, lastconnexion, lastcodateIso, warning
-  //   }
-  //   await entry.add(adminObject)
+    const entry = db.collection('account-handler')
+    const adminObject = {
+      role:'Administrateur',
+      id: entry.id, name, avatarimages,
+      email, asAdmin,
+      personalinfos:{ firstname, zip, address, simplebirthdate, phone, city, comment, birthdate },
+      privileges:{ rights },
+      traineds, staff, econes,
+      trainings, videos, licencied,
+      date, dateIso, newUuid,
+      update, lastconnexion, lastcodateIso, warning
+    }
+    await entry.add(adminObject)
     res.status(200).send({
       status: 'success',
       message: 'entry Admin added successfully',
-      data: dataBodyOfRequest
+      data: adminObject
     })
   } catch(error:any) {
       res.status(500).json(error.message)
@@ -116,31 +95,18 @@ const addAdmin = async (req: any, res: Response) => {
 // ON RECUPERE LA LISTE DES ADMINS VIA GET
 // REQUEST TEMPLATE
 // JUST BEARER TOKEN
-const getAdmins = async (req: any, res: Response) => {
+const getAdmins = async (req: Request, res: Response) => {
   try {
-    let reqs =  req.query
-    let token = reqs.token
-    let decodeds:any;
     const allAdmins: any[] = []
-    const querySnapshot = await db.collection('account-handler').get();
-    jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
-        if (err) {
-          functions.logger.log("DATA DECODED ERROR: ! ", err)
-          decodeds = 'err';
-       }else{
-          functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
-          decodeds = 'no error';
-       }
-    });
+    const querySnapshot = await db.collection('account-handler').get()
     querySnapshot.forEach((doc: any) => {
       let ifAdmin = doc.data();
       if(ifAdmin.asAdmin == true){
         allAdmins.push({data:doc.data(), id: doc.id})
         functions.logger.log("DATA : ! ", allAdmins)
-        functions.logger.log("DATA PARAMS : ! ", token)
       }
     })
-    return res.status(200).json({allAdmins :allAdmins, decoded:decodeds })
+    return res.status(200).json(allAdmins)
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 

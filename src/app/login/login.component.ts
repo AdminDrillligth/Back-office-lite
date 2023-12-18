@@ -79,13 +79,21 @@ export class LoginComponent implements OnInit{
                 const headersGet = { 'content-type': 'application/json','token':token}
                 this.http.get(this.baseURL+'admin' ,{'params':{'token':token}}).subscribe((response:any) => {
                   console.log('We get all users : ', response, token)
-                  localStorage.setItem('account-datas', JSON.stringify(response));
-                  let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-                  console.log('ALL ACCOUNTS DETAILS :  !',allAccounts)
+                  if(response.decoded !== 'err'){
+                    localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
+                    let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+                    console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+                  }else{
+
+                  }
+          
                 })
+              }else{
+                // IF ADMIN === FALSE
               }
             }else{
               // NO ACCOUNT 
+              // IF NO ACCOUNT
             }
             // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser));
             // localStorage.setItem('account', JSON.stringify(this.dataOfUser.dataOfUser));

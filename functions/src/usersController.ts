@@ -9,16 +9,16 @@ type UsersModel = {
   avatarImages:string,
   email:string,
   asAdmin:boolean,
-  personalInfos:{
+  personalInfos: {
     familyName:string,
     zip:string,
     address:string,
-    simplebirthdate:string,
+    simpleBirthdate:string,
     phone:string,
     city:string,
     comment:string,
     birthdate:string
-  },
+  } ,
   privileges:{ role:'', rights:string },
   traineds:[],
   staff:[],
@@ -31,8 +31,8 @@ type UsersModel = {
   dateIso: string,
   uuid:string,
   update:string,
-  lastconnexion:string,
-  lastcodateIso:string,
+  lastConnexion:string,
+  lastCodateIso:string,
   warning:boolean
 }
 
@@ -51,37 +51,39 @@ type Request = { body: UsersModel, params: { userId: string }}
 //   "lastconnexion":"","lastcodateIso":"", "warning":false
 // }
 
-const addUser = async (req: Request, res: Response) => {
+const addUser = async (req: any, res: Response) => {
+  let bodyOfRequest = req.body;
+  let dataBodyOfRequest = bodyOfRequest.data; 
   let newUuid = uuidv4();
-  const {
-    firstName, avatarImages, email,
-    asAdmin,
-    personalInfos:{ familyName, zip, address, simplebirthdate, phone, city, comment, birthdate },
-    privileges:{ rights },
-    traineds, staff, econes,
-    trainings, videos, licencied,
-    date, dateIso,
-    update, lastconnexion, lastcodateIso, warning
-  } = req.body
+  // const {
+  //   firstName, avatarImages, email,
+  //   asAdmin,
+  //   personalInfos:{ familyName, zip, address, simpleBirthdate, phone, city, comment, birthdate },
+  //   privileges:{ rights },
+  //   traineds, staff, econes,
+  //   trainings, videos, licencied,
+  //   date, dateIso,
+  //   update, lastConnexion, lastCodateIso, warning
+  // } = req.body
   try {
     const entry = db.collection('account-handler')
     const userObject = {
-      role:'',
-      id: entry.id, firstName, avatarImages,
-      email, asAdmin,
-      personalInfos:{ familyName, zip, address, simplebirthdate, phone, city, comment, birthdate },
-      privileges:{role:'Customer', rights },
-      traineds, staff, econes,
-      trainings, videos, licencied,
-      date, dateIso, newUuid,
-      update, lastconnexion, lastcodateIso, warning
+      id: newUuid, firstName:dataBodyOfRequest.firstName, avatarImages:'',
+      email:dataBodyOfRequest.email, asAdmin:dataBodyOfRequest.asAdmin,
+      personalInfos:{ familyName:dataBodyOfRequest.familyName, zip:dataBodyOfRequest.zip, address:dataBodyOfRequest.address, simpleBirthdate:dataBodyOfRequest.simpleBirthdate, phone:dataBodyOfRequest.phone, city:dataBodyOfRequest.city, comment:dataBodyOfRequest.comment, birthdate:dataBodyOfRequest.birthdate },
+      privileges:{ rights:dataBodyOfRequest.rights },
+      traineds:[], staff:[], econes:[],
+      trainings:[], videos:[], licencied:10,
+      date:'', dateIso:'',
+      update:'', lastConnexion:'', lastCodateIso:'', warning:false
     }
     await entry.add(userObject)
     res.status(200).send({
       status: 'success',
       message: 'entry Admin added successfully',
-      data: userObject,
-    })
+      data: dataBodyOfRequest,
+      userObject:userObject
+    });
   } catch(error:any) {
       res.status(500).send({
         status: 'Erreur lors du traitement des données',

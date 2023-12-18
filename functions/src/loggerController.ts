@@ -19,7 +19,7 @@ const connectToAccount = async (req:any, res:any) => {
     if(userhandlerProfil.length !== 0){
       userhandlerProfil.forEach((doc:any) =>{
         userDetail = doc.data();
-        jwt.sign({ data: 'foobar'}, 'secret', { expiresIn: '1h' }, 
+        jwt.sign({ data: id}, 'secret', { expiresIn: '1h' }, 
         function(err:any, encoded:any) {
           if (err) {
             return res.status(401).json({
