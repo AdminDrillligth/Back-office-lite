@@ -1,12 +1,24 @@
 import { Component, OnInit, Injectable } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+
 import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.service';
 import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule,FormsModule, NgForm, FormControl, Validators, FormGroupDirective, FormGroup } from '@angular/forms';
+import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule} from '@angular/material/input';
+import { MatSelectModule} from '@angular/material/select';
+import { MatDatepickerModule , } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { ErrorStateMatcher} from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-login',
@@ -22,6 +34,7 @@ export class LoginComponent implements OnInit{
   badpassword : boolean= false;
   badpassuser : boolean= false;
   constructor(
+    public dialog: MatDialog,
     private http:HttpClient,
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
     private afAuth: AngularFireAuth,
@@ -34,7 +47,6 @@ export class LoginComponent implements OnInit{
   warning =  false;
   dataOfUser:any = [];
   ngOnInit(): void {
-    this.value = 1;
     this.getIPAddress();
   }
 
@@ -48,7 +60,6 @@ export class LoginComponent implements OnInit{
 
   doLogin(){
     // console.log('value', this.emailFormControl.value, this.passwordFormControl.value)
-    // this.value = 1;
     if (this.emailFormControl.valid && this.passwordFormControl.valid) {
     // this.myInterval = setInterval(this.spinTimer, 1000);
     if(this.emailFormControl.value !== null && this.passwordFormControl.value !== null){
@@ -94,18 +105,6 @@ export class LoginComponent implements OnInit{
               // NO ACCOUNT 
               // IF NO ACCOUNT
             }
-            // localStorage.setItem('account-datas', JSON.stringify(this.dataOfUser));
-            // localStorage.setItem('account', JSON.stringify(this.dataOfUser.dataOfUser));
-            // let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-            // console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
-            // const headersWithToken = {
-            //   'Content-Type': 'application/json',
-            //   'Authorization': `Bearer ${this.dataOfUser.token}`
-            // }
-            // 
-            // this.http.get(this.baseURL, {headers: headersWithToken}).subscribe((res:any) => {
-            //   console.log('LES REP DU GET : ',res)
-            // });
           })
         })
         // console.log('TOKEN DE CONNECTION : ! ',token, currentUser)
@@ -156,6 +155,7 @@ export class LoginComponent implements OnInit{
     clearInterval(this.myInterval);
   }
 
+
   disconectedMode(){
     if(localStorage.getItem('user') !== null){
       let user :any = localStorage.getItem('user')
@@ -170,8 +170,45 @@ export class LoginComponent implements OnInit{
       //     this.router.navigate(['main']);
       //   }
        }
-   
     }
-   
   }
+
+  resetPassWord(){
+    console.log('on reset le password')
+    const dialogRef = this.dialog.open(resetPasswordDialog, { panelClass: 'panel-class'});
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    //   this.afAuth.auth.resetPasswordInit(result)
+    //   .then(() => 
+    //     alert('A password reset link has been sent to your email address'),
+    //      (rejectionReason:any) => alert(rejectionReason))
+    //   .catch(e => alert('An error occurred while attempting to reset your password'));
+    this.afAuth.sendPasswordResetEmail(result).then(
+      () => {
+        alert('A password reset link has been sent to your email address')
+        // success, show some message
+      },
+      err => {
+        alert('error email address')
+        // handle errors
+      }
+    );
+    });
+  }
+}
+
+
+@Component({
+  selector: 'reset-password',
+  templateUrl: 'reset-password.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [  ReactiveFormsModule, MatNativeDateModule, MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
+
+})
+
+export class resetPasswordDialog {
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  badpassuser : boolean= false;
 }

@@ -2,47 +2,47 @@ import { Response } from "express"
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
-
+var jwt = require("jsonwebtoken");
 
 var DateString = new Date().toLocaleDateString();
 var isoDateString = new Date().toISOString();
 // var timeNow = new Date().toLocaleTimeString();
 
 // Model de type Admin
-type UsersModel = {
-  firstName: string,
-  avatarImages:string,
-  email:string,
-  asAdmin:boolean,
-  personalInfos: {
-    familyName:string,
-    zip:string,
-    address:string,
-    simpleBirthdate:string,
-    phone:string,
-    city:string,
-    comment:string,
-    birthdate:string
-  } ,
-  privileges:{ role:'', rights:string },
-  traineds:[],
-  staff:[],
-  econes:[],
-  trainings:[],
-  videos:[],
-  //   applicationVersion:string,
-  licencied:number,
-  date: string,
-  dateIso: string,
-  uuid:string,
-  update:string,
-  lastConnexion:string,
-  lastCodateIso:string,
-  warning:boolean
-}
+// type UsersModel = {
+//   firstName: string,
+//   avatarImages:string,
+//   email:string,
+//   asAdmin:boolean,
+//   personalInfos: {
+//     familyName:string,
+//     zip:string,
+//     address:string,
+//     simpleBirthdate:string,
+//     phone:string,
+//     city:string,
+//     comment:string,
+//     birthdate:string
+//   } ,
+//   privileges:{ role:'', rights:string },
+//   traineds:[],
+//   staff:[],
+//   econes:[],
+//   trainings:[],
+//   videos:[],
+//   //   applicationVersion:string,
+//   licencied:number,
+//   date: string,
+//   dateIso: string,
+//   uuid:string,
+//   update:string,
+//   lastConnexion:string,
+//   lastCodateIso:string,
+//   warning:boolean
+// }
 
 // Model De requests
-type Request = { body: UsersModel, params: { userId: string }}
+// type Request = { body: UsersModel, params: { userId: string }}
 // ON INSERE UN USER EN BASE VIA POST
 // REQUEST TEMPLATE
 // {
@@ -76,7 +76,7 @@ const addUser = async (req: any, res: Response) => {
     await entry.add(userObject)
     res.status(200).send({
       status: 'success',
-      message: 'entry Admin added successfully',
+      message: 'Utilisateur ajouté avec succés',
       data: dataBodyOfRequest,
       userObject:userObject
     });
@@ -93,7 +93,7 @@ const addUser = async (req: any, res: Response) => {
 // ON RECUPERE LA LISTE DES ADMINS VIA GET
 // REQUEST TEMPLATE
 // JUST BEARER TOKEN
-const getUsers = async (req: Request, res: Response) => {
+const getUsers = async (req: any, res: Response) => {
   try {
     let reqs =  req.query;
     let token = reqs.token;

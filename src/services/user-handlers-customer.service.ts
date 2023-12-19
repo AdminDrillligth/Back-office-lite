@@ -47,13 +47,18 @@ export class UserHandlersServiceCustomer {
     console.log(body)
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      this.getUpdateallUsers();
-      //          localStorage.setItem('new-account', JSON.stringify(r.id));
-      //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
-      //          console.log('NEW ACCOUND ID ',newaccount);
-      //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
-      //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-      //         }
+      let token = localStorage.getItem('token') || '{}';
+      console.log('LE TOKEN',token);
+        this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
+          console.log('We get all users : ', response, token);
+          if(response.decoded !== 'err'){
+            localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
+            let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+            console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+            this.utilsService.sendRequestGetnewAccount(true);
+          }else{
+          }
+        })
     })
   }
 

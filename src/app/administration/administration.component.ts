@@ -378,185 +378,6 @@ export class AdministrationComponent implements OnInit{
     this.selectedCharts = event.value;
   }
 
-  getAdminCustomerUsers(){
-    this.Accounts = [];
-
-    let allUsers = JSON.parse(localStorage.getItem('account-datas') || '{}');
-    console.log('ACCOUNT OF USERS :! : ', allUsers.userhandlerProfils);
-    console.log('account')
-      this.userHandlersServiceAdmin.getAccountAdmin().subscribe(e =>{
-        e.docs.forEach(account =>{
-          let accounter:any = account.data();
-          let checkedModerate = false;
-          let licencied = 0;
-          console.log('DETAIL : ',account.id, accounter)
-          if(accounter.privileges.licences === undefined){
-            accounter.privileges.licences = 10;
-          }
-          if(accounter.staff !== undefined){
-            licencied = licencied + accounter.staff.length;
-          }
-          if(accounter.traineds !== undefined){
-            licencied = licencied + accounter.traineds.length;
-          }
-          console.log('NOMBRE DE LICENCIES : ', licencied);
-          console.log('privileges!: ', accounter.privileges.licences)
-          if(accounter.moderate === null ||accounter.moderate === undefined){
-            this.Accounts.push({
-              date:accounter.date,
-              dateIso:accounter.dateIso,
-              econes:accounter.econes,
-              email:accounter.email,
-              licencied:licencied,
-              comment: accounter.personalinfos.comment,
-              birthdate: accounter.personalinfos.birthdate,
-              address:accounter.personalinfos.address,
-              city:accounter.personalinfos.city,
-              firstname:accounter.personalinfos.firstname,
-              name:accounter.personalinfos.name,
-              phone:accounter.personalinfos.phone,
-              simplebirthdate:accounter.personalinfos.simplebirthdate,
-              zip:accounter.personalinfos.zip,
-              role: accounter.privileges.role,
-              rights: accounter.privileges.rights,
-              licences: accounter.privileges.licences,
-              personalinfos:{
-                comment: accounter.personalinfos.comment,
-                birthdate: accounter.personalinfos.birthdate,
-                address:accounter.personalinfos.address,
-                city:accounter.personalinfos.city,
-                email:accounter.personalinfos.email,
-                firstname:accounter.personalinfos.firstname,
-                name:accounter.personalinfos.name,
-                phone:accounter.personalinfos.phone,
-                simplebirthdate:accounter.personalinfos.simplebirthdate,
-                zip:accounter.personalinfos.zip
-                },
-              privileges:{
-                role: accounter.privileges.role,
-                rights: accounter.privileges.rights,
-                licences: accounter.privileges.licences
-                },
-              staff:accounter.staff,
-              traineds:accounter.traineds,
-              update:accounter.update,
-              uuid:accounter.uuid,
-              id:account.id,
-              moderation:checkedModerate
-            })
-          }else{
-            if(accounter.moderate !== undefined){
-              console.log('MODERATE', accounter.moderate.moderatereason.moderate, accounter.moderate.moderatereason.moderate !== false)
-              if(accounter.moderate.moderatereason.moderate !== false){
-                console.log('MODERATE 1', accounter.moderate.moderatereason.moderate, accounter.moderate.moderatereason.moderate !== false)
-                checkedModerate = true;
-                this.Accounts.push({
-                  date:accounter.date,
-                  dateIso:accounter.dateIso,
-                  econes:accounter.econes,
-                  email:accounter.email,
-                  licencied:licencied,
-                  comment: accounter.personalinfos.comment,
-                  birthdate: accounter.personalinfos.birthdate,
-                  address:accounter.personalinfos.address,
-                  city:accounter.personalinfos.city,
-                  firstname:accounter.personalinfos.firstname,
-                  name:accounter.personalinfos.name,
-                  phone:accounter.personalinfos.phone,
-                  simplebirthdate:accounter.personalinfos.simplebirthdate,
-                  zip:accounter.personalinfos.zip,
-                  role: accounter.privileges.role,
-                  rights: accounter.privileges.rights,
-                  licences: accounter.privileges.licences,
-                  moderate:{
-                    date:accounter.moderate.date,
-                    lastcodateIso:accounter.moderate.lastcodateIso,
-                    moderatereason:{
-                      comment:accounter.moderate.moderatereason.comment,
-                      moderate:accounter.moderate.moderatereason.moderate,
-                      moderateby:accounter.moderate.moderatereason.moderateby
-                      }
-                    },
-                  personalinfos:{
-                    comment: accounter.personalinfos.comment,
-                    birthdate: accounter.personalinfos.birthdate,
-                    address:accounter.personalinfos.address,
-                    city:accounter.personalinfos.city,
-                    email:accounter.personalinfos.email,
-                    firstname:accounter.personalinfos.firstname,
-                    name:accounter.personalinfos.name,
-                    phone:accounter.personalinfos.phone,
-                    simplebirthdate:accounter.personalinfos.simplebirthdate,
-                    zip:accounter.personalinfos.zip
-                    },
-                  privileges:{
-                    role: accounter.privileges.role,
-                    rights: accounter.privileges.rights,
-                    licences: accounter.privileges.licences
-                    },
-                  staff:accounter.staff,
-                  traineds:accounter.traineds,
-                  update:accounter.update,
-                  uuid:accounter.uuid,
-                  id:account.id,
-                  moderation:checkedModerate
-                })
-              }else {
-                console.log('MODERATE 2', accounter.moderate.moderatereason.moderate, accounter.moderate.moderatereason.moderate !== false)
-                checkedModerate = false;
-                this.Accounts.push({
-                  date:accounter.date,
-                  dateIso:accounter.dateIso,
-                  econes:accounter.econes,
-                  email:accounter.email,
-                  licencied:licencied,
-                  comment: accounter.personalinfos.comment,
-                  birthdate: accounter.personalinfos.birthdate,
-                  address:accounter.personalinfos.address,
-                  city:accounter.personalinfos.city,
-                  firstname:accounter.personalinfos.firstname,
-                  name:accounter.personalinfos.name,
-                  phone:accounter.personalinfos.phone,
-                  simplebirthdate:accounter.personalinfos.simplebirthdate,
-                  zip:accounter.personalinfos.zip,
-                  role: accounter.privileges.role,
-                  rights: accounter.privileges.rights,
-                  licences: accounter.privileges.licences,
-                  personalinfos:{
-                    comment: accounter.personalinfos.comment,
-                    birthdate: accounter.personalinfos.birthdate,
-                    address:accounter.personalinfos.address,
-                    city:accounter.personalinfos.city,
-                    email:accounter.personalinfos.email,
-                    firstname:accounter.personalinfos.firstname,
-                    name:accounter.personalinfos.name,
-                    phone:accounter.personalinfos.phone,
-                    simplebirthdate:accounter.personalinfos.simplebirthdate,
-                    zip:accounter.personalinfos.zip
-                    },
-                  privileges:{
-                    role: accounter.privileges.role,
-                    rights: accounter.privileges.rights,
-                    licences: accounter.privileges.licences
-                    },
-                  staff:accounter.staff,
-                  traineds:accounter.traineds,
-                  update:accounter.update,
-                  uuid:accounter.uuid,
-                  id:account.id,
-                  moderation:checkedModerate
-                })
-              }
-            }
-          }
-          this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
-          this.dataSourceAccounts.paginator = this.paginatorAccounts;
-          console.log('WE SEE THE NEW ACCOUNTS ADMINS MODE :',this.Accounts)
-
-        })
-      })
-  }
-
   displayModalSend = false;
   closeModalSend(){
     this.displayModalSend = false;
@@ -596,6 +417,7 @@ export class AdministrationComponent implements OnInit{
   }
 
   createfromDashboard(){
+
 
   }
   dataOfHistory = [];
@@ -1076,9 +898,9 @@ export class DialogCreateAdmin implements OnInit{
 
 export class DialogCreateCustomer implements OnInit{
   rights: string[] = ['Videos', 'Edition Exercices','Bouquet Exercices','Exercices', 'Edition Vidéos', 'Logs', 'Dashboard', 'Administration', 'Entrainements'];
-  roles: string[] = ['Club Gold', 'Club Siver', 'Club', 'Staff Gold', 'Staff Silver', 'Staff','Joueur Gold','Joueur Silver', 'Joeur'];
-  name = new FormControl('', [ Validators.required ]);
-  firstname = new FormControl('', [ Validators.required ]);
+  roles: string[] = ['Club Gold', 'Club Silver', 'Club', 'Staff Gold', 'Staff Silver', 'Staff','Joueur Gold','Joueur Silver', 'Joeur'];
+  firstName = new FormControl('', [ Validators.required ]);
+  familyName = new FormControl('', [ Validators.required ]);
   email = new FormControl('', [ Validators.required ]);
   phone = new FormControl('', [ Validators.required ]);
   address = new FormControl('', [ Validators.required ]);
@@ -1087,7 +909,7 @@ export class DialogCreateCustomer implements OnInit{
   comment= new FormControl('');
   selectedFile!: File;
   birthdate:any='';
-  simplebirthdate:any='';
+  simpleBirthdate:any='';
   audience:string='public';
   rightsUser:any[]=[];
   roleUser='';
@@ -1113,16 +935,16 @@ export class DialogCreateCustomer implements OnInit{
    console.log('LES DATAS MODALS ',this.data)
    if(this.data !== null){
       this.update = true;
-      this.name.setValue(this.data.personalinfos.name);
-      this.firstname.setValue(this.data.personalinfos.firstname);
-      this.email.setValue(this.data.personalinfos.email);
-      this.phone.setValue(this.data.personalinfos.phone);
-      this.address.setValue(this.data.personalinfos.address);
-      this.zip.setValue(this.data.personalinfos.zip);
-      this.city.setValue(this.data.personalinfos.city);
-      this.comment.setValue(this.data.personalinfos.comment);
+      this.firstName.setValue(this.data.personalInfos.firstName);
+      this.familyName.setValue(this.data.personalinfos.familyName);
+      this.email.setValue(this.data.personalInfos.email);
+      this.phone.setValue(this.data.personalInfos.phone);
+      this.address.setValue(this.data.personalInfos.address);
+      this.zip.setValue(this.data.personalInfos.zip);
+      this.city.setValue(this.data.personalInfos.city);
+      this.comment.setValue(this.data.personalInfos.comment);
       this.selectedRights =  this.data.privileges.rights;
-      this.simplebirthdate = this.data.personalinfos.simplebirthdate;
+      this.simpleBirthdate = this.data.personalInfos.simpleBirthdate;
       this.selectedRole = this.data.privileges.role;
       this.licences.setValue(this.data.privileges.licences);
       console.log( 'SELECTED RIGHTS :! ',this.data, this.selectedRights)
@@ -1131,13 +953,29 @@ export class DialogCreateCustomer implements OnInit{
 
   dateChange(event:any){
     this.birthdate = event.value;
-    this.simplebirthdate = event.targetElement.value;
+    this.simpleBirthdate = event.targetElement.value;
   }
 
   closeModal(){
     this.rightsUser = this.selectedRights;
     this.roleUser =  this.selectedRole;
-    let data = {avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,rights: this.rightsUser, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate, role:this.roleUser, licences:this.licences.value}
+    let data = {
+      avatarImages: this.eventImageFile,
+      firstName: this.firstName.value,
+      familyName: this.familyName.value,
+      email: this.email.value,
+      phone:this.phone.value,
+      address:this.address.value,
+      zip:this.zip.value,
+      city:this.city.value,
+      comment:this.comment.value,
+      rights: this.rightsUser, 
+      birthdate:this.birthdate,
+      simpleBirthdate: this.simpleBirthdate, 
+      role:this.roleUser, 
+      licences:this.licences.value,
+      asAdmin:false
+    }
     if(this.update === false){
       this.userHandlersServiceCustomer.addAccountCustomer(data);
     }else{
@@ -1154,7 +992,7 @@ export class DialogCreateCustomer implements OnInit{
           this.update = false;
         this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
           console.log('You have been successfully registered!',result.user);
-          this.storageServiceMail.addMailCustomer(this.email.value, this.name.value)
+          this.storageServiceMail.addMailCustomer(this.email.value, this.firstName.value)
         }).catch((error) => {
           window.alert(error.message);
         });

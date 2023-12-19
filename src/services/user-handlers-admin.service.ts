@@ -35,7 +35,7 @@ export class UserHandlersServiceAdmin {
       console.log('LA REP DU SERVEUR : ADD ACCOUNT ! ',response);
       let token = localStorage.getItem('token') || '{}';
       console.log('LE TOKEN',token);
-        this.http.get(this.baseURL+'admin' ,{'params':{'token':token}}).subscribe((response:any) => {
+        this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
           console.log('We get all users : ', response, token);
           if(response.decoded !== 'err'){
             localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
