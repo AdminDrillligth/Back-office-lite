@@ -33,7 +33,13 @@ export class PasswordComponent {
 
 
   confirmPassWord(){
-    console.log(this.passwordFormControl, this.passwordConfirmFormControl)
+   if(this.form.get('password').value === this.form.get('samepassword').value){
+    console.log( this.form.get('password').value,  this.form.get('samepassword').value)
+   
+    }else{
+      console.log('NOT THE SAME', this.form.get('password').value,  this.form.get('samepassword').value)
+   
+    }
   }
   onFormSubmit(){
 
