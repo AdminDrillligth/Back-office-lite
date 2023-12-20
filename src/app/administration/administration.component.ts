@@ -386,7 +386,7 @@ export class AdministrationComponent implements OnInit{
   updateAccount(account:any){
     console.log('WHAT UPDATE ?',account)
     this.letsee = false;
-    if(account.privileges.role === 'Administrateur'){
+    if(account.asAdmin == true){
       const dialogRef = this.dialog.open(DialogCreateAdmin, {
         data:account,
         panelClass: 'bg-color',
@@ -744,8 +744,8 @@ export class DialogCreateAdmin implements OnInit{
   // roles: string[] = ['Club Gold', 'Club Siver', 'Club', 'Staff Gold', 'Staff Silver', 'Staff','Joueur Gold','Joueur Silver', 'Joeur'];
   rights: string[] = ['Videos', 'Edition Exercices','Bouquet Exercices','Exercices', 'Edition Vidéos', 'Logs', 'Dashboard', 'Administration', 'Entrainements'];
   selectedRights:any[]=[];
-  name = new FormControl('', [ Validators.required ]);
-  firstname = new FormControl('', [ Validators.required ]);
+  familyName = new FormControl('', [ Validators.required ]);
+  firstName = new FormControl('', [ Validators.required ]);
   email = new FormControl('', [ Validators.required ]);
   phone = new FormControl('', [ Validators.required ]);
   address = new FormControl('', [ Validators.required ]);
@@ -754,7 +754,7 @@ export class DialogCreateAdmin implements OnInit{
   selectedFile!: File;
   comment= new FormControl('');
   birthdate:any='';
-  simplebirthdate:any='';
+  simpleBirthdate:any='';
   audience:string='public';
   rightsUser:any[]=[];
   AdminAccounts:any[]=[];
@@ -777,30 +777,29 @@ export class DialogCreateAdmin implements OnInit{
    if(this.data !== null){
     if(this.data.data !== null){
       this.update = true;
-      this.name.setValue(this.data.personalinfos.name);
-      this.firstname.setValue(this.data.personalinfos.firstname);
-      this.email.setValue(this.data.personalinfos.email);
-      this.phone.setValue(this.data.personalinfos.phone);
-      this.address.setValue(this.data.personalinfos.address);
-      this.zip.setValue(this.data.personalinfos.zip);
-      this.city.setValue(this.data.personalinfos.city);
-      this.comment.setValue(this.data.personalinfos.comment);
+      this.familyName.setValue(this.data.personalInfos.familyName);
+      this.firstName.setValue(this.data.personalInfos.firstName);
+      this.email.setValue(this.data.personalInfos.email);
+      this.phone.setValue(this.data.personalInfos.phone);
+      this.address.setValue(this.data.personalInfos.address);
+      this.zip.setValue(this.data.personalInfos.zip);
+      this.city.setValue(this.data.personalInfos.city);
+      this.comment.setValue(this.data.personalInfos.comment);
       this.selectedRights =  this.data.privileges.rights;
-      this.simplebirthdate = this.data.personalinfos.simplebirthdate;
+      this.simpleBirthdate = this.data.personalInfos.simpleBirthdate;
       console.log( 'SELECTED RIGHTS :! ',this.data, this.selectedRights)
      }
     }
   }
   closeModal(){
     // avatarimages: this.eventImageFile,
-    let data = {avatarImages: this.eventImageFile, firstName:  this.firstname.value,familyName:this.name.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,rights: this.rightsUser, birthdate:this.birthdate,simpleBirthdate: this.simplebirthdate,asAdmin:true}
+    let data = {avatarImages: this.eventImageFile, firstName:  this.firstName.value,familyName:this.familyName.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,rights: this.rightsUser, birthdate:this.birthdate,simpleBirthdate: this.simpleBirthdate,asAdmin:true}
     if(this.update === false){
       this.userHandlersServiceAdmin.addAccountAdmin(data);
     }else{
       console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
       this.fireStoreServiceImages.addImagesOfAdministrator(this.data.id, this.eventImageFile);
       this.userHandlersServiceAdmin.updateAccountAdmin(this.data.id, data);
-
     }
     setTimeout(() => {
       this.dialogRef.close(data);
@@ -811,17 +810,16 @@ export class DialogCreateAdmin implements OnInit{
       if(this.email.value !== null ){
         if(this.update === false){
           this.update = false;
+          // the create user on Firebase
           this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
             // window.alert('You have been successfully registered!');
             console.log('You have been successfully registered!',result.user);
-            this.storageServiceMail.addMailAdmin(this.email.value, this.name.value)
-
+            this.storageServiceMail.addMailAdmin(this.email.value, this.familyName.value)
           })
           .catch((error) => {
             window.alert(error.message);
           });
         }
-
       }
       console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
 
@@ -878,7 +876,7 @@ export class DialogCreateAdmin implements OnInit{
 
   dateChange(event:any){
     this.birthdate = event.value;
-    this.simplebirthdate = event.targetElement.value;
+    this.simpleBirthdate = event.targetElement.value;
   }
 
   selectChange(event:any){
@@ -932,12 +930,12 @@ export class DialogCreateCustomer implements OnInit{
   ) {}
 
   ngOnInit(): void {
-   console.log('LES DATAS MODALS ',this.data)
+   console.log('LES DATAS MODALS ',this.data, this.data.personalinfos)
    if(this.data !== null){
       this.update = true;
-      this.firstName.setValue(this.data.personalInfos.firstName);
-      this.familyName.setValue(this.data.personalinfos.familyName);
-      this.email.setValue(this.data.personalInfos.email);
+      this.firstName.setValue(this.data.firstName);
+      this.familyName.setValue(this.data.personalInfos.familyName);
+      this.email.setValue(this.data.email);
       this.phone.setValue(this.data.personalInfos.phone);
       this.address.setValue(this.data.personalInfos.address);
       this.zip.setValue(this.data.personalInfos.zip);
@@ -946,7 +944,7 @@ export class DialogCreateCustomer implements OnInit{
       this.selectedRights =  this.data.privileges.rights;
       this.simpleBirthdate = this.data.personalInfos.simpleBirthdate;
       this.selectedRole = this.data.privileges.role;
-      this.licences.setValue(this.data.privileges.licences);
+      this.licences.setValue(this.data.licencied);
       console.log( 'SELECTED RIGHTS :! ',this.data, this.selectedRights)
     }
   }

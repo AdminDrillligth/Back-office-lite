@@ -21,6 +21,8 @@ import { ExercicesThematicsComponent } from './exercices-editor/exercices-themat
 import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categories/exercices-categories.component';
 import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
 import { SubscribesComponent } from './subscribes/subscribes.component';
+import { PasswordComponent } from './password/password.component';
+
 
 
 const routes: Routes = [
@@ -62,6 +64,9 @@ const routes: Routes = [
   },
   { path:'video-edito',
    component:VideoEditoComponent
+  },
+  { path:'password',
+   component:PasswordComponent
   },
   { path:'exercices-editor',
     component:ExercicesEditorComponent,

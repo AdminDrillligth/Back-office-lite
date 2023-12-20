@@ -52,7 +52,7 @@ export class UserHandlersServiceCustomer {
         this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
           console.log('We get all users : ', response, token);
           if(response.decoded !== 'err'){
-            localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
+            localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
             let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
             console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
             this.utilsService.sendRequestGetnewAccount(true);
@@ -68,31 +68,34 @@ export class UserHandlersServiceCustomer {
 
   updateAccountCustomer(idAccount:any, data:any){
     console.log('DATA UPDATE CUSTOMER :: ',data)
-    let dataupdate =  {
-      personalinfos:{
-        firstname:data.firstname,
-        zip:data.zip,
-        address:data.address,
-        simplebirthdate:data.simplebirthdate,
-        name:data.name,
-        email:data.email,
-        phone:data.phone,
-        city:data.city,
-        comment:data.comment,
-        birthdate:data.birthdate
-      },
-      privileges:{
-        licences:data.licences,
-        role:data.role,
-        rights:data.rights
-      },
-    }
-    const body = JSON.stringify({data:dataupdate, id:idAccount});
+    let token = localStorage.getItem('token') || '{}';
+    // let dataupdate =  {
+    //   personalinfos:{
+    //     firstname:data.firstname,
+    //     zip:data.zip,
+    //     address:data.address,
+    //     simplebirthdate:data.simplebirthdate,
+    //     name:data.name,
+    //     email:data.email,
+    //     phone:data.phone,
+    //     city:data.city,
+    //     comment:data.comment,
+    //     birthdate:data.birthdate
+    //   },
+    //   privileges:{
+    //     licences:data.licences,
+    //     role:data.role,
+    //     rights:data.rights
+    //   },
+    // }
+
+
+    const body = JSON.stringify({data:data, id:idAccount, token:token});
     console.log('On va envoyer ce body : ',body)
-    this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
+    this.http.patch(this.baseURL+'user' , body,{'headers':this.headers})
     .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response,  response.id)
-      this.getUpdateallUsers();
+      console.log('LA REP DU SERVEUR : ! ',response)
+      // this.getUpdateallUsers();
     })
   }
 

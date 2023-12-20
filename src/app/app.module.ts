@@ -67,6 +67,7 @@ import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categ
 import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { PasswordComponent } from './password/password.component';
 
 
 @Injectable()
@@ -108,7 +109,8 @@ export class HammerConfig extends HammerGestureConfig {
     ExercicesSportSelectComponent,
     ExercicesThematicsComponent,
     ExercicesCategoriesComponent,
-    ExercicesDrawerComponent
+    ExercicesDrawerComponent,
+    PasswordComponent
 
   ],
   imports: [

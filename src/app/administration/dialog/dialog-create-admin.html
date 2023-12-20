@@ -6,13 +6,13 @@
     <div class=" col-12 divdial" mat-dialog-content>
       <mat-form-field>
         <mat-label style="color:black">Nom</mat-label>
-        <input [formControl]="name" [errorStateMatcher]="matcher" matInput required placeholder="Ex: Martin" >
+        <input [formControl]="familyName" [errorStateMatcher]="matcher" matInput required placeholder="Ex: Martin" >
       </mat-form-field>
     </div>
     <div class="  col-12 divdial" mat-dialog-content>
       <mat-form-field>
         <mat-label style="color:black">Prénom</mat-label>
-        <input [formControl]="firstname" [errorStateMatcher]="matcher" matInput required placeholder="Ex: Morgan" >
+        <input [formControl]="firstName" [errorStateMatcher]="matcher" matInput required placeholder="Ex: Morgan" >
       </mat-form-field>
     </div>
     <div class=" col-12 divdial" mat-dialog-content>
@@ -23,7 +23,7 @@
     </div>
     <div class="  col-12 divdial" mat-dialog-content>
       <mat-form-field class="example-form-field">
-        <mat-label>Date de naissance: {{simplebirthdate}}</mat-label>
+        <mat-label>Date de naissance: {{simpleBirthdate}}</mat-label>
         <input  (dateInput)="dateChange($event)"  placeholder="JJ/MM/AAAA" matInput [matDatepicker]="datepicker">
         <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
         <mat-datepicker   #datepicker>

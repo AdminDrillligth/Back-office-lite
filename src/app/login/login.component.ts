@@ -88,10 +88,10 @@ export class LoginComponent implements OnInit{
                 // IF ADMIN == TRUE
                 console.log('is an admin')
                 const headersGet = { 'content-type': 'application/json','token':token}
-                this.http.get(this.baseURL+'admin' ,{'params':{'token':token}}).subscribe((response:any) => {
+                this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
                   console.log('We get all users : ', response, token)
                   // if(response.decoded !== 'err'){
-                    localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
+                    localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
                     let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
                     console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
                   // }else{

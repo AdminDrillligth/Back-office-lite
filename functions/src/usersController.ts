@@ -98,7 +98,7 @@ const getUsers = async (req: any, res: Response) => {
     let reqs =  req.query;
     let token = reqs.token;
     let decodeds:any;
-    const allAdmins: any[] = [];
+    const allUsers: any[] = [];
     const querySnapshot = await db.collection('account-handler').get();
     jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
         if(err){
@@ -111,81 +111,118 @@ const getUsers = async (req: any, res: Response) => {
     });
     querySnapshot.forEach((doc: any) => {
         // let ifAdmin = doc.data();
-        allAdmins.push({data:doc.data(), id: doc.id});
-        functions.logger.log("DATA : ! ", allAdmins);
-        functions.logger.log("DATA PARAMS : ! ", token);
+        allUsers.push({data:doc.data(), id: doc.id});
+        functions.logger.log("DATA : ! ", allUsers);
+        // functions.logger.log("DATA PARAMS : ! ", token);
     });
-    return res.status(200).json({allAdmins :allAdmins, decoded:decodeds });
+    return res.status(200).json({
+      status:'succes',
+      allUsers :allUsers,
+      decoded:decodeds 
+      });
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 
 // ICI ON UPDATE AVEC LA FONCTION UPDATE ADMIN VIA PATCH
 // REQUEST TEMPLATE
-// {
-//   "name": "", "avatarimages": "",
-//   "email":"",
-//   "asAdmin":true,
-//   "personalinfos":{ "firstname":"", "zip":"","address":"","simplebirthdate":"", "phone":"","city":"","comment":"","birthdate":""},
-//   "privileges":{"rights":""},
-//   "traineds":[], "staff":[],"econes":[],"trainings":[], "videos":[],
-//   "licencied":10,"date":"", "dateIso":"", "uuid":"","update":"",
-//   "lastconnexion":"","lastcodateIso":"", "warning":false
-// }
 
 const updateUser = async (req:any, res: Response) => {
-  let reqs = req.query;
   let body = req.body;
-  let id = reqs.adminId;
+  let dataUser = body.data;
+  let token = body.token;
+  let userDetail :any = '';
    try {
-    let userCollection = db.collection('account-handler').doc(id)
-    const currentData = (await userCollection.get()).data() || {}
-    const userObject = {
-          firstName: body.firstName || currentData.firstName,
-          avatarImages: body.avatarImages || currentData.avatarImages,
-          email: body.email || currentData.email,
-          asAdmin: body.asAdmin|| currentData.asAdmin,
-          personalInfos:{
-            familyName:body.personalInfos.familyName || currentData.personalInfos.familyName,
-            zip:body.personalInfos.zip || currentData.personalInfos.zip,
-            address:body.personalInfos.address || currentData.personalInfos.address,
-            simplebirthdate:body.personalInfos.simplebirthdate || currentData.personalInfos.simplebirthdate,
-            phone:body.personalInfos.phone || currentData.personalInfos.phone,
-            city:body.personalInfos.city || currentData.personalInfos.city,
-            comment:body.personalInfos.comment || currentData.personalInfos.comment,
-            birthdate:body.personalInfos.birthdate || currentData.personalInfos.birthdate
-          },
-          privileges:{
-            rights: body.privileges.rights|| currentData.privileges.rights|| ''
-           },
-          traineds:body.traineds || currentData.traineds|| [],
-          staff:body.staff || currentData.staff || [],
-          econes:body.econes || currentData.econes || [],
-          trainings:body.trainings||currentData.trainings|| [],
-          videos:body.videos||currentData.videos || [],
-          licencied:body.licencied||currentData.licencied|| 10,
-          date:body.date||currentData.date || '',
-          dateIso:body.dateIso||currentData.dateIso,
-          uuid:body.uuid||currentData.uuid,
-          update:body.update||currentData.update,
-          lastconnexion:body.lastconnexion||currentData.lastconnexion,
-          lastcodateIso:body.lastcodateIso||currentData.lastcodateIso,
-          warning:body.warning||currentData.warning
-    }
-
-  await userCollection.set(userObject).catch((error:any) => {
-      return res.status(400).json({
-        status: 'error',
-        message: error.message
-      })
-    })
+    let userCollection = await db.collection('account-handler').where('email', '==', dataUser.email).get();
+    // if(userCollection.length !== 0){
+      userCollection.forEach((doc:any) =>{
+        userDetail = doc.data();
+          jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
+            if (err) {
+              return res.status(200).json({
+                status: 'success',
+                message: 'Yo just get ERROR the token',
+                token: token,
+                err: err
+              });
+            }else{
+              // Details
+              if(userDetail.asAdmin == false){
+                userDetail.firstName = dataUser.firstName;
+                userDetail.email = dataUser.email;
+                // Personnal INFOS
+                userDetail.personalInfos.address = dataUser.address;
+                userDetail.personalInfos.zip = dataUser.zip;
+                userDetail.personalInfos.city = dataUser.city;
+                userDetail.personalInfos.comment = dataUser.comment;
+                userDetail.personalInfos.simpleBirthdate = dataUser.simpleBirthdate;
+                userDetail.personalInfos.birthdate = dataUser.birthdate;
+                userDetail.personalInfos.phone = dataUser.phone;
+                // PRIVILEGES
+                userDetail.privileges.rights = dataUser.rights;
+                userDetail.asAdmin = dataUser.asAdmin;
+                userDetail.licencied = dataUser.licences;
+                //
+                userDetail.update = DateString;
+                userDetail.warning = dataUser.warning;
+                //
+                userDetail.staff = dataUser.staff;
+                userDetail.traineds = dataUser.traineds;
+                userDetail.econes = dataUser.econes;
+                userDetail.trainings = dataUser.trainings;
+                userDetail.videos = dataUser.videos;
+              }else{
+                // ADMIN PART 
+                // Détails 
+                userDetail.firstName = dataUser.firstName;
+                userDetail.email = dataUser.email;
+                // Personnal INFOS
+                userDetail.personalInfos.address = dataUser.address;
+                userDetail.personalInfos.zip = dataUser.zip;
+                userDetail.personalInfos.city = dataUser.city;
+                userDetail.personalInfos.comment = dataUser.comment;
+                userDetail.personalInfos.simpleBirthdate = dataUser.simpleBirthdate;
+                userDetail.personalInfos.birthdate = dataUser.birthdate;
+                userDetail.personalInfos.phone = dataUser.phone;
+                // PRIVILEGES
+                userDetail.privileges.rights = dataUser.rights;
+                userDetail.asAdmin = dataUser.asAdmin;
+                // userDetail.licencied = dataUser.licences;
+                //
+                userDetail.update = DateString;
+                userDetail.warning = dataUser.warning;
+                // 
+                userDetail.staff = dataUser.staff;
+                userDetail.traineds = dataUser.traineds;
+                userDetail.econes = dataUser.econes;
+                userDetail.trainings = dataUser.trainings;
+                userDetail.videos = dataUser.videos;
+              }
+              
+              
+              return res.status(200).json({
+                status: 'success',
+                message: 'Yo just get the token',
+                emailUser:dataUser.email,
+                token:token,
+                dataUser:dataUser,
+                user:userDetail,
+              });
+            }
+          });
+      });
+  // await userCollection.set(userObject).catch((error:any) => {
+  //     return res.status(400).json({
+  //       status: 'error',
+  //       message: error.message
+  //     })
+  //   })
 
     return res.status(200).json({
       status: 'success',
-      message: 'entry ADMIN updated successfully',
-      id:id,
-      name:body.name,
-      currentData: currentData,
-      adminObject: userObject
+      message: 'UPDATE USER updated successfully',
+      body:body,
+      // currentData: currentData,
+      // adminObject: userObject
     })
    }
   catch(error:any) { return res.status(500).json(error.message) }
