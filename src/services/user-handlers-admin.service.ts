@@ -28,7 +28,6 @@ export class UserHandlersServiceAdmin {
   }
   headers = { 'content-type': 'application/json'}
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
-  
   addAccountAdmin(data:any){
     const body = JSON.stringify({data:data});
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
@@ -124,8 +123,23 @@ export class UserHandlersServiceAdmin {
     })
   }
 
+  getAccountAdmin() {
+    let token = localStorage.getItem('token') || '{}';
+    this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
+      if(response.decoded !== 'err'){
+            localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
+            let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+            this.utilsService.sendRequestGetnewAccount(true);
+      }else{
+        console.log('veuillez vous reconnecter ! ')
+      }
+    })
+    return this.db.collection('account-handler').get();
+  }
+
   getAccountWithEmail(emailUser:any) {
     return  this.db.collection("account-handler", ref => ref.where('email', '==', emailUser)).get()
+
   }
 
 }

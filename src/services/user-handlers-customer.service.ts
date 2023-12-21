@@ -41,6 +41,21 @@ export class UserHandlersServiceCustomer {
     })
   }
 
+  getAccounts(){
+    let token = localStorage.getItem('token') || '{}';
+    this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
+      console.log('We get all users : ', response, token);
+      if(response.decoded !== 'err'){
+        localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
+        let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+        console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+        this.utilsService.sendRequestGetnewAccount(true);
+      }else{
+        console.log('veuillez vous reconnecter ! ')
+      }
+    })
+  }
+
   addAccountCustomer(data:any){
     const body = JSON.stringify({data:data});
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
