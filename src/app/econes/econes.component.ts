@@ -27,7 +27,7 @@ import { FixMeLater } from "../../../angularx-qrcode/src/public-api"
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 type ListType = { title: string; val: number }[];
 
@@ -143,63 +143,54 @@ export class EconesComponent implements OnInit {
     this.account = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('account : ! ',this.account.privileges)
     this.getEconesFromDataBase();
+    // on récuprére les données relatives a tous les pods
+    this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
+      console.log('List Econes', listEcones )
+      this.Econes = listEcones;
+      this.dataSourceEcones = new MatTableDataSource(this.Econes);
+      this.dataSourceEcones.paginator = this.paginatorEcones;
+      console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
+   
+    });
   }
 
   getEconesFromDataBase(){
     this.UserDataAccount = [];
     this.Econes = [];
-    this.econesService.getAllEcones().subscribe((econes:any) => {
-      econes.docs.forEach((econe:any) => {
-        this.Econes.push({ 
-          SeeQrCode:false,
-          id:econe.id,
-          date:econe.data().date,
-          dateIso:econe.data().dateIso,
-          qrdata:econe.data().qrdata,
-          seeQr:econe.data().seeQr,
-          serial:econe.data().serial,
-          uuid:econe.data().uuid,
-          uuidOfCustomer:econe.data().uuidOfCustomer
-          })
-        console.log('ECONES ! : ', econe.data())
-      })
-    });
-    this.utilsService._dataOfAccountsAndPods.subscribe((accounts:any) => {
-      console.log('Accounts !: ', accounts);
-      if(accounts === null){
-        this.userHandlersServiceAdmin.getAccountAdmin().subscribe(e =>{
+    this.econesService.getAllEcones();
+    // this.utilsService._dataOfAccountsAndPods.subscribe((accounts:any) => {
+    //   console.log('Accounts !: ', accounts);
+    //   if(accounts === null){
+    this.userHandlersServiceAdmin.getAccountAdmin().subscribe(e =>{
           console.log('LES DATAS DU SERVICE ACCOUNT :  ',e );
           e.docs.forEach(account =>{
-            console.log('LES DATAS DU ACCOUNT ',this.Econes, account.data());
+          // console.log('LES DATAS DU ACCOUNT ',this.Econes, account.data());
             this.UserDataAccount.push(account.data());
-            if(this.UserDataAccount.length === e.docs.length){
-              for(let i = 0; i < this.Econes.length; i++) {
-               this.UserDataAccount.forEach((account:any) =>{
-                    if(account.uuid === this.Econes[i].uuidOfCustomer){
+    //         if(this.UserDataAccount.length === e.docs.length){
+    //           for(let i = 0; i < this.Econes.length; i++) {
+    //            this.UserDataAccount.forEach((account:any) =>{
+    //                 if(account.uuid === this.Econes[i].uuidOfCustomer){
                       
-                      // this.Econes[i].name = account.personalinfos.name;
-                      // this.Econes[i].firstname = account.personalinfos.firstname;
-                      // this.Econes[i].email = account.email;
+    //                   // this.Econes[i].name = account.personalinfos.name;
+    //                   // this.Econes[i].firstname = account.personalinfos.firstname;
+    //                   // this.Econes[i].email = account.email;
                       
-                    }
-                })
-              }
-              this.dataSourceEcones = new MatTableDataSource(this.Econes);
-              this.dataSourceEcones.paginator = this.paginatorEcones;
-              console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
-            }
+    //                 }
+    //             })
+    //           }
+    //         }
           });
           console.log('ACCOUNTS', this.UserDataAccount )
   
-        });
-      }else{
-        let accountsData = accounts.account;
-        // console.log('LES ACCOUNTS DATAS : ! ',accountsData)
-        // accountsData.forEach((account:any) =>{
-        //   this.UserDataAccount.push(account.data)
-        // })  
-      }
-     });
+    //     });
+    //   }else{
+    //     let accountsData = accounts.account;
+    //     // console.log('LES ACCOUNTS DATAS : ! ',accountsData)
+    //     // accountsData.forEach((account:any) =>{
+    //     //   this.UserDataAccount.push(account.data)
+    })  
+    //   }
+    //  });
   }
 
   search(){
@@ -270,6 +261,7 @@ export class EconesComponent implements OnInit {
       data:this.UserDataAccount,
       panelClass: 'bg-color',
       width:'80%',
+      height:'80%'
     });
     dialogRef.afterClosed().subscribe((result:any) => {
       this.getEconesFromDataBase();
@@ -326,8 +318,6 @@ export class EconesComponent implements OnInit {
     // return blob image after conversion
     return new Blob([uInt8Array], { type: imageType })
   }
-
-
 }
 
 
@@ -344,16 +334,13 @@ export class EconesComponent implements OnInit {
 })
 
 export class DialogSearch implements OnInit{
-
   constructor(
     private utilsService:UtilsService,
     private fireStoreServiceImages:FireStoreServiceImages,
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     public dialogRef: MatDialogRef<DialogSearch>,
     @Inject(MAT_DIALOG_DATA) public data:any,
-  ) {
-
-  }
+  ) {}
 
   ngOnInit(): void {
    console.log('LES DATAS MODALS MODERATE',this.data)
@@ -376,16 +363,13 @@ export class DialogSearch implements OnInit{
 })
 
 export class DialogParameters implements OnInit{
-
   constructor(
     private utilsService:UtilsService,
     private fireStoreServiceImages:FireStoreServiceImages,
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     public dialogRef: MatDialogRef<DialogParameters>,
     @Inject(MAT_DIALOG_DATA) public data:any,
-  ) {
-
-  }
+  ) { }
 
   ngOnInit(): void {
    console.log('LES DATAS MODALS MODERATE',this.data)
@@ -394,7 +378,6 @@ export class DialogParameters implements OnInit{
   update(){
 
   }
-
 }
 
 
@@ -416,9 +399,7 @@ export class DialogUpdateMaster implements OnInit{
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     public dialogRef: MatDialogRef<DialogUpdateMaster>,
     @Inject(MAT_DIALOG_DATA) public data:any,
-  ) {
-
-  }
+  ) {}
 
   ngOnInit(): void {
    //console.log('LES DATAS MODALS MODERATE',this.data)
@@ -436,7 +417,7 @@ export class DialogUpdateMaster implements OnInit{
   templateUrl: './dialog/add-econes.html',
   styleUrls: ['./econes.component.scss'],
   standalone: true,
-  imports: [ MatSlideToggleModule,
+  imports: [MatCheckboxModule, MatSlideToggleModule,
     _MatSlideToggleRequiredValidatorModule, ReactiveFormsModule, MatNativeDateModule,MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
 })
 
@@ -444,8 +425,11 @@ export class addEconesAdmin implements OnInit{
   serialNumber = new FormControl('', [ Validators.required ]);
   Customers :any[]=[];
   selectedCustomer:any ='';
-
-
+  firmware= new FormControl('', [ Validators.required ]);
+  SSID= new FormControl('', [ Validators.required ]);
+  PassWordOfSSID= new FormControl('', [ Validators.required ]);
+  asMaster = true;
+  password = new FormControl('', [ Validators.required ]);
   constructor(
     private econesService:EconesService,
     private utilsService:UtilsService,
@@ -453,40 +437,36 @@ export class addEconesAdmin implements OnInit{
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     public dialogRef: MatDialogRef<addEconesAdmin>,
     @Inject(MAT_DIALOG_DATA) public data:any,
-  ) {
-
-  }
+  ){}
 
   ngOnInit(): void {
    console.log('LES DATAS MODALS NEW ECONES ',this.data);
    this.data.forEach((customer:any) =>{
     console.log(customer);
-    if(customer.privileges.role !== 'Administrateur'){
+    // si il n'est pas Admin
+    if(customer.asAdmin !== true){
       this.Customers.push(customer);
       console.log(this.Customers);
+    }else{
+    // ou 
+
     }
    })
   }
 
   close(){
-    console.log(this.serialNumber.value, this.selectedCustomer)
-    if(this.selectedCustomer !== undefined){
+    console.log(this.serialNumber.value, this.selectedCustomer, this.firmware.value, this.SSID.value)
+    if(this.serialNumber.value !== ''){
       console.log(this.serialNumber.value, this.selectedCustomer)
-      this.econesService.addEconesToDatabaseWithCustomer(this.serialNumber.value, this.selectedCustomer);
-    }
-    else{
-      if(this.selectedCustomer.uuid === undefined){
-        console.log(this.serialNumber.value)
-        this.econesService.addEconesToDatabase(this.serialNumber.value);
-      }
+      this.econesService.addEcones({serial:this.serialNumber.value, firmware:this.firmware.value, SSID:this.SSID.value, passwordSSID: this.password.value, idOfCustomer:this.selectedCustomer });
     }
     this.dialogRef.close();
   }
 
   selectChangeClient(event:any){
-    console.log(event.value);
+    console.log('ON CHANGE LE CUSTOMER : !  ', event.value);
     this.selectedCustomer = event.value;
-    this.selectedCustomer = this.selectedCustomer.uuid
+    this.selectedCustomer = this.selectedCustomer.id
   }
 
 }

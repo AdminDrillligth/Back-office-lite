@@ -29,50 +29,63 @@ export class EconesService {
       this.user = this.user.email
     }
 
-    addEconesToDatabaseWithCustomer(serial:any, uuidOfCustomer:any){
-      let uuid = uid(32);
+    addEcones(data:any){
+      let token = localStorage.getItem('token') || '{}';
+      console.log('LE TOKEN',token);
+      const body = JSON.stringify({data:data, token:token});
+      // let uuid = uid(32);
       let podsData : any[any]= [];
-      console.log(uuidOfCustomer, serial)
-      this.db.collection("account-handler", ref => ref.where('uuid', '==', uuidOfCustomer)).get().subscribe((arg: any) =>{
-        arg.docs.forEach((e:any) => {
-          if(e.data().econes === undefined || e.data().econes.length === undefined || e.data().econes.length === 0){ 
-            podsData.push({
-              seeQr:false,
-              serial:serial,
-              uuid:uuid,
-              dateOfAssignement: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-              dateIsoOfAssignement: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
-            })
-            this.db.collection('account-handler').doc(e.id).update({econes:podsData})
-          }else{
-              podsData.push({
-                seeQr:false,
-                serial:serial,
-                uuid:uuid,
-                dateOfAssignement: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-                dateIsoOfAssignement: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
-              })
-              e.data().econes.forEach((pod:any) =>{
-                podsData.push(pod);
-              })
-              console.log('PODS DATA TO',podsData)
-              this.db.collection('account-handler').doc(e.id).update({econes:podsData})
-          }
-        })
+      console.log(data)
+      // this.db.collection("account-handler", ref => ref.where('uuid', '==', uuidOfCustomer)).get().subscribe((arg: any) =>{
+      //   arg.docs.forEach((e:any) => {
+      //     if(e.data().econes === undefined || e.data().econes.length === undefined || e.data().econes.length === 0){ 
+      //       podsData.push({
+      //         seeQr:false,
+      //         serial:serial,
+      //         uuid:uuid,
+      //         dateOfAssignement: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
+      //         dateIsoOfAssignement: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
+      //       })
+      //       this.db.collection('account-handler').doc(e.id).update({econes:podsData})
+      //     }else{
+      //         podsData.push({
+      //           seeQr:false,
+      //           serial:serial,
+      //           uuid:uuid,
+      //           dateOfAssignement: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
+      //           dateIsoOfAssignement: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
+      //         })
+      //         e.data().econes.forEach((pod:any) =>{
+      //           podsData.push(pod);
+      //         })
+      //         console.log('PODS DATA TO',podsData)
+      //         this.db.collection('account-handler').doc(e.id).update({econes:podsData})
+      //     }
+      //   })
+      // })
+      // return new Promise<any>((resolve, reject) => {
+      //   this.db.collection('e-cones').add({
+      //     seeQr:false,
+      //     serial:serial,
+      //     uuid:uuid,
+      //     uuidOfCustomer:uuidOfCustomer,
+      //     date: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
+      //     dateIso: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
+      //   }).then(
+      //       (r: any) => { },
+      //       (err: any) => reject(err));
+      // });
+      this.http.post(this.baseURL+'econe' , body,{'headers':this.headers}).subscribe((response:any) => {
+        console.log('LA REP DU SERVEUR : ! ',response)
+        // if(response.decodeds !== 'err'){
+        //   this.utilsService.seeEconesList(response.ListEcones);
+        // }else{
+        //   console.log('veuillez vous réedentifier ! ')
+        // }
       })
-      return new Promise<any>((resolve, reject) => {
-        this.db.collection('e-cones').add({
-          seeQr:false,
-          serial:serial,
-          uuid:uuid,
-          uuidOfCustomer:uuidOfCustomer,
-          date: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-          dateIso: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
-        }).then(
-            (r: any) => { },
-            (err: any) => reject(err));
-      });
     }
+
+
 
     addEconesToDatabase(serial:any){
       let uuid = uid(32);
@@ -95,11 +108,16 @@ export class EconesService {
     }
 
     getAllEcones(){
+      let econes:any
       let token = localStorage.getItem('token') || '{}';
       console.log('LE TOKEN',token);
-      this.http.get(this.baseURL+'econe' ,{'params':{'token':token}}).subscribe((response:any) => {
+       this.http.get(this.baseURL+'econe' ,{'params':{'token':token}}).subscribe((response:any) => {
         console.log('LA REP DU SERVEUR : ! ',response)
+        if(response.decodeds !== 'err'){
+          this.utilsService.seeEconesList(response.ListEcones);
+        }else{
+          console.log('veuillez vous réedentifier ! ')
+        }
       })
-      return this.db.collection('e-cones').get();
     }
 }

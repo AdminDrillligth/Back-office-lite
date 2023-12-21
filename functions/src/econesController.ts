@@ -1,11 +1,11 @@
 import { Response } from "express";
 import { db } from './config/firebase';
-// var jwt = require("jsonwebtoken");
-// import * as functions from 'firebase-functions'
-// import { v4 as uuidv4 } from 'uuid';
-
+var jwt = require("jsonwebtoken");
+// import * as functions from 'firebase-functions';
+import { v4 as uuidv4 } from 'uuid';
+var DateString = new Date().toLocaleDateString();
+var isoDateString = new Date().toISOString();
 // SSID DE BASE : DRILLLIGHT 
-//
 
 // Model de type Econes
 // type EconesModel = {
@@ -20,7 +20,7 @@ import { db } from './config/firebase';
 //   avatarimages:string, // SYNC
 //   asMaster:boolean, // SYNC
 //   SSID:string, // SYNC
-//   password:string, // SYNC
+//   passwordSSID:string, // SYNC
 //   firmwareVersion:string, // SYNC
 //   lastFirmwareUpdate:string, // SYNC
 //   lastUseDate:string, // SYNC
@@ -30,47 +30,73 @@ import { db } from './config/firebase';
 // SET CREATE A NEW ECONE ON THE DATA BASE
 // THE MODEL TO INSERT IS :
 
+
 // addEcone
 const addEcone = async (req: any, res: Response) => {
-  // let newUuid = uuidv4();
+  let newUuid = uuidv4();
+  let bodyOfRequest = req.body;
+  let token = bodyOfRequest.token;
+  let data = bodyOfRequest.data;
+  let decodeds:any;
+  let EconeObject = {
+    id:data.serial, // STATIC 
+    uniqueId:newUuid, // STATIC
+    qr:'', // STATIC 
+    qrUrl:'', // STATIC
+    creationDate: DateString, // STATIC
+    creationDateIso: isoDateString, // STATIC
+    customerId:data.idOfCustomer, // ADMIN
+    name: '', // SYNC
+    avatarimages:'', // SYNC
+    asMaster:true, // SYNC
+    SSID:data.SSID, // SYNC
+    passwordSSID: data.passwordSSID, // SYNC
+    firmwareVersion:data.firmware, // SYNC
+    lastFirmwareUpdate:'', // SYNC
+    lastUseDate:'', // SYNC
+    lastUseDateIso:'', // SYNC
+  };
   try {
-
+    const entry = db.collection('e-cones')
+    jwt.verify(token, 'secret', { expiresIn: '1h' }, function(err:any, decoded:any) {
+      if(err){ decodeds = 'err';}
+      else{ decodeds = 'no error';}
+    });
+    await entry.add(EconeObject)
     return res.status(200).json({
       status: 'success',
-      message: 'entry updated successfully',
-
-    })
+      message: 'add Econe Service successfully',
+      token: token,
+      data: data,
+      EconeObject: EconeObject,
+      decodeds: decodeds
+    });
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
 
 // getEcones
 const getEcones = async (req: any, res: Response) => {
-  // let newUuid = uuidv4();
   try {
     let reqs =  req.query;
     let token = reqs.token;
     let decodeds:any;
-    jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
-      if(err){
-        functions.logger.log("DATA DECODED ERROR: ! ", err)
-        decodeds = 'err';
-      }else{
-        functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
-        decodeds = 'no error';
-      }
+    jwt.verify(token, 'secret', { expiresIn: '1h' }, function(err:any, decoded:any) {
+      if(err){ decodeds = 'err'; }
+      else{ decodeds = 'no error'; }
     });
-    // ;
-    // 
-    // const AllEcones: any[] = [];
+    const AllEcones: any[] = [];
     const EconeCollection = await db.collection('e-cones').get();
+    EconeCollection.forEach((econe:any)=>{
+      AllEcones.push(econe.data())
+    });
     return res.status(200).json({
       status: 'success',
       message: 'Get al econes successfully',
-      ListEcone: EconeCollection,
+      ListEcones: AllEcones,
       req: reqs,
       decodeds:decodeds
-    })
+    });
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
@@ -86,6 +112,7 @@ const updateEcone = async (req: any, res: Response) => {
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
+
 // deleteEcone
 const deleteEcone = async (req: any, res: Response) => {
   // let newUuid = uuidv4();
@@ -97,5 +124,6 @@ const deleteEcone = async (req: any, res: Response) => {
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
+
 
 export { addEcone, getEcones, updateEcone, deleteEcone }

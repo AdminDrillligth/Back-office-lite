@@ -9,6 +9,7 @@ export class UtilsService {
   private moderationMode: BehaviorSubject<any>;
   private profilOptionCustomer: BehaviorSubject<any>;
   private accountsForPods: BehaviorSubject<any>;
+  private EconesList:BehaviorSubject<any>;
   private dataOfUserAccount: BehaviorSubject<any>;
   private newUpdateOfCustomer: BehaviorSubject<any>;
   private newAccount: BehaviorSubject<any>;
@@ -19,6 +20,7 @@ export class UtilsService {
     this.moderationMode = new BehaviorSubject(null);
     this.profilOptionCustomer = new BehaviorSubject(null);
     this.accountsForPods = new BehaviorSubject(null);
+    this.EconesList = new BehaviorSubject(null);
     this.dataOfUserAccount = new BehaviorSubject(null);
     this.newUpdateOfCustomer = new BehaviorSubject(null);
     this.newAccount = new BehaviorSubject(null);
@@ -62,6 +64,15 @@ export class UtilsService {
   sendAdminToEcone(accounts:any){
     console.log('ACCOUNTS FOR PODS : ! ',accounts)
     this.accountsForPods.next(accounts);
+  }
+
+  get _dataOfEconesSend(){
+    return this.EconesList.asObservable();
+  }
+
+  seeEconesList(econes:any){
+    console.log('ACCOUNTS FOR PODS : ! ',econes)
+    this.EconesList.next(econes);
   }
 
   get _dataOfUserAccounts(){

@@ -1,5 +1,5 @@
 <div class="background-modal">
-    <h5 class="title-modal">Ajouter un E-cone en tant qu'administrateur</h5>
+    <h5 class="title-modal" style="color:black">Ajouter un E-cone en tant qu'administrateur</h5>
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
           <mat-label style="color:black">Numéro de série : </mat-label>
@@ -8,9 +8,31 @@
       </div>
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
-          <mat-label>Clients</mat-label>
+          <mat-label style="color:black">Firmware : </mat-label>
+           <input type='number' [formControl]="firmware" maxlength="13" min="0.1" max="10" required matInput placeholder="0.1">
+        </mat-form-field>
+      </div>
+      <div class="col-12 divdial" mat-dialog-content>
+          <mat-label style="color:black"><b>En tant que Master : </b></mat-label>
+          <mat-checkbox class=""></mat-checkbox>
+      </div>
+      <div class="col-12 divdial" mat-dialog-content>
+        <mat-form-field class="form-fielder">
+          <mat-label style="color:black">SSID : </mat-label>
+          <input [formControl]="SSID" maxlength="13" required matInput placeholder="nom du SSID">
+        </mat-form-field>
+      </div>
+      <div class="col-12 divdial" mat-dialog-content>
+        <mat-form-field class="form-fielder">
+          <mat-label style="color:black">Mot de passe SSID : </mat-label>
+          <input [formControl]="password" maxlength="13" required matInput placeholder="nom du SSID">
+        </mat-form-field>
+      </div>
+      <div class="col-12 divdial" mat-dialog-content>
+        <mat-form-field class="form-fielder">
+          <mat-label>Clients : </mat-label>
           <mat-select  [(ngModel)]="selectedCustomer" (selectionChange)="selectChangeClient($event)">
-            <mat-option  *ngFor="let Customer of Customers" [value]="Customer">{{Customer.personalinfos.name + ' ' + Customer.personalinfos.firstname}}</mat-option>
+            <mat-option  *ngFor="let Customer of Customers" [value]="Customer">{{Customer.personalInfos.familyName + ' ' + Customer.firstName}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

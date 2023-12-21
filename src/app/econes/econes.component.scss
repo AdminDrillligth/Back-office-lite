@@ -20,10 +20,10 @@
 }
 
 .background-modal{
-  background-color:#110d24 !important;
+  // background-color:#110d24 !important;
   cursor:pointer;
-  height: 350px!important;
-  padding-top: 20px;
+  // height: 350px!important;
+  // padding-top: 20px;
   padding-right: 15px;
   border-radius:6px;
   margin-top: 5px;
@@ -84,6 +84,7 @@
 
 .divdial{
   width: 100%;
+  padding: 5px;
 }
 
 .table > :not(caption) > * > *{
@@ -163,3 +164,6 @@
   width: -webkit-fill-available;
 }
 
+:root::-webkit-scrollbar{
+  display: none;
+}

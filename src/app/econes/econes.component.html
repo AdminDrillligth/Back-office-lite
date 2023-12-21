@@ -1,5 +1,5 @@
 <div class="container-main" >
-  <h3 style="color:white">E-cones</h3>
+  <h3 style="color:black">E-cones</h3>
   <div  style="color:white;margin-bottom: 20px;" class="col-md-2">
         <button (click)="search()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>search</mat-icon>
@@ -49,7 +49,7 @@
     </ng-container>
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef> id </th>
-      <td mat-cell *matCellDef="let emp"> {{emp.id}} </td>
+      <td mat-cell *matCellDef="let emp"> {{emp.uuid}} </td>
     </ng-container>
     <ng-container matColumnDef="serial">
       <th mat-header-cell *matHeaderCellDef> Numéro de série </th>
