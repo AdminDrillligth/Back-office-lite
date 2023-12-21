@@ -58,7 +58,9 @@ var isoDateString = new Date().toISOString();
 
 const addUser = async (req: any, res: Response) => {
   let bodyOfRequest = req.body;
-  let dataBodyOfRequest = bodyOfRequest.data; 
+  let dataBodyOfRequest = bodyOfRequest.data;
+  // let token = bodyOfRequest.token;
+  // let decodeds:any;
   let newUuid = uuidv4();
   try {
     const entry = db.collection('account-handler')
@@ -72,13 +74,23 @@ const addUser = async (req: any, res: Response) => {
       date:DateString, dateIso:isoDateString,
       update:'', lastConnexion:'', lastCodateIso:'', warning:false
     }
+    // jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
+    //   if(err){
+    //     functions.logger.log("DATA DECODED ERROR: ! ", err)
+    //     decodeds = 'err';
+    //   }else{
+    //     functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
+    //     decodeds = 'no error';
+    //   }
+    // });
     functions.logger.log("DATA : ! ", userObject)
     await entry.add(userObject)
     res.status(200).send({
       status: 'success',
       message: 'Utilisateur ajouté avec succés',
       data: dataBodyOfRequest,
-      userObject:userObject
+      userObject:userObject,
+      // decodeds:decodeds
     });
   } catch(error:any) {
       res.status(500).send({

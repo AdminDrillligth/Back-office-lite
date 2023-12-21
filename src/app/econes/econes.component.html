@@ -20,7 +20,7 @@
     <div class="centered-qr" >
       <qrcode class="qrcode" #parent [elementType]="elementType"
       [errorCorrectionLevel]="errorCorrectionLevel"
-      [qrdata]="Econe.qrdata" [scale]="scale" [width]="width"
+      [qrdata]="Econe.qr" [scale]="scale" [width]="width"
       [allowEmptyString]="true" [className]="cssClass"
       [colorDark]="colorDark" [colorLight]="colorLight"
       [margin]="margin" [alt]="alt" [ariaLabel]="ariaLabel"
@@ -49,15 +49,15 @@
     </ng-container>
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef> id </th>
-      <td mat-cell *matCellDef="let emp"> {{emp.uuid}} </td>
+      <td mat-cell *matCellDef="let emp"> {{emp.uniqueId}} </td>
     </ng-container>
     <ng-container matColumnDef="serial">
       <th mat-header-cell *matHeaderCellDef> Numéro de série </th>
-      <td mat-cell *matCellDef="let emp"> {{emp.serial}} </td>
+      <td mat-cell *matCellDef="let emp"> {{emp.id}} </td>
     </ng-container>
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef> Date de création </th>
-      <td mat-cell *matCellDef="let emp"> {{emp.date}} </td>
+      <td mat-cell *matCellDef="let emp"> {{emp.creationDate}} </td>
     </ng-container>
     <ng-container matColumnDef="client">
       <th mat-header-cell *matHeaderCellDef> Client </th>

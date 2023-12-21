@@ -3,8 +3,8 @@ import { db } from './config/firebase';
 var jwt = require("jsonwebtoken");
 // import * as functions from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
-var DateString = new Date().toLocaleDateString();
-var isoDateString = new Date().toISOString();
+var DateString = new Date().toLocaleDateString('en-GB');
+var isoDateString = new Date().toISOString('en-GB');
 // SSID DE BASE : DRILLLIGHT 
 
 // Model de type Econes
@@ -41,7 +41,7 @@ const addEcone = async (req: any, res: Response) => {
   let EconeObject = {
     id:data.serial, // STATIC 
     uniqueId:newUuid, // STATIC
-    qr:'', // STATIC 
+    qr:newUuid, // STATIC 
     qrUrl:'', // STATIC
     creationDate: DateString, // STATIC
     creationDateIso: isoDateString, // STATIC
@@ -57,7 +57,7 @@ const addEcone = async (req: any, res: Response) => {
     lastUseDateIso:'', // SYNC
   };
   try {
-    const entry = db.collection('e-cones')
+    const entry = db.collection('e-cones-handler')
     jwt.verify(token, 'secret', { expiresIn: '1h' }, function(err:any, decoded:any) {
       if(err){ decodeds = 'err';}
       else{ decodeds = 'no error';}
@@ -86,7 +86,7 @@ const getEcones = async (req: any, res: Response) => {
       else{ decodeds = 'no error'; }
     });
     const AllEcones: any[] = [];
-    const EconeCollection = await db.collection('e-cones').get();
+    const EconeCollection = await db.collection('e-cones-handler').get();
     EconeCollection.forEach((econe:any)=>{
       AllEcones.push(econe.data())
     });
