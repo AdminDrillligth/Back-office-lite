@@ -126,15 +126,16 @@ export class UserHandlersServiceAdmin {
   getAccountAdmin() {
     let token = localStorage.getItem('token') || '{}';
     this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
+      console.log('LA RESP DE ALL ADMINS : ! ',response)
       if(response.decoded !== 'err'){
-            localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
-            let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+            console.log('LA RESP DE ALL ADMINS : ! ',response)
+            localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
             this.utilsService.sendRequestGetnewAccount(true);
       }else{
         console.log('veuillez vous reconnecter ! ')
       }
     })
-    return this.db.collection('account-handler').get();
+    // return this.db.collection('account-handler').get();
   }
 
   getAccountWithEmail(emailUser:any) {

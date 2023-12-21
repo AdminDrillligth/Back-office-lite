@@ -32,7 +32,7 @@
         <mat-form-field class="form-fielder">
           <mat-label>Clients : </mat-label>
           <mat-select  [(ngModel)]="selectedCustomer" (selectionChange)="selectChangeClient($event)">
-            <mat-option  *ngFor="let Customer of Customers" [value]="Customer">{{Customer.personalInfos.familyName + ' ' + Customer.firstName}}</mat-option>
+            <mat-option  *ngFor="let Customer of Customers" [value]="Customer">{{Customer.data.personalInfos.familyName + ' ' + Customer.data.firstName}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

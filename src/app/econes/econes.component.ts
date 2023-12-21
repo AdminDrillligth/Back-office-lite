@@ -145,52 +145,52 @@ export class EconesComponent implements OnInit {
     this.getEconesFromDataBase();
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
-      console.log('List Econes', listEcones )
       this.Econes = listEcones;
       this.dataSourceEcones = new MatTableDataSource(this.Econes);
       this.dataSourceEcones.paginator = this.paginatorEcones;
       console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
-   
+      if(this.Econes !== null){
+        if(this.Econes.length > 0){
+          setTimeout(()=>{ this.parserEconesToCustomers(); },300)
+        }
+      }
     });
+    this.utilsService._newaccount.subscribe((update:any) =>{
+      console.log('ALLONS NOUS UPDATE ? ',update)
+       if(update !== null){
+         if(update == true){
+          let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+          this.UserDataAccount =  allAccounts;
+          console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
+          if(this.Econes !== null){
+            if(this.Econes.length > 0){
+              setTimeout(()=>{ this.parserEconesToCustomers(); },300)
+            }
+          }
+        }
+        }
+      })
+  }
+
+  parserEconesToCustomers(){
+    if(this.Econes !== null){
+      if(this.Econes.length > 0){
+        for (let i = 0; i < this.Econes.length; i++) {
+          this.UserDataAccount.forEach((user:any) =>{
+            if(this.Econes[i].customerId === user.data.id){
+              this.Econes[i].name = user.data.firstName +' '+ user.data.personalInfos.familyName;
+            }
+          });
+        }
+      }
+    }
   }
 
   getEconesFromDataBase(){
     this.UserDataAccount = [];
     this.Econes = [];
     this.econesService.getAllEcones();
-    // this.utilsService._dataOfAccountsAndPods.subscribe((accounts:any) => {
-    //   console.log('Accounts !: ', accounts);
-    //   if(accounts === null){
-    this.userHandlersServiceAdmin.getAccountAdmin().subscribe(e =>{
-          console.log('LES DATAS DU SERVICE ACCOUNT :  ',e );
-          e.docs.forEach(account =>{
-          // console.log('LES DATAS DU ACCOUNT ',this.Econes, account.data());
-            this.UserDataAccount.push(account.data());
-    //         if(this.UserDataAccount.length === e.docs.length){
-    //           for(let i = 0; i < this.Econes.length; i++) {
-    //            this.UserDataAccount.forEach((account:any) =>{
-    //                 if(account.uuid === this.Econes[i].uuidOfCustomer){
-                      
-    //                   // this.Econes[i].name = account.personalinfos.name;
-    //                   // this.Econes[i].firstname = account.personalinfos.firstname;
-    //                   // this.Econes[i].email = account.email;
-                      
-    //                 }
-    //             })
-    //           }
-    //         }
-          });
-          console.log('ACCOUNTS', this.UserDataAccount )
-  
-    //     });
-    //   }else{
-    //     let accountsData = accounts.account;
-    //     // console.log('LES ACCOUNTS DATAS : ! ',accountsData)
-    //     // accountsData.forEach((account:any) =>{
-    //     //   this.UserDataAccount.push(account.data)
-    })  
-    //   }
-    //  });
+    this.userHandlersServiceAdmin.getAccountAdmin()
   }
 
   search(){
@@ -444,7 +444,7 @@ export class addEconesAdmin implements OnInit{
    this.data.forEach((customer:any) =>{
     console.log(customer);
     // si il n'est pas Admin
-    if(customer.asAdmin !== true){
+    if(customer.data.asAdmin !== true){
       this.Customers.push(customer);
       console.log(this.Customers);
     }else{
@@ -466,7 +466,7 @@ export class addEconesAdmin implements OnInit{
   selectChangeClient(event:any){
     console.log('ON CHANGE LE CUSTOMER : !  ', event.value);
     this.selectedCustomer = event.value;
-    this.selectedCustomer = this.selectedCustomer.id
+    this.selectedCustomer = this.selectedCustomer.data.id
   }
 
 }
