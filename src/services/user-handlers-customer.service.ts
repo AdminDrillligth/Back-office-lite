@@ -30,7 +30,6 @@ export class UserHandlersServiceCustomer {
 
 
   getUpdateallUsers(){
-    
     let token = localStorage.getItem('token') || '{}';
     console.log('LE TOKEN',token);
     this.http.get(this.baseURL+'user').subscribe((rep:any) =>{
@@ -44,15 +43,10 @@ export class UserHandlersServiceCustomer {
 
   addAccountCustomer(data:any){
     const body = JSON.stringify({data:data});
-    console.log('LE BODY DE NOTRE JSON ::  ',body)
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
-    console.log('DATA RECEIVED :CREATE CUSTOMEUR  !',data.email, data);
-    console.log(body)
     let token = localStorage.getItem('token') || '{}';
-    console.log('LE TOKEN',token);
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
- 
         this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
           console.log('We get all users : ', response, token);
           if(response.decoded !== 'err'){
@@ -61,6 +55,7 @@ export class UserHandlersServiceCustomer {
             console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
             this.utilsService.sendRequestGetnewAccount(true);
           }else{
+            console.log('veuillez vous reconnecter ! ')
           }
         })
     })
@@ -75,9 +70,8 @@ export class UserHandlersServiceCustomer {
     let token = localStorage.getItem('token') || '{}';
     const body = JSON.stringify({data:data, id:idAccount, token:token});
     console.log('On va envoyer ce body : ',body)
-    this.http.patch(this.baseURL+'user' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response)
+    this.http.patch(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
+      console.log('LA REP DU SERVEUR UPDATE : ! ',response)
     })
   }
 

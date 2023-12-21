@@ -4,7 +4,7 @@ import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
 
-var DateString = new Date().toLocaleDateString();
+var DateString = new Date().toLocaleDateString('en-GB');
 var isoDateString = new Date().toISOString();
 // var timeNow = new Date().toLocaleTimeString();
 

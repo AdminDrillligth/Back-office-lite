@@ -28,19 +28,15 @@ export class UserHandlersServiceAdmin {
   }
   headers = { 'content-type': 'application/json'}
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
+  
   addAccountAdmin(data:any){
     const body = JSON.stringify({data:data});
-    console.log('LE BODY DE NOTRE JSON ::  ',body);
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ADD ACCOUNT ! ',response);
       let token = localStorage.getItem('token') || '{}';
-      console.log('LE TOKEN',token);
         this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
-          console.log('We get all users : ', response, token);
           if(response.decoded !== 'err'){
             localStorage.setItem('account-datas', JSON.stringify(response.allAdmins));
             let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-            console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
             this.utilsService.sendRequestGetnewAccount(true);
           }else{
           }
@@ -56,9 +52,8 @@ export class UserHandlersServiceAdmin {
     console.log('USE DATA OF ADMIN UPDATE : !',data)
     const body = JSON.stringify({data:data, id:idAccount});
     console.log(body)
-    this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : UPDATE ACCOUNT : ! ',response,  response.id)
+    this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
+      console.log('LA REP DU SERVEUR : UPDATE ACCOUNT : ! ',response)
     //          localStorage.setItem('new-account', JSON.stringify(r.id));
     //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
     //          console.log('NEW ACCOUND ID ',newaccount);
@@ -129,13 +124,8 @@ export class UserHandlersServiceAdmin {
     })
   }
 
-  getAccountAdmin() {
-    return this.db.collection('account-handler').get();
-  }
-
   getAccountWithEmail(emailUser:any) {
     return  this.db.collection("account-handler", ref => ref.where('email', '==', emailUser)).get()
-
   }
 
 }

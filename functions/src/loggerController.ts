@@ -1,15 +1,7 @@
 var jwt = require("jsonwebtoken");
 const fs = require('firebase-admin');
-// import { Response } from "express"
-// import { db } from './config/firebase'
-// import * as express from 'express';
 const db = fs.firestore(); 
-// const usersDblogs = db.collection('logsofconnection'); 
-//  const username = "snaimuh@googlemail.com";
-// const password = "Deconnecter22";
-// const username = "snaimuh@googlemail.com";
-// let userhandlerProfils;
-// let dataOfUsers = [];
+
 const connectToAccount = async (req:any, res:any) => {
   try {
     let reqs = req.body;
@@ -31,7 +23,7 @@ const connectToAccount = async (req:any, res:any) => {
               jwt.verify(encoded, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
                 if (err) {
                   return res.status(200).json({
-                    status: 'success',
+                    status: 'error',
                     message: 'Yo just get ERROR the token',
                     token: encoded,
                     err: err

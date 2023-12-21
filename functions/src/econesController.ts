@@ -4,7 +4,7 @@ var jwt = require("jsonwebtoken");
 // import * as functions from 'firebase-functions';
 import { v4 as uuidv4 } from 'uuid';
 var DateString = new Date().toLocaleDateString('en-GB');
-var isoDateString = new Date().toISOString('en-GB');
+var isoDateString = new Date().toISOString();
 // SSID DE BASE : DRILLLIGHT 
 
 // Model de type Econes
