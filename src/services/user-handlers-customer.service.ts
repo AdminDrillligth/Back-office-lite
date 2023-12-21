@@ -30,6 +30,9 @@ export class UserHandlersServiceCustomer {
 
 
   getUpdateallUsers(){
+    
+    let token = localStorage.getItem('token') || '{}';
+    console.log('LE TOKEN',token);
     this.http.get(this.baseURL+'user').subscribe((rep:any) =>{
       console.log('LA REP DU ALL USERS : ! ',rep)
 
@@ -45,10 +48,11 @@ export class UserHandlersServiceCustomer {
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
     console.log('DATA RECEIVED :CREATE CUSTOMEUR  !',data.email, data);
     console.log(body)
+    let token = localStorage.getItem('token') || '{}';
+    console.log('LE TOKEN',token);
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      let token = localStorage.getItem('token') || '{}';
-      console.log('LE TOKEN',token);
+ 
         this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
           console.log('We get all users : ', response, token);
           if(response.decoded !== 'err'){
@@ -69,33 +73,11 @@ export class UserHandlersServiceCustomer {
   updateAccountCustomer(idAccount:any, data:any){
     console.log('DATA UPDATE CUSTOMER :: ',data)
     let token = localStorage.getItem('token') || '{}';
-    // let dataupdate =  {
-    //   personalinfos:{
-    //     firstname:data.firstname,
-    //     zip:data.zip,
-    //     address:data.address,
-    //     simplebirthdate:data.simplebirthdate,
-    //     name:data.name,
-    //     email:data.email,
-    //     phone:data.phone,
-    //     city:data.city,
-    //     comment:data.comment,
-    //     birthdate:data.birthdate
-    //   },
-    //   privileges:{
-    //     licences:data.licences,
-    //     role:data.role,
-    //     rights:data.rights
-    //   },
-    // }
-
-
     const body = JSON.stringify({data:data, id:idAccount, token:token});
     console.log('On va envoyer ce body : ',body)
     this.http.patch(this.baseURL+'user' , body,{'headers':this.headers})
     .subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response)
-      // this.getUpdateallUsers();
     })
   }
 
@@ -108,13 +90,6 @@ export class UserHandlersServiceCustomer {
     this.http.post(this.baseURL+'administration/add_user' , body,{'headers':this.headers})
     .subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      this.getUpdateallUsers();
-      //          localStorage.setItem('new-account', JSON.stringify(r.id));
-    //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
-    //          console.log('NEW ACCOUND ID ',newaccount);
-    //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
-    //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-    //         }
     });
   }
 
@@ -127,13 +102,6 @@ export class UserHandlersServiceCustomer {
     this.http.post(this.baseURL+'administration/add_staff' , body,{'headers':this.headers})
     .subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      this.getUpdateallUsers();
-      //          localStorage.setItem('new-account', JSON.stringify(r.id));
-    //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
-    //          console.log('NEW ACCOUND ID ',newaccount);
-    //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
-    //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-    //         }
     });
   }
 
@@ -144,13 +112,6 @@ export class UserHandlersServiceCustomer {
     this.http.post(this.baseURL+'administration/update_user' , body,{'headers':this.headers})
     .subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      this.getUpdateallUsers();
-    //          localStorage.setItem('new-account', JSON.stringify(r.id));
-    //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
-    //          console.log('NEW ACCOUND ID ',newaccount);
-    //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
-    //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-    //         }
     });
   }
 
@@ -163,13 +124,6 @@ export class UserHandlersServiceCustomer {
     this.http.post(this.baseURL+'administration/update_staff' , body,{'headers':this.headers})
     .subscribe((response:any) => {
       console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      this.getUpdateallUsers();
-    //          localStorage.setItem('new-account', JSON.stringify(r.id));
-    //          let newaccount = JSON.parse(localStorage.getItem('new-account') || '{}');
-    //          console.log('NEW ACCOUND ID ',newaccount);
-    //          if(data.avatarimages !== "" || data.avatarimages !== undefined){
-    //           this.fireStoreServiceImages.addImagesOfAdministrator(newaccount, data.avatarimages);
-    //         }
     });
   }
 
@@ -207,7 +161,6 @@ export class UserHandlersServiceCustomer {
       }
       })
       )
-
     })
   }
 

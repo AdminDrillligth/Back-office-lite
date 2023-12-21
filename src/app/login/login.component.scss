@@ -59,3 +59,8 @@
 .mat-mdc-text-field-wrapper{
   background-color: #a1eafb;
 }
+
+::ng-deep .mat-mdc-text-field-wrapper  {
+  background-color: rgb(171, 171, 171) !important;
+  border-radius: 5px;  
+}
