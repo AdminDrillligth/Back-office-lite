@@ -22,6 +22,8 @@ import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categ
 import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
 import { SubscribesComponent } from './subscribes/subscribes.component';
 import { PasswordComponent } from './password/password.component';
+import { InscriptionComponent } from './inscription/inscription.component';
+
 
 
 
@@ -67,6 +69,9 @@ const routes: Routes = [
   },
   { path:'password',
    component:PasswordComponent
+  },
+  { path:'inscription',
+  component:InscriptionComponent
   },
   { path:'exercices-editor',
     component:ExercicesEditorComponent,

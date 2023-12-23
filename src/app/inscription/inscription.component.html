@@ -1,0 +1,31 @@
+<div class="login">
+  <div class="container">
+    <mat-card style="text-align: center;" class="card-login">
+      <mat-card-header style="text-align:center">
+        <h2 style="margin-left:auto;margin-right:auto;color:white;" color="white">Inscription</h2>
+      </mat-card-header>
+        <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  />
+      <mat-card-content>
+        <form  *ngIf="!seeChangePage" class="form-login"  [formGroup]="form" (ngSubmit)="onFormSubmit()">
+          <mat-form-field >
+            <mat-label>Email</mat-label>
+            <input readonly class="full-width"  formControlName="email"  type="email" matInput placeholder="Ex. xxx@example.com">
+          </mat-form-field>
+          <mat-form-field >
+            <mat-label>Nouveau mot de passe</mat-label>
+            <input class="full-width" (keyup)='onchangepassword($event)' formControlName="password"  type="password" matInput placeholder="Ex. xxxxxxxx">
+          </mat-form-field>
+          <mat-form-field >
+              <mat-label>Confirmer le mot de passe</mat-label>
+              <input class="full-width" (keyup)='onchangepassword($event)' formControlName="samepassword" type="password" matInput placeholder="Ex. xxxxxxxx">
+            </mat-form-field>
+          <button *ngIf="!seeChangePage" class="login-btn" (click)='confirmPassWord()' mat-flat-button >Définir le mot de passe</button>
+        </form>
+        <button *ngIf="seeChangePage" class="login-btn" (click)='goToDashboard()' mat-flat-button >Page de connexion</button>
+        <p style="margin-top:10px;color:red;">{{error}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<div>
+</div>

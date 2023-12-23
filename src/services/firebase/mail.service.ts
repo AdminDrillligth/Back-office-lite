@@ -43,7 +43,7 @@ export class storageServiceMail {
               "<table align='center' border='0' cellpadding='0' cellspacing='0' class='flexibleContainer text-center w-100'><tr><td valign='top' class='d-block textContentLast email-content'><p>Bonjour"+this.UserfirstName+"</p><p>"+
               "Nous sommes très heureux de vous accueillir sur Drilllight !<br>Nous vous invitons désormais à compléter et finaliser votre profil afin de démarrer l\'aventure Drilllight !<br>Des questions ?<br>N\'hésitez pas à nous contacter par mail à contact@drilllight.com pour quoi que ce soit et nous nous ferons un plaisir de revenir vers vous très rapidement.<br>À bientôt !<br>Sportivement,L’équipe Drilllight"+
 
-              "</p>< style='cursor:pointer;' button>Continuer sur Drilllight</> </td> </tr> </table> </td> </tr></table>"+
+              "</p>< style='cursor:pointer;'  button >Continuer sur Drilllight</> </td> </tr> </table> </td> </tr></table>"+
               "<table class='mf-footer w-100' cellpadding='0' cellspacing='0'><tr><td><tr class='mf-copyrights'><td>Pour vos questions et suggestions, nous vous invitons à nous<br>contacter sur <a href='mailto:contact@drilllight.fr'>contact@drilllight.fr</a>"+
               "</td></tr></td></tr></table><table class='drill-footer w-100' cellpadding='0' cellspacing='0'><tr><td class='social-icons'><a href='https://www.facebook.com/' title='Facebook'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ffacebook.png?alt=media&token=91f5edc6-ae6f-4403-86a7-ac72f036970d' style='margin-right: 30px;' alt='Facebook'></a>"+
               "<a href='https://www.instagram.com/' title='Instagram'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Finstagram.png?alt=media&token=a576f53a-91ac-44ba-a701-c1d3b8e918df' style='margin-right: 30px;' alt='Instagram'></a><a href='https://twitter.com/' title='Twitter'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ftwitter.png?alt=media&token=40dae9b3-1c85-4956-bb47-2df12cf37c00' style='margin-right: 30px;' alt='Twitter'></a></td>"+
@@ -100,7 +100,7 @@ export class storageServiceMail {
         "<table align='center' border='0' cellpadding='0' cellspacing='0' class='flexibleContainer text-center w-100'><tr><td valign='top' class='d-block textContentLast email-content'><p>Bonjour "+firstName+"</p><p>"+
         "Nous sommes très heureux de vous accueillir en tant qu'administrateur sur Drilllight !<br>Nous vous invitons désormais à compléter et finaliser votre profil afin de démarrer l\'aventure Drilllight !<br>Des questions ?<br>N\'hésitez pas à nous contacter par mail à contact@drilllight.com pour quoi que ce soit et nous nous ferons un plaisir de revenir vers vous très rapidement.<br>À bientôt !<br>Sportivement,L’équipe Drilllight"+
 
-        "</p><a  style='cursor:pointer;' href='https://drilllight.web.app/'><button style='cursor:pointer;'>Continuer sur Drilllight</button></a> </td> </tr> </table> </td> </tr></table>"+
+        "</p><a  style='cursor:pointer;' href='https://drilllight.web.app/inscription?email="+mailUser+"'><button style='cursor:pointer;'>Continuer sur Drilllight</button></a> </td> </tr> </table> </td> </tr></table>"+
         "<table class='mf-footer w-100' cellpadding='0' cellspacing='0'><tr><td><tr class='mf-copyrights'><td>Pour vos questions et suggestions, nous vous invitons à nous<br>contacter sur <a href='mailto:contact@drilllight.fr'>contact@drilllight.fr</a>"+
         "</td></tr></td></tr></table><table class='drill-footer w-100' cellpadding='0' cellspacing='0'><tr><td class='social-icons'><a href='https://www.facebook.com/' title='Facebook'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ffacebook.png?alt=media&token=91f5edc6-ae6f-4403-86a7-ac72f036970d' style='margin-right: 30px;' alt='Facebook'></a>"+
         "<a href='https://www.instagram.com/' title='Instagram'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Finstagram.png?alt=media&token=a576f53a-91ac-44ba-a701-c1d3b8e918df' style='margin-right: 30px;' alt='Instagram'></a><a href='https://twitter.com/' title='Twitter'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ftwitter.png?alt=media&token=40dae9b3-1c85-4956-bb47-2df12cf37c00' style='margin-right: 30px;' alt='Twitter'></a></td>"+
@@ -113,10 +113,10 @@ export class storageServiceMail {
          (r: any) => {
               // localStorage.setItem('id-user-inf', JSON.stringify(r.id));
               // this.idUser = JSON.parse(localStorage.getItem('id-user-inf') || '{}');
-              console.log(r);
+              console.log('NO ERROR',r);
             },
             (err: any) => {
-              console.log(err)
+              console.log('ERROR',err)
             }
           );
       });
