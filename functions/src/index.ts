@@ -4,6 +4,7 @@ var cors = require('cors');
 import * as functions from 'firebase-functions';
 import * as express from 'express';
 //  var router = express.Router();
+// const nodemailer = require('nodemailer');
 import { addEntry, getAllEntries, updateEntry, deleteEntry } from './entryController';
 import { addAdmin, getAdmins, updateAdmin, deleteAdmin } from './adminsController';
 import { addUser, getUsers, updateUser, deleteUser } from './usersController';
@@ -54,6 +55,8 @@ app.post('/login', connectToAccount)
 
 //
 app.get('/token', getToken)
+
+
 
 exports.app = functions.https.onRequest(app)
 

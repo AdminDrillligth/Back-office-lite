@@ -61,7 +61,7 @@ const addEcone = async (req: any, res: Response) => {
     lastUseDateIso:'', // SYNC
   };
   try {
-    const entry = db.collection('e-cones-handler')
+    // const entry = db.collection('e-cones-handler')
     jwt.verify(token, 'secret', { expiresIn: '24h' }, function(err:any, decoded:any) {
       if(err){ 
       decodeds = 'err';

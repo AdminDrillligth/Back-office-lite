@@ -65,9 +65,12 @@ const addUser = async (req: any, res: Response) => {
   try {
     // const entry = db.collection('account-handler')
     const userObject = {
-      id: newUuid, firstName:dataBodyOfRequest.firstName, avatarImages:'',
+      password:'', // MD5
+      id: newUuid,  avatarImages:'', familyName:dataBodyOfRequest.familyName,
       email:dataBodyOfRequest.email, asAdmin:dataBodyOfRequest.asAdmin,
-      personalInfos:{ familyName:dataBodyOfRequest.familyName, zip:dataBodyOfRequest.zip, address:dataBodyOfRequest.address, simpleBirthdate:dataBodyOfRequest.simpleBirthdate, phone:dataBodyOfRequest.phone, city:dataBodyOfRequest.city, comment:dataBodyOfRequest.comment, birthdate:dataBodyOfRequest.birthdate },
+      personalInfo:{
+        firstName:dataBodyOfRequest.firstName,
+        zip:dataBodyOfRequest.zip, address:dataBodyOfRequest.address, simpleBirthdate:dataBodyOfRequest.simpleBirthdate, phone:dataBodyOfRequest.phone, city:dataBodyOfRequest.city, comment:dataBodyOfRequest.comment, birthdate:dataBodyOfRequest.birthdate },
       privileges:{ rights:dataBodyOfRequest.rights },
       traineds:[], staff:[], econes:[],
       trainings:[], videos:[], licencied:10,
@@ -112,7 +115,7 @@ const getUsers = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
   let token = headers.token;
-  
+
   try {
     let decodeds:any;
     const allUsers: any[] = [];
