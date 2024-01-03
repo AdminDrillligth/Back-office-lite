@@ -1,9 +1,8 @@
 import { Response } from "express"
 import { db } from './config/firebase'
-import * as functions from 'firebase-functions'
+// import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
-
 var DateString = new Date().toLocaleDateString('en-GB');
 var isoDateString = new Date().toISOString();
 // var timeNow = new Date().toLocaleTimeString();
@@ -58,12 +57,13 @@ var isoDateString = new Date().toISOString();
 
 const addUser = async (req: any, res: Response) => {
   let bodyOfRequest = req.body;
-  let dataBodyOfRequest = bodyOfRequest.data;
-  // let token = bodyOfRequest.token;
+  let dataBodyOfRequest = JSON.parse(bodyOfRequest);
+  dataBodyOfRequest = dataBodyOfRequest.data
+  let token = bodyOfRequest.token;
   // let decodeds:any;
   let newUuid = uuidv4();
   try {
-    const entry = db.collection('account-handler')
+    // const entry = db.collection('account-handler')
     const userObject = {
       id: newUuid, firstName:dataBodyOfRequest.firstName, avatarImages:'',
       email:dataBodyOfRequest.email, asAdmin:dataBodyOfRequest.asAdmin,
@@ -74,22 +74,25 @@ const addUser = async (req: any, res: Response) => {
       date:DateString, dateIso:isoDateString,
       update:'', lastConnexion:'', lastCodateIso:'', warning:false
     }
-    // jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
-    //   if(err){
-    //     functions.logger.log("DATA DECODED ERROR: ! ", err)
-    //     decodeds = 'err';
-    //   }else{
-    //     functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
-    //     decodeds = 'no error';
-    //   }
-    // });
-    functions.logger.log("DATA : ! ", userObject)
-    await entry.add(userObject)
+
+    // // jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
+    // //   if(err){
+    // //     functions.logger.log("DATA DECODED ERROR: ! ", err)
+    // //     decodeds = 'err';
+    // //   }else{
+    // //     functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
+    // //     decodeds = 'no error';
+    // //   }
+    // // });
+    // functions.logger.log("DATA : ! ", userObject)
+    // await entry.add(userObject)
     res.status(200).send({
       status: 'success',
       message: 'Utilisateur ajouté avec succés',
-      data: dataBodyOfRequest,
+      req: dataBodyOfRequest,
       userObject:userObject,
+      token:token
+      // userObject:userObject,
       // decodeds:decodeds
     });
   } catch(error:any) {
@@ -105,33 +108,36 @@ const addUser = async (req: any, res: Response) => {
 // ON RECUPERE LA LISTE DES ADMINS VIA GET
 // REQUEST TEMPLATE
 // JUST BEARER TOKEN
-const getUsers = async (req: any, res: Response) => {
+const getUsers = async (req: any, res: any) => {
+  let reqs = req;
+  let headers = reqs.headers;
+  let token = headers.token;
+  
   try {
-    let reqs =  req.query;
-    let token = reqs.token;
     let decodeds:any;
     const allUsers: any[] = [];
     const querySnapshot = await db.collection('account-handler').get();
-    jwt.verify(token, 'secret', { expiresIn: '1h' },  function(err:any, decoded:any) {
-        if(err){
-          functions.logger.log("DATA DECODED ERROR: ! ", err)
+    jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
+        if(err) {
           decodeds = 'err';
-        }else{
-          functions.logger.log("DATA DECODED NO ERROR: ! ", decoded)
+          return res.status(200).json({
+            status:'Votre token a expiré',
+            token:token,
+            decoded:decodeds
+          });
+        }else {
           decodeds = 'no error';
+          querySnapshot.forEach((doc: any) => {
+            allUsers.push({data:doc.data(), id: doc.id});
+          });
+          return res.status(200).json({
+            status:'votre requetes est exécutée avec succés',
+            allUsers: allUsers,
+            token: token,
+            decoded: decodeds 
+          });
         }
     });
-    querySnapshot.forEach((doc: any) => {
-        // let ifAdmin = doc.data();
-        allUsers.push({data:doc.data(), id: doc.id});
-        functions.logger.log("DATA : ! ", allUsers);
-        // functions.logger.log("DATA PARAMS : ! ", token);
-    });
-    return res.status(200).json({
-      status:'succes',
-      allUsers :allUsers,
-      decoded:decodeds 
-      });
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 

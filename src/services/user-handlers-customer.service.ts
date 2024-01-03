@@ -31,12 +31,12 @@ export class UserHandlersServiceCustomer {
 
   getUpdateallUsers(){
     let token = localStorage.getItem('token') || '{}';
-    console.log('LE TOKEN',token);
+    // console.log('LE TOKEN',token);
     this.http.get(this.baseURL+'user').subscribe((rep:any) =>{
       console.log('LA REP DU ALL USERS : ! ',rep)
 
       let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      console.log('LA REP DU ALL USERS : ! ',allAccounts)
+      // console.log('LA REP DU ALL USERS : ! ',allAccounts)
       this.utilsService.sendRequestGetnewAccount(true);
     })
   }
@@ -44,11 +44,12 @@ export class UserHandlersServiceCustomer {
   getAccounts(){
     let token = localStorage.getItem('token') || '{}';
     this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
-      console.log('We get all users : ', response, token);
+      // console.log('We get all users : ', response, token);
       if(response.decoded !== 'err'){
+
         localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
         let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-        console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+        // console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
         this.utilsService.sendRequestGetnewAccount(true);
       }else{
         console.log('veuillez vous reconnecter ! ')
@@ -60,8 +61,8 @@ export class UserHandlersServiceCustomer {
     const body = JSON.stringify({data:data});
     this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
     let token = localStorage.getItem('token') || '{}';
-    this.http.post(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
+    this.http.post(this.baseURL+'user' , body).subscribe((response:any) => {
+        console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
         this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
           console.log('We get all users : ', response, token);
           if(response.decoded !== 'err'){

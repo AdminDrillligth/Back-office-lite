@@ -18,7 +18,7 @@ import { ErrorStateMatcher} from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
+import { UtilsService } from '../../services/utils.service';
 
 @Component({
   selector: 'app-login',
@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit{
   badpassword : boolean= false;
   badpassuser : boolean= false;
   constructor(
+    private utilsService: UtilsService,
     public dialog: MatDialog,
     private http:HttpClient,
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
@@ -75,9 +76,12 @@ export class LoginComponent implements OnInit{
           this.http.post(this.baseURL+'login' , body,{'headers':headers}).subscribe((response:any) => {
             this.dataOfUser = response;
             let token = this.dataOfUser.token;
+            localStorage.setItem('token', token);
             let tokenlocal = localStorage.getItem('token') || '{}';
+            console.log('LE TOKEN LOCAL : ',tokenlocal)
             if(this.dataOfUser.status === "success"){
               this.router.navigate(['dashboard']);
+              this.utilsService.howToSeeNavigation(true);
               localStorage.setItem('account', JSON.stringify(this.dataOfUser.user));
               let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
               console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);

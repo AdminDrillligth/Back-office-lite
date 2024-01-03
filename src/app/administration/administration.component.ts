@@ -287,7 +287,7 @@ export class AdministrationComponent implements OnInit{
           // this.dataSourceAccounts.paginator = this.paginatorAccounts;
           // if(this.ProfilAccount.email)
           this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
-          //     this.letsee = true;
+          //  this.letsee = true;
           //  this.ProfilAccount = {data: this.AccountOfUser};
         }
       }
@@ -930,7 +930,7 @@ export class DialogCreateCustomer implements OnInit{
   ) {}
 
   ngOnInit(): void {
-   console.log('LES DATAS MODALS ',this.data, this.data.personalinfos)
+   console.log('LES DATAS MODALS ',this.data, this.data.personalInfos)
    if(this.data !== null){
       this.update = true;
       this.firstName.setValue(this.data.firstName);

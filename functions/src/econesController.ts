@@ -33,9 +33,13 @@ var isoDateString = new Date().toISOString();
 
 // addEcone
 const addEcone = async (req: any, res: Response) => {
+
   let newUuid = uuidv4();
+  let reqs = req;
+  let headers = reqs.headers;
+  let token = headers.token;
+
   let bodyOfRequest = req.body;
-  let token = bodyOfRequest.token;
   let data = bodyOfRequest.data;
   let decodeds:any;
   let EconeObject = {
@@ -58,11 +62,14 @@ const addEcone = async (req: any, res: Response) => {
   };
   try {
     const entry = db.collection('e-cones-handler')
-    jwt.verify(token, 'secret', { expiresIn: '1h' }, function(err:any, decoded:any) {
-      if(err){ decodeds = 'err';}
-      else{ decodeds = 'no error';}
+    jwt.verify(token, 'secret', { expiresIn: '24h' }, function(err:any, decoded:any) {
+      if(err){ 
+      decodeds = 'err';
+    }
+      else{ decodeds = 'no error';
+    }
     });
-    await entry.add(EconeObject)
+    // await entry.add(EconeObject)
     return res.status(200).json({
       status: 'success',
       message: 'add Econe Service successfully',
@@ -77,24 +84,26 @@ const addEcone = async (req: any, res: Response) => {
 
 // getEcones
 const getEcones = async (req: any, res: Response) => {
+  let reqs = req;
+  let headers = reqs.headers;
+  let token = headers.token;
+
   try {
-    let reqs =  req.query;
-    let token = reqs.token;
     let decodeds:any;
-    jwt.verify(token, 'secret', { expiresIn: '1h' }, function(err:any, decoded:any) {
+    jwt.verify(token, 'secret', { expiresIn: '24h' }, function(err:any, decoded:any) {
       if(err){ decodeds = 'err'; }
       else{ decodeds = 'no error'; }
     });
     const AllEcones: any[] = [];
     const EconeCollection = await db.collection('e-cones-handler').get();
     EconeCollection.forEach((econe:any)=>{
-      AllEcones.push(econe.data())
+      AllEcones.push(econe.data());
     });
     return res.status(200).json({
       status: 'success',
-      message: 'Get al econes successfully',
+      message: 'Get all econes successfully',
       ListEcones: AllEcones,
-      req: reqs,
+      token:token,
       decodeds:decodeds
     });
   }

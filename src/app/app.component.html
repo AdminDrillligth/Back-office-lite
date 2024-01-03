@@ -10,9 +10,7 @@
             <span class="span-btn">{{item.name}}</span>
           </button>
         </div>
-        <mat-toolbar style="    text-align: center;
-        display: block;
-        margin-top: 20%;
+        <mat-toolbar style="text-align: center; display: block;margin-top: 20%;
         padding-top: 8%;" color="primary">
           <div class="flex-stretch"></div>
           <mat-icon class="mr-8">brightness_5</mat-icon>
@@ -28,7 +26,7 @@
       </div>
       </mat-drawer>
 
-      <div class="sidenav-content">
+      <div *ngIf="seeNavigation" class="sidenav-content">
         <button type="button" mat-mini-fab color="accent" (click)="drawer.toggle();updateData()">
           <mat-icon>menu</mat-icon>
         </button>

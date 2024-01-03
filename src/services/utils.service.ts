@@ -15,6 +15,8 @@ export class UtilsService {
   private newAccount: BehaviorSubject<any>;
   private historyData : BehaviorSubject<any>;
   private historyDataDetail: BehaviorSubject<any>;
+  private seeNavigationMenu: BehaviorSubject<any>;
+
   constructor() {
     this.templateTheme = new BehaviorSubject(null);
     this.moderationMode = new BehaviorSubject(null);
@@ -26,6 +28,7 @@ export class UtilsService {
     this.newAccount = new BehaviorSubject(null);
     this.historyData = new BehaviorSubject(null);
     this.historyDataDetail =  new BehaviorSubject(null);
+    this.seeNavigationMenu =  new BehaviorSubject(false);
   }
 
   get _templateOptions() {
@@ -35,6 +38,15 @@ export class UtilsService {
   changeThemeTemplate(options: any) {
     console.log(options)
     this.templateTheme.next(options);
+  }
+  
+  get _seeNavigation() {
+    return this.seeNavigationMenu.asObservable();
+  }
+
+  howToSeeNavigation(seeNav: any) {
+    console.log(seeNav)
+    this.seeNavigationMenu.next(seeNav);
   }
 
 

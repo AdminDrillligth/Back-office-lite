@@ -22,8 +22,9 @@ export class AppComponent {
   title = 'drilllight';
   profile:any=[];
   showFiller = true;
+  seeNavigation = false;
   toggleControl = new FormControl(false);
-  // Start of SideBArItems ! 
+  // Start of SideBArItems !
   sideBarItems:any[]= [
     {
       id: 1,
@@ -87,7 +88,7 @@ export class AppComponent {
     public utilsService: UtilsService,
     private router:Router
   ){
-    
+
   }
 
   ngOnInit(): void {
@@ -109,6 +110,10 @@ export class AppComponent {
           //   }
           // }
         });
+        this.utilsService._seeNavigation.subscribe((howToSeeNavigation:any) =>{
+          console.log('the nav is ',howToSeeNavigation)
+          this.seeNavigation = howToSeeNavigation;
+        })
         this.updateData();
   }
 
@@ -175,7 +180,7 @@ export class AppComponent {
 
 //   }
 
- 
+
 //   accordTheRightsOfUsers(){
 
 //   }
