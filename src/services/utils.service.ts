@@ -16,7 +16,7 @@ export class UtilsService {
   private historyData : BehaviorSubject<any>;
   private historyDataDetail: BehaviorSubject<any>;
   private seeNavigationMenu: BehaviorSubject<any>;
-
+  private getThedataOfAccount: BehaviorSubject<any>;
   constructor() {
     this.templateTheme = new BehaviorSubject(null);
     this.moderationMode = new BehaviorSubject(null);
@@ -29,6 +29,7 @@ export class UtilsService {
     this.historyData = new BehaviorSubject(null);
     this.historyDataDetail =  new BehaviorSubject(null);
     this.seeNavigationMenu =  new BehaviorSubject(false);
+    this.getThedataOfAccount = new BehaviorSubject(null);
   }
 
   get _templateOptions() {
@@ -130,6 +131,16 @@ export class UtilsService {
   sendNewHistoryDetail(historyDetail:any){
     console.log('HISTORY DATA Detail TRUE ?? : ! ',historyDetail)
     this.historyDataDetail.next(historyDetail);
+  }
+
+
+  get _dataOfAccountDetails(){
+    return this.getThedataOfAccount.asObservable();
+  }
+
+  newAccountDetails(getThedata:any){
+    console.log(' Detail TRUE ?? : ! ',getThedata)
+    this.getThedataOfAccount.next(getThedata);
   }
 
 }

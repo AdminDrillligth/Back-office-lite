@@ -32,7 +32,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarRef } from '@angular/material/snack-bar';
 import { GocardlessService } from '../../services/gocardless.service';
 import { StripeServices } from '../../services/stripe.service';
-import {MatAccordion} from '@angular/material/expansion';
+import { MatAccordion } from '@angular/material/expansion';
 
 
 type ListType = { title: string; val: number }[];
@@ -304,7 +304,7 @@ export class AdministrationComponent implements OnInit{
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     // console.log('ACCOUNT OF USER :! : ',this.AccountOfUser)
-    if(this.AccountOfUser.asAdmin == true){
+    if(this.AccountOfUser.role === 'admin'){
       // this.getAdminCustomerUsers();
       console.log('ICI ADMIN :: ',this.AccountOfUser)
       let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
@@ -904,6 +904,7 @@ export class DialogCreateCustomer implements OnInit{
   address = new FormControl('', [ Validators.required ]);
   zip = new FormControl('', [ Validators.required ]);
   city = new FormControl('', [ Validators.required ]);
+  region = new FormControl('', [ Validators.required ]);
   comment= new FormControl('');
   selectedFile!: File;
   birthdate:any='';
@@ -958,21 +959,34 @@ export class DialogCreateCustomer implements OnInit{
     this.rightsUser = this.selectedRights;
     this.roleUser =  this.selectedRole;
     let data = {
-      avatarImages: this.eventImageFile,
+      email: this.email.value,
+      passwordHash:"",
       firstName: this.firstName.value,
       familyName: this.familyName.value,
-      email: this.email.value,
-      phone:this.phone.value,
-      address:this.address.value,
-      zip:this.zip.value,
-      city:this.city.value,
-      comment:this.comment.value,
-      rights: this.rightsUser, 
-      birthdate:this.birthdate,
-      simpleBirthdate: this.simpleBirthdate, 
-      role:this.roleUser, 
-      licences:this.licences.value,
-      asAdmin:false
+      fullName: this.firstName.value + ' ' +  this.familyName.value,
+      avatarURL: "",
+      role: "customer",
+      personalInfo: {
+          birthdate: this.birthdate,
+          simpleBirthdate: this.simpleBirthdate,
+          address1: this.address.value,
+          address2: "",
+          zip: this.zip.value,
+          city: this.city.value,
+          region: this.region.value,
+          phone: this.phone.value,
+          comment: this.comment.value
+      },
+      privileges: {
+          rights: this.rightsUser
+      },
+      trainees: [],
+      staff: [],
+      econes: [],
+      trainings: [],
+      videos: [],
+      licensed: this.licences.value,
+      warning: false
     }
     if(this.update === false){
       this.userHandlersServiceCustomer.addAccountCustomer(data);

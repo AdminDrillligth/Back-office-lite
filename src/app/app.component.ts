@@ -1,6 +1,7 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, OnInit, Output, HostBinding} from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { LocationStrategy } from '@angular/common';
 import { Router } from '@angular/router';
 import { UtilsService } from '../services/utils.service';
 import { UserHandlersServiceAdmin } from '../services/user-handlers-admin.service';
@@ -22,7 +23,7 @@ export class AppComponent {
   title = 'drilllight';
   profile:any=[];
   showFiller = true;
-  seeNavigation = false;
+  seeNavigation = true;
   toggleControl = new FormControl(false);
   // Start of SideBArItems !
   sideBarItems:any[]= [
@@ -82,6 +83,7 @@ export class AppComponent {
   seeAsAccount:any;
   // 0 FULL, 1 AUTORITE, 2 UNDER AUTORITE, 3 USER
   constructor(
+    private url:LocationStrategy,
     // private overlay: OverlayContainer,
     private afAuth:AngularFireAuth,
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
@@ -111,9 +113,16 @@ export class AppComponent {
           // }
         });
         this.utilsService._seeNavigation.subscribe((howToSeeNavigation:any) =>{
-          console.log('the nav is ',howToSeeNavigation)
-          this.seeNavigation = howToSeeNavigation;
+          // console.log('the nav is ',howToSeeNavigation)
+          // this.seeNavigation = howToSeeNavigation;
         })
+
+        if (this.router.url.includes('/login') || this.router.url === '/'){  
+          this.seeNavigation = false;
+        }else{
+          this.seeNavigation = true;
+          console.log(this.router.url)
+        }
         this.updateData();
   }
 
@@ -134,6 +143,14 @@ export class AppComponent {
   }
 
   updateData(){
+    
+    if (this.router.url.includes('/login') || this.url.path() === '/'){  
+      console.log(this.router, this.url.path())
+      this.seeNavigation = false;
+    }else{
+      this.seeNavigation = true;
+      console.log(this.router.url,this.url.path())
+    }
         this.AccountOfUser = '';
         this.user = JSON.parse(localStorage.getItem('user') || '{}');
         console.log(this.user)

@@ -85,11 +85,11 @@ export class LoginComponent implements OnInit{
               localStorage.setItem('account', JSON.stringify(this.dataOfUser.user));
               let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
               console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
-              if(AccountOfUser.asAdmin === true){
+              if(AccountOfUser.role === 'admin'){
                 // IF ADMIN == TRUE
                 console.log('is an admin')
-                const headersGet = { 'content-type': 'application/json','token':token}
-                this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
+                const headersGet = { 'token':token}
+                this.http.get(this.baseURL+'getAccountsList' ,{'headers':{'token':token}}).subscribe((response:any) => {
                     console.log('We get all users : ', response, token)
                     // if(response.decoded !== 'err'){
                     localStorage.setItem('account-datas', JSON.stringify(response.allUsers));

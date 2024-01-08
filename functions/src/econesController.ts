@@ -32,7 +32,7 @@ var isoDateString = new Date().toISOString();
 
 
 // addEcone
-const addEcone = async (req: any, res: Response) => {
+const createEcone = async (req: any, res: Response) => {
 
   let newUuid = uuidv4();
   let reqs = req;
@@ -83,7 +83,7 @@ const addEcone = async (req: any, res: Response) => {
 }
 
 // getEcones
-const getEcones = async (req: any, res: Response) => {
+const getEconeDetails = async (req: any, res: Response) => {
   let reqs = req;
   let headers = reqs.headers;
   let token = headers.token;
@@ -135,4 +135,4 @@ const deleteEcone = async (req: any, res: Response) => {
 }
 
 
-export { addEcone, getEcones, updateEcone, deleteEcone }
+export { createEcone, getEconeDetails, updateEcone, deleteEcone }

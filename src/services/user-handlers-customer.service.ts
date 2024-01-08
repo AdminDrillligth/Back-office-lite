@@ -42,39 +42,88 @@ export class UserHandlersServiceCustomer {
   }
 
   getAccounts(){
+    console.log('we get all accounts : ! ! ')
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
-      // console.log('We get all users : ', response, token);
-      if(response.decoded !== 'err'){
+    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{'token':token}}).subscribe((response:any) => {
+      console.log('We get all users : ', response, token);
+      // if(response.decoded !== 'err'){
 
-        localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
-        let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-        // console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-        this.utilsService.sendRequestGetnewAccount(true);
-      }else{
-        console.log('veuillez vous reconnecter ! ')
-      }
+      //   localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
+      //   let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+      //   // console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+      //   this.utilsService.sendRequestGetnewAccount(true);
+      // }else{
+      //   console.log('veuillez vous reconnecter ! ')
+      // }
     })
   }
 
-  addAccountCustomer(data:any){
-    const body = JSON.stringify({data:data});
-    this.http.post(this.baseURL+'user' , body,{'headers':this.headers})
+
+  getAccountDetails(email:string){
+    console.log(email)
     let token = localStorage.getItem('token') || '{}';
-    this.http.post(this.baseURL+'user' , body).subscribe((response:any) => {
-        console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-        this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
-          console.log('We get all users : ', response, token);
-          if(response.decoded !== 'err'){
-            localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
-            let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-            console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-            this.utilsService.sendRequestGetnewAccount(true);
-          }else{
-            console.log('veuillez vous reconnecter ! ')
-          }
-        })
+    let header = {'username':email, 'token':token }
+    this.http.get(this.baseURL+'getAccountDetails', {'headers':header} ).subscribe((response:any) => {
+      console.log('LA REP : ! ',response)
+
+      this.utilsService.newAccountDetails(response);
+
+      // console.log('We get all users : ', response, token);
+      // if(response.decoded !== 'err'){
+
+      //   localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
+      //   let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+      //   // console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+      //   this.utilsService.sendRequestGetnewAccount(true);
+      // }else{
+      //   console.log('veuillez vous reconnecter ! ')
+      // }
     })
+  }
+
+  setPasswordHash(email:any, passwordHash:any){
+    console.log('EMAIL PASSWORD: ! ', email, passwordHash)
+    let headers = {'username':email , 'passwordhash':passwordHash}
+    this.http.get(this.baseURL+'passwordHash', {'headers':headers} ).subscribe((response:any) => {
+      console.log('LA REP : ! ',response)
+      this.getTokenSession(headers);
+    })
+  }
+
+  getTokenSession(headers:any){
+    let headersGet = {'expiration':'24h','username':headers.username , 'passwordhash':headers.passwordhash}
+    this.http.get(this.baseURL+'getToken', {'headers':headersGet} ).subscribe((response:any) => {
+      console.log('LA REP AFTER TOKEN : ! ',response)
+      localStorage.setItem('token', response.token);
+    })
+  }
+
+
+  addAccountCustomer(data:any){
+    const body = {data:data};
+    console.log('createAccount : ! ', body)
+
+    let token = localStorage.getItem('token') || '{}';
+    return new Promise<any>((resolve, reject) => {
+      this.http.post(this.baseURL+'createAccount' , body).subscribe((response:any) => {
+        console.log('createAccount : ! ', response)
+      // this.http.post(this.baseURL+'user' , body).subscribe((response:any) => {
+      //     console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
+      //     this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
+      //       console.log('We get all users : ', response, token);
+      //       if(response.decoded !== 'err'){
+      //         localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
+      //         let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+      //         console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
+      //         this.utilsService.sendRequestGetnewAccount(true);
+      //       }else{
+      //         console.log('veuillez vous reconnecter ! ')
+      //       }
+      //     })
+
+      })
+    })
+   
   }
 
   updateModarations(){
