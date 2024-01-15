@@ -96,13 +96,17 @@ const validateToken = async  (req: any, res: any) => {
     jwt.verify(token, 'secret', { expiresIn: '7d' },  function(err:any, decoded:any) {
       if(err){
         return res.status(200).json({
-          status:'Votre token a expiré',
-          token:token,
+          response: {
+            result:'expiredTokenError',
+            message:''
+          },
         });
       }else{
         return res.status(200).json({
-          status: 'success',
-          message: 'token valide',
+          response: {
+            result:'success',
+            message:''
+          },
           token:token,
         });
       }

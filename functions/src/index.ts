@@ -13,6 +13,9 @@ import { connectToAccount } from './loggerController';
 import { createExercise, getExerciseDetails, getExercisesList, updateExercise, deleteExercise } from './exercisesController';
 import { createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
+import { createResult } from './resultsController';
+
+
 const fileMiddleware = require('express-multipart-file-parser')
 
 // const multer = require('multer');
@@ -104,6 +107,10 @@ app.post('/createEcone', createEcone)
 app.get('/getEconeDetails', getEconeDetails)
 app.put('/updateEcone', updateEcone)
 app.delete('/deleteEcone', deleteEcone)
+
+//
+app.post('/createResult', createResult)
+
 
 //
 app.post('/login', connectToAccount)

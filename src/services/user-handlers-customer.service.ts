@@ -24,34 +24,32 @@ export class UserHandlersServiceCustomer {
     private datePipe: DatePipe,
     private db: AngularFirestore
     ) {
-    this.user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.user = this.user.email
+    this.user = JSON.parse(localStorage.getItem('account') || '{}');
+    this.user = this.user.id
   }
 
 
   getUpdateallUsers(){
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'user').subscribe((rep:any) =>{
-      console.log('LA REP DU ALL USERS : ! ',rep)
-      let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      this.utilsService.sendRequestGetnewAccount(true);
+
+    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
+      if(response.response.result === "success"){
+        localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
+        console.log('LIST DES USERS : ! ', response.accounts)
+
+      }
     })
   }
 
-  getAccounts(){
+  async getAccounts(){
     console.log('we get all accounts : ! ! ')
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{'token':token}}).subscribe((response:any) => {
-      console.log('We get all users : ', response, token);
-      // if(response.decoded !== 'err'){
+    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
+      if(response.response.result === "success"){
+        localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
+        console.log('LIST DES USERS : ! ', response.accounts)
 
-      //   localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
-      //   let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      //   // console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-      //   this.utilsService.sendRequestGetnewAccount(true);
-      // }else{
-      //   console.log('veuillez vous reconnecter ! ')
-      // }
+      }
     })
   }
 
@@ -68,6 +66,7 @@ export class UserHandlersServiceCustomer {
     
   //   // this.utilsService.newAccountDetails(response);
   // })
+
   setPasswordHash(email:any, passwordHash:any){
     console.log('EMAIL PASSWORD: ! ', email, passwordHash)
     let headers = {'username':email , 'passwordhash':passwordHash}
@@ -86,16 +85,13 @@ export class UserHandlersServiceCustomer {
   }
 
 
-  addAccountCustomer(data:any){
+  async addAccount(data:any){
     const body = {data:data};
     console.log('createAccount : ! ', body)
 
     let token = localStorage.getItem('token') || '{}';
-    return new Promise<any>((resolve, reject) => {
-      this.http.post(this.baseURL+'createAccount' , body).subscribe((response:any) => {
-        console.log('createAccount : ! ', response)
-      })
-    })
+    let resp =  await this.http.post(this.baseURL+'createAccount' , body)
+    return resp ;
    
   }
 
@@ -103,14 +99,13 @@ export class UserHandlersServiceCustomer {
 
   }
 
-  updateAccountCustomer(data:any){
+  async updateAccount(data:any){
     console.log('DATA UPDATE CUSTOMER :: ',data)
     let token = localStorage.getItem('token') || '{}';
-    const body = JSON.stringify({data:data });
+    const body = {data:data };
     console.log('On va envoyer ce body : ',body)
-    // this.http.put(this.baseURL+'updateAccount' , body,{'headers':{token:token}}).subscribe((response:any) => {
-    //   console.log('LA REP DU SERVEUR UPDATE : ! ',response)
-    // })
+    let resp = await this.http.put(this.baseURL+'updateAccount' , body,{'headers':{token:token}});
+    return resp ;
   }
 
   // addAccountTrained(idAccount:any, data:any){

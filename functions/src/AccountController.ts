@@ -350,16 +350,16 @@ const updateAccount = async (req:any, res: any) => {
   let headers = req.headers;
   let token = headers.token;
   let userDetail :any = '';
-
    try {
 
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
       if(err) {
 
         return res.status(200).json({
-          status:'Votre token a expiré',
-          token:token,
-          decoded:decodeds
+          response: {
+            result:'expiredTokenError',
+            message:''
+          },
         });
       }else {
           let userhandlerProfil = await db.collection('account-handler').where('email', '==', dataBodyOfRequest.email).get();
@@ -386,7 +386,7 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.personalInfo.comment !== undefined){ userDetail.personalInfo.comment = dataBodyOfRequest.personalInfo.comment }
             if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
 
-            if(dataBodyOfRequest.users !== undefined){ userDetail.trainees = dataBodyOfRequest.users }
+            if(dataBodyOfRequest.users !== undefined){ userDetail.users = dataBodyOfRequest.users }
             if(dataBodyOfRequest.staff !== undefined){ userDetail.staff = dataBodyOfRequest.staff }
             if(dataBodyOfRequest.econes !== undefined){ userDetail.econes = dataBodyOfRequest.econes }
             if(dataBodyOfRequest.trainings !== undefined){ userDetail.trainings = dataBodyOfRequest.trainings }
@@ -398,18 +398,20 @@ const updateAccount = async (req:any, res: any) => {
             const account_handler = db.collection('account-handler'); 
             account_handler.doc(idOfUser).update(userDetail).then((ref:any) => {
                 return res.status(200).json({
-                  status: 'success',
-                  message: 'Update du compte validé',
-                  dataBodyOfRequest:dataBodyOfRequest,
-                  userDetail:userDetail,
-                  idOfUser:idOfUser
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  userDetail:userDetail
                 });
               });
           }else{
             return res.status(200).json({
-              status: 'error',
+              response: {
+                result:'error',
+                message:''
+              },
               message: 'pas d\'utilisateur correspondant',
-              userDetail:userDetail,
             });
 
           }

@@ -943,6 +943,7 @@ export class DialogCreateCustomer implements OnInit{
       fullName: this.firstName.value + ' ' +  this.familyName.value,
       avatarURL: "",
       role: "owner",
+      owner:'',
       personalInfo: {
           birthdate: this.birthdate,
           simpleBirthdate: this.simpleBirthdate,
@@ -966,7 +967,11 @@ export class DialogCreateCustomer implements OnInit{
       warning: false
     }
     if(this.update === false){
-      this.userHandlersServiceCustomer.addAccountCustomer(data);
+      this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp', response)
+        })
+      });
     }else{
       console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
       this.fireStoreServiceImages.addImagesOfCustomers(this.data.id, this.eventImageFile);
@@ -1160,7 +1165,8 @@ export class DialogCreateUser implements OnInit{
   Objectifs: string[] = ['Préparation physique', 'Rééducation', 'Améliorations cognitives', 'Déplacements', 'Dextérité', 'Prise d\'informations'];
   Levels: string[] = ['Débutant','Amateur','Professionel'];
   name = new FormControl('', [ Validators.required ]);
-  firstname = new FormControl('', [ Validators.required ]);
+  firstName = new FormControl('', [ Validators.required ]);
+  familyName = new FormControl('', [ Validators.required ]);
   email = new FormControl('', [ Validators.required ]);
   phone = new FormControl('', [ Validators.required ]);
   address = new FormControl('', [ Validators.required ]);
@@ -1168,8 +1174,11 @@ export class DialogCreateUser implements OnInit{
   city = new FormControl('', [ Validators.required ]);
   size = new FormControl('', [ Validators.required ]);
   weight = new FormControl('', [ Validators.required ]);
+
   comment= new FormControl('');
+
   selectedFile!: File;
+
   birthdate:any='';
   simplebirthdate:any='';
   audience:string='public';
@@ -1184,10 +1193,12 @@ export class DialogCreateUser implements OnInit{
   uploadedImages:any;
   maDate = new Date();
   user:any;
+
   Manualitys:any[] = ['Droitier','Gaucher'];
   Genders:any[] = ['Homme','Femme', 'Non Précisé'];
   selectedManuality :string = '';
   selectedGender:string = '';
+
   constructor(
     private utilsService:UtilsService,
     private afAuth: AngularFireAuth,
@@ -1202,52 +1213,42 @@ export class DialogCreateUser implements OnInit{
   ) {}
 
   ngOnInit(): void {
-  this.user = JSON.parse(localStorage.getItem('user') || '{}');
+  // this.user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  console.log('LES DATAS MODALS USER ::',this.data,  this.user)
+  // console.log('LES DATAS MODALS USER ::',this.data,  this.user)
   //  console.log('LES DATAS MODALS USER ::', this.data.data.traineds)
   if(this.data !== null){
     if(this.data.trained !== undefined ){
-        this.update = true;
-        this.name.setValue(this.data.trained.name);
-        this.firstname.setValue(this.data.trained.firstname);
-        this.email.setValue(this.data.trained.email);
-        this.phone.setValue(this.data.trained.phone);
-        this.address.setValue(this.data.trained.address);
-        this.zip.setValue(this.data.trained.zip);
-        this.city.setValue(this.data.trained.city);
-        this.comment.setValue(this.data.trained.comment);
-        this.size.setValue(this.data.trained.size);
-        this.weight.setValue(this.data.trained.weight);
-        this.selectedObjectifs =  this.data.trained.objectif;
-        this.selectedDiscipline =  this.data.trained.discipline;
-        this.selectedLevel =  this.data.trained.level;
-        this.selectedManuality =  this.data.trained.manuality;
-        this.selectedGender =  this.data.trained.gender;
+        // this.update = true;
+        // this.name.setValue(this.data.trained.name);
+        // this.firstname.setValue(this.data.trained.firstname);
+        // this.email.setValue(this.data.trained.email);
+        // this.phone.setValue(this.data.trained.phone);
+        // this.address.setValue(this.data.trained.address);
+        // this.zip.setValue(this.data.trained.zip);
+        // this.city.setValue(this.data.trained.city);
+        // this.comment.setValue(this.data.trained.comment);
+        // this.size.setValue(this.data.trained.size);
+        // this.weight.setValue(this.data.trained.weight);
+        // this.selectedObjectifs =  this.data.trained.objectif;
+        // this.selectedDiscipline =  this.data.trained.discipline;
+        // this.selectedLevel =  this.data.trained.level;
+        // this.selectedManuality =  this.data.trained.manuality;
+        // this.selectedGender =  this.data.trained.gender;
 
       }
     }
   }
 
-  selectChangeLevel(event:any){
-    this.selectedLevel = event.value;
-  }
+  selectChangeLevel(event:any){ this.selectedLevel = event.value; }
 
-  selectChangeDiscipline(event:any){
-    this.selectedDiscipline = event.value;
-  }
+  selectChangeDiscipline(event:any){ this.selectedDiscipline = event.value;}
 
-  selectChangeObjectifs(event:any){
-    this.selectedObjectifs = event.value;
-  }
+  selectChangeObjectifs(event:any){ this.selectedObjectifs = event.value;}
 
-  selectChangeManuality(event:any){
-    this.selectedManuality = event.value;
-  }
+  selectChangeManuality(event:any){ this.selectedManuality = event.value;}
 
-  selectChangeGender(event:any){
-    this.selectedGender = event.value;
-  }
+  selectChangeGender(event:any){ this.selectedGender = event.value;}
 
   onFileChanged(event:any) {
     this.eventImageFile = [];
@@ -1282,74 +1283,112 @@ export class DialogCreateUser implements OnInit{
   }
 
   closeModal(){
-      console.log(this.name.value,
-      this.firstname.value,
-      this.email.value,
-      this.phone.value,
-      this.address.value,
-      this.zip.value,
-      this.city.value,
-      this.size.value,
-      this.weight.value,
-      this.comment.value,
-      this.birthdate,
-      this.simplebirthdate,
-      this.selectedDiscipline,
-      this.selectedObjectifs,
-      this.selectedLevel,
-      this.selectedManuality,
-      this.selectedGender
-
+      console.log(
+        this.name.value,
+        this.firstName.value,
+        this.email.value,
+        this.phone.value,
+        this.address.value,
+        this.zip.value,
+        this.city.value,
+        this.size.value,
+        this.weight.value,
+        this.comment.value,
+        this.birthdate,
+        this.simplebirthdate,
+        this.selectedDiscipline,
+        this.selectedObjectifs,
+        this.selectedLevel,
+        this.selectedManuality,
+        this.selectedGender
       )
 
     if(this.update === false){
           console.log('on crée')
           let uuid = '';
           uuid = uid(32);
-          let dataForm = {traineds: {uuid:uuid, avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,discipline:  this.selectedDiscipline,
-            objectif:this.selectedObjectifs,size:this.size.value,weight:this.weight.value, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate,level:this.selectedLevel,
-            gender:this.selectedGender,manuality:this.selectedManuality,
-            date: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-            dateIso: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
-          } }
-          // this.userHandlersServiceCustomer.addAccountTrained(this.data, dataForm)
-
+          // this.rightsUser = this.selectedRights;
+          // this.roleUser =  this.selectedRole;
+          let data = {
+            email: this.email.value,
+            passwordHash:"",
+            firstName: this.firstName.value,
+            familyName: this.familyName.value,
+            fullName: this.firstName.value + ' ' +  this.familyName.value,
+            avatarURL: "",
+            role: "user",
+            owner:this.data.id,
+            personalInfo: {
+                birthdate: this.birthdate,
+                // simpleBirthdate: this.simpleBirthdate,
+                address1: this.address.value,
+                address2: "",
+                zip: this.zip.value,
+                city: this.city.value,
+                // region: this.region.value,
+                phone: this.phone.value,
+                comment: this.comment.value
+            },
+            privileges: {
+                rights: this.rightsUser
+            },
+            users: [],
+            staff: [],
+            econes: [],
+            trainings: [],
+            videos: [],
+            // licensed: this.licences.value,
+            warning: false
+          }
+          console.log('REAL CREATE : ',this.data, data)
+          this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
+            resp.subscribe((response:any)=>{
+              console.log('la resp du add user : ! ', response.userObject.id)
+              this.data.users.push(response.userObject.id)
+              this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  console.log('la resp du update user owner: ! ', response)
+                  
+                })
+              });
+            })
+          });
       }else{
       console.log('RREAL UPDATE : ',this.data)
-      let dataForm = {traineds: {uuid:this.data.trained.uuid, avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,discipline:  this.selectedDiscipline,
-        objectif:this.selectedObjectifs,size:this.size.value,weight:this.weight.value, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate,level:this.selectedLevel,
-        gender:this.selectedGender,manuality:this.selectedManuality,
-        date:this.data.trained.date,
-        update: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-      }}
-        console.log('SELECTED RIGHTS : ',dataForm)
+      // let dataForm = {traineds: {uuid:this.data.trained.uuid, avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,discipline:  this.selectedDiscipline,
+      //   objectif:this.selectedObjectifs,size:this.size.value,weight:this.weight.value, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate,level:this.selectedLevel,
+      //   gender:this.selectedGender,manuality:this.selectedManuality,
+      //   date:this.data.trained.date,
+      //   update: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
+      // }}
+        // console.log('SELECTED RIGHTS : ',dataForm)
         // this.fireStoreServiceImages.addImagesOfTrained(this.data.id, this.eventImageFile);
         // this.userHandlersServiceCustomer.updateAccountTrained(this.data, dataForm);
     }
     setTimeout(() => {
       this.dialogRef.close();
-      console.log('on email user aout', this.update, this.data.email)
-      let passWord = 'Drilllight2023';
+      // console.log('on email user aout', this.update, this.data.email)
+      // let passWord = 'Drilllight2023';
       if(this.email.value !== null ){
         if(this.update === false){
-          this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
-            // window.alert('You have been successfully registered!');
-            console.log('You have been successfully registered!',result.user);
-            this.storageServiceMail.addMailTrained(this.email.value, this.name.value)
-          })
-          .catch((error) => {
-            window.alert(error.message);
-          });
-          this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
-            console.log('WE GONE SAVE THIS DATA : ! ',dataAccount.docs[0].data())
-            //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
-            this.utilsService.sendNewDataOfCustomer({data:true})
-          });
+          // this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
+          //   // window.alert('You have been successfully registered!');
+          //   console.log('You have been successfully registered!',result.user);
+          //   this.storageServiceMail.addMailTrained(this.email.value, this.name.value)
+          // })
+          // .catch((error) => {
+          //   window.alert(error.message);
+          // });
+          // this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
+          //   console.log('WE GONE SAVE THIS DATA : ! ',dataAccount.docs[0].data())
+          //   //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
+          //   this.utilsService.sendNewDataOfCustomer({data:true})
+          // });
         }else{
           // this.storageServiceMail.updateAccountTrained(this.email.value, this.name.value)
         }
       }
-      console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord);
+      // console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord);
     }, 700);
     }
 
@@ -1396,7 +1435,8 @@ export class DialogCreateStaff implements OnInit{
   Roles: string[] = ['Préparation physique', 'Rééducation', 'Améliorations cognitives', 'Déplacements', 'Dextérité', 'Prise d\'informations'];
   Levels: string[] = ['Débutant','Amateur','Professionel'];
   name = new FormControl('', [ Validators.required ]);
-  firstname = new FormControl('', [ Validators.required ]);
+  firstName = new FormControl('', [ Validators.required ]);
+  familyName = new FormControl('', [ Validators.required ]);
   email = new FormControl('', [ Validators.required ]);
   phone = new FormControl('', [ Validators.required ]);
   address = new FormControl('', [ Validators.required ]);
@@ -1437,52 +1477,46 @@ export class DialogCreateStaff implements OnInit{
   ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     console.log('LES DATAS MODALS STAFF ::',this.data);
-    if(this.data.trained !== undefined){
-        if(this.data.ProfilAccount.traineds !== undefined){
-          // this.selectedTraineds = this.data.trained.traineds;
-          this.traineds = this.data.ProfilAccount.traineds;
-          this.update = true;
-          // this.data.ProfilAccount.traineds.forEach((trained:any) => {
-          //   this.selectedTraineds.push(trained.name+ ' '+ trained.firstname )
-          // });
-        }
-        console.log("LES DATAS TRAINEDS :: ",this.selectedTraineds);
-        this.name.setValue(this.data.trained.name);
-        this.firstname.setValue(this.data.trained.firstname);
-        this.email.setValue(this.data.trained.email);
-        this.phone.setValue(this.data.trained.phone);
-        this.address.setValue(this.data.trained.address);
-        this.zip.setValue(this.data.trained.zip);
-        this.city.setValue(this.data.trained.city);
-        this.comment.setValue(this.data.trained.comment);
-        this.selectedRole =  this.data.trained.roles;
-        this.selectedLevel = this.data.trained.level;
-        this.selectedDiscipline =  this.data.trained.discipline;
-        console.log('DISCIPLINE : ',this.selectedDiscipline)
-    }else{
-      console.log('LES DATAS POUR LE CREATE DU STAFF ! ',this.data)
-      // if(this.data.data.traineds !== undefined || this.data.data.traineds.length >0){
-      //   this.traineds = this.data.data.traineds;
-      //   console.log('LES ENTRAINES :: !', this.traineds)
-      // }
-      if(this.data.traineds !== undefined || this.data.traineds.length >0){
-        this.traineds = this.data.traineds;
-        console.log('LES ENTRAINES :: !', this.traineds)
-      }
-    }
+    // if(this.data.trained !== undefined){
+    //     if(this.data.ProfilAccount.traineds !== undefined){
+    //       // this.selectedTraineds = this.data.trained.traineds;
+    //       this.traineds = this.data.ProfilAccount.traineds;
+    //       this.update = true;
+    //       // this.data.ProfilAccount.traineds.forEach((trained:any) => {
+    //       //   this.selectedTraineds.push(trained.name+ ' '+ trained.firstname )
+    //       // });
+    //     }
+    //     console.log("LES DATAS TRAINEDS :: ",this.selectedTraineds);
+    //     this.name.setValue(this.data.trained.name);
+    //     this.firstname.setValue(this.data.trained.firstname);
+    //     this.email.setValue(this.data.trained.email);
+    //     this.phone.setValue(this.data.trained.phone);
+    //     this.address.setValue(this.data.trained.address);
+    //     this.zip.setValue(this.data.trained.zip);
+    //     this.city.setValue(this.data.trained.city);
+    //     this.comment.setValue(this.data.trained.comment);
+    //     this.selectedRole =  this.data.trained.roles;
+    //     this.selectedLevel = this.data.trained.level;
+    //     this.selectedDiscipline =  this.data.trained.discipline;
+    //     console.log('DISCIPLINE : ',this.selectedDiscipline)
+    // }else{
+    //   console.log('LES DATAS POUR LE CREATE DU STAFF ! ',this.data)
+    //   // if(this.data.data.traineds !== undefined || this.data.data.traineds.length >0){
+    //   //   this.traineds = this.data.data.traineds;
+    //   //   console.log('LES ENTRAINES :: !', this.traineds)
+    //   // }
+    //   if(this.data.traineds !== undefined || this.data.traineds.length >0){
+    //     this.traineds = this.data.traineds;
+    //     console.log('LES ENTRAINES :: !', this.traineds)
+    //   }
+    // }
   }
 
-  selectChangeLevel(event:any){
-    this.selectedLevel = event.value;
-  }
+  selectChangeLevel(event:any){ this.selectedLevel = event.value;}
 
-  selectChangeDiscipline(event:any){
-    this.selectedDiscipline = event.value;
-  }
+  selectChangeDiscipline(event:any){ this.selectedDiscipline = event.value;}
 
-  selectChangeRole(event:any){
-    this.selectedRole = event.value;
-  }
+  selectChangeRole(event:any){ this.selectedRole = event.value;}
 
   chooseAvatar(avatar:string){
     console.log('Le avatar :',avatar)
@@ -1541,7 +1575,7 @@ export class DialogCreateStaff implements OnInit{
   closeModal(){
 
     console.log(this.name.value,
-      this.firstname.value,
+      this.firstName.value,
       this.email.value,
       this.phone.value,
       this.address.value,
@@ -1556,44 +1590,75 @@ export class DialogCreateStaff implements OnInit{
       this.selectedTraineds
       )
 
-
-
     if(this.update === false){
           console.log('on crée')
           let uuid = '';
           uuid = uid(32);
-          let dataForm = {staff: {uuid:uuid, avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,discipline:  this.selectedDiscipline,
-            level:this.selectedLevel,roles:this.selectedRole, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate,
-            traineds:this.selectedTraineds,
-            date: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-            dateIso: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
 
-          } }
-          console.log('STAFF : ! ',dataForm)
-          // this.userHandlersServiceCustomer.addAccountStaff(this.data, dataForm)
-
+          let data = {
+            email: this.email.value,
+            passwordHash:"",
+            firstName: this.firstName.value,
+            familyName: this.familyName.value,
+            fullName: this.firstName.value + ' ' +  this.familyName.value,
+            avatarURL: "",
+            role: "staff",
+            owner:this.data.id,
+            personalInfo: {
+                birthdate: this.birthdate,
+                // simpleBirthdate: this.simpleBirthdate,
+                address1: this.address.value,
+                address2: "",
+                zip: this.zip.value,
+                city: this.city.value,
+                // region: this.region.value,
+                phone: this.phone.value,
+                comment: this.comment.value
+            },
+            privileges: {
+                rights: this.rightsUser
+            },
+            users: [],
+            staff: [],
+            econes: [],
+            trainings: [],
+            videos: [],
+            // licensed: this.licences.value,
+            warning: false
+          }
+          console.log('STAFF : ! ',this.data, data)
+          this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
+            resp.subscribe((response:any)=>{
+              console.log('la resp du add user : ! ', response.userObject.id)
+              this.data.staff.push(response.userObject.id)
+              this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  console.log('la resp du update staff owner: ! ', response)
+                  
+                })
+              });
+            })
+          });
       }else{
       console.log('RREAL UPDATE : ',this.data)
-      let dataForm = {traineds: {uuid:this.data.trained.uuid, avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,discipline:  this.selectedDiscipline,
-        level:this.selectedLevel,roles:this.selectedRole, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate,
-        traineds:this.selectedTraineds,
-        date:this.data.trained.date,
-        update: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
-      }}
-        console.log('SELECTED RIGHTS : ',dataForm)
-        // this.fireStoreServiceImages.addImagesOfTrained(this.data.id, this.eventImageFile);
-        // this.userHandlersServiceCustomer.updateAccountStaff(this.data, dataForm);
+      // let dataForm = {traineds: {uuid:this.data.trained.uuid, avatarimages: this.eventImageFile, name: this.name.value,firstname: this.firstname.value,email: this.email.value,phone:this.phone.value,address:this.address.value,zip:this.zip.value,city:this.city.value,comment:this.comment.value,discipline:  this.selectedDiscipline,
+      //   level:this.selectedLevel,roles:this.selectedRole, birthdate:this.birthdate,simplebirthdate: this.simplebirthdate,
+      //   traineds:this.selectedTraineds,
+      //   date:this.data.trained.date,
+      //   update: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
+      // }}
+      
 
     }
     setTimeout(() => {
       this.dialogRef.close();
-      this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
-        console.log('WE GONE SAVE THIS DATA : ! ',dataAccount.docs[0].data())
-        //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
-        this.utilsService.sendNewDataOfCustomer({data:true})
-      });
-      console.log('on email user aout', this.update)
-      let passWord = 'Drilllight2023';
+      // this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
+      //   console.log('WE GONE SAVE THIS DATA : ! ',dataAccount.docs[0].data())
+      //   //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
+      //   this.utilsService.sendNewDataOfCustomer({data:true})
+      // });
+      // console.log('on email user aout', this.update)
+      // let passWord = 'Drilllight2023';
       if(this.email.value !== null ){
         if(this.update === false){
           // this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
@@ -1608,7 +1673,7 @@ export class DialogCreateStaff implements OnInit{
           // this.storageServiceMail.updateAccountTrained(this.email.value, this.name.value)
         }
       }
-      console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
+      // console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
 
     }, 700);
     }

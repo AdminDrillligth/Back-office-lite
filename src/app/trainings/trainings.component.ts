@@ -261,6 +261,7 @@ export class ContentUploadDialog implements OnInit{
         console.log('DATA DU JSON : ', this.dataJson )
         this.userDetailAccount.trainings.push({id:this.dataJson.header.id});
         console.log('On va update un private : ', this.userDetailAccount )
+        // update en base
       }
     }else{
 
