@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 import { DatePipe } from '@angular/common';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
-import { AngularFirestore,AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { AngularFirestore , AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })

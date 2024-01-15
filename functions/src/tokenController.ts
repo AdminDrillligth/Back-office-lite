@@ -2,7 +2,7 @@ var jwt = require("jsonwebtoken");
 const fs = require('firebase-admin');
 const db = fs.firestore();
 import { v4 as uuidv4 } from 'uuid';
-var btoa = require('btoa');
+// var btoa = require('btoa');
 
 // 
 
@@ -24,10 +24,7 @@ const getToken = async (req: any, res: any) => {
     let reqs = req;
     let headers = reqs.headers;
     let username = headers.username;
-    // let expiration = headers.expiration;
-    let password = headers.password
     let passwordhash = headers.passwordhash
-    const authorizationValue = 'Basic ' + btoa( username + ':' + password );
     try {
       let userhandlerProfil = await db.collection('account-handler').where('email', '==', username).get();
       // const entryToken = db.collection('token-handler')
@@ -45,26 +42,33 @@ const getToken = async (req: any, res: any) => {
                   id: userDetail.id,
                   date: isoDateString,
                   key:newUuid,
-                  authorizationValue: authorizationValue
+                  // authorizationValue: authorizationValue
                 },'secret',{ expiresIn:'2d'},
                 function(err:any, encoded:any){
                   if(err){
                     return res.status(200).json({
-                      status: 'error',
+                      response: {
+                        result:'invalidTokenError',
+                        message:''
+                      },
                     })
                   }else{
                     return res.status(200).json({
-                        status: 'success',
+                        response: {
+                          result:'success',
+                          message:''
+                        },
                         token:encoded,
-                        authorizationValue: authorizationValue
+                        id: userDetail.id,
+                        // authorizationValue: authorizationValue
                     })
                   }
                 })
               }else{
                 return res.status(200).json({
-                  status: 'success',
+                  status: 'invalidPasswordError',
                   message: 'Mot de passe incorrect',
-                  authorizationValue: authorizationValue
+                  // authorizationValue: authorizationValue
                   // userDetailpasswordHash: userDetail.passwordHash,
                   // passwordhash:passwordhash,
                   // headers:headers
@@ -87,31 +91,30 @@ const getToken = async (req: any, res: any) => {
 const validateToken = async  (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
-  let token = headers.token
-  try {
-    jwt.verify(token, 'secret', { expiresIn: '2d' },  function(err:any, decoded:any) {
-      if(err) {
+  let token = headers.token;
+  try{
+    jwt.verify(token, 'secret', { expiresIn: '7d' },  function(err:any, decoded:any) {
+      if(err){
         return res.status(200).json({
           status:'Votre token a expiré',
           token:token,
         });
-      }else {
+      }else{
         return res.status(200).json({
-          status: 'return',
+          status: 'success',
           message: 'token valide',
           token:token,
         });
       }
     })
-    }
-    catch(error:any) {
+  }
+  catch(error:any) {
       return res.status(500).json(error.message)
-    }
-  
+  }
 }
 
-const invalidateToken = async  (req: any, res: any) => {
 
+const invalidateToken = async  (req: any, res: any) => {
 
 }
 

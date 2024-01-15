@@ -1,0 +1,47 @@
+
+<div class="background-modal">
+  <h5 class="title-modal">Informations principales</h5>
+  <hr>
+  <div style="--bs-gutter-x: 0;margin-left: 30px;margin-top: 20px;" class="row">
+    <div class=" col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Nom</mat-label>
+        <input [readonly]="true" [formControl]="nameuser"  matInput required placeholder="Ex: Martin" >
+      </mat-form-field>
+    </div>
+    <div class="  col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Prénom</mat-label>
+        <input [readonly]="true"  [formControl]="firstnameuser"  matInput required placeholder="Ex: Morgan" >
+      </mat-form-field>
+    </div>
+    <div class=" col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Email</mat-label>
+        <input [readonly]="true"  [formControl]="emailuser" matInput required type="email" placeholder="Ex: exemple@gmail.com" >
+      </mat-form-field>
+    </div>
+    <div class=" col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label style="color:black">Commentaire</mat-label>
+        <input matInput  [formControl]="commenter" required placeholder="Ex: Informations sur la suppression de l'utilisateur" >
+      </mat-form-field>
+    </div>
+    <div class=" col-12 divdial" mat-dialog-content>
+      <mat-form-field>
+        <mat-label>Raison de la modération</mat-label>
+        <mat-select  [(ngModel)]="selectedModerateReasons" (selectionChange)="selectChange($event)" multiple>
+          <mat-option *ngFor="let moderate of moderatesReasons" [value]="moderate">{{moderate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    
+    </div>
+    <div class=" col-12 divdial" mat-dialog-content>
+      <mat-slide-toggle class="toggle-data" (change)="changeModeration()" [(ngModel)]="isChecked"><p style="color:white">Le client est modéré : {{isModerate}}</p></mat-slide-toggle>
+      </div>
+        <div class="bottom-btn">
+          <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Annuler</button>
+          <button mat-button (click)="moderateUser()"  class="btn-delete mg-btm-del" >Modérer le client !</button>
+        </div>
+      </div>
+  </div>

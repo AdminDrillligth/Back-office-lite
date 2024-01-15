@@ -19,6 +19,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from '../../services/utils.service';
+import { Buffer } from 'buffer';
+
 
 @Component({
   selector: 'app-login',
@@ -60,103 +62,43 @@ export class LoginComponent implements OnInit{
   }
 
   doLogin(){
-    // console.log('value', this.emailFormControl.value, this.passwordFormControl.value)
     if (this.emailFormControl.valid && this.passwordFormControl.valid) {
-    // this.myInterval = setInterval(this.spinTimer, 1000);
     if(this.emailFormControl.value !== null && this.passwordFormControl.value !== null){
-      this.afAuth.signInWithEmailAndPassword(this.emailFormControl.value, this.passwordFormControl.value).then((loginResponse: any) => {
-        localStorage.setItem('user', JSON.stringify({email:this.emailFormControl.value, timeStamp: '', timerMilli:1200000}));
-        console.log('LOGIN  ::: ',loginResponse);
-        // const token = await afAuth.currentUser.getIdToken();
-        this.afAuth.currentUser.then((current:any) => {
-          console.log('TOKEN DE CONNECTION DU USER : ', current.auth.currentUser.accessToken);
-          const headers = { 'content-type': 'application/json'}  
-          const body = JSON.stringify({username:this.emailFormControl.value,password:this.passwordFormControl.value});
+        const authorizationValue = 'Basic ' + Buffer.from( this.emailFormControl.value + ':' + this.passwordFormControl.value ).toString('base64');
+        const headers = { 'content-type': 'application/json'}  
+        const body = JSON.stringify({username:this.emailFormControl.value,password:this.passwordFormControl.value});
           console.log(body)
-          this.http.post(this.baseURL+'login' , body,{'headers':headers}).subscribe((response:any) => {
-            this.dataOfUser = response;
-            let token = this.dataOfUser.token;
-            localStorage.setItem('token', token);
-            let tokenlocal = localStorage.getItem('token') || '{}';
-            console.log('LE TOKEN LOCAL : ',tokenlocal)
-            if(this.dataOfUser.status === "success"){
-              this.router.navigate(['dashboard']);
-              this.utilsService.howToSeeNavigation(true);
-              localStorage.setItem('account', JSON.stringify(this.dataOfUser.user));
-              let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-              console.log('ACCOUNT OF USER LOGIN :! : ', AccountOfUser);
-              if(AccountOfUser.role === 'admin'){
-                // IF ADMIN == TRUE
-                console.log('is an admin')
-                const headersGet = { 'token':token}
-                this.http.get(this.baseURL+'getAccountsList' ,{'headers':{'token':token}}).subscribe((response:any) => {
-                    console.log('We get all users : ', response, token)
-                    // if(response.decoded !== 'err'){
-                    localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
-                    let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-                    console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-                  // }else{
-
-                  // }
-                })
-              }else{
-                // IF ADMIN === FALSE
-              }
+          this.http.get(this.baseURL+'getToken' ,{'headers':{passwordhash:authorizationValue, username:this.emailFormControl.value}}).subscribe((response:any) => {
+            console.log('LA REP DU GET TOKEN  : ',response)
+            if(response.response.result === "success"){
+              localStorage.setItem('token', response.token);
+              localStorage.setItem('userId', response.id);
+              let tokenlocal = localStorage.getItem('token') || '{}';
+              let userId = localStorage.getItem('userId') || '{}';
+              console.log(tokenlocal,userId );
+              this.http.get(this.baseURL+'getAccountDetails' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
+                console.log('resp get details of user: ', response.account)
+                if(response.response.result === "success"){
+                  localStorage.setItem('account', JSON.stringify(response.account));
+                  this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
+                    if(response.response.result === "success"){
+                      localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
+                      console.log('LIST DES USERS : ! ', response.accounts)
+                      this.router.navigate(['dashboard']);
+                    }
+                  })
+                }
+              })
             }else{
               
               // NO ACCOUNT 
               // IF NO ACCOUNT
             }
           })
-        })
-        // console.log('TOKEN DE CONNECTION : ! ',token, currentUser)
-        this.userHandlersServiceAdmin.updateAccountAdminWithEmailLastUpdate(this.emailFormControl.value, this.ipAddress).then((e:any) =>{
-          // console.log("WARNING ???",e)
-        
-          // if(e == true) {
-          //   console.log("WARNING ???",e)
-          //   this.warning =  true
-          // }else{
-          //   if(e === 'modéré'){
-          //     alert('Votre compte est en cours de modération');
-          //     this.router.navigate(['login']);
-          //   }else{
-          //    if(e !== true){
-          //     console.log("WARNING ???",e)
-          //     this.router.navigate(['dashboard']);
-          //    }
-          //   }
-          // }
-        })
-      }).catch((error) => {
-        // Error Handling
-        var errorCode = error.code;
-        if(errorCode === 'auth/wrong-password'){
-           this.badpassword = true;
-        }
-        if(errorCode === 'auth/user-not-found'){
-          this.badpassuser = true;
-          console.log('LE USER',this.badpassuser)
-        }
-        setTimeout(() => {
-          this.badpassuser = false;
-          this.badpassword = false;
-        }, 2000);
-      });
     }
   }
     // 
   }
-
-  spinTimer() {
-    // this.value = 20;
-    console.log(this.value)
-  }
-
-  myStopFunction() {
-    clearInterval(this.myInterval);
-  }
-
 
   disconectedMode(){
     if(localStorage.getItem('user') !== null){

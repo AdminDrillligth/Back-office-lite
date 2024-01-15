@@ -31,10 +31,10 @@ export class DashboardComponent implements OnInit{
     this.utilsService._templateOptions.subscribe((theme:any) => {
      console.log('THEME !: ',theme)
     });
-    this.utilsService._seeCustumorProfilOptions.subscribe((account:any) => {
-      console.log('ACCOUNT !: ',account)
-      // Set local storage of user data !
-     });
+    // this.utilsService._seeCustumorProfilOptions.subscribe((account:any) => {
+    //   console.log('ACCOUNT !: ',account)
+    //   // Set local storage of user data !
+    //  });
     
     setTimeout(() => {
         let card = document.getElementById('cardChart');

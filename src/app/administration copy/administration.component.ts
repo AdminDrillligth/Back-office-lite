@@ -62,7 +62,6 @@ export interface AccountDatas {
   dateIso:string,
   econes:[],
   email:string,
-  role:string,
   moderate:{date: string, lastcodateIso: string, moderatereason: any},
   personalInfos:{
     comment: string,
@@ -90,7 +89,6 @@ export interface ProfilAccountDatas{
   dateIso:string,
   econes:[],
   email:string,
-  role:string,
   moderate:{date: string, lastcodateIso: string, moderatereason: any},
   personalinfos:{
     comment: string,
@@ -127,7 +125,7 @@ export interface ProfilAccountDatas{
 export class AdministrationComponent implements OnInit{
   panelOpenState = false;
   // ,'date'
-  displayedColumnsAccounts: string[] = ['firstName', 'role', 'moderation', 'actions'];
+  displayedColumnsAccounts: string[] = ['firstName', 'familyName', 'date', 'moderation', 'actions'];
   // 
   // , 'role', 'licences', 'date', 'actions', 'moderation'
   dataSourceAccounts!: MatTableDataSource<any>;
@@ -266,34 +264,83 @@ export class AdministrationComponent implements OnInit{
           this.Accounts = [];
           let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
           console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
+          // console.log('ICI ADMIN ACOUNTS : !:: ',allAccounts)
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{
-            this.Accounts.push(account)
+            this.Accounts.push(account.data)
             console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
           });
           this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
           this.dataSourceAccounts.paginator = this.paginatorAccounts;
           this.resultsLength = this.Accounts.length;
-
+          // console.log('ACCOUNT OF USERS :! : ', allAccounts, 'le  ACCOUNT ACTUEL : ! ', this.ProfilAccount );
+          // this.Accounts = allAccounts;
+          // if(this.ProfilAccount !==  undefined && this.ProfilAccount.email !== undefined){
+          //   this.Accounts.forEach((account:any) =>{
+          //     if(this.ProfilAccount.email === account.email){
+          //       console.log('CE COMPTE EST LE MEME !! ',account);
+          //       this.ProfilAccount = account;
+          //     }
+          //   });
+          // }
+          // this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
+          // this.dataSourceAccounts.paginator = this.paginatorAccounts;
+          // if(this.ProfilAccount.email)
           this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
           //  this.letsee = true;
           //  this.ProfilAccount = {data: this.AccountOfUser};
         }
       }
     })
-
+    // this.utilsService._newDataOCustomerAccounts.subscribe((update:any) =>{
+    //   if(update !== null){
+    //     if(update.data == true){
+    //       this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+    //       console.log('ACCOUNT OF USER UPDATE:! : ', this.AccountOfUser);
+    //       this.letsee = true;
+    //       this.ProfilAccount = {data: this.AccountOfUser};}
+    //   }
+    // })
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+    // console.log('ACCOUNT OF USER :! : ',this.AccountOfUser)
     if(this.AccountOfUser.role === 'admin'){
+      // this.getAdminCustomerUsers();
+      console.log('ICI ADMIN :: ',this.AccountOfUser)
       let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+      // console.log('ICI ADMIN ACOUNTS : !:: ',allAccounts)
       this.Accounts.length = 0
       allAccounts.forEach((account:any)=>{
-        this.Accounts.push(account)
+        this.Accounts.push(account.data)
         console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
       });
+      console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
       this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
       this.resultsLength = this.Accounts.length;
       this.dataSourceAccounts.paginator = this.paginatorAccounts;
+      // console.log( this.dataSourceAccounts)
+      //   this.utilsService._getModerateOption.subscribe((moderation:any) => {
+      //     let getAccounts:any[] = []
+      //     console.log('MODERATION !: ',this.Accounts, moderation)
+      //     this.Accounts.forEach((account:any) => {
+      //       getAccounts.push(account)
+      //       console.log(account.data.email, moderation.account.data.email)
+      //       if(account.data.email === moderation.account.data.email){
+      //         account.data.moderate = moderation.data.moderate;
+      //         account.moderate = moderation.data.moderate;
+      //         console.log('ELEMENT REçU DE MODéRATION : ! ',account.data.moderate, moderation.data.moderate)
+      //         account.data.traineds.forEach((trained:any)=>{
+      //           console.log('LES ENTRAINES :! :',trained)
+      //           // trained.moderate.moderatereason.moderate =
+      //         });
+      //       }
+      //       console.log('LES COMPTES: ! ',getAccounts);
+      //     });
+      //   });
+      // }else{
+      //   console.log('ICI NON ADMIN :: ',this.AccountOfUser)
+      //   this.letsee = true;
+      //   this.ProfilAccount = {data: this.AccountOfUser};
     }
   }
 
@@ -310,6 +357,7 @@ export class AdministrationComponent implements OnInit{
   onDeactivate(data:any): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
+  // CHARTS LINE UP END
 
   // CREATE ADMIN !!
   createAdmin(){
@@ -360,37 +408,18 @@ export class AdministrationComponent implements OnInit{
   }
 
   letsee = false;
-  accountDetailOfUser:any;
   seeAdmin(account:any){
     this.letsee = true;
     this.ProfilAccount = account;
-    console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
-    this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
-      resp.subscribe((e:any) =>{
-        console.log('LA RESP : ',e.account)
-        this.ProfilAccount = e.account;
-      })
-    });
-
-  }
-
-
-  seeAsUser(ProfilAccount:any){
-    console.log('profil complet :',this.ProfilAccount)
-    localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
-    let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
-    localStorage.setItem('seeAsAdmin', 'true');
-    let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
-    this.utilsService.sendSeeAsAdmin(true);
-    console.log('LE DETAIL DU USER : ! ',userDetailAccount, seeAsAdmin)
-    this.router.navigate(['trainings']);
-
+    console.log('DETAILS ACCOUNT : !',this.ProfilAccount, this.ProfilAccount.privileges.rights)
+    this.dataSourceProfilAccount = new MatTableDataSource(this.ProfilAccount);
+    this.dataSourceProfilAccount.paginator = this.paginatorProfilAccount;
   }
 
   createfromDashboard(){
 
-  }
 
+  }
   dataOfHistory = [];
   uploadCsv(event:any){
     console.log('EVENT : ! ',event)
@@ -417,6 +446,9 @@ export class AdministrationComponent implements OnInit{
         //   console.log('resp from serveur', resp);
         // })
       }
+      // return this.http.post('apiurl',body).subscribe((data:any)=>{
+      //   console.log(JSON.stringify(data.json))
+      // });
     };
 
   }
@@ -446,7 +478,42 @@ export class AdministrationComponent implements OnInit{
   }
   }
 
+  getClientsGocard(){
+    this.gocardlessService.getClientsGocard().then((el:any) =>{
+      console.log('RESULT GO CARD:: ! ',el)
+      // this.dataOfHistory = el.exercices;
+      // console.log('RESULT :: ! ',this.dataOfHistory)
+  })
+  }
 
+  setClientsGoSubscribeStripe(email:any, namer:any){
+
+  }
+
+  createToken(email:any, namer:any){
+    // console.log('go stripe service : ! ',email,   namer  )
+    // let body = {data:{email:email, name:namer}};
+    // this.stripeServices.setClientStripePaiementLink(body, this.ProfilAccount).then((el:any) =>{
+    //   console.log('RESULT GO CARD:: ! ',el)
+    this.router.navigate(['stripe']);
+      // this.email.value
+      // this.dataOfHistory = el.exercices;
+      // console.log('RESULT :: ! ',this.dataOfHistory)
+  // })
+
+  }
+
+  setClientsGocardStripe(email:any, namer:any){
+    console.log('go stripe service : ! ',email,   namer  )
+    let body = {data:{email:email, name:namer}};
+    this.stripeServices.setClientStripe(body, this.ProfilAccount).then((el:any) =>{
+      console.log('RESULT GO CARD:: ! ',el)
+
+      this.email.value
+      // this.dataOfHistory = el.exercices;
+      // console.log('RESULT :: ! ',this.dataOfHistory)
+  })
+  }
 
   gotoHistory(){
     this.utilsService.sendNewHistory(this.dataOfHistory);
@@ -456,7 +523,7 @@ export class AdministrationComponent implements OnInit{
   letSeeAccount:any;
   seeTheSameAdmin(account:any){
     console.log('ON VEUT CE COMPTE :!  ',account)
-    // this.utilsService.sendOfCustomerProfilOptions({account:account, seeAs : true});
+    this.utilsService.sendOfCustomerProfilOptions({account:account, seeAs : true});
     this.router.navigate(['dashboard']);
   }
 
@@ -970,7 +1037,7 @@ export class DialogCreateCustomer implements OnInit{
     }else{
       console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
       this.fireStoreServiceImages.addImagesOfCustomers(this.data.id, this.eventImageFile);
-      // this.userHandlersServiceCustomer.updateAccountCustomer(this.data.id, data);
+      this.userHandlersServiceCustomer.updateAccountCustomer(this.data.id, data);
     }
 
     setTimeout(() => {
@@ -1312,7 +1379,7 @@ export class DialogCreateUser implements OnInit{
             date: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
             dateIso: this.datePipe.transform(this.maDate, 'yyyy-MM-ddTHH:mm:ss.SSS')
           } }
-          // this.userHandlersServiceCustomer.addAccountTrained(this.data, dataForm)
+          this.userHandlersServiceCustomer.addAccountTrained(this.data, dataForm)
 
       }else{
       console.log('RREAL UPDATE : ',this.data)
@@ -1324,7 +1391,7 @@ export class DialogCreateUser implements OnInit{
       }}
         console.log('SELECTED RIGHTS : ',dataForm)
         // this.fireStoreServiceImages.addImagesOfTrained(this.data.id, this.eventImageFile);
-        // this.userHandlersServiceCustomer.updateAccountTrained(this.data, dataForm);
+        this.userHandlersServiceCustomer.updateAccountTrained(this.data, dataForm);
     }
     setTimeout(() => {
       this.dialogRef.close();
@@ -1570,7 +1637,7 @@ export class DialogCreateStaff implements OnInit{
 
           } }
           console.log('STAFF : ! ',dataForm)
-          // this.userHandlersServiceCustomer.addAccountStaff(this.data, dataForm)
+          this.userHandlersServiceCustomer.addAccountStaff(this.data, dataForm)
 
       }else{
       console.log('RREAL UPDATE : ',this.data)
@@ -1582,7 +1649,7 @@ export class DialogCreateStaff implements OnInit{
       }}
         console.log('SELECTED RIGHTS : ',dataForm)
         // this.fireStoreServiceImages.addImagesOfTrained(this.data.id, this.eventImageFile);
-        // this.userHandlersServiceCustomer.updateAccountStaff(this.data, dataForm);
+        this.userHandlersServiceCustomer.updateAccountStaff(this.data, dataForm);
 
     }
     setTimeout(() => {

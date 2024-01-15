@@ -69,137 +69,163 @@ const createAccount = async (req: any, res: Response) => {
   let newUuid = uuidv4();
   try {
     const entry = db.collection('account-handler');
-    const userObject = {
-          id: newUuid,
-          email: dataBodyOfRequest.email,
-          passwordHash:dataBodyOfRequest.passwordHash,
-          firstName: dataBodyOfRequest.firstName,
-          familyName: dataBodyOfRequest.familyName,
-          fullName: dataBodyOfRequest.fullName,
-          avatarURL: dataBodyOfRequest.avatarURL,
-          // role: "admin",
-          personalInfo: {
-              birthdate: dataBodyOfRequest.personalInfo.birthdate,
-              simpleBirthdate: dataBodyOfRequest.personalInfo.simpleBirthdate,
-              address1: dataBodyOfRequest.personalInfo.address1,
-              address2: dataBodyOfRequest.personalInfo.address2,
-              zip: dataBodyOfRequest.personalInfo.zip,
-              city: dataBodyOfRequest.personalInfo.city,
-              region: dataBodyOfRequest.personalInfo.region,
-              phone: dataBodyOfRequest.personalInfo.phone,
-              comment: dataBodyOfRequest.personalInfo.comment
-          },
-          privileges: {
-              rights: dataBodyOfRequest.privileges.rights
-          },
-          trainees: dataBodyOfRequest.trainees,
-          staff: dataBodyOfRequest.staff,
-          econes: dataBodyOfRequest.econes,
-          trainings: dataBodyOfRequest.trainings,
-          videos: dataBodyOfRequest.videos,
-          licensed: dataBodyOfRequest.licensed,
-          warning: dataBodyOfRequest.warning,
-          date:DateString,
-          dateIso:isoDateString,
-          update:DateString,
-          updateIso:isoDateString,
-          // createdBy:,
-          // updatedBy:,
+    let email = "";
+    let passwordHash = "";
+    let firstName = "";
+    let familyName = "";
+    let fullName = "";
+    let avatarURL = "";
+    let birthdate = "";
+    let simpleBirthdate = "";
+    let address1 = "";
+    let address2 = "";
+    let zip = "";
+    let city = "";
+    let region = "";
+    let phone = "";
+    let comment = "";
+    let rights = [];
+    let users = [];
+    let staff = [];
+    let econes = [];
+    let trainings = [];
+    let videos = [];
+    let licensed = 10;
+    let warning = false;
+    let owner = "";
+    let role = "user";
+    if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
+    if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
+    if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
+    if(dataBodyOfRequest.fullName !== undefined){ fullName = dataBodyOfRequest.fullName}
+    if(dataBodyOfRequest.avatarURL !== undefined){ avatarURL = dataBodyOfRequest.avatarURL}
 
-    }
+    if(dataBodyOfRequest.birthdate !== undefined){ birthdate = dataBodyOfRequest.birthdate}
+    if(dataBodyOfRequest.simpleBirthdate !== undefined){ simpleBirthdate = dataBodyOfRequest.simpleBirthdate}
+    if(dataBodyOfRequest.address1 !== undefined){ address1 = dataBodyOfRequest.address1}
+    if(dataBodyOfRequest.address2 !== undefined){ address2 = dataBodyOfRequest.address2}
+    if(dataBodyOfRequest.zip !== undefined){ zip = dataBodyOfRequest.zip}
+    if(dataBodyOfRequest.city !== undefined){ city = dataBodyOfRequest.city}
+    if(dataBodyOfRequest.region !== undefined){ region = dataBodyOfRequest.region}
+    if(dataBodyOfRequest.phone !== undefined){ phone = dataBodyOfRequest.phone}
+    if(dataBodyOfRequest.comment !== undefined){ comment = dataBodyOfRequest.comment}
+
+    if(dataBodyOfRequest.rights !== undefined){ rights = dataBodyOfRequest.rights}
+    if(dataBodyOfRequest.users !== undefined){ users = dataBodyOfRequest.users}
+    if(dataBodyOfRequest.staff !== undefined){ staff = dataBodyOfRequest.staff}
+    if(dataBodyOfRequest.econes !== undefined){ econes = dataBodyOfRequest.econes}
+    if(dataBodyOfRequest.trainings !== undefined){ trainings = dataBodyOfRequest.trainings}
+    if(dataBodyOfRequest.videos !== undefined){ videos = dataBodyOfRequest.videos}
+    if(dataBodyOfRequest.licensed !== undefined){ licensed = dataBodyOfRequest.licensed}
+    if(dataBodyOfRequest.warning !== undefined){ warning = dataBodyOfRequest.warning}
+
+    if(dataBodyOfRequest.owner !== undefined){ owner = dataBodyOfRequest.owner}
+    if(dataBodyOfRequest.role !== undefined){ role = dataBodyOfRequest.role}
+    
+    if(dataBodyOfRequest.email){
+      email = dataBodyOfRequest.email;
+      const userObject = {
+        id: newUuid,
+        owner:owner,
+        role:role,
+        email: email,
+        passwordHash:passwordHash,
+        firstName: firstName,
+        familyName: familyName,
+        fullName: fullName,
+        avatarURL: avatarURL,
+        personalInfo: {
+            birthdate: birthdate,
+            simpleBirthdate: simpleBirthdate,
+            address1: address1,
+            address2: address2,
+            zip: zip,
+            city: city,
+            region: region,
+            phone: phone,
+            comment: comment
+        },
+        privileges: {
+            rights: rights
+        },
+        users:users,
+        staff: staff,
+        econes: econes,
+        trainings: trainings,
+        videos: videos,
+        licensed: licensed,
+        warning:warning,
+        date:DateString,
+        dateIso:isoDateString,
+        update:DateString,
+        updateIso:isoDateString,
+        // createdBy:,
+        // updatedBy:,
+
+  }
 
     await entry.add(userObject);
     res.status(200).send({
-      status: 'success',
-      message: 'Utilisateur ajouté avec succés',
+      response: {
+        result:'success',
+        message:'Utilisateur ajouté avec succés'
+      },
       data: dataBodyOfRequest,
       userObject:userObject,
     });
+    }else{
+      res.status(200).send({
+        response: {
+          result:'emailError',
+          message:'email obligatoire'
+        },
+      })
+    }
+    
   } catch(error:any) {
       res.status(500).send({
-        status: 'Erreur lors du traitement des données',
+        result: 'error',
         message: 'Une erreur est survenue, vérifiez la validité du fomulaire',
-        messageSub: 'erreur Code 500 veuillez reéssayer',
         error:error.message,
       })
   }
 }
 
-// ON RECUPERE LA LISTE DES ADMINS VIA GET
-// REQUEST TEMPLATE
-// JUST BEARER TOKEN
-const getUsers = async (req: any, res: any) => {
-  let reqs = req;
-  let headers = reqs.headers;
-  let token = headers.token;
 
-  try {
-    let decodeds:any;
-    const allUsers: any[] = [];
-    const querySnapshot = await db.collection('account-handler').get();
-    jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
-        if(err) {
-          decodeds = 'err';
-          return res.status(200).json({
-            status:'Votre token a expiré',
-            token:token,
-            decoded:decodeds
-          });
-        }else {
-          decodeds = 'no error';
-          querySnapshot.forEach((doc: any) => {
-            allUsers.push({data:doc.data(), id: doc.id});
-          });
-          return res.status(200).json({
-            status:'votre requetes est exécutée avec succés',
-            allUsers: allUsers,
-            token: token,
-            decoded: decodeds 
-          });
-        }
-    });
-  } catch(error:any) { return res.status(500).json(error.message) }
-}
-
-
-
-// ON RECUPERE LA LISTE DES ADMINS VIA GET
-// REQUEST TEMPLATE
-// JUST BEARER TOKEN
 const getAccountDetails = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
-  let username = headers.username;
+  let userId = headers.id;
   let token = headers.token;
   let userDetails :any = '';
   try {
-    let decodeds: any;
         jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
             if(err) {
-              decodeds = 'err';
               return res.status(200).json({
-                status:'Votre token a expiré',
+                response: {
+                  result:'expiredTokenError',
+                  message:'Votre token a expiré'
+                },
                 token:token,
-                decoded:decodeds
               });
             }else {
-
-              decodeds = 'no error';
-              let userhandlerProfil = await db.collection('account-handler').where('email', '==', username).get();
+              let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
               userhandlerProfil.forEach((doc:any) =>{
               userDetails = doc.data();   
                 if(userDetails !== ""){
-                  let idOfUser = doc.id;  
                   return res.status(200).json({
-                    status:'votre requetes est exécutée avec succés',
-                    userDetails: userDetails,
-                    idOfUser:idOfUser,
-                    decoded: decodeds 
+                      response: {
+                        result:'success',
+                        message:''
+                      },
+                    account: userDetails
                   });
                 }else{
                   return res.status(200).json({
-                    status:'pas de compte associé',
-                    decoded: decodeds 
+                    response: {
+                      result:'noAccountError',
+                      message:''
+                    },
                   });
                 }
               })
@@ -212,32 +238,104 @@ const getAccountDetails = async (req: any, res: any) => {
 const getAccountsList = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
-  let token = headers.token;
+  // let token = headers.token;
+  let idOfUser = headers.id;
+  let user:any = [];
   try {
-    let decodeds: any;
-    const allUsers: any[] = [];
-    const querySnapshot = await db.collection('account-handler').get();
-        jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
-            if(err) {
-              decodeds = 'err';
-              return res.status(200).json({
-                status:'Votre token a expiré',
-                token:token,
-                decoded:decodeds
-              });
-            }else {
-              decodeds = 'no error';
-              querySnapshot.forEach((doc: any) => {
-                 allUsers.push({data:doc.data(), id: doc.id});
-              });
-              return res.status(200).json({
-                status:'votre requetes est exécutée avec succés',
-                allUsers: allUsers,
-                token: token,
-                decoded: decodeds 
-              });
-            }
-       });
+    let userhandlerProfil = await db.collection('account-handler').where('id', '==', idOfUser).get();
+    userhandlerProfil.forEach( async (doc:any)  =>{
+      user = doc.data();
+      if(user !== null){
+        if(user.role === 'admin'){
+          const accounts: any[] = [];
+          let UsersOfAccount:any = [];
+          const querySnapshot = await db.collection('account-handler').get();
+          querySnapshot.forEach((doc: any) => {
+            accounts.push({data:doc.data()});
+          });
+          accounts.forEach((account:any)=> {
+              UsersOfAccount.push({
+                fullName:account.data.fullName,
+                id:account.data.id,
+                role:account.data.role
+              })
+          });
+            return res.status(200).json({
+              response: {
+                result:'success',
+                message:''
+              },
+                accounts: UsersOfAccount,
+            });
+        }
+        if(user.role === 'owner'){
+          const accounts: any[] = [];
+          let UsersOfAccount:any = [];
+          let userhandlerProfil = await db.collection('account-handler').where('owner', '==', idOfUser).get();
+            userhandlerProfil.forEach( async (doc:any)  =>{
+              accounts.push({data:doc.data()})
+            })
+            accounts.forEach((account:any)=> {
+              UsersOfAccount.push({
+                fullName:account.data.fullName,
+                id:account.data.id,
+                role:account.data.role
+              })
+          });
+          // querySnapshot.forEach((doc: any) => {
+          //   accounts.push({data:doc.data()});
+          // });
+          // accounts.forEach((account:any)=> {
+          //     UsersOfAccount.push({
+          //       fullName:account.data.fullName,
+          //       id:account.data.id,
+          //       role:account.data.role
+          //     })
+          // });
+            return res.status(200).json({
+              response: {
+                result:'success',
+                message:''
+              },
+                accounts: UsersOfAccount,
+            });
+        }
+        if(user.role === 'staff'){
+
+        }
+        if(user.role === null || user.role === undefined){
+          return res.status(200).json({
+            response: {
+              result:'noAccountError',
+              message:''
+            },
+          });
+        }
+      }else{
+        // get the error response ! 
+        return res.status(200).json({
+          response: {
+            result:'noAccountError',
+            message:''
+          },
+        });
+      }
+    })
+
+   
+    //     jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
+    //         if(err) {
+    //           return res.status(200).json({
+    //             response: {
+    //               result:'expiredTokenError',
+    //               message:'Votre token a expiré'
+    //             },
+    //             token:token,
+    //           });
+    //         }else {
+             
+      //       }
+      //  });
   }
   catch(error:any) { return res.status(500).json(error.message)}
 }
@@ -252,12 +350,12 @@ const updateAccount = async (req:any, res: any) => {
   let headers = req.headers;
   let token = headers.token;
   let userDetail :any = '';
-  let decodeds: any;
+
    try {
 
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
       if(err) {
-        decodeds = 'err';
+
         return res.status(200).json({
           status:'Votre token a expiré',
           token:token,
@@ -288,7 +386,7 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.personalInfo.comment !== undefined){ userDetail.personalInfo.comment = dataBodyOfRequest.personalInfo.comment }
             if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
 
-            if(dataBodyOfRequest.trainees !== undefined){ userDetail.trainees = dataBodyOfRequest.trainees }
+            if(dataBodyOfRequest.users !== undefined){ userDetail.trainees = dataBodyOfRequest.users }
             if(dataBodyOfRequest.staff !== undefined){ userDetail.staff = dataBodyOfRequest.staff }
             if(dataBodyOfRequest.econes !== undefined){ userDetail.econes = dataBodyOfRequest.econes }
             if(dataBodyOfRequest.trainings !== undefined){ userDetail.trainings = dataBodyOfRequest.trainings }
@@ -342,6 +440,6 @@ const deleteAccount = async (req: any, res: Response) => {
   catch(error:any) { return res.status(500).json(error.message) }
 }
 
-export { createAccount, getUsers, getAccountsList, getAccountDetails, updateAccount, deleteAccount }
+export { createAccount, getAccountsList, getAccountDetails, updateAccount, deleteAccount }
 
 

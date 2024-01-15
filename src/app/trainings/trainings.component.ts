@@ -8,6 +8,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { UtilsService } from '../../services/utils.service';
 import { Router } from '@angular/router';
+import { ExerciseService } from '../../services/exercise-handler.service';
+import { MatRadioModule } from '@angular/material/radio';
+import ImageResize from 'image-resize'; 
 
 
 @Component({
@@ -60,6 +63,14 @@ export class TrainingsComponent implements OnInit {
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
      });
+     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
+      if(asAdmin !== null){
+        if(asAdmin === true){
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+          console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+        }
+      }
+    });
     this.getInfoGLobal();
   }
 
@@ -113,6 +124,18 @@ export class TrainingsComponent implements OnInit {
   subscribes(){
     this.router.navigate(['subscribes']);
   }
+
+  uploadExercice(){
+    console.log('go upload exercice :!: ');
+    const dialogRef = this.dialog.open(ContentUploadDialog, {
+      // data: {item: item},
+      panelClass: 'bg-color',
+      width:'80%'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 }
 
 
@@ -135,8 +158,118 @@ export class DialogContentExampleDialog implements OnInit{
    console.log('LES DATAS MODALS ',this.data.item)
   }
 
-  
   addVideoToExercice(data:any){
     console.log('Les datas de l\'exercices',data)
   }
+
+
+}
+
+
+@Component({
+  selector: 'content-upload',
+  templateUrl: 'content-upload.html',
+  styleUrls: ['./trainings.component.scss'],
+  standalone: true,
+  imports: [ MatRadioModule, CommonModule, MatDialogModule, FormsModule, MatButtonModule],
+})
+export class ContentUploadDialog implements OnInit{
+  // audience:string='public';
+  dataJson:any;
+  dataImg:any;
+  dataBase64:any = "";
+  status_private =false;
+  status_public =false;
+  idOfUser = "";
+  userDetailAccount:any;
+  constructor(
+    private utilsService: UtilsService,
+    public exerciseService:ExerciseService,
+    public dialogRef: MatDialogRef<ContentUploadDialog>,
+    @Inject(MAT_DIALOG_DATA) public data:any,
+  ) {
+    this.idOfUser = "";
+  }
+    
+  ngOnInit(): void {
+    this.userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+    console.log('LE DETAIL DU USER : ! ',this.userDetailAccount)
+    if(this.userDetailAccount.id !== undefined){
+      this.idOfUser = this.userDetailAccount.id;
+    }
+    
+  }
+
+  onchangeInput(file:any){
+    console.log('FILE : ! ',file.target.files)
+    console.log('FILE : ! ',file.target.files[0])
+    let selectedFile = file.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.readAsText(selectedFile, "UTF-8");
+    fileReader.onload = () => {
+      if(fileReader.result !== null){
+        //console.log(fileReader.result.toString());
+      let jsonObj = (JSON.parse(fileReader.result.toString()));
+      console.log(jsonObj)
+      this.dataJson = jsonObj;
+        if(this.dataJson.header.status === 'status_public' ){
+          this.status_public = true;
+          this.status_private = false;
+        }else{
+          this.status_public = false;
+          this.status_private = true;
+        }
+      }
+      fileReader.onerror = (error) => {
+      console.log(error);
+      }
+    }
+  }
+
+
+  selectStatus(value:any){
+    console.log('LA VALUE DU CHECK: ! ',value.value, this.dataJson)
+    if(this.dataJson !== undefined){
+      this.dataJson.header.status = value.value;
+    }
+  }
+
+  // https://www.npmjs.com/package/image-resize
+  onchangeInputImg(file:any){
+    var imageResize = new ImageResize({
+      format: 'jpg',
+      width: 256
+    });
+    imageResize.play(file.target.files[0]).then((e:any)=>{
+      this.dataBase64 = e;
+      console.log(file)
+      console.log(this.dataBase64)
+    });
+  }
+
+  saveDataFromJson(){
+    console.log('DATA BEFORE SENDING : ',this.dataJson, this.dataImg, this.dataBase64);
+    if(this.dataBase64 !== ""){
+      this.dataJson.header.image = this.dataBase64;
+    }else{
+      this.dataJson.header.image = "";
+    }
+
+    if(this.idOfUser !== ""){
+      if(this.dataJson.header.status === 'status_private'){
+        console.log('On va update un private : ', this.idOfUser, this.userDetailAccount,this.userDetailAccount.trainings )
+        console.log('DATA DU JSON : ', this.dataJson )
+        this.userDetailAccount.trainings.push({id:this.dataJson.header.id});
+        console.log('On va update un private : ', this.userDetailAccount )
+      }
+    }else{
+
+    }
+    let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+    console.log('LE DETAIL DU USER : ! ',AccountOfUser)
+    // 
+   
+    this.exerciseService.updateExercise(this.dataJson, AccountOfUser.id);
+  }
+
 }

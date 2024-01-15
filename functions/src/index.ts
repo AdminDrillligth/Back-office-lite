@@ -10,19 +10,57 @@ import { addAdmin, getAdmins, updateAdmin, deleteAdmin } from './adminsControlle
 import { createAccount, getAccountDetails, getAccountsList, updateAccount, deleteAccount } from './AccountController';
 import { createEcone, getEconeDetails, updateEcone, deleteEcone } from './econesController';
 import { connectToAccount } from './loggerController';
-import { createExercice, getExerciceDetails, getExercicesList, updateExercice, deleteExercice } from './exercicesController';
+import { createExercise, getExerciseDetails, getExercisesList, updateExercise, deleteExercise } from './exercisesController';
 import { createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
-// import { setPasswordHash } from './passwordController';
-//  var methods = require("./methods");
+const fileMiddleware = require('express-multipart-file-parser')
 
-const app = express()
+// const multer = require('multer');
+// const admin = require('firebase-admin');
+// const serviceAccount = require('../drilllight-bf468e9e715e.json');
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: "https://drilllight-default-rtdb.europe-west1.firebasedatabase.app"
+// });
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
+
+const app = express();
 //
 
 app.use(cors({ origin: ['http://localhost:4200','https://drilllight.web.app','http://localhost:8100', 'capacitor://localhost','https://localhost']}));
 app.use(express.json());
+// app.use(fileupload());
+
+
+// app.use(express.static('public'));
+app.use(fileMiddleware)
 app.get("/",(req, res, next) => {
   res.status(200).send('ON DEMARRE DRILLLIGHT API !')
+});
+
+app.post('/file', (req:any, res:any) => {
+  const {
+    fieldname,
+    originalname,
+    encoding,
+    mimetype,
+    buffer,
+  } = req.files[0]
+  // let files = req.files
+  // let bufferOriginal = Buffer.from(JSON.parse(buffer).data);
+  return res.status(200).json({
+    status:'votre requetes est exécutée avec succés',
+    fieldname:fieldname,
+    filename:originalname,
+    encoding:encoding,
+    mimetype:mimetype,
+    buffer:buffer.toString()
+    // files:files
+  });
 });
 
 // app.post('/token', getToken)
@@ -48,11 +86,11 @@ app.put('/updateAccount', updateAccount)
 app.delete('/deleteAccount', deleteAccount)
 
 // 
-app.post('/createExercice', createExercice)
-app.get('/getExerciceDetails', getExerciceDetails)
-app.get('/getExercicesList', getExercicesList)
-app.put('/updateExercice', updateExercice)
-app.delete('/deleteExercice', deleteExercice)
+app.post('/createExercise', createExercise)
+app.get('/getExerciseDetails', getExerciseDetails)
+app.get('/getExercisesList', getExercisesList)
+app.put('/updateExercise', updateExercise)
+app.delete('/deleteExercise', deleteExercise)
 
 //
 app.post('/createSession', createSession)

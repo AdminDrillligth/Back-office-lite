@@ -90,7 +90,7 @@ export class AppComponent {
     public utilsService: UtilsService,
     private router:Router
   ){
-
+    localStorage.removeItem('account-data-user');
   }
 
   ngOnInit(): void {
@@ -100,34 +100,25 @@ export class AppComponent {
           this.className = darkMode ? darkClassName : '';
           this.utilsService.changeThemeTemplate(this.className);
         });
-        this.utilsService._seeCustumorProfilOptions.subscribe((account:any) => {
+        let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
+        console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
+        this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
           // this.seeAsAccount = account;
-          console.log('ACCOUNT : ! ',account);
-          // if(account !== null){
-          //   console.log('ACCOUNT !: ',account.seeAs, account.account.asAdmin)
-          //   if(account.seeAs === true){
-          //     this.seeAsAdmin = true;
-          //   }else{
-          //     this.seeAsAdmin = false;
-          //   }
-          // }
+          console.log('ACCOUNT : ! ',asAdmin);
+          if(asAdmin !== null){
+            if(asAdmin === true){
+              this.seeAsAdmin = true;
+            }else{
+              this.seeAsAdmin = false;
+            }
+          }
         });
-        this.utilsService._seeNavigation.subscribe((howToSeeNavigation:any) =>{
-          // console.log('the nav is ',howToSeeNavigation)
-          // this.seeNavigation = howToSeeNavigation;
-        })
-
-        if (this.router.url.includes('/login') || this.router.url === '/'){  
-          this.seeNavigation = false;
-        }else{
-          this.seeNavigation = true;
-          console.log(this.router.url)
-        }
         this.updateData();
   }
 
   comeBackToAdmin(){
-    this.utilsService.sendOfCustomerProfilOptions({account:this.seeAsAccount.account, seeAs : false});
+    localStorage.removeItem('account-data-user');
+    this.seeAsAdmin = false;
     this.router.navigate(['administration']);
   }
 
@@ -143,13 +134,13 @@ export class AppComponent {
   }
 
   updateData(){
-    
-    if (this.router.url.includes('/login') || this.url.path() === '/'){  
+    let check = this.url.path().split("?")
+    if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
       console.log(this.router, this.url.path())
       this.seeNavigation = false;
     }else{
       this.seeNavigation = true;
-      console.log(this.router.url,this.url.path())
+      console.log(this.router.url,this.url.path(), this.url.path().split("?"))
     }
         this.AccountOfUser = '';
         this.user = JSON.parse(localStorage.getItem('user') || '{}');

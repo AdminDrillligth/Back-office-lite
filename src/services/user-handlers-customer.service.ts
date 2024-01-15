@@ -31,12 +31,9 @@ export class UserHandlersServiceCustomer {
 
   getUpdateallUsers(){
     let token = localStorage.getItem('token') || '{}';
-    // console.log('LE TOKEN',token);
     this.http.get(this.baseURL+'user').subscribe((rep:any) =>{
       console.log('LA REP DU ALL USERS : ! ',rep)
-
       let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      // console.log('LA REP DU ALL USERS : ! ',allAccounts)
       this.utilsService.sendRequestGetnewAccount(true);
     })
   }
@@ -59,28 +56,18 @@ export class UserHandlersServiceCustomer {
   }
 
 
-  getAccountDetails(email:string){
-    console.log(email)
+  async getAccountDetails(id:string){
+    console.log(id)
     let token = localStorage.getItem('token') || '{}';
-    let header = {'username':email, 'token':token }
-    this.http.get(this.baseURL+'getAccountDetails', {'headers':header} ).subscribe((response:any) => {
-      console.log('LA REP : ! ',response)
-
-      this.utilsService.newAccountDetails(response);
-
-      // console.log('We get all users : ', response, token);
-      // if(response.decoded !== 'err'){
-
-      //   localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
-      //   let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      //   // console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-      //   this.utilsService.sendRequestGetnewAccount(true);
-      // }else{
-      //   console.log('veuillez vous reconnecter ! ')
-      // }
-    })
+    let header = {'id':id, 'token':token }
+    let response = await this.http.get(this.baseURL+'getAccountDetails', {'headers':header} )
+    return response;
   }
-
+  // .subscribe((response:any) => {
+  //   console.log('LA REP : ! ',response)
+    
+  //   // this.utilsService.newAccountDetails(response);
+  // })
   setPasswordHash(email:any, passwordHash:any){
     console.log('EMAIL PASSWORD: ! ', email, passwordHash)
     let headers = {'username':email , 'passwordhash':passwordHash}
@@ -107,20 +94,6 @@ export class UserHandlersServiceCustomer {
     return new Promise<any>((resolve, reject) => {
       this.http.post(this.baseURL+'createAccount' , body).subscribe((response:any) => {
         console.log('createAccount : ! ', response)
-      // this.http.post(this.baseURL+'user' , body).subscribe((response:any) => {
-      //     console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-      //     this.http.get(this.baseURL+'user' ,{'params':{'token':token}}).subscribe((response:any) => {
-      //       console.log('We get all users : ', response, token);
-      //       if(response.decoded !== 'err'){
-      //         localStorage.setItem('account-datas', JSON.stringify(response.allUsers));
-      //         let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      //         console.log('ALL ACCOUNTS DETAILS :  !',allAccounts, response.decoded)
-      //         this.utilsService.sendRequestGetnewAccount(true);
-      //       }else{
-      //         console.log('veuillez vous reconnecter ! ')
-      //       }
-      //     })
-
       })
     })
    
@@ -130,61 +103,61 @@ export class UserHandlersServiceCustomer {
 
   }
 
-  updateAccountCustomer(idAccount:any, data:any){
+  updateAccountCustomer(data:any){
     console.log('DATA UPDATE CUSTOMER :: ',data)
     let token = localStorage.getItem('token') || '{}';
-    const body = JSON.stringify({data:data, id:idAccount, token:token});
+    const body = JSON.stringify({data:data });
     console.log('On va envoyer ce body : ',body)
-    this.http.patch(this.baseURL+'user' , body,{'headers':this.headers}).subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR UPDATE : ! ',response)
-    })
+    // this.http.put(this.baseURL+'updateAccount' , body,{'headers':{token:token}}).subscribe((response:any) => {
+    //   console.log('LA REP DU SERVEUR UPDATE : ! ',response)
+    // })
   }
 
-  addAccountTrained(idAccount:any, data:any){
-    let trainedData : any[any]= [];
-    trainedData.push(data.traineds)
-    const body = JSON.stringify({data:data.traineds, account:idAccount});
-    console.log(body)
-    console.log('on crée le compte ! :',trainedData, data)
-    this.http.post(this.baseURL+'administration/add_user' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-    });
-  }
+  // addAccountTrained(idAccount:any, data:any){
+  //   let trainedData : any[any]= [];
+  //   trainedData.push(data.traineds)
+  //   const body = JSON.stringify({data:data.traineds, account:idAccount});
+  //   console.log(body)
+  //   console.log('on crée le compte ! :',trainedData, data)
+  //   this.http.post(this.baseURL+'administration/add_user' , body,{'headers':this.headers})
+  //   .subscribe((response:any) => {
+  //     console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
+  //   });
+  // }
 
-  addAccountStaff(idAccount:any, data:any){
-    console.log('on crée le compte staff ! :', idAccount, data)
-    let staffData : any[any]= [];
-    staffData.push(data.staff)
-    const body = JSON.stringify({data:data.staff, account:idAccount});
-    console.log('on crée le compte staff  ! :',body)
-    this.http.post(this.baseURL+'administration/add_staff' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-    });
-  }
+  // addAccountStaff(idAccount:any, data:any){
+  //   console.log('on crée le compte staff ! :', idAccount, data)
+  //   let staffData : any[any]= [];
+  //   staffData.push(data.staff)
+  //   const body = JSON.stringify({data:data.staff, account:idAccount});
+  //   console.log('on crée le compte staff  ! :',body)
+  //   this.http.post(this.baseURL+'administration/add_staff' , body,{'headers':this.headers})
+  //   .subscribe((response:any) => {
+  //     console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
+  //   });
+  // }
 
-  updateAccountTrained(idAccount:any, data:any){
-    console.log(" On va update !! les data de l\'entrainer a aider ? !!" ,idAccount, data)
-    const body = JSON.stringify({data:data, account:idAccount});
-    console.log('on update le compte trained  ! :',body)
-    this.http.post(this.baseURL+'administration/update_user' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-    });
-  }
+  // updateAccountTrained(idAccount:any, data:any){
+  //   console.log(" On va update !! les data de l\'entrainer a aider ? !!" ,idAccount, data)
+  //   const body = JSON.stringify({data:data, account:idAccount});
+  //   console.log('on update le compte trained  ! :',body)
+  //   this.http.post(this.baseURL+'administration/update_user' , body,{'headers':this.headers})
+  //   .subscribe((response:any) => {
+  //     console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
+  //   });
+  // }
 
 
 
-  updateAccountStaff(idAccount:any, data:any){
-    console.log(" On va update !! les data de l\'entrainer a aider ? !!" ,idAccount, data)
-    const body = JSON.stringify({data:data, account:idAccount});
-    console.log('on update le compte staff  ! :',body)
-    this.http.post(this.baseURL+'administration/update_staff' , body,{'headers':this.headers})
-    .subscribe((response:any) => {
-      console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
-    });
-  }
+  // updateAccountStaff(idAccount:any, data:any){
+  //   console.log(" On va update !! les data de l\'entrainer a aider ? !!" ,idAccount, data)
+  //   const body = JSON.stringify({data:data, account:idAccount});
+  //   console.log('on update le compte staff  ! :',body)
+  //   this.http.post(this.baseURL+'administration/update_staff' , body,{'headers':this.headers})
+  //   .subscribe((response:any) => {
+  //     console.log('LA REP DU SERVEUR : ! ',response, response.dataOfAdministrator,  response.id)
+  //   });
+  // }
 
 
   updateAccountCunstomerWithEmailLastUpdate(ipAddress:any) {

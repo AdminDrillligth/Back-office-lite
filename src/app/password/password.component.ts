@@ -5,8 +5,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
 import { UtilsService } from '../../services/utils.service';
-var btoa = require('btoa');
-
+// var btoa = require('btoa');
+import { Buffer } from 'buffer';
 @Component({
   selector: 'app-password',
   templateUrl: './password.component.html',
@@ -46,8 +46,8 @@ export class PasswordComponent {
     this.email = this.route.snapshot.queryParams['email'];
     console.log('email : ! ', this.email)
     if(this.email !== ""){
-      const authorizationValue = 'Basic ' + window.btoa( this.email + ':' + this.form.get('password').value );
-      console.log('Le auth:!', authorizationValue)
+      // const authorizationValue = 'Basic ' + btoa( this.email + ':' + this.form.get('password').value );
+      // console.log('Le auth:!', authorizationValue)
     }
     this.userHandlersServiceCustomer.getAccountDetails(this.email);
     this.utilsService._dataOfAccountDetails.subscribe((dataAccount:any) => {
@@ -95,19 +95,19 @@ export class PasswordComponent {
         this.email = this.route.snapshot.queryParams['email'];
         console.log('LE EMAIL :: ! ',this.email, this.code);
         if(this.email !== ""){
-          const authorizationValue = 'Basic ' + window.btoa( this.email + ':' + this.form.get('password').value );
+          const authorizationValue = 'Basic ' + Buffer.from( this.email + ':' + this.form.get('password').value ).toString('base64');
           console.log('Le auth:!', authorizationValue)
           // Let save passwordHash with API function
           this.userHandlersServiceCustomer.setPasswordHash(this.email, authorizationValue);
         }
 
-        if( this.code !== undefined){
-          this.Auth.confirmPasswordReset(this.code, this.form.get('password').value).then(() => {
-            // Reset was successful
-            console.log("Success");
+        // if( this.code !== undefined){
+        //   this.Auth.confirmPasswordReset(this.code, this.form.get('password').value).then(() => {
+        //     // Reset was successful
+        //     console.log("Success");
           
-          }).catch(error => { console.error(error) });
-        }
+        //   }).catch(error => { console.error(error) });
+        // }
         this.router.navigate(['dashboard']);
       }
     }
@@ -118,7 +118,7 @@ onFormSubmit(){
 }
 
 onFormSubmitNavigate(){
-  window.location.href='https://drilllight.web.app/';
+  // window.location.href='https://drilllight.web.app/';
   this.router.navigate(['dashboard']);
 }
 

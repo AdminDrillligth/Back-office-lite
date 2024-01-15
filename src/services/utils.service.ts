@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class UtilsService {
   private templateTheme: BehaviorSubject<any>;
   private moderationMode: BehaviorSubject<any>;
-  private profilOptionCustomer: BehaviorSubject<any>;
+  private seeAsAdmin: BehaviorSubject<any>;
   private accountsForPods: BehaviorSubject<any>;
   private EconesList:BehaviorSubject<any>;
   private dataOfUserAccount: BehaviorSubject<any>;
@@ -20,7 +20,7 @@ export class UtilsService {
   constructor() {
     this.templateTheme = new BehaviorSubject(null);
     this.moderationMode = new BehaviorSubject(null);
-    this.profilOptionCustomer = new BehaviorSubject(null);
+    this.seeAsAdmin = new BehaviorSubject(null);
     this.accountsForPods = new BehaviorSubject(null);
     this.EconesList = new BehaviorSubject(null);
     this.dataOfUserAccount = new BehaviorSubject(null);
@@ -60,15 +60,17 @@ export class UtilsService {
     this.moderationMode.next(options);
   }
 
-  get _seeCustumorProfilOptions() {
-    return this.profilOptionCustomer.asObservable();
+
+  // See AS ADMIN
+  get _seeAsAdmin() {
+    return this.seeAsAdmin.asObservable();
   }
 
-  sendOfCustomerProfilOptions(options: any) {
-    console.log('OPTION DU CUSTOMER : ! ',options)
-    this.profilOptionCustomer.next(options);
+  sendSeeAsAdmin(asAdmin: any) {
+    console.log('VOIR EN TANT QUE ADMIN : ! ',asAdmin)
+    this.seeAsAdmin.next(asAdmin);
   }
-
+  //
 
   get _dataOfAccountsAndPods(){
     return this.accountsForPods.asObservable();
