@@ -116,7 +116,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsAccounts"></tr>
       <tr mat-row *matRowDef="let emprow; columns: displayedColumnsAccounts;"></tr>
     </table>
-    <mat-paginator *ngIf="!letsee" style="margin-bottom: 20px;" #paginatorAccounts [length]="resultsLength" [pageSize]="5" aria-label="Choisir la page"></mat-paginator>
+    <mat-paginator *ngIf="!letsee" style="margin-bottom: 20px;" #paginatorAccounts [length]="resultsLength" [pageSize]="10" aria-label="Choisir la page"></mat-paginator>
 
   <div *ngIf="letsee && ProfilAccount !== undefined" >
   

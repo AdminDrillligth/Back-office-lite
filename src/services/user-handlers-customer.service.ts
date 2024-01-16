@@ -31,24 +31,23 @@ export class UserHandlersServiceCustomer {
 
   getUpdateallUsers(){
     let token = localStorage.getItem('token') || '{}';
-
     this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
       if(response.response.result === "success"){
         localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
         console.log('LIST DES USERS : ! ', response.accounts)
-
+        this.utilsService.sendRequestGetnewAccount(true);
       }
     })
   }
 
   async getAccounts(){
-    console.log('we get all accounts : ! ! ')
+    console.log('we get all accounts : ! ! ');
     let token = localStorage.getItem('token') || '{}';
     this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
       if(response.response.result === "success"){
         localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
         console.log('LIST DES USERS : ! ', response.accounts)
-
+        this.utilsService.sendRequestGetnewAccount(true);
       }
     })
   }
@@ -61,11 +60,6 @@ export class UserHandlersServiceCustomer {
     let response = await this.http.get(this.baseURL+'getAccountDetails', {'headers':header} )
     return response;
   }
-  // .subscribe((response:any) => {
-  //   console.log('LA REP : ! ',response)
-    
-  //   // this.utilsService.newAccountDetails(response);
-  // })
 
   setPasswordHash(email:any, passwordHash:any){
     console.log('EMAIL PASSWORD: ! ', email, passwordHash)
@@ -87,12 +81,10 @@ export class UserHandlersServiceCustomer {
 
   async addAccount(data:any){
     const body = {data:data};
-    console.log('createAccount : ! ', body)
-
+    console.log('createAccount : ! ', body);
     let token = localStorage.getItem('token') || '{}';
     let resp =  await this.http.post(this.baseURL+'createAccount' , body)
     return resp ;
-   
   }
 
   updateModarations(){

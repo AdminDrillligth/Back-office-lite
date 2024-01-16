@@ -168,10 +168,9 @@ const createAccount = async (req: any, res: Response) => {
     res.status(200).send({
       response: {
         result:'success',
-        message:'Utilisateur ajouté avec succés'
+        message:''
       },
-      data: dataBodyOfRequest,
-      userObject:userObject,
+      account:userObject,
     });
     }else{
       res.status(200).send({
@@ -185,7 +184,7 @@ const createAccount = async (req: any, res: Response) => {
   } catch(error:any) {
       res.status(500).send({
         result: 'error',
-        message: 'Une erreur est survenue, vérifiez la validité du fomulaire',
+        message: '',
         error:error.message,
       })
   }
@@ -238,104 +237,90 @@ const getAccountDetails = async (req: any, res: any) => {
 const getAccountsList = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
-  // let token = headers.token;
+  let token = headers.token;
   let idOfUser = headers.id;
   let user:any = [];
   try {
-    let userhandlerProfil = await db.collection('account-handler').where('id', '==', idOfUser).get();
-    userhandlerProfil.forEach( async (doc:any)  =>{
-      user = doc.data();
-      if(user !== null){
-        if(user.role === 'admin'){
-          const accounts: any[] = [];
-          let UsersOfAccount:any = [];
-          const querySnapshot = await db.collection('account-handler').get();
-          querySnapshot.forEach((doc: any) => {
-            accounts.push({data:doc.data()});
-          });
-          accounts.forEach((account:any)=> {
-              UsersOfAccount.push({
-                fullName:account.data.fullName,
-                id:account.data.id,
-                role:account.data.role
-              })
-          });
-            return res.status(200).json({
-              response: {
-                result:'success',
-                message:''
-              },
-                accounts: UsersOfAccount,
-            });
-        }
-        if(user.role === 'owner'){
-          const accounts: any[] = [];
-          let UsersOfAccount:any = [];
-          let userhandlerProfil = await db.collection('account-handler').where('owner', '==', idOfUser).get();
-            userhandlerProfil.forEach( async (doc:any)  =>{
-              accounts.push({data:doc.data()})
-            })
-            accounts.forEach((account:any)=> {
-              UsersOfAccount.push({
-                fullName:account.data.fullName,
-                id:account.data.id,
-                role:account.data.role
-              })
-          });
-          // querySnapshot.forEach((doc: any) => {
-          //   accounts.push({data:doc.data()});
-          // });
-          // accounts.forEach((account:any)=> {
-          //     UsersOfAccount.push({
-          //       fullName:account.data.fullName,
-          //       id:account.data.id,
-          //       role:account.data.role
-          //     })
-          // });
-            return res.status(200).json({
-              response: {
-                result:'success',
-                message:''
-              },
-                accounts: UsersOfAccount,
-            });
-        }
-        if(user.role === 'staff'){
-
-        }
-        if(user.role === null || user.role === undefined){
-          return res.status(200).json({
-            response: {
-              result:'noAccountError',
-              message:''
-            },
-          });
-        }
-      }else{
-        // get the error response !
+    jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+      if(err) {
         return res.status(200).json({
           response: {
-            result:'noAccountError',
-            message:''
+            result:'expiredTokenError',
+            message:'Votre token a expiré'
           },
         });
+      }else {
+        let userhandlerProfil = await db.collection('account-handler').where('id', '==', idOfUser).get();
+        userhandlerProfil.forEach( async (doc:any)  =>{
+          user = doc.data();
+          if(user !== null){
+            if(user.role === 'admin'){
+              const accounts: any[] = [];
+              let UsersOfAccount:any = [];
+              const querySnapshot = await db.collection('account-handler').get();
+              querySnapshot.forEach((doc: any) => {
+                accounts.push({data:doc.data()});
+              });
+              accounts.forEach((account:any)=> {
+                  UsersOfAccount.push({
+                    fullName:account.data.fullName,
+                    id:account.data.id,
+                    role:account.data.role
+                  })
+              });
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                    accounts: UsersOfAccount,
+                });
+            }
+            if(user.role === 'owner'){
+              const accounts: any[] = [];
+              let UsersOfAccount:any = [];
+              let userhandlerProfil = await db.collection('account-handler').where('owner', '==', idOfUser).get();
+                userhandlerProfil.forEach( async (doc:any)  =>{
+                  accounts.push({data:doc.data()})
+                })
+                accounts.forEach((account:any)=> {
+                  UsersOfAccount.push({
+                    fullName:account.data.fullName,
+                    id:account.data.id,
+                    role:account.data.role
+                  })
+              });
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                    accounts: UsersOfAccount,
+                });
+            }
+            if(user.role === 'staff'){
+
+            }
+            if(user.role === null || user.role === undefined){
+              return res.status(200).json({
+                response: {
+                  result:'noAccountError',
+                  message:''
+                },
+              });
+            }
+          }else{
+            // get the error response !
+            return res.status(200).json({
+              response: {
+                result:'noAccountError',
+                message:''
+              },
+            });
+          }
+        })
       }
-    })
-
-
-    //     jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
-    //         if(err) {
-    //           return res.status(200).json({
-    //             response: {
-    //               result:'expiredTokenError',
-    //               message:'Votre token a expiré'
-    //             },
-    //             token:token,
-    //           });
-    //         }else {
-
-      //       }
-      //  });
+    });
   }
   catch(error:any) { return res.status(500).json(error.message)}
 }
@@ -352,16 +337,8 @@ const updateAccount = async (req:any, res: any) => {
   let idUser =dataBodyOfRequest.id;
   let userDetail :any = '';
    try {
-    // return res.status(200).json({
-    //       response: {
-    //         result:'success',
-    //         message:''
-    //     },
-    //     dataBodyOfRequest:dataBodyOfRequest
-    // });
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
       if(err) {
-
         return res.status(200).json({
           response: {
             result:'expiredTokenError',
@@ -372,16 +349,8 @@ const updateAccount = async (req:any, res: any) => {
           let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
           userhandlerProfil.forEach((doc:any) =>{
           userDetail = doc.data();
-          // return res.status(200).json({
-          //     response: {
-          //     result:'success',
-          //     message:''
-          //   },
-          //   userDetail:userDetail
-          // });
           let idOfUser = doc.id;
           if(userDetail !== ""){
-           
           //   // if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
             if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
@@ -402,9 +371,7 @@ const updateAccount = async (req:any, res: any) => {
                 }
                 if(dataBodyOfRequest.privileges !== undefined){
                       if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
-
                 }
-           
             if(dataBodyOfRequest.users !== undefined){ userDetail.users = dataBodyOfRequest.users }
             if(dataBodyOfRequest.staff !== undefined){ userDetail.staff = dataBodyOfRequest.staff }
             if(dataBodyOfRequest.econes !== undefined){ userDetail.econes = dataBodyOfRequest.econes }
@@ -421,23 +388,20 @@ const updateAccount = async (req:any, res: any) => {
                     result:'success',
                     message:''
                   },
-                  userDetail:userDetail
+                  account:userDetail
                 });
               });
           }else{
             return res.status(200).json({
               response: {
-                result:'error',
+                result:'noUserError',
                 message:''
               },
-              message: 'pas d\'utilisateur correspondant',
             });
-
           }
         });
       }
     });
-
    }
   catch(error:any) { return res.status(500).json(error.message) }
 }

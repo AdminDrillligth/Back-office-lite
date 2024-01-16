@@ -256,6 +256,7 @@ export class AdministrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.userHandlersServiceCustomer.getUpdateallUsers();
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
     });
@@ -269,7 +270,7 @@ export class AdministrationComponent implements OnInit{
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{
             this.Accounts.push(account)
-            console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+            // console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
           });
           this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
           this.dataSourceAccounts.paginator = this.paginatorAccounts;
@@ -289,11 +290,13 @@ export class AdministrationComponent implements OnInit{
       this.Accounts.length = 0
       allAccounts.forEach((account:any)=>{
         this.Accounts.push(account)
-        console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+        // console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
       });
-      this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
-      this.resultsLength = this.Accounts.length;
-      this.dataSourceAccounts.paginator = this.paginatorAccounts;
+      setTimeout(() => {
+        this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
+        this.dataSourceAccounts.paginator = this.paginatorAccounts;
+        this.resultsLength = this.Accounts.length;
+      }, 1000);
     }
   }
 
@@ -318,6 +321,7 @@ export class AdministrationComponent implements OnInit{
       width:'80%',
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.userHandlersServiceCustomer.getUpdateallUsers();
       // this.getAdminCustomerUsers();
     });
   }
@@ -471,6 +475,7 @@ export class AdministrationComponent implements OnInit{
       width:'80%'
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.userHandlersServiceCustomer.getUpdateallUsers();
       // this.getAdminCustomerUsers();
     });
   }
@@ -633,6 +638,7 @@ export class AdministrationComponent implements OnInit{
       width:'80%'
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.userHandlersServiceCustomer.getUpdateallUsers();
       // this.getAdminCustomerUsers();
     });
   }
@@ -645,6 +651,7 @@ export class AdministrationComponent implements OnInit{
       width:'80%'
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.userHandlersServiceCustomer.getUpdateallUsers();
       // this.getAdminCustomerUsers();
     });
   }
