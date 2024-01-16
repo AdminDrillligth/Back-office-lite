@@ -143,7 +143,7 @@ const getExercisesList = async (req: any, res: any) => {
             return res.status(200).json({
               response: {
                 result:'success',
-                message:'Requête effectuée avec succès'
+                message:''
               },
               publicExercises:publicExercises,
               // privateExercises:privateExercises,

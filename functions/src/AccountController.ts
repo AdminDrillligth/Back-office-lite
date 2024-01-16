@@ -121,7 +121,7 @@ const createAccount = async (req: any, res: Response) => {
 
     if(dataBodyOfRequest.owner !== undefined){ owner = dataBodyOfRequest.owner}
     if(dataBodyOfRequest.role !== undefined){ role = dataBodyOfRequest.role}
-    
+
     if(dataBodyOfRequest.email){
       email = dataBodyOfRequest.email;
       const userObject = {
@@ -181,7 +181,7 @@ const createAccount = async (req: any, res: Response) => {
         },
       })
     }
-    
+
   } catch(error:any) {
       res.status(500).send({
         result: 'error',
@@ -211,7 +211,7 @@ const getAccountDetails = async (req: any, res: any) => {
             }else {
               let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
               userhandlerProfil.forEach((doc:any) =>{
-              userDetails = doc.data();   
+              userDetails = doc.data();
                 if(userDetails !== ""){
                   return res.status(200).json({
                       response: {
@@ -231,7 +231,7 @@ const getAccountDetails = async (req: any, res: any) => {
               })
             }
        });
-    
+
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 
@@ -312,7 +312,7 @@ const getAccountsList = async (req: any, res: any) => {
           });
         }
       }else{
-        // get the error response ! 
+        // get the error response !
         return res.status(200).json({
           response: {
             result:'noAccountError',
@@ -322,7 +322,7 @@ const getAccountsList = async (req: any, res: any) => {
       }
     })
 
-   
+
     //     jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
     //         if(err) {
     //           return res.status(200).json({
@@ -333,7 +333,7 @@ const getAccountsList = async (req: any, res: any) => {
     //             token:token,
     //           });
     //         }else {
-             
+
       //       }
       //  });
   }
@@ -349,9 +349,16 @@ const updateAccount = async (req:any, res: any) => {
   let dataBodyOfRequest = bodyOfRequest.data;
   let headers = req.headers;
   let token = headers.token;
+  let idUser =dataBodyOfRequest.id;
   let userDetail :any = '';
    try {
-
+    // return res.status(200).json({
+    //       response: {
+    //         result:'success',
+    //         message:''
+    //     },
+    //     dataBodyOfRequest:dataBodyOfRequest
+    // });
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
       if(err) {
 
@@ -361,31 +368,43 @@ const updateAccount = async (req:any, res: any) => {
             message:''
           },
         });
-      }else {
-          let userhandlerProfil = await db.collection('account-handler').where('email', '==', dataBodyOfRequest.email).get();
+      } else {
+          let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
           userhandlerProfil.forEach((doc:any) =>{
-          userDetail = doc.data();   
+          userDetail = doc.data();
+          // return res.status(200).json({
+          //     response: {
+          //     result:'success',
+          //     message:''
+          //   },
+          //   userDetail:userDetail
+          // });
+          let idOfUser = doc.id;
           if(userDetail !== ""){
-            let idOfUser = doc.id;  
-            // if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
+           
+          //   // if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
             if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
             if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }
             if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.fullName }
             if(dataBodyOfRequest.avatarURL !== undefined){ userDetail.avatarURL = dataBodyOfRequest.avatarURL }
             if(dataBodyOfRequest.role !== undefined){ userDetail.role = dataBodyOfRequest.role }
+                if(dataBodyOfRequest.personalInfo !== undefined){
+                    if(dataBodyOfRequest.personalInfo.birthdate !== undefined){ userDetail.personalInfo.birthdate = dataBodyOfRequest.personalInfo.birthdate }
+                    if(dataBodyOfRequest.personalInfo.simpleBirthdate !== undefined){ userDetail.personalInfo.simpleBirthdate = dataBodyOfRequest.personalInfo.simpleBirthdate }
+                    if(dataBodyOfRequest.personalInfo.address1 !== undefined){ userDetail.personalInfo.address1 = dataBodyOfRequest.personalInfo.address1 }
+                    if(dataBodyOfRequest.personalInfo.address2 !== undefined){ userDetail.personalInfo.address2 = dataBodyOfRequest.personalInfo.address2 }
+                    if(dataBodyOfRequest.personalInfo.zip !== undefined){ userDetail.personalInfo.zip = dataBodyOfRequest.personalInfo.zip }
+                    if(dataBodyOfRequest.personalInfo.city !== undefined){ userDetail.personalInfo.city = dataBodyOfRequest.personalInfo.city }
+                    if(dataBodyOfRequest.personalInfo.region !== undefined){ userDetail.personalInfo.region = dataBodyOfRequest.personalInfo.region }
+                    if(dataBodyOfRequest.personalInfo.phone !== undefined){ userDetail.personalInfo.phone = dataBodyOfRequest.personalInfo.phone }
+                    if(dataBodyOfRequest.personalInfo.comment !== undefined){ userDetail.personalInfo.comment = dataBodyOfRequest.personalInfo.comment }
+                }
+                if(dataBodyOfRequest.privileges !== undefined){
+                      if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
 
-            if(dataBodyOfRequest.personalInfo.birthdate !== undefined){ userDetail.personalInfo.birthdate = dataBodyOfRequest.personalInfo.birthdate }
-            if(dataBodyOfRequest.personalInfo.simpleBirthdate !== undefined){ userDetail.personalInfo.simpleBirthdate = dataBodyOfRequest.personalInfo.simpleBirthdate }
-            if(dataBodyOfRequest.personalInfo.address1 !== undefined){ userDetail.personalInfo.address1 = dataBodyOfRequest.personalInfo.address1 }
-            if(dataBodyOfRequest.personalInfo.address2 !== undefined){ userDetail.personalInfo.address2 = dataBodyOfRequest.personalInfo.address2 }
-            if(dataBodyOfRequest.personalInfo.zip !== undefined){ userDetail.personalInfo.zip = dataBodyOfRequest.personalInfo.zip }
-            if(dataBodyOfRequest.personalInfo.city !== undefined){ userDetail.personalInfo.city = dataBodyOfRequest.personalInfo.city }
-            if(dataBodyOfRequest.personalInfo.region !== undefined){ userDetail.personalInfo.region = dataBodyOfRequest.personalInfo.region }
-            if(dataBodyOfRequest.personalInfo.phone !== undefined){ userDetail.personalInfo.phone = dataBodyOfRequest.personalInfo.phone }
-            if(dataBodyOfRequest.personalInfo.comment !== undefined){ userDetail.personalInfo.comment = dataBodyOfRequest.personalInfo.comment }
-            if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
-
+                }
+           
             if(dataBodyOfRequest.users !== undefined){ userDetail.users = dataBodyOfRequest.users }
             if(dataBodyOfRequest.staff !== undefined){ userDetail.staff = dataBodyOfRequest.staff }
             if(dataBodyOfRequest.econes !== undefined){ userDetail.econes = dataBodyOfRequest.econes }
@@ -395,7 +414,7 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
             userDetail.update = DateString;
             userDetail.updateIso = isoDateString;
-            const account_handler = db.collection('account-handler'); 
+            const account_handler = db.collection('account-handler');
             account_handler.doc(idOfUser).update(userDetail).then((ref:any) => {
                 return res.status(200).json({
                   response: {
