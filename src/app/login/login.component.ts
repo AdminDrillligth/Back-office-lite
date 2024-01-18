@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+// import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.service';
 import { HttpClient, HttpHeaders  } from '@angular/common/http';
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit{
     public dialog: MatDialog,
     private http:HttpClient,
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
-    private afAuth: AngularFireAuth,
+    // private afAuth: AngularFireAuth,
     private router: Router
   ){}
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -55,10 +55,10 @@ export class LoginComponent implements OnInit{
 
   getIPAddress()
   {
-    this.http.get("http://api.ipify.org/?format=json").subscribe((res:any)=>{
-      this.ipAddress = res.ip;
-      console.log('IP ADRESS : !',this.ipAddress)
-    });
+    // this.http.get("http://api.ipify.org/?format=json").subscribe((res:any)=>{
+    //   this.ipAddress = res.ip;
+    //   console.log('IP ADRESS : !',this.ipAddress)
+    // });
   }
 
   doLogin(){
@@ -128,16 +128,16 @@ export class LoginComponent implements OnInit{
     //     alert('A password reset link has been sent to your email address'),
     //      (rejectionReason:any) => alert(rejectionReason))
     //   .catch(e => alert('An error occurred while attempting to reset your password'));
-    this.afAuth.sendPasswordResetEmail(result).then(
-      () => {
-        alert('A password reset link has been sent to your email address')
-        // success, show some message
-      },
-      err => {
-        alert('error email address')
-        // handle errors
-      }
-    );
+    // this.afAuth.sendPasswordResetEmail(result).then(
+    //   () => {
+    //     alert('A password reset link has been sent to your email address')
+    //     // success, show some message
+    //   },
+    //   err => {
+    //     alert('error email address')
+    //     // handle errors
+    //   }
+    // );
     });
   }
 }

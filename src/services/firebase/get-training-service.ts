@@ -40,8 +40,8 @@ export class trainingService {
       this.firestore.getexerciseOfUser().subscribe((docSnap: any) => {
         this.cardFireStore.length =0;
             docSnap.forEach((e:any) => {
-            console.log('LES DATAS DES EXOS DE L\'USER',e.data())
-            console.log(e.id)
+            // console.log('LES DATAS DES EXOS DE L\'USER',e.data())
+            // console.log(e.id)
             let array = {id:e.id,data:e.data()}
             this.cardFireStore.push(array);
         });

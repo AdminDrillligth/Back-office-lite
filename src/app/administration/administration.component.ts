@@ -373,9 +373,67 @@ export class AdministrationComponent implements OnInit{
       resp.subscribe((e:any) =>{
         console.log('LA RESP : ',e.account)
         this.ProfilAccount = e.account;
+        // users
+        this.ProfilAccount.users.forEach((user:any, index:number)=>{
+          console.log('le user: ', user.id, index)
+          this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+            resp.subscribe((e:any) =>{
+              console.log('le detail du user :! ', e.account)
+              user = e.account;
+              this.ProfilAccount.users[index] = e.account
+              console.log(this.ProfilAccount.users)
+            })
+          })
+        })
+        // staff
+        this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+          console.log('le staff: ', staff.id, index)
+          this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+            resp.subscribe((e:any) =>{
+              console.log('le detail du staff :! ', e.account)
+              staff = e.account;
+              this.ProfilAccount.staff[index] = e.account
+              console.log(this.ProfilAccount.staff)
+            })
+          })
+        })
       })
     });
+  }
 
+
+  updateUsersOfProfilAccount(){
+    console.log('we gone to update datas of users')
+    this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        console.log('LA RESP : ',e.account)
+        this.ProfilAccount = e.account;
+        // users
+        this.ProfilAccount.users.forEach((user:any, index:number)=>{
+          console.log('le user: ', user.id, index)
+          this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+            resp.subscribe((e:any) =>{
+              console.log('le detail du user :! ', e.account)
+              user = e.account;
+              this.ProfilAccount.users[index] = e.account
+              console.log(this.ProfilAccount.users)
+            })
+          })
+        })
+        // staff
+        this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+          console.log('le staff: ', staff.id, index)
+          this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+            resp.subscribe((e:any) =>{
+              console.log('le detail du staff :! ', e.account)
+              staff = e.account;
+              this.ProfilAccount.staff[index] = e.account
+              console.log(this.ProfilAccount.staff)
+            })
+          })
+        })
+      })
+    });
   }
 
 
@@ -639,6 +697,7 @@ export class AdministrationComponent implements OnInit{
     });
     dialogRef.afterClosed().subscribe(result => {
       this.userHandlersServiceCustomer.getUpdateallUsers();
+      this.updateUsersOfProfilAccount()
       // this.getAdminCustomerUsers();
     });
   }
@@ -652,6 +711,7 @@ export class AdministrationComponent implements OnInit{
     });
     dialogRef.afterClosed().subscribe(result => {
       this.userHandlersServiceCustomer.getUpdateallUsers();
+      this.updateUsersOfProfilAccount()
       // this.getAdminCustomerUsers();
     });
   }
@@ -1350,8 +1410,8 @@ export class DialogCreateUser implements OnInit{
           console.log('REAL CREATE : ',this.data, data)
           this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
             resp.subscribe((response:any)=>{
-              console.log('la resp du add user : ! ', response.userObject.id)
-              this.data.users.push(response.userObject.id)
+              console.log('la resp du add user : ! ', response)
+              this.data.users.push({id:response.account.id})
               this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
                   console.log('la resp du update user owner: ! ', response)
@@ -1636,8 +1696,8 @@ export class DialogCreateStaff implements OnInit{
           console.log('STAFF : ! ',this.data, data)
           this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
             resp.subscribe((response:any)=>{
-              console.log('la resp du add user : ! ', response.userObject.id)
-              this.data.staff.push(response.userObject.id)
+              console.log('la resp du add user : ! ', response.account.id)
+              this.data.staff.push({id:response.account.id})
               this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
                   console.log('la resp du update staff owner: ! ', response)

@@ -1,5 +1,5 @@
 // import { Response } from "express"
-// import { db } from './config/firebase'
+import { db } from './config/firebase'
 // import * as functions from 'firebase-functions'
 // import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
@@ -12,25 +12,29 @@ const createSession  = async (req: any, res: any) => {
     let reqs = req;
     let headers = reqs.headers;
     let token = headers.token;
+    let body = reqs.body;
+    // let status_private = false;
+    const json = JSON.parse(body);
     try {
-      let decodeds: any;
-
       jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
           if(err) {
-            decodeds = 'err';
             return res.status(200).json({
-              status:'Votre token a expiré',
-              token:token,
-              decoded:decodeds
+              response: {
+                result:'expiredTokenError',
+                message:''
+              },
             });
            }else {
-            decodeds = 'no error';
+            const session_handler = db.collection('session-handler'); 
+            session_handler.doc(json.json.header.id).set(json.json).then((ref:any) => {
             return res.status(200).json({
-              status:'votre requetes est exécutée avec succés',
-
-              token: token,
-              decoded: decodeds 
+              response: {
+                result:'success',
+                message:''
+              },
+              session:json.json
             });
+          })
         }
       });
     } catch(error:any) { return res.status(500).json(error.message) }
@@ -38,8 +42,6 @@ const createSession  = async (req: any, res: any) => {
 
 
 // ON RECUPERE LA LISTE DES ADMINS VIA GET
-// REQUEST TEMPLATE
-// JUST BEARER TOKEN
 const getSessionDetails = async (req: any, res: any) => {
 
   let reqs = req;
@@ -47,28 +49,28 @@ const getSessionDetails = async (req: any, res: any) => {
   let token = headers.token;
 //   let username = headers.username
   try {
-    let decodeds: any;
-// // //     const allUsers: any[] = [];
-// // //     const querySnapshot = await db.collection('exercises-handler').get();
+// // //     const allSessions: any[] = [];
+// // //     const querySnapshot = await db.collection('session-handler').get();
     jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
         if(err) {
-          decodeds = 'err';
           return res.status(200).json({
-            status:'Votre token a expiré',
-            token:token,
-            decoded:decodeds
+            response: {
+              result:'expiredTokenError',
+              message:''
+            },
+
           });
         }else {
-          decodeds = 'no error';
 // //           querySnapshot.forEach((doc: any) => {
 // //             allUsers.push({data:doc.data(), id: doc.id});
 // //           });
           return res.status(200).json({
-            status:'votre requetes est exécutée avec succés',
+            response: {
+              result:'success',
+              message:''
+            },
             // allUsers: allUsers,
-            token: token,
             // username:username,
-            decoded: decodeds 
           });
         }
     });
@@ -83,26 +85,26 @@ const getSessionsList = async (req: any, res: any) => {
     let token = headers.token;
     // let username = headers.username;
     try {
-      let decodeds: any;
-    //   const allExercisesOfUser: any[] = [];
-    //   const querySnapshot = await db.collection('exercises-handler').get();
+      const allSessionsOfUser: any[] = [];
+      const querySnapshot = await db.collection('session-handler').get();
       jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
           if(err) {
-            decodeds = 'err';
             return res.status(200).json({
-              status:'Votre token a expiré',
-              token:token,
-              decoded:decodeds
+              response: {
+                result:'expiredTokenErrror',
+                message:''
+              },
             });
           }else {
-            decodeds = 'no error';
-            // querySnapshot.forEach((doc: any) => {
-            //   allExercisesOfUser.push({data:doc.data(), id: doc.id});
-            // });
+            querySnapshot.forEach((doc: any) => {
+              allSessionsOfUser.push(doc.data());
+            });
             return res.status(200).json({
-              status:'votre requetes est exécutée avec succés',
-              token: token,
-              decoded: decodeds 
+              response: {
+                result:'success',
+                message:''
+              },
+              publicSessions:allSessionsOfUser
             });
           }
      });
@@ -114,23 +116,21 @@ const getSessionsList = async (req: any, res: any) => {
     let headers = reqs.headers;
     let token = headers.token;
     try {
-      let decodeds: any;
       jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
         if(err) {
-          decodeds = 'err';
           return res.status(200).json({
-            status:'Votre token a expiré',
-            token:token,
-            decoded:decodeds
+            response: {
+              result:'expiredTokenError',
+              message:''
+            },
           });
         }else {
-          decodeds = 'no error';
 
           return res.status(200).json({
-            status:'votre requetes est exécutée avec succés',
-
-            token: token,
-            decoded: decodeds 
+            response: {
+              result:'success',
+              message:''
+            },
           });
         }
       });
@@ -145,8 +145,7 @@ const getSessionsList = async (req: any, res: any) => {
     let headers = reqs.headers;
     let token = headers.token;
     try {
-      let decodeds: any;
-//       // const userCollection = db.collection('account-handler').doc(id)
+//       // const userCollection = db.collection('session-handler').doc(id)
 //       // await userCollection.delete().catch((error:any) => {
 //       //   return res.status(400).json({
 //       //     status: 'error',
@@ -155,22 +154,21 @@ const getSessionsList = async (req: any, res: any) => {
 //       // })
       jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
         if(err) {
-          decodeds = 'err';
           return res.status(200).json({
-            status:'Votre token a expiré',
-            token:token,
-            decoded:decodeds
+            response: {
+              result:'expiredTokenError',
+              message:''
+            },
           });
         }else {
-          decodeds = 'no error';
 // //           querySnapshot.forEach((doc: any) => {
 // //             allUsers.push({data:doc.data(), id: doc.id});
 // //           });
           return res.status(200).json({
-            status:'votre requetes est exécutée avec succés',
-            // allUsers: allUsers,
-            token: token,
-            decoded: decodeds 
+            response: {
+              result:'success',
+              message:''
+            },
           });
         }
       });

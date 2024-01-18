@@ -142,38 +142,38 @@
       <div *ngIf="ProfilAccount.staff.length > 0" #staff>
         <h3 style="margin-left: 30px ;">Staff Technique</h3>
 
-        <!-- <table class="table-admin table align-middle mb-0 bg-white">
+        <table class="table-admin table align-middle mb-0 bg-white">
           <thead class="bg-light">
             <tr>
               <th>Nom</th>
-              <th>Discipline(s)</th>
-              <th>Objectif(s)</th>
+              <!-- <th>Discipline(s)</th>
+              <th>Objectif(s)</th> -->
               <th>Actions</th>
               <th>Modération</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="size-tr" *ngFor="let accountStaff of ProfilAccount.staff">
+            <tr class="size-tr" *ngFor="let staff of ProfilAccount.staff">
               <td>
                 <div class="d-flex align-items-center">
-                  <img *ngIf="!accountStaff.avatarimages"
+                  <img *ngIf="!staff.avatarimages"
                       src="https://mdbootstrap.com/img/new/avatars/8.jpg"
                       alt=""
                       style="width: 45px; height: 45px"
                       class="rounded-circle"
                       />
-                      <img *ngIf="accountStaff.avatarimages"
+                      <img *ngIf="staff.avatarimages"
                       alt=""
                       style="width: 45px; height: 45px"
                       class="rounded-circle-personal"
-                      src="{{accountStaff.avatarimages}}" />
+                      src="{{staff.avatarimages}}" />
                   <div class="ms-3">
-                    <p class="fw-bold mb-1">{{accountStaff.name+' '+accountStaff.firstname }}</p>
-                    <p class="text-muted mb-0">{{accountStaff.email}}</p>
+                    <p class="fw-bold mb-1">{{staff.fullName }}</p>
+                    <p class="text-muted mb-0">{{staff.email}}</p>
                   </div>
                 </div>
               </td>
-            <th>
+            <!-- <th>
               <mat-form-field>
                 <mat-label>Disciplines</mat-label>
                 <mat-select  >
@@ -196,15 +196,15 @@
                   <mat-option disabled *ngFor="let trained of accountStaff.traineds" [value]="trained">{{trained.name +''+trained.firstname}}</mat-option>
                 </mat-select>
               </mat-form-field>
-              </th>
+              </th> -->
             <td>
-              <button (click)="seeStaffProfil(accountStaff)" type="button" class="btn btn-link btn-sm btn-rounded">
+              <button (click)="seeStaffProfil(staff)" type="button" class="btn btn-link btn-sm btn-rounded">
                 <mat-icon> visibility</mat-icon>
               </button>
-              <button (click)="updateAccountStaff(ProfilAccount, accountStaff)" type="button" class="btn btn-link btn-sm btn-rounded">
+              <button (click)="updateAccountStaff(ProfilAccount, staff)" type="button" class="btn btn-link btn-sm btn-rounded">
                 <mat-icon>create</mat-icon>
               </button>
-              <button (click)="sendResetPasswordStaff(accountStaff)" type="button" class="btn btn-link btn-sm btn-rounded">
+              <button (click)="sendResetPasswordStaff(staff)" type="button" class="btn btn-link btn-sm btn-rounded">
                 <mat-icon>mail</mat-icon>
               </button>
           </td>
@@ -213,7 +213,7 @@
           </td>
           </tr>
           </tbody>
-        </table> -->
+        </table> 
       </div>
       <br>
             <!-- *ngIf="Econe.SeeQrCode" -->
@@ -239,75 +239,75 @@
         </div>
         <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Fermer</button>
       </div>
-      <!-- <div *ngIf="ProfilAccount.traineds.length > 0"  #users>
+      <div *ngIf="ProfilAccount.users.length > 0"  #users>
         <h3 style="margin-left: 30px ;">Utilisateurs</h3>
         <table class="table-admin table align-middle mb-0 bg-white">
           <thead class="bg-light">
             <tr>
               <th>Nom</th>
               <th>Inscription</th>
-              <th>Discipline(s)</th>
-              <th>Objectif(s)</th>
+              <!-- <th>Discipline(s)</th> -->
+              <!-- <th>Objectif(s)</th> -->
               <th>Actions</th>
               <th>Modération</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="size-tr" *ngFor="let accountTraineds of ProfilAccount.traineds">
+            <tr class="size-tr" *ngFor="let user of ProfilAccount.users">
               <td>
                 <div class="d-flex align-items-center">
-                  <img *ngIf="!accountTraineds.avatarimages"
+                  <img *ngIf="!user.avatarimages"
                       src="https://mdbootstrap.com/img/new/avatars/8.jpg"
                       alt=""
                       style="width: 45px; height: 45px"
                       class="rounded-circle"
                       />
-                      <img *ngIf="accountTraineds.avatarimages"
+                      <img *ngIf="user.avatarimages"
                       alt=""
                       style="width: 45px; height: 45px"
                       class="rounded-circle-personal"
-                      src="{{accountTraineds.avatarimages}}" />
+                      src="{{user.avatarimages}}" />
                   <div class="ms-3">
-                    <p class="fw-bold mb-1">{{accountTraineds.name+' '+accountTraineds.firstname }}</p>
-                    <p class="text-muted mb-0">{{accountTraineds.email}}</p>
+                    <p class="fw-bold mb-1">{{user.fullName }}</p>
+                    <p class="text-muted mb-0">{{user.email}}</p>
                   </div>
                 </div>
               </td>
-              <th>{{accountTraineds.date}}</th>
+              <th>{{user.date}}</th>
               <th>
-              <mat-form-field>
+              <!-- <mat-form-field>
                 <mat-label>Disciplines</mat-label>
                 <mat-select  >
                   <mat-option disabled *ngFor="let itemDiscipline of accountTraineds.discipline" [value]="itemDiscipline">{{itemDiscipline}}</mat-option>
                 </mat-select>
-              </mat-form-field>
+              </mat-form-field> -->
             </th>
-              <th>
+              <!-- <th>
               <mat-form-field>
                 <mat-label>Objectifs</mat-label>
                 <mat-select  >
                   <mat-option disabled *ngFor="let itemObjectif of accountTraineds.objectif" [value]="itemObjectif">{{itemObjectif}}</mat-option>
                 </mat-select>
               </mat-form-field>
-              </th>
+              </th> -->
               <td>
-              <button (click)="seeTrainedProfil(accountTraineds)" type="button" class="btn btn-link btn-sm btn-rounded">
+              <button (click)="seeTrainedProfil(user)" type="button" class="btn btn-link btn-sm btn-rounded">
                 <mat-icon> visibility</mat-icon>
               </button>
-              <button (click)="updateAccountTrained(ProfilAccount, accountTraineds)" type="button" class="btn btn-link btn-sm btn-rounded">
+              <button (click)="updateAccountTrained(ProfilAccount, user)" type="button" class="btn btn-link btn-sm btn-rounded">
                 <mat-icon>create</mat-icon>
               </button>
-              <button (click)="sendResetPasswordTrained(accountTraineds)" type="button" class="btn btn-link btn-sm btn-rounded">
+              <button (click)="sendResetPasswordTrained(user)" type="button" class="btn btn-link btn-sm btn-rounded">
                 <mat-icon>mail</mat-icon>
               </button>
           </td>
           <td >
-            <mat-checkbox class="checkbox-color" [disabled]="true"  [(ngModel)]="accountTraineds.moderate"></mat-checkbox>
+            <mat-checkbox class="checkbox-color" [disabled]="true"  [(ngModel)]="user.moderate"></mat-checkbox>
           </td>
           </tr>
           </tbody>
         </table> 
-      </div> -->
+      </div> 
 
       <div class="container-graphique">
         <div>

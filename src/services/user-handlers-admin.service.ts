@@ -68,8 +68,8 @@ export class UserHandlersServiceAdmin {
     this.user = emailFormControl;
     let warning =  'false';
     console.log('Last Update ??', this.user)
-    localStorage.setItem('user', JSON.stringify({email:emailFormControl, timeStamp: '', timerMilli:1200000}));
-    return new Promise<any>((resolve, reject) => {
+    // localStorage.setItem('user', JSON.stringify({email:emailFormControl, timeStamp: '', timerMilli:1200000}));
+    // return new Promise<any>((resolve, reject) => {
     // this.db.collection("account-handler", ref => ref.where('email', '==', emailFormControl)).get().subscribe((arg: any) =>
     //    arg.docs.forEach((e:any) => {
     //       console.log("Data : ", arg.docs[0].data());
@@ -112,7 +112,7 @@ export class UserHandlersServiceAdmin {
     //   })
     //   )
 
-    })
+    // })
   }
 
   sendCsvToApi(body:any){

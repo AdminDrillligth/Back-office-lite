@@ -1,16 +1,16 @@
 
 <div class="background-modal">
-  <h1 style="color:white;">Charger un Exercice</h1>
+<h1 style="color:white;">Charger une session</h1>
 <mat-dialog-content class="invisible-scrollbar mat-typography">
   <input type="file" class="file-upload" (change)="onchangeInput($event)" accept=".json">
 </mat-dialog-content>
 <mat-dialog-content class="invisible-scrollbar mat-typography">
   <input type="file" class="file-upload" (change)="onchangeInputImg($event)" accept="image/png, image/jpeg">
 </mat-dialog-content>
-<mat-radio-group aria-label="Select an option">
+<!-- <mat-radio-group aria-label="Select an option">
   <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_private" value="status_private">Privé</mat-radio-button>
   <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_public" value="status_public">Public</mat-radio-button>
-</mat-radio-group>
+</mat-radio-group> -->
 
 <mat-dialog-actions align="end">
   <!-- <button class="btn-delete" (click)="addVideoToExercice(data)" mat-button mat-dialog-close>Ajouter une vidéo</button> -->

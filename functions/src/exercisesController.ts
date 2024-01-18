@@ -45,7 +45,7 @@ const createExercise  = async (req: any, res: any) => {
                   },
                   json:json.json,
                   // status_private:status_private,
-                  token: token,
+                  // token: token,
                   // exercise_handler:exercise_handler,
                   // decoded: decodeds 
                 });
@@ -116,10 +116,10 @@ const getExercisesList = async (req: any, res: any) => {
     let allExercises:any = [];
     let publicExercises:any=[];
     // let privateExercises:any=[];
-    // let token = headers.token;
-    let username = headers.username;
+    let token = headers.token;
+    let idUser = headers.id;
     try {
-      // let decodeds: any;
+
       // const allExercisesOfUser: any[] = [];
       const querySnapshot = await db.collection('exercise-handler').get();
       querySnapshot.forEach((doc: any) => {
@@ -130,16 +130,15 @@ const getExercisesList = async (req: any, res: any) => {
           publicExercises.push(exercise.data)
         }
       });
-      // jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
-      //     if(err) {
-      //       decodeds = 'err';
-      //       return res.status(200).json({
-      //         status:'Votre token a expiré',
-      //         token:token,
-      //         decoded:decodeds
-      //       });
-      //     }else {
-            // decodeds = 'no error';
+      jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
+          if(err) {
+            return res.status(200).json({
+              response: {
+                result:'expiredTokenError',
+                message:''
+              },
+            });
+          }else {
             return res.status(200).json({
               response: {
                 result:'success',
@@ -150,11 +149,10 @@ const getExercisesList = async (req: any, res: any) => {
               numberOfPublicExercises:publicExercises.length,
               // numberOfPrivateExercises:privateExercises.length,
               // token: token,
-              username:username,
-              // decoded: decodeds 
+              idUser:idUser,
             });
-    //       }
-    //  });
+          }
+     });
     } catch(error:any) { return res.status(500).json(error.message) }
   }
 
