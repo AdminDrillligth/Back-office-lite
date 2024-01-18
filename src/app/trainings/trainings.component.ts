@@ -45,10 +45,12 @@ export class TrainingsComponent implements OnInit {
  
   recentTrainings:any = { type: 'recent', cards: []};
   publicTrainings:any = { type: 'public', cards: []};
+  privateTrainings:any = { type: 'private', cards: []};
   categoryOneTrainings:any = { type: 'Pré-formation', cards:[]};
   categoryTwoTrainings:any = { type: 'Formation', cards:[]};
   categoryTreeTrainings:any = { type: 'Seniors', cards: []};
   publicSessions:any= { type: 'public', cards: []};
+  privateSessions:any= { type: 'private', cards: []};
   chooseType:string='Exercices';
   audience:string='public';
   
