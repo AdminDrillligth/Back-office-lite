@@ -29,18 +29,18 @@ export class ExerciseService {
   }
 
 
-  async getExerciceList(){
+  async getExerciceList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les exercices ! ')
-    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token}})
+    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id}})
     return response;
   }
 
 
-  async getSessionList(){
+  async getSessionList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les Sessions ! ')
-    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token}})
+    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id}})
     return response;
   }
 

@@ -288,7 +288,7 @@ const getAccountsList = async (req: any, res: any) => {
                     fullName:account.data.fullName,
                     id:account.data.id,
                     role:account.data.role
-                  })
+                  });
               });
                 return res.status(200).json({
                   response: {

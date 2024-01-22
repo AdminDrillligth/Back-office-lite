@@ -99,6 +99,7 @@ export class PasswordComponent {
           console.log('Le auth:!', authorizationValue)
           // Let save passwordHash with API function
           this.userHandlersServiceCustomer.setPasswordHash(this.email, authorizationValue);
+          this.router.navigate(['dashboard']);
         }
 
         // if( this.code !== undefined){
@@ -108,18 +109,18 @@ export class PasswordComponent {
           
         //   }).catch(error => { console.error(error) });
         // }
-        this.router.navigate(['dashboard']);
+        // this.router.navigate(['dashboard']);
       }
     }
   }
 
 onFormSubmit(){
-  this.router.navigate(['dashboard']);
+  // this.router.navigate(['dashboard']);
 }
 
 onFormSubmitNavigate(){
   // window.location.href='https://drilllight.web.app/';
-  this.router.navigate(['dashboard']);
+  // this.router.navigate(['dashboard']);
 }
 
 

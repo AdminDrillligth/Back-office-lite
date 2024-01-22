@@ -128,7 +128,7 @@ export class AdministrationComponent implements OnInit{
   panelOpenState = false;
   // ,'date'
   displayedColumnsAccounts: string[] = ['firstName', 'role', 'moderation', 'actions'];
-  // 
+  //
   // , 'role', 'licences', 'date', 'actions', 'moderation'
   dataSourceAccounts!: MatTableDataSource<any>;
 
@@ -763,6 +763,7 @@ export class DialogCreateAdmin implements OnInit{
   uploadedImages:any;
   update=false;
   constructor(
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     private utilsService:UtilsService,
     private afAuth: AngularFireAuth,
     private storageServiceMail:storageServiceMail,
@@ -804,7 +805,7 @@ export class DialogCreateAdmin implements OnInit{
     //   zip:this.zip.value,
     //   city:this.city.value,
     //   comment:this.comment.value,
-    //   rights: this.rightsUser, 
+    //   rights: this.rightsUser,
     //   birthdate:this.birthdate,
     //   simpleBirthdate: this.simpleBirthdate,
     //   asAdmin:true
@@ -839,7 +840,12 @@ export class DialogCreateAdmin implements OnInit{
       warning: false
     }
     if(this.update === false){
-      this.userHandlersServiceAdmin.addAccountAdmin(data);
+      // this.userHandlersServiceAdmin.addAccountAdmin(data);
+      this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp', response)
+        })
+      });
     }else{
       console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
       this.fireStoreServiceImages.addImagesOfAdministrator(this.data.id, this.eventImageFile);
@@ -1415,7 +1421,7 @@ export class DialogCreateUser implements OnInit{
               this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
                   console.log('la resp du update user owner: ! ', response)
-                  
+
                 })
               });
             })
@@ -1701,7 +1707,7 @@ export class DialogCreateStaff implements OnInit{
               this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
                   console.log('la resp du update staff owner: ! ', response)
-                  
+
                 })
               });
             })
@@ -1714,7 +1720,7 @@ export class DialogCreateStaff implements OnInit{
       //   date:this.data.trained.date,
       //   update: this.datePipe.transform(this.maDate, 'dd/MM/yyyy'),
       // }}
-      
+
 
     }
     setTimeout(() => {

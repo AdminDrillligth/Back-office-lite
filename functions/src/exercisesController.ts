@@ -36,7 +36,7 @@ const createExercise  = async (req: any, res: any) => {
             // if(json.json.description.status === 'status_private'){
             //   status_private = true;
             // }
-            const exercise_handler = db.collection('exercise-handler'); 
+            const exercise_handler = db.collection('exercise-handler');
             exercise_handler.doc(json.json.header.id).set(json.json).then((ref:any) => {
                 return res.status(200).json({
                   response: {
@@ -47,20 +47,20 @@ const createExercise  = async (req: any, res: any) => {
                   // status_private:status_private,
                   // token: token,
                   // exercise_handler:exercise_handler,
-                  // decoded: decodeds 
+                  // decoded: decodeds
                 });
             });
         }
       });
     } catch(error:any) {
-       return res.status(500).json(error.message) 
+       return res.status(500).json(error.message)
     }
 }
 
 
 // Exercise details
 const getExerciseDetails = async (req: any, res: any) => {
-  // 
+  //
   // let reqs = req;
   // let headers = reqs.headers;
   // let token = headers.token;
@@ -97,7 +97,7 @@ const getExerciseDetails = async (req: any, res: any) => {
   //           ExerciseDetails:ExerciseDetails,
   //           token: token,
   //           username:username,
-  //           decoded: decodeds 
+  //           decoded: decodeds
   //         });
   //       }
   //   });
@@ -107,7 +107,7 @@ const getExerciseDetails = async (req: any, res: any) => {
 
 
 
-// 
+//
 const getExercisesList = async (req: any, res: any) => {
     // Liste des exercises disponibles pour cet utilisateur
     // Tous les exercises publics + les exercises présents en mode privé
@@ -115,7 +115,7 @@ const getExercisesList = async (req: any, res: any) => {
     let headers = reqs.headers;
     let allExercises:any = [];
     let publicExercises:any=[];
-    // let privateExercises:any=[];
+    let privateExercises:any=[];
     let token = headers.token;
     let idUser = headers.id;
     try {
@@ -126,8 +126,18 @@ const getExercisesList = async (req: any, res: any) => {
           allExercises.push({data:doc.data(), id: doc.id});
       });
       allExercises.forEach((exercise:any)=> {
-        if(exercise.data.header.status === 'status_public'){
+        if(exercise.data.header.status === 'public'){
           publicExercises.push(exercise.data)
+          publicExercises.sort()
+        }else{
+          if(idUser !== 'null'){
+            if(exercise.data.header.owner  !== undefined){
+              if(idUser === exercise.data.header.owner.id){
+                privateExercises.push(exercise.data)
+                privateExercises.sort()
+              }
+            }
+          }
         }
       });
       jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
@@ -145,9 +155,9 @@ const getExercisesList = async (req: any, res: any) => {
                 message:''
               },
               publicExercises:publicExercises,
-              // privateExercises:privateExercises,
+              privateExercises:privateExercises,
               numberOfPublicExercises:publicExercises.length,
-              // numberOfPrivateExercises:privateExercises.length,
+              numberOfPrivateExercises:privateExercises.length,
               // token: token,
               idUser:idUser,
             });
@@ -177,7 +187,7 @@ const getExercisesList = async (req: any, res: any) => {
             response:'votre requetes est exécutée avec succés',
 
             token: token,
-            decoded: decodeds 
+            decoded: decodeds
           });
         }
       });
@@ -217,17 +227,17 @@ const getExercisesList = async (req: any, res: any) => {
             response:'votre requetes est exécutée avec succés',
             // allUsers: allUsers,
             token: token,
-            decoded: decodeds 
+            decoded: decodeds
           });
         }
       });
     }
-    catch(error:any) { 
-      return res.status(500).json(error.message) 
+    catch(error:any) {
+      return res.status(500).json(error.message)
     }
   }
 
-  // 
+  //
  export { createExercise, getExerciseDetails , getExercisesList, updateExercise, deleteExercise }
 
 

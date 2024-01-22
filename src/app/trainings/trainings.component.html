@@ -59,6 +59,28 @@
       </mat-card-actions>
     </mat-card>
   </div>
+
+
+  
+  <h4 *ngIf="privateTrainings.cards.length > 0" class="title">Exercices Privés</h4>
+  <div  class="row scroll">
+    <mat-card  *ngFor="let item of privateTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
+      <mat-card-header>
+        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+      </mat-card-header>
+      <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privé</span>
+      <div style="height: 180px;
+      overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
+      <mat-card-content>
+        <p class="invisible-scrollbar paragraphe">{{item.header.description}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div mat-card-avatar class="header-image"></div>
+        <p *ngIf="item.author === undefined" class="paragraph-card" >Drilllight</p>
+        <button (click)="openDialog(item)" class="btn-card" mat-button><mat-icon> list_alt</mat-icon></button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
   <!-- "Pré-formation" -->
   <!-- <h4 *ngIf="categoryOneTrainings.cards.length > 0" class="title">Pré-formation</h4>
   <div  class="row scroll">
@@ -116,13 +138,32 @@
   </div> -->
   </div>
   <div *ngIf="chooseType === 'Sessions'">
-    <h4 *ngIf="publicSessions.cards.length > 0" class="title">Sessions</h4>
+    <h4 *ngIf="publicSessions.cards.length > 0" class="title">Sessions publiques</h4>
   <div  class="row scroll">
     <mat-card  *ngFor="let item of publicSessions.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
         <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
+      <div style="height: 180px;
+      overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
+      <mat-card-content>
+        <p class="invisible-scrollbar paragraphe">{{item.header.description}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <div mat-card-avatar class="header-image"></div>
+        <p *ngIf="item.author === undefined" class="paragraph-card" >Drilllight</p>
+        <button (click)="openDialog(item)" class="btn-card" mat-button><mat-icon> list_alt</mat-icon></button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <h4 *ngIf="privateSessions.cards.length > 0" class="title">Sessions privées</h4>
+  <div  class="row scroll">
+    <mat-card  *ngFor="let item of privateSessions.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
+      <mat-card-header>
+        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+      </mat-card-header>
+      <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privées</span>
       <div style="height: 180px;
       overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
       <mat-card-content>

@@ -83,10 +83,12 @@ const getSessionsList = async (req: any, res: any) => {
     let reqs = req;
     let headers = reqs.headers;
     let token = headers.token;
+    let idUser = headers.id;
     // let username = headers.username;
     try {
       const allSessionsOfUser: any[] = [];
       let allSessionsPublic: any = [];
+      let allSessionsPrivate: any = [];
       const querySnapshot = await db.collection('session-handler').get();
       jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
           if(err) {
@@ -102,8 +104,16 @@ const getSessionsList = async (req: any, res: any) => {
               allSessionsOfUser.push(doc.data());
             });
             allSessionsOfUser.forEach((session:any)=> {
-              if(session.header.status === 'status_public'){
+              if(session.header.status === 'public'){
                 allSessionsPublic.push(session)
+              }else{
+                if(idUser !== 'null'){
+                  if(session.header.owner  !== undefined){
+                    if(idUser === session.header.owner.id){
+                      allSessionsPrivate.push(session)
+                    }
+                  }
+                }
               }
             });
             return res.status(200).json({
@@ -111,7 +121,8 @@ const getSessionsList = async (req: any, res: any) => {
                 result:'success',
                 message:''
               },
-              publicSessions:allSessionsPublic
+              publicSessions:allSessionsPublic,
+              privateSessions:allSessionsPrivate
             });
           }
      });
