@@ -11,7 +11,7 @@ import { createAccount, getAccountDetails, getAccountsList, updateAccount, delet
 import { createEcone, getEconeDetails, updateEcone, deleteEcone } from './econesController';
 import { connectToAccount } from './loggerController';
 import { createExercise, getExerciseDetails, getExercisesList, updateExercise, deleteExercise } from './exercisesController';
-import { createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
+import { testgetSessionsList, createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
 import { createResult } from './resultsController';
 
@@ -98,6 +98,7 @@ app.delete('/deleteExercise', deleteExercise)
 //
 app.post('/createSession', createSession)
 app.get('/getSessionDetails', getSessionDetails)
+app.get('/testgetSessionsList', testgetSessionsList)
 app.get('/getSessionsList', getSessionsList)
 app.put('/updateSession', updateSession)
 app.delete('/deleteSession', deleteSession)

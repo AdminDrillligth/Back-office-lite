@@ -94,6 +94,12 @@ const createAccount = async (req: any, res: Response) => {
     let warning = false;
     let owner = "";
     let role = "user";
+    let id = "";
+    if(dataBodyOfRequest.passwordHash !== undefined){
+      id = dataBodyOfRequest.id;
+    }else{
+      id = newUuid;
+    }
     if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
     if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
     if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
@@ -125,7 +131,7 @@ const createAccount = async (req: any, res: Response) => {
     if(dataBodyOfRequest.email){
       email = dataBodyOfRequest.email;
       const userObject = {
-        id: newUuid,
+        id: id,
         owner:owner,
         role:role,
         email: email,
@@ -265,6 +271,7 @@ const getAccountsList = async (req: any, res: any) => {
                   UsersOfAccount.push({
                     fullName:account.data.fullName,
                     id:account.data.id,
+                    email:account.data.email,
                     role:account.data.role
                   })
               });
@@ -287,6 +294,7 @@ const getAccountsList = async (req: any, res: any) => {
                   UsersOfAccount.push({
                     fullName:account.data.fullName,
                     id:account.data.id,
+                    email:account.data.email,
                     role:account.data.role
                   });
               });
@@ -299,6 +307,9 @@ const getAccountsList = async (req: any, res: any) => {
                 });
             }
             if(user.role === 'staff'){
+
+            }
+            if(user.role === 'user'){
 
             }
             if(user.role === null || user.role === undefined){
@@ -351,7 +362,7 @@ const updateAccount = async (req:any, res: any) => {
           userDetail = doc.data();
           let idOfUser = doc.id;
           if(userDetail !== ""){
-          //   // if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
+            if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
             if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
             if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }

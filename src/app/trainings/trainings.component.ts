@@ -408,18 +408,18 @@ export class ContentUploadDialog implements OnInit{
       if(this.dataJson.header.status === 'private'){
         console.log('On va update un private : ', this.idOfUser, this.userDetailAccount,this.userDetailAccount.trainings )
         console.log('DATA DU JSON : ', this.dataJson )
-        this.userDetailAccount.trainings.push({id:this.dataJson.header.id});
         console.log('On va update un private : ', this.userDetailAccount )
         // update en base
+        this.exerciseService.updateExercise(this.dataJson, this.userDetailAccount.id);
       }
     }else{
-
+      let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+      console.log('LE DETAIL DU USER : ! ',AccountOfUser, uuid)
+      //
+  
+      this.exerciseService.updateExercise(this.dataJson, AccountOfUser.id);
     }
-    let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('LE DETAIL DU USER : ! ',AccountOfUser, uuid)
-    //
-
-    this.exerciseService.updateExercise(this.dataJson, AccountOfUser.id);
+    
   }
 
 }
@@ -521,16 +521,19 @@ export class SessionUploadDialog implements OnInit{
         console.log('DATA DU JSON : ', this.dataJson )
         // this.userDetailAccount.trainings.push({id:this.dataJson.header.id});
         console.log('On va update un private : ', this.userDetailAccount )
+        this.exerciseService.updateSession(this.dataJson, this.userDetailAccount.id);
         // update en base
+      }else{
+
       }
     }else{
+      let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+        console.log('LE DETAIL DU USER : ! ',AccountOfUser, uuid)
+        //
 
+        this.exerciseService.updateSession(this.dataJson, AccountOfUser.id);
     }
-    let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('LE DETAIL DU USER : ! ',AccountOfUser, uuid)
-    //
-
-    this.exerciseService.updateSession(this.dataJson, AccountOfUser.id);
+ 
   }
 
 }

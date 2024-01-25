@@ -32,7 +32,7 @@ export class ExerciseService {
   async getExerciceList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les exercices ! ')
-    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id}})
+    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'1'}})
     return response;
   }
 
@@ -40,7 +40,7 @@ export class ExerciseService {
   async getSessionList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les Sessions ! ')
-    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id}})
+    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id,'publicSessionsChangeCount':'1', 'privateSessionsChangeCount':'2'}})
     return response;
   }
 
