@@ -47,14 +47,14 @@ const createFirmware = async (req: any, res: Response) => {
   //   }
   //   });
   //   // await entry.add(EconeObject)
-  //   return res.status(200).json({
-  //     status: 'success',
-  //     message: 'add Econe Service successfully',
-  //     token: token,
-  //     data: data,
-  //     EconeObject: EconeObject,
-  //     decodeds: decodeds
-  //   });
+    return res.status(200).json({
+      status: 'success',
+      message: 'add Econe Service successfully',
+      // token: token,
+      // data: data,
+      // EconeObject: EconeObject,
+      // decodeds: decodeds
+    });
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
