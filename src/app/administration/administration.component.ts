@@ -33,6 +33,8 @@ import { MatSnackBar, MatSnackBarModule, MatSnackBarRef } from '@angular/materia
 import { GocardlessService } from '../../services/gocardless.service';
 import { StripeServices } from '../../services/stripe.service';
 import { MatAccordion } from '@angular/material/expansion';
+import { FirmWareService } from '../../services/firmware.service';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 type ListType = { title: string; val: number }[];
@@ -218,6 +220,7 @@ export class AdministrationComponent implements OnInit{
 
 
   constructor(
+    private firmWareService:FirmWareService,
     private stripeServices:StripeServices,
     private _snackBar: MatSnackBar,
     private utilsService: UtilsService,
@@ -326,6 +329,68 @@ export class AdministrationComponent implements OnInit{
     });
   }
 
+
+  //chargeZip
+  srCzip:any="";
+  global=false;
+  private=false;
+  onchangeInputZip(zip:any){
+    console.log(zip)
+    const file = zip.target.files[0];
+
+    // Encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        console.log(reader.result);
+        console.log(reader);
+        // this.base64ToBlob(reader.result);
+        this.srCzip = reader.result;
+        this.firmWareService.createFirmware(this.srCzip)
+        // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+    };
+    reader.readAsDataURL(file);
+    
+    // this.unzip();
+
+  }
+
+  selectStatus(event:any){
+    console.log('VALEUR DE CHANGEMENTS : ! ',event.value)
+  }
+
+
+  unzip(){
+    // let blob = this.base64ToBlob(resolved);
+    // let zip = new JSZip();
+    //   zip.loadAsync(blob).then(function(zip) {
+    //     // zip.file("firmware.zip").async("string").then(function (content) {
+    //     //       console.log(content);
+    //     //            // content is the file as a string
+    //     // });
+    // }).catch((e) => {
+
+    // });
+  }
+
+  base64ToBlob(base64:any) {
+    // let json = JSON.parse(base64);
+    // console.log(json)
+    // let binaryString =  window.atob();
+    // let binaryLen = binaryString.length;
+
+    // let ab = new ArrayBuffer(binaryLen);
+    // let ia = new Uint8Array(ab);
+    // for (let i = 0; i < binaryLen; i++) {
+    //    ia[i] = binaryString.charCodeAt(i);
+    // }
+
+    // let bb:any = new Blob([ab]);
+    // bb.lastModifiedDate = new Date();
+    // bb.name = "firmware.zip";
+    // bb.type = "zip";
+    // console.log(bb)
+    // return bb;
+}
 
   selectedCharts :any = []
   Charts :any[]=["Staff/Utilisateurs", "Données Exercices", "Statistiques"];

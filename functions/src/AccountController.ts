@@ -67,6 +67,7 @@ const createAccount = async (req: any, res: Response) => {
   // let token = bodyOfRequest.token;
   // let decodeds:any;
   let newUuid = uuidv4();
+
   try {
     const entry = db.collection('account-handler');
     let email = "";
@@ -95,7 +96,7 @@ const createAccount = async (req: any, res: Response) => {
     let owner = "";
     let role = "user";
     let id = "";
-    if(dataBodyOfRequest.passwordHash !== undefined){
+    if(dataBodyOfRequest.id !== undefined){
       id = dataBodyOfRequest.id;
     }else{
       id = newUuid;

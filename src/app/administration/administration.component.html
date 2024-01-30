@@ -31,7 +31,13 @@
         </mat-card>
       </div>
     </div>
+    <input type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip">
+    <!-- <mat-radio-group aria-label="Select an option"> -->
+      <input type="radio" (click)="selectStatus($event.target)" [checked]="global" value="global">Global
+      <input type="radio" (click)="selectStatus($event.target)" [checked]="private" value="private">Privé
+    <!-- </mat-radio-group> -->
 
+    <button *ngIf="srCzip !== ''"><a href="{{srCzip}}" download="firmware">Lien du firmware</a></button>
   </div>
 
   <div *ngIf="ProfilAccount !== undefined" >
@@ -63,6 +69,7 @@
         </mat-card>
       </div>
     </div>
+
   </div>
   <!-- <div class="container-avatar"><img style="width: 90px!important; position: relative; left: -50px;" src="assets/icons/avatars/man1.svg"></div>
   <div class="container-avatar"><img style="width: 90px!important; position: relative; left: 8px;" src="assets/icons/avatars/man2.svg"></div>

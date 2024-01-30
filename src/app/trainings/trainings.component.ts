@@ -157,7 +157,7 @@ export class TrainingsComponent implements OnInit {
   }
 
   getSessionsList(){
-  console.log(this.userSource)
+  console.log('SESSION : ',this.userSource)
   if(this.userSource !== undefined){
     this.exerciseService.getSessionList(this.userSource.id).then((resp:any)=>{
       resp.subscribe((response:any)=>{
@@ -183,7 +183,9 @@ export class TrainingsComponent implements OnInit {
       })
     });
   }else{
+    console.log('SESSION : ',this.idOfOwner)
     this.exerciseService.getSessionList(this.idOfOwner).then((resp:any)=>{
+      console.log(resp)
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
           console.log('LA RESP DANS SESSIONS : ',response)

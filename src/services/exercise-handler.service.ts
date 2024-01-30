@@ -41,6 +41,7 @@ export class ExerciseService {
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les Sessions ! ')
     let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id,'publicSessionsChangeCount':'1', 'privateSessionsChangeCount':'2'}})
+    console.log(response)
     return response;
   }
 

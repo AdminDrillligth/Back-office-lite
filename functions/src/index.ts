@@ -14,7 +14,7 @@ import { createExercise, getExerciseDetails, getExercisesList, updateExercise, d
 import { testgetSessionsList, createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
 import { createResult } from './resultsController';
-
+import { getFirmware, createFirmware } from './firmwareController';
 
 const fileMiddleware = require('express-multipart-file-parser')
 
