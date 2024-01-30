@@ -19,13 +19,27 @@ export class FirmWareService {
   headers = { 'content-type': 'application/json'};
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
 
-  constructor() { 
+  constructor(
+    private utilsService:UtilsService,
+    private http:HttpClient,
+    private fireStoreServiceImages:FireStoreServiceImages,
+    private datePipe: DatePipe,
+    private db: AngularFirestore
+
+  ) { 
 
 
   }
 
-  createFirmware(zipBase64:any){
+  createFirmware(zipBase64:any, id:any){
+    let token = localStorage.getItem('token') || '{}';
     console.log('ZIP BASE 64 : !',zipBase64)
+    const body = JSON.stringify({zip:zipBase64, id:id});
+    console.log(body);
+    this.http.post(this.baseURL+'createFirmware', body,{'headers':{ 'token': token}}).subscribe((rep:any) =>{
+      console.log('LA REP DU CREATE FIRMWARE : ! ',rep)
+    });
+    
   }
 
   getFirmware(zipBase64:any){

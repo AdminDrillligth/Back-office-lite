@@ -48,16 +48,11 @@ export class ExerciseService {
   updateExercise(json:any, id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('LE TOKEN',token,json,id );
-    // header = 
     const body = JSON.stringify({json:json, id:id});
     console.log(body)
     this.http.post(this.baseURL+'createExercise', body,{'headers':{ 'token': token}}).subscribe((rep:any) =>{
       console.log('LA REP DU CREATE EXERCISE : ! ',rep)
-
-      // let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      // // console.log('LA REP DU ALL USERS : ! ',allAccounts)
-      // this.utilsService.sendRequestGetnewAccount(true);
-    })
+    });
   }
 
   updateSession(json:any, id:any){

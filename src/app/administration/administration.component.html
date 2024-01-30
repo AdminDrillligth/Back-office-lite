@@ -36,7 +36,7 @@
       <input type="radio" (click)="selectStatus($event.target)" [checked]="global" value="global">Global
       <input type="radio" (click)="selectStatus($event.target)" [checked]="private" value="private">Privé
     <!-- </mat-radio-group> -->
-
+      <input type="text" (keyup)="gerVersion($event)">
     <button *ngIf="srCzip !== ''"><a href="{{srCzip}}" download="firmware">Lien du firmware</a></button>
   </div>
 
