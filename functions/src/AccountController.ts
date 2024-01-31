@@ -96,6 +96,7 @@ const createAccount = async (req: any, res: Response) => {
     let owner = "";
     let role = "user";
     let id = "";
+    let privateOnly = false;
     if(dataBodyOfRequest.id !== undefined){
       id = dataBodyOfRequest.id;
     }else{
@@ -128,6 +129,7 @@ const createAccount = async (req: any, res: Response) => {
 
     if(dataBodyOfRequest.owner !== undefined){ owner = dataBodyOfRequest.owner}
     if(dataBodyOfRequest.role !== undefined){ role = dataBodyOfRequest.role}
+    if(dataBodyOfRequest.privateOnly !== undefined){ privateOnly = dataBodyOfRequest.privateOnly}
 
     if(dataBodyOfRequest.email){
       email = dataBodyOfRequest.email;
@@ -166,19 +168,23 @@ const createAccount = async (req: any, res: Response) => {
         dateIso:isoDateString,
         update:DateString,
         updateIso:isoDateString,
+        privateOnly:privateOnly
         // createdBy:,
         // updatedBy:,
 
   }
 
-    await entry.add(userObject);
-    res.status(200).send({
-      response: {
-        result:'success',
-        message:''
-      },
-      account:userObject,
-    });
+    await entry.doc(userObject.id).set(userObject).then( async (ref:any) => {
+      res.status(200).send({
+        response: {
+          result:'success',
+          message:''
+        },
+        account:userObject,
+      });
+    })
+    
+
     }else{
       res.status(200).send({
         response: {
@@ -391,6 +397,7 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.videos !== undefined){ userDetail.videos = dataBodyOfRequest.videos }
             if(dataBodyOfRequest.licensed !== undefined){ userDetail.licensed = dataBodyOfRequest.licensed }
             if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
+            if(dataBodyOfRequest.privateOnly !== undefined){ userDetail.privateOnly = dataBodyOfRequest.privateOnly }
             userDetail.update = DateString;
             userDetail.updateIso = isoDateString;
             const account_handler = db.collection('account-handler');

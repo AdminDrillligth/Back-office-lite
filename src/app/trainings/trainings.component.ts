@@ -124,8 +124,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
-        this.publicTrainings.cards.sort(this.compareByName)
-        this.privateTrainings.cards.sort(this.compareByName)
       })
     });
   }else{
@@ -148,8 +146,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
-        this.publicTrainings.cards.sort(this.compareByName)
-        this.privateTrainings.cards.sort(this.compareByName)
       })
     });
   }
@@ -178,8 +174,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
         }
-        this.publicSessions.cards.sort(this.compareByName)
-        this.privateSessions.cards.sort(this.compareByName)
       })
     });
   }else{
@@ -204,8 +198,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
         }
-        this.publicSessions.cards.sort(this.compareByName)
-        this.privateSessions.cards.sort(this.compareByName)
       })
     });
   }

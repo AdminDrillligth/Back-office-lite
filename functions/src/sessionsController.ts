@@ -325,6 +325,7 @@ const getSessionsList = async (req: any, res: any) => {
               allSessionsOfUser.forEach((session:any)=> {
                 if(session.header.status === 'public'){
                   allSessionsPublic.push(session)
+                  allSessionsPublic.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
                 }else{
                   if(privateSessionsChangeCount === lastPrivateSessionsChangeCount || privateSessionsChangeCount > lastPrivateSessionsChangeCount){
 
@@ -332,14 +333,16 @@ const getSessionsList = async (req: any, res: any) => {
                   if(privateSessionsChangeCount === 0){
                     if(idUser !== 'null'){
                       if(session.header.owner  !== undefined){
-                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) }
+                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session)
+                          allSessionsPrivate.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                       }
                     }
                   }
                   else if(privateSessionsChangeCount < lastPrivateSessionsChangeCount && privateSessionsChangeCount !== 0){
                     if(idUser !== 'null'){
                       if(session.header.owner  !== undefined){
-                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) }
+                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) 
+                          allSessionsPrivate.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                       }
                     }
                   }
@@ -385,7 +388,8 @@ const getSessionsList = async (req: any, res: any) => {
                     allSessionsOfUser.forEach((session:any)=> {
                       if(session.header.status === 'private'){
                         if(session.header.owner  !== undefined){
-                          if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) }
+                          if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) 
+                            allSessionsPrivate.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                         }
                       }
                     })
@@ -401,7 +405,8 @@ const getSessionsList = async (req: any, res: any) => {
                     allSessionsOfUser.forEach((session:any)=> {
                       if(session.header.status === 'private'){
                         if(session.header.owner  !== undefined){
-                          if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) }
+                          if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) 
+                            allSessionsPrivate.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                         }
                       }
                     })
@@ -435,6 +440,7 @@ const getSessionsList = async (req: any, res: any) => {
               allSessionsOfUser.forEach((session:any)=> {
                 if(session.header.status === 'public'){
                   allSessionsPublic.push(session)
+                  allSessionsPublic.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); 
                 }else{
                   if(privateSessionsChangeCount === lastPrivateSessionsChangeCount || privateSessionsChangeCount > lastPrivateSessionsChangeCount){
 
@@ -442,14 +448,17 @@ const getSessionsList = async (req: any, res: any) => {
                   if(privateSessionsChangeCount === 0){
                     if(idUser !== 'null'){
                       if(session.header.owner  !== undefined){
-                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) }
+                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session)
+                          allSessionsPrivate.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));  }
                       }
                     }
                   }
                   else if(privateSessionsChangeCount < lastPrivateSessionsChangeCount && privateSessionsChangeCount !== 0){
                     if(idUser !== 'null'){
                       if(session.header.owner  !== undefined){
-                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) }
+                        if(idUser === session.header.owner.id){ allSessionsPrivate.push(session) 
+                          allSessionsPrivate.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); 
+                        }
                       }
                     }
                   }

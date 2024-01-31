@@ -335,6 +335,11 @@ export class AdministrationComponent implements OnInit{
   global=false;
   private=false;
 
+
+  uploadZip(){
+
+  }
+
   gerVersion(event:any){
     console.log(event.target.value)
   }
@@ -357,6 +362,10 @@ export class AdministrationComponent implements OnInit{
     
     // this.unzip();
 
+  }
+
+  getlastFirmware(){
+    this.firmWareService.getFirmware(this.AccountOfUser.id);
   }
 
   selectStatus(event:any){

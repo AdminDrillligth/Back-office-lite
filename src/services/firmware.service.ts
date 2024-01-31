@@ -39,10 +39,15 @@ export class FirmWareService {
     this.http.post(this.baseURL+'createFirmware', body,{'headers':{ 'token': token}}).subscribe((rep:any) =>{
       console.log('LA REP DU CREATE FIRMWARE : ! ',rep)
     });
-    
+
   }
 
-  getFirmware(zipBase64:any){
-    console.log('ZIP BASE 64 : !',zipBase64)
+  getFirmware(id:any){
+    console.log('get firmware with this id: !',id)
+    let token = localStorage.getItem('token') || '{}';
+    this.http.get(this.baseURL+'getFirmware', {'headers':{ 'token': token, 'id':id, 'globalFirmwareChangeCount':'1'}}).subscribe((rep:any) =>{
+      console.log('LA REP DU GET FIRMWARE : ! ',rep)
+    });
+
   }
 }
