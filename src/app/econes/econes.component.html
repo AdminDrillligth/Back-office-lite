@@ -1,5 +1,5 @@
 <div class="container-main" >
-  <h3 style="color:black">E-cones</h3>
+  <h3 style="color:white">E-cones</h3>
   <div  style="color:white;margin-bottom: 20px;" class="col-md-2">
         <button (click)="search()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>search</mat-icon>
@@ -10,7 +10,34 @@
         <button *ngIf="account.asAdmin == true"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>add</mat-icon>
         </button>
+        
   </div>
+  <div style="color:white; margin-bottom: 10px;" class="col-sm-4  col-md-4">
+    <mat-card  class="card-dashboard">
+      <mat-card-header>
+        <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
+
+        <mat-card-title  class="align-title">Charger un Firmware</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+  </div>
+
+  <!-- <input type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip"> -->
+  <!-- <mat-radio-group aria-label="Select an option"> -->
+    <!-- <input type="radio" (click)="selectStatus($event.target)" [checked]="global" value="global">Global
+    <input type="radio" (click)="selectStatus($event.target)" [checked]="private" value="private">Privé -->
+  <!-- </mat-radio-group> -->
+    <!-- <input type="text" (keyup)="gerVersion($event)">
+  <button *ngIf="srCzip !== ''"><a href="{{srCzip}}" download="firmware">Lien du firmware</a></button>
+  <div style="color:white" class="col-sm-4  col-md-4">
+    <mat-card (click)="getlastFirmware()" class="card-dashboard">
+      <mat-card-header>
+        <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
+
+        <mat-card-title  class="align-title">recuperer le dernier Firmware</mat-card-title>
+      </mat-card-header>
+    </mat-card> -->
+  <!-- </div> -->
 
 <div  *ngFor="let Econe of Econes" >
   <div *ngIf="Econe.SeeQrCode"  class="modalQr" >

@@ -25,9 +25,15 @@
 }
 
 .sidenav{
+  display:block;
+  width: 210px;
   // color:white;
   // background-color: #0c0f20;
   background-size: cover;
+}
+
+.mat-drawer-content{
+  margin-right: 0px!important;
 }
 
 .image-logo{

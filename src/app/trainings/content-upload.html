@@ -5,7 +5,7 @@
   <input type="file" class="file-upload" (change)="onchangeInput($event)" accept=".json">
 </mat-dialog-content>
 <mat-dialog-content class="invisible-scrollbar mat-typography">
-  <input type="file" class="file-upload" (change)="onchangeInputImg($event)" accept="image/png, image/jpeg">
+  <input type="file" class="file-upload" (change)="onchangeInputImg($event)" accept="image/jpeg">
 </mat-dialog-content>
 <mat-radio-group aria-label="Select an option">
   <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_private" value="status_private">Privé</mat-radio-button>

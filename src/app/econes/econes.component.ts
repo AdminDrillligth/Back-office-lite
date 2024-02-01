@@ -141,7 +141,7 @@ export class EconesComponent implements OnInit {
     });
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.account = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('account : ! ',this.account.privileges)
+    console.log('account : ! ',this.account)
     this.getEconesFromDataBase();
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
@@ -225,6 +225,32 @@ export class EconesComponent implements OnInit {
   closeModalQr(Econe:any){
     
   }
+
+  //ZIP FIRMWARE CHECK AND UPDATE  
+  onchangeInputZip(zip:any){
+    // console.log(zip)
+    // const file = zip.target.files[0];
+    // this.AccountOfUser.id
+    // // Encode the file using the FileReader API
+    // const reader = new FileReader();
+    // reader.onloadend = () => {
+    //     console.log(reader.result);
+    //     console.log(reader);
+    //     // this.base64ToBlob(reader.result);
+    //     this.srCzip = reader.result;
+    //     this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
+    //     // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+    // };
+    // reader.readAsDataURL(file);
+    
+    // // this.unzip();
+
+  }
+
+  getlastFirmware(){
+    // this.firmWareService.getFirmware(this.AccountOfUser.id);
+  }
+
 
 
   displayQrOfEcone(Econe:any){

@@ -24,7 +24,8 @@ export class AppComponent {
   profile:any=[];
   showFiller = true;
   seeNavigation = true;
-  toggleControl = new FormControl(false);
+  toggleControl = new FormControl(true);
+  opened = false;
   // Start of SideBArItems !
   sideBarItems:any[]= [
     {
@@ -45,7 +46,7 @@ export class AppComponent {
     },
     {
       id: 3,
-      name: 'Administration',
+      name: 'Comptes',
       icone: 'assets/icons/menu_sports.svg',
       link: 'administration',
       activeClass: 'active_btn',
@@ -59,28 +60,29 @@ export class AppComponent {
       activeClass: 'active_btn',
       activatedRight:[]
     },
-    {
-      id: 5,
-      name: 'Vidéos',
-      icone: 'assets/icons/menu_videos.svg',
-      link: 'videos',
-      activeClass: 'active_btn',
-      activatedRight:[]
-    },
-    {
-      id: 6,
-      name: 'Paramètres',
-      icone: 'assets/icons/menu_settings.svg',
-      link: 'parameters',
-      activeClass: 'active_btn',
-      activatedRight:[]
-    },
+    // {
+    //   id: 5,
+    //   name: 'Vidéos',
+    //   icone: 'assets/icons/menu_videos.svg',
+    //   link: 'videos',
+    //   activeClass: 'active_btn',
+    //   activatedRight:[]
+    // },
+    // {
+    //   id: 6,
+    //   name: 'Paramètres',
+    //   icone: 'assets/icons/menu_settings.svg',
+    //   link: 'parameters',
+    //   activeClass: 'active_btn',
+    //   activatedRight:[]
+    // },
   ];
   seeAsAdmin:boolean=false;
   AccountOfUser:any;
   user:any = [];
   AllAccount:any[] = [];
   seeAsAccount:any;
+  seeNavBar = true;
   // 0 FULL, 1 AUTORITE, 2 UNDER AUTORITE, 3 USER
   constructor(
     private url:LocationStrategy,
@@ -95,11 +97,16 @@ export class AppComponent {
 
   ngOnInit(): void {
         //*
+        this.seeNavBar = true;
+        const darkClassName = 'darkMode';
+        this.className = true ? darkClassName : '';
+        this.utilsService.changeThemeTemplate(this.className);
         this.toggleControl.valueChanges.subscribe((darkMode) => {
           const darkClassName = 'darkMode';
           this.className = darkMode ? darkClassName : '';
           this.utilsService.changeThemeTemplate(this.className);
         });
+
         let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
         console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
         this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
@@ -133,6 +140,10 @@ export class AppComponent {
     this.router.navigate(['login']);
   }
 
+  seenavbar(){
+    console.log('seenavbar')
+  }
+
   updateData(){
     let check = this.url.path().split("?")
     if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
@@ -140,6 +151,7 @@ export class AppComponent {
       this.seeNavigation = false;
     }else{
       this.seeNavigation = true;
+      this.opened = true;
       console.log(this.router.url,this.url.path(), this.url.path().split("?"))
     }
         this.AccountOfUser = '';

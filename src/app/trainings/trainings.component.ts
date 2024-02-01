@@ -377,10 +377,12 @@ export class ContentUploadDialog implements OnInit{
 
   // https://www.npmjs.com/package/image-resize
   onchangeInputImg(file:any){
+    // 
     var imageResize = new ImageResize({
       format: 'jpg',
       width: 256
     });
+    
     imageResize.play(file.target.files[0]).then((e:any)=>{
       this.dataBase64 = e;
       console.log(file)
