@@ -344,29 +344,29 @@ export class AdministrationComponent implements OnInit{
     console.log(event.target.value)
   }
 
-  onchangeInputZip(zip:any){
-    console.log(zip)
-    const file = zip.target.files[0];
-    this.AccountOfUser.id
-    // Encode the file using the FileReader API
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        console.log(reader.result);
-        console.log(reader);
-        // this.base64ToBlob(reader.result);
-        this.srCzip = reader.result;
-        this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
-        // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
-    };
-    reader.readAsDataURL(file);
+  // onchangeInputZip(zip:any){
+  //   console.log(zip)
+  //   const file = zip.target.files[0];
+  //   this.AccountOfUser.id
+  //   // Encode the file using the FileReader API
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //       console.log(reader.result);
+  //       console.log(reader);
+  //       // this.base64ToBlob(reader.result);
+  //       this.srCzip = reader.result;
+  //       this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
+  //       // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+  //   };
+  //   reader.readAsDataURL(file);
     
-    // this.unzip();
+  //   // this.unzip();
 
-  }
+  // }
 
-  getlastFirmware(){
-    this.firmWareService.getFirmware(this.AccountOfUser.id);
-  }
+  // getlastFirmware(){
+  //   this.firmWareService.getFirmware(this.AccountOfUser.id);
+  // }
 
   selectStatus(event:any){
     console.log('VALEUR DE CHANGEMENTS : ! ',event.value)

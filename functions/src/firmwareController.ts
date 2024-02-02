@@ -20,6 +20,7 @@ const createFirmware = async (req: any, res: any) => {
 
 
   let base64 = json.zip;
+  let private = json.privated;
   let BuildNumber = 1;
   let version = "0.0.1";
   let globalHandler :any = [];
@@ -51,11 +52,13 @@ const createFirmware = async (req: any, res: any) => {
       global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0])
     
       return res.status(200).json({
-        status: 'success',
-        message: 'add Econe Service successfully',
-        token: token,
+        response: {
+          result:'success',
+          message:''
+        },        token: token,
         BuildNumber:BuildNumber,
         id:json.id,
+        private:private,
         newUuid:newUuid,
         firmwareObject:firmwareObject,
         globalHandler:globalHandler
@@ -75,7 +78,7 @@ const getFirmware = async (req: any, res: any) => {
   globalFirmwareChangeCount = Number(globalFirmwareChangeCount);
   let globalHandler :any = [];
   let lastPublicFirmwareChangeCount = "";
-  let userDetail :any = '';
+  // let userDetail :any = '';
   let firmwareDetail: any = [];
   try {
     if(idUser !== undefined){
@@ -90,13 +93,12 @@ const getFirmware = async (req: any, res: any) => {
       });
       let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
       userhandlerProfil.forEach(async (doc:any) =>{
-          userDetail = doc.data();
+          // userDetail = doc.data();
       });
-
       if(globalFirmwareChangeCount === 0){
         let firmwareHandler = await db.collection('firmware-handler').where('BuildNumber', '==', lastPublicFirmwareChangeCount).get();
         firmwareHandler.forEach(async (doc:any) =>{
-          firmwareDetail.push(doc.data());
+          firmwareDetail =doc.data()
         });
         return res.status(200).json({
           response: {
@@ -106,8 +108,8 @@ const getFirmware = async (req: any, res: any) => {
           // idUser:idUser,
           // globalFirmwareChangeCount:globalFirmwareChangeCount,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-          userDetail:userDetail,
-          firmwareData:firmwareDetail
+          // userDetail:userDetail,
+          firmwareDetail:firmwareDetail
         });
       }
       if(globalFirmwareChangeCount === lastPublicFirmwareChangeCount || globalFirmwareChangeCount > lastPublicFirmwareChangeCount){
@@ -119,14 +121,14 @@ const getFirmware = async (req: any, res: any) => {
           idUser:idUser,
           // globalFirmwareChangeCount:globalFirmwareChangeCount,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-          userDetail:userDetail,
-          firmwareData:firmwareDetail
+          // userDetail:userDetail,
+          firmwareDetail:firmwareDetail
         });
       }
       else if(globalFirmwareChangeCount < lastPublicFirmwareChangeCount && globalFirmwareChangeCount !== 0){
         let firmwareHandler = await db.collection('firmware-handler').where('BuildNumber', '==', lastPublicFirmwareChangeCount).get();
         firmwareHandler.forEach(async (doc:any) =>{
-          firmwareDetail.push(doc.data());
+          firmwareDetail =doc.data();
           
         });
         return res.status(200).json({
@@ -137,8 +139,8 @@ const getFirmware = async (req: any, res: any) => {
           idUser:idUser,
           // globalFirmwareChangeCount:globalFirmwareChangeCount,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-          userDetail:userDetail,
-          firmwareData:firmwareDetail
+          // userDetail:userDetail,
+          firmwareDetail:firmwareDetail
         });
       }
 //     // let decodeds:any;

@@ -26,8 +26,11 @@
       </div>
       </mat-drawer>
       <div *ngIf="seeNavigation" class="sidenav-content">
-        <button type="button" mat-mini-fab color="accent" (click)="drawer.toggle();updateData()">
+        <button *ngIf="seeNavBar !== true" type="button" mat-mini-fab color="accent" (click)="drawer.toggle();updateData();setSeenavBar(drawer)">
           <mat-icon>menu</mat-icon>
+        </button>
+        <button *ngIf="seeNavBar !== false" type="button" mat-mini-fab color="accent" (click)="drawer.toggle();updateData();setSeenavBar(drawer)">
+          <mat-icon>keyboard_backspace</mat-icon>
         </button>
         <button *ngIf="seeAsAdmin" style="margin-left: 10px;" type="button" mat-mini-fab color="accent" (click)="comeBackToAdmin()">
           <mat-icon>visibility_off</mat-icon>

@@ -85,6 +85,7 @@ export class LoginComponent implements OnInit{
                       localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
                       console.log('LIST DES USERS : ! ', response.accounts)
                       this.router.navigate(['dashboard']);
+                      this.utilsService.howToSeeNavigation(true);
                     }
                   })
                 }

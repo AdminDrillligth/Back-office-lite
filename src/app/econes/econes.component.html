@@ -13,7 +13,7 @@
         
   </div>
   <div style="color:white; margin-bottom: 10px;" class="col-sm-4  col-md-4">
-    <mat-card  class="card-dashboard">
+    <mat-card  (click)="uploadZip()" class="card-dashboard">
       <mat-card-header>
         <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
 
@@ -21,8 +21,33 @@
       </mat-card-header>
     </mat-card>
   </div>
-
-  <!-- <input type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip"> -->
+  <div *ngIf="displayModal" class="modal-zip" >
+    <h1>Chargement des données Firmware</h1>
+    <input *ngIf="!displayListOfUSer" type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip">
+    <!-- <button *ngIf="displayBtnUpload" (click)="chargeZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Charger le firmware
+      <mat-icon>add</mat-icon>
+    </button> -->
+    <mat-checkbox *ngIf="!displayListOfUSer" [(ngModel)]="private" class="example-margin">Privé</mat-checkbox>
+    <!-- <button (click)="getZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Récupérer le dernier Firmware
+      <mat-icon>add</mat-icon>
+    </button> -->
+    <mat-form-field *ngIf="displayListOfUSer" style="width: 95%;">
+      <mat-label>Choisir le compte</mat-label>
+      <mat-select  [(ngModel)]="selectedUser" >
+        <mat-option  *ngFor="let account of allAccountsAdminOwner" [value]="account.id">{{'Nom: '+account.fullName+ ', id: '+account.id }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="!displayListOfUSer" class="bottom-btn">
+      <button mat-button  (click)='closeModal()' class="btn-warn mg-btm-del" >Annuler</button>
+      <button mat-button (click)='uploadZipAndUser()' class="btn-modifie mg-btm-del" color="primary">Charger la mise à jour</button>
+    </div>
+    <div *ngIf="displayListOfUSer" class="bottom-btn">
+      <button mat-button  (click)='uploadZipAndUserFalse()'  class="btn-warn mg-btm-del" >Annuler</button>
+      <button mat-button  (click)="chargeZipFirmwareWithUser()" class="btn-modifie mg-btm-del" color="primary">Charger la mise à jour</button>
+    </div>
+  </div>
+  <!-- [disabled]="true" -->
+  <!--  -->
   <!-- <mat-radio-group aria-label="Select an option"> -->
     <!-- <input type="radio" (click)="selectStatus($event.target)" [checked]="global" value="global">Global
     <input type="radio" (click)="selectStatus($event.target)" [checked]="private" value="private">Privé -->

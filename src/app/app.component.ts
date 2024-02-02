@@ -95,6 +95,7 @@ export class AppComponent {
     localStorage.removeItem('account-data-user');
   }
 
+
   ngOnInit(): void {
         //*
         this.seeNavBar = true;
@@ -120,7 +121,21 @@ export class AppComponent {
             }
           }
         });
+        this.utilsService._seeNavigation.subscribe((seeNav:any) => {
+          console.log(seeNav)
+          if(seeNav == true){
+            this.seeNavigation = true;
+            this.opened = true;
+          }
+        })
+        
         this.updateData();
+  }
+
+  setSeenavBar(drawer:any){
+    console.log(drawer._opened)
+    this.seeNavBar = drawer._opened;
+
   }
 
   comeBackToAdmin(){
