@@ -54,7 +54,7 @@ export class AppComponent {
     },
     {
       id: 4,
-      name: 'E-cônes',
+      name: 'E-Cones',
       icone: 'assets/icons/menu_econe.svg',
       link: 'econes',
       activeClass: 'active_btn',

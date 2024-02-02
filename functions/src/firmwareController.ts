@@ -17,54 +17,101 @@ const createFirmware = async (req: any, res: any) => {
   let token = headers.token;
   let body = req.body;
   const json = JSON.parse(body);
-
-
+  let idUser = json.id;
+  let userDetail :any = '';
   let base64 = json.zip;
-  let private = json.privated;
+  let privated = json.privated;
   let BuildNumber = 1;
   let version = "0.0.1";
   let globalHandler :any = [];
 
   try {
-   
+   if(privated == false){
     const querySnapshotGlobalHandler = await db.collection('global_handler').get();
     querySnapshotGlobalHandler.forEach((doc: any) => {
       globalHandler.push(doc.data());
     });
-    BuildNumber = globalHandler[0].globalFirmwareChangeCount +1
-    globalHandler[0].globalFirmwareChangeCount = globalHandler[0].globalFirmwareChangeCount +1;
+    BuildNumber = globalHandler[0].publicFirmwareBuildNumber +1;
+    globalHandler[0].publicFirmwareId = newUuid;
+    globalHandler[0].publicFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
+    globalHandler[0].lastFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
     let firmwareObject = {
+      id:newUuid,
       BuildNumber:BuildNumber,
       version:version,
       creationDate:isoDateString,
-      firmwareData:base64
+      firmwareData:base64,
+      comment:""
     };
       const entry = db.collection('firmware-handler')
-  //   jwt.verify(token, 'secret', { expiresIn: '24h' }, function(err:any, decoded:any) {
-  //     if(err){ 
-  //     decodeds = 'err';
-  //   }
-  //     else{ decodeds = 'no error';
-  //   }
-  //   });
       await entry.doc(newUuid).set(firmwareObject).then( async (ref:any) => {
-      const global_handler = db.collection('global_handler');
-      global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0])
-    
-      return res.status(200).json({
-        response: {
-          result:'success',
-          message:''
-        },        token: token,
-        BuildNumber:BuildNumber,
-        id:json.id,
-        private:private,
-        newUuid:newUuid,
-        firmwareObject:firmwareObject,
-        globalHandler:globalHandler
+        const global_handler = db.collection('global_handler');
+        global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0]);
+        return res.status(200).json({
+          response: {
+            result:'success',
+            message:''
+          },        
+          token: token,
+          BuildNumber:BuildNumber,
+          id:json.id,
+          private:privated,
+          newUuid:newUuid,
+          firmwareObject:firmwareObject,
+          globalHandler:globalHandler
+        });
       });
-    })
-    
+   }else{
+    if(idUser !== undefined){
+
+      let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
+      userhandlerProfil.forEach(async (doc:any) =>{
+          userDetail = doc.data();
+      });
+
+      const querySnapshotGlobalHandler = await db.collection('global_handler').get();
+      querySnapshotGlobalHandler.forEach((doc: any) => {
+        globalHandler.push(doc.data());
+      });
+      userDetail.publicFirmwareId = newUuid;
+      globalHandler[0].lastFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
+      let firmwareObject = {
+        id:newUuid,
+        BuildNumber:globalHandler[0].lastFirmwareBuildNumber,
+        version:version,
+        creationDate:isoDateString,
+        firmwareData:base64,
+        comment:""
+      };
+      if(userDetail.privateFirmwareBuildNumber !== undefined){
+        userDetail.privateFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber;
+      }else{
+        userDetail.privateFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber;
+      }
+      const entry = db.collection('firmware-handler')
+      const entryUser = db.collection('account-handler')
+      await entryUser.doc(userDetail.id).set(userDetail)
+      await entry.doc(newUuid).set(firmwareObject).then( async (ref:any) => {
+        const global_handler = db.collection('global_handler');
+        global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0]);
+        return res.status(200).json({
+          response: {
+            result:'success',
+            message:''
+          },        
+          userDetail:userDetail,
+          token: token,
+          BuildNumber:BuildNumber,
+          id:json.id,
+          private:privated,
+          newUuid:newUuid,
+          firmwareObject:firmwareObject,
+          globalHandler:globalHandler
+        });
+      });
+
+    }
+   }
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
@@ -87,8 +134,8 @@ const getFirmware = async (req: any, res: any) => {
         globalHandler.push(doc.data());
       });
       globalHandler.forEach((global:any)=>{
-        if(global.globalFirmwareChangeCount !== undefined){
-          lastPublicFirmwareChangeCount = global.globalFirmwareChangeCount;
+        if(global.publicFirmwareBuildNumber !== undefined){
+          lastPublicFirmwareChangeCount = global.publicFirmwareBuildNumber;
         }
       });
       let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();

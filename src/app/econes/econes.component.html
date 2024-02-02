@@ -1,5 +1,5 @@
 <div class="container-main" >
-  <h3 style="color:white">E-cones</h3>
+  <h3 style="color:white">E-Cones</h3>
   <div  style="color:white;margin-bottom: 20px;" class="col-md-2">
         <button (click)="search()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>search</mat-icon>
@@ -17,12 +17,12 @@
       <mat-card-header>
         <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
 
-        <mat-card-title  class="align-title">Charger un Firmware</mat-card-title>
+        <mat-card-title  class="align-title">Téléverser une mise à jour</mat-card-title>
       </mat-card-header>
     </mat-card>
   </div>
   <div *ngIf="displayModal" class="modal-zip" >
-    <h1>Chargement des données Firmware</h1>
+    <h1>Chargement d'une mise à jour</h1>
     <input *ngIf="!displayListOfUSer" type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip">
     <!-- <button *ngIf="displayBtnUpload" (click)="chargeZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Charger le firmware
       <mat-icon>add</mat-icon>
@@ -31,6 +31,16 @@
     <!-- <button (click)="getZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Récupérer le dernier Firmware
       <mat-icon>add</mat-icon>
     </button> -->
+    <br>
+    <mat-form-field class="example-full-width">
+      <mat-label>Version</mat-label>
+      <input matInput placeholder="0.0.1" value="">
+    </mat-form-field>
+    <br>
+    <mat-form-field style="width: 98%;" class="example-full-width">
+      <mat-label>Commentaire</mat-label>
+      <textarea matInput placeholder="..."></textarea>
+    </mat-form-field>
     <mat-form-field *ngIf="displayListOfUSer" style="width: 95%;">
       <mat-label>Choisir le compte</mat-label>
       <mat-select  [(ngModel)]="selectedUser" >
