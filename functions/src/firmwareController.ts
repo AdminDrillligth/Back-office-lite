@@ -19,10 +19,9 @@ const createFirmware = async (req: any, res: any) => {
   const json = JSON.parse(body);
   let idUser = json.id;
   let userDetail :any = '';
-  let base64 = json.zip;
+  let firmwareData = json.firmwareData;
   let privated = json.privated;
   let BuildNumber = 1;
-  let version = "0.0.1";
   let globalHandler :any = [];
 
   try {
@@ -31,17 +30,17 @@ const createFirmware = async (req: any, res: any) => {
     querySnapshotGlobalHandler.forEach((doc: any) => {
       globalHandler.push(doc.data());
     });
-    BuildNumber = globalHandler[0].publicFirmwareBuildNumber +1;
+    BuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
     globalHandler[0].publicFirmwareId = newUuid;
     globalHandler[0].publicFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
     globalHandler[0].lastFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
     let firmwareObject = {
       id:newUuid,
-      BuildNumber:BuildNumber,
-      version:version,
+      buildNumber:BuildNumber,
+      version:firmwareData.version,
+      description:firmwareData.comment,
       creationDate:isoDateString,
-      firmwareData:base64,
-      comment:""
+      firmwareData:firmwareData.base64,
     };
       const entry = db.collection('firmware-handler')
       await entry.doc(newUuid).set(firmwareObject).then( async (ref:any) => {
@@ -77,11 +76,11 @@ const createFirmware = async (req: any, res: any) => {
       globalHandler[0].lastFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
       let firmwareObject = {
         id:newUuid,
-        BuildNumber:globalHandler[0].lastFirmwareBuildNumber,
-        version:version,
+        buildNumber:BuildNumber,
+        version:firmwareData.version,
+        description:firmwareData.comment,
         creationDate:isoDateString,
-        firmwareData:base64,
-        comment:""
+        firmwareData:firmwareData.base64,
       };
       if(userDetail.privateFirmwareBuildNumber !== undefined){
         userDetail.privateFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber;
@@ -152,10 +151,7 @@ const getFirmware = async (req: any, res: any) => {
             result:'success',
             message:''
           },
-          // idUser:idUser,
-          // globalFirmwareChangeCount:globalFirmwareChangeCount,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-          // userDetail:userDetail,
           firmwareDetail:firmwareDetail
         });
       }
@@ -166,9 +162,7 @@ const getFirmware = async (req: any, res: any) => {
             message:''
           },
           idUser:idUser,
-          // globalFirmwareChangeCount:globalFirmwareChangeCount,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-          // userDetail:userDetail,
           firmwareDetail:firmwareDetail
         });
       }
@@ -184,9 +178,7 @@ const getFirmware = async (req: any, res: any) => {
             message:''
           },
           idUser:idUser,
-          // globalFirmwareChangeCount:globalFirmwareChangeCount,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-          // userDetail:userDetail,
           firmwareDetail:firmwareDetail
         });
       }

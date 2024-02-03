@@ -294,11 +294,24 @@ export class EconesComponent implements OnInit {
 
   }
 
+  versionOfFirmwareValue:string="";
+  commentOfFirmwareValue:string="";
+  versionOfFirmware(event:any){
+    console.log(event.target.value)
+    this.versionOfFirmwareValue = event.target.value;
+  }
+
+  commentOfFirmware(event:any){
+    console.log(event.target.value)
+    this.commentOfFirmwareValue = event.target.value;
+  }
+
   AccountOfUser:any;
   chargeZipFirmware(){
     if(this.srCzip !== ''){
       console.log('LE ZIP SRC : ',this.srCzip)
-      this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id,false);
+      let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
+      this.firmWareService.createFirmware(firmwareData, this.AccountOfUser.id,false);
     }
     this.displayModal = false;
     
@@ -307,7 +320,8 @@ export class EconesComponent implements OnInit {
   chargeZipFirmwareWithUser(){
     if(this.srCzip !== ''){
       console.log('LE ZIP SRC : ',this.srCzip)
-      this.firmWareService.createFirmware(this.srCzip, this.selectedUser, true);
+      let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
+      this.firmWareService.createFirmware(firmwareData, this.selectedUser, true);
     }
     this.displayModal = false;
     

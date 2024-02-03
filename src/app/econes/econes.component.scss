@@ -20,14 +20,15 @@
 }
 
 .modal-zip{
+  box-shadow: 0px 1px 5px 0px #ffffffa6;
   border-radius: 8px;
   position: absolute;
   width: 80%;
   height: 400px;
-  background: #212121;
+  background: #303030;
   z-index: 9999999999;
-  padding-top:10px;
-  padding-left:10px;
+  padding-top: 10px;
+  padding-left: 10px;
 }
 
 .image-logo{
@@ -96,6 +97,10 @@
   background:#DC4C64;
   color: rgb(0, 0, 0);
   font-weight: 500;
+}
+
+::ng-deep .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: #262726;
 }
 
 .btn-export{
