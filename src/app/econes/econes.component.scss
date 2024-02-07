@@ -201,3 +201,35 @@
 :root::-webkit-scrollbar{
   display: none;
 }
+
+
+@media only screen and (max-width: 768px) {
+
+  .display-text{
+    text-align: center;
+  }
+
+  .image-logo{
+    display:none;
+  }
+
+  .header-title{
+    margin-left: 50px;
+    font-size: larger;
+  }
+
+  .align-title{
+    margin-bottom: 20px;
+  }
+}
+
+
+
+
+@media only screen and (max-width: 950px) {
+
+  .header-title{
+    margin-left: 50px;
+    font-size: larger;
+  }
+}

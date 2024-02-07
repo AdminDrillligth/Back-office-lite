@@ -1,13 +1,13 @@
 <div class="container-main">
   <div *ngIf="ProfilAccount === undefined" >
     <div class="row">
-    <h3 style="color:white">Comptes</h3>
+    <h3 style="color:white" class="header-title">Comptes</h3>
 
 
     <!-- <p>Rechargement image download</p> -->
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="createAdmin()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title class="align-title">Ajouter un Administrateur</mat-card-title>
           </mat-card-header>
@@ -15,7 +15,7 @@
       </div>
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="createCustomer()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
 
             <mat-card-title  class="align-title">Ajouter un Client</mat-card-title>
@@ -24,7 +24,7 @@
       </div>
       <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
@@ -40,7 +40,7 @@
 
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="addStaffOfGroup(ProfilAccount)" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title class="align-title">Ajouter un membre du Staff</mat-card-title>
           </mat-card-header>
@@ -48,7 +48,7 @@
       </div>
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="addAccountOfGroup(ProfilAccount)" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Ajouter un Utilisateur</mat-card-title>
           </mat-card-header>
@@ -56,7 +56,7 @@
       </div>
       <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>

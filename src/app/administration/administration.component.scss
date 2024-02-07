@@ -280,9 +280,56 @@
 }
 
 
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 350px) and (max-width:600px){
   /* For mobile phones: */
   ::ng-deep mat-mdc-dialog-actions.mat-mdc-dialog-actions-align-end, .mat-mdc-dialog-actions {
     justify-content: center;
+  }
+
+  .image-logo{
+    display:none;
+  }
+
+  .header-title{
+    margin-left: 50px;
+  }
+
+  .align-title{
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: small;
+  }
+
+  .card-header-align{
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+
+
+@media only screen and (min-width: 600px) and  (max-width: 950px) {
+  /* For mobile phones: */
+  ::ng-deep mat-mdc-dialog-actions.mat-mdc-dialog-actions-align-end, .mat-mdc-dialog-actions {
+    justify-content: center;
+  }
+
+  .header-title{
+    margin-left: 50px;
+  }
+
+  .align-title{
+    font-size: x-small;
+    margin-top: 0px;
+    margin-bottom: 15px;
+    font-weight: 500;
+
+  }
+
+  .image-logo {
+    width: 30px;
+    margin-left: auto;
+    height: 30px;
   }
 }

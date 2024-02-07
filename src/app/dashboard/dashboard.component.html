@@ -1,10 +1,10 @@
 <div class="container-main">
   <div class="row">
     <div id="main"></div>
-    <h3 style="color:white">Actions rapides</h3>
-    <div style="color:white" class="col-md-4">
+    <h3 style="color:white" class="header-title">Actions rapides</h3>
+    <div style="color:white" class="col-md-6">
       <mat-card class="card-dashboard">
-        <mat-card-header>
+        <mat-card-header  class="card-header-align">
           <mat-icon class="icon-dashboard">add_circle</mat-icon>
           <mat-card-title>Créer un exercice</mat-card-title>
           </mat-card-header>
@@ -22,9 +22,9 @@
         </mat-card-content>
       </mat-card>
     </div> -->
-    <div style="color:white" class="col-md-4">
+    <div style="color:white" class="col-md-6">
       <mat-card (click)="createClient()" class="card-dashboard">
-        <mat-card-header>
+        <mat-card-header  class="card-header-align">
           <mat-icon class="icon-dashboard">add_circle</mat-icon>
           <mat-card-title>Ajouter un client</mat-card-title>
         </mat-card-header>
@@ -58,7 +58,7 @@
       <mat-card class="card-dashboard">
         <mat-card-header>
           <div mat-card-avatar class="example-header-image"></div>
-          <mat-card-title>Shiba Inu</mat-card-title>
+          <mat-card-title>Volume d'Exercices</mat-card-title>
         </mat-card-header>
           <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
         <mat-card-content  *ngIf="saleData.length !== 0">

@@ -37,6 +37,28 @@
   .card-hight{
     height: 300px!important;
   }
+  .header-title{
+    margin-left: 50px;
+  }
 
+  .icon-dashboard{
+    display:none;
+  }
+
+  .card-header-align{
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+@media only screen and (min-width:600px) and (max-width: 950px) {
+  /* For mobile phones: */
+  .card-hight{
+    height: 300px!important;
+  }
+  .header-title{
+    margin-left: 50px;
+  }
 
 }
