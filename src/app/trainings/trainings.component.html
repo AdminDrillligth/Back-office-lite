@@ -1,5 +1,5 @@
 <div class="container-main">
-  <h3 style="color:white">Entraînements</h3>
+  <h3 style="color:white">Bibliothèque</h3>
   <mat-form-field style="width:100%">
     <mat-label>Chercher par noms, catégories, dates, ... </mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
@@ -44,7 +44,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of publicTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
       <div style="height: 180px;
@@ -66,7 +66,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of privateTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privé</span>
       <div style="height: 180px;
@@ -142,7 +142,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of publicSessions.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
       <div style="height: 180px;
@@ -161,7 +161,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of privateSessions.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privées</span>
       <div style="height: 180px;

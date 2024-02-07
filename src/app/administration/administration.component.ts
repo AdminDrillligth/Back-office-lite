@@ -159,6 +159,14 @@ export class AdministrationComponent implements OnInit{
     { name: "Exercices", value: 122 },
     { name: "Vidéos", value: 50 },
   ]
+
+  roles = [
+    {name:'Admin', value:'admin'},
+    {name:'Owner', value:'owner'},
+    {name:'Staff', value:'staff'},
+    {name:'User', value:'user'},
+  ]
+
   chartData =  [
     { "name": "test1",
     "series": [ { "name": 87,"value": 45}, { "name": 41, "value": 801} ]
