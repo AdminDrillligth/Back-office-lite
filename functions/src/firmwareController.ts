@@ -124,7 +124,7 @@ const getFirmware = async (req: any, res: any) => {
   globalFirmwareChangeCount = Number(globalFirmwareChangeCount);
   let globalHandler :any = [];
   let lastPublicFirmwareChangeCount = "";
-  // let userDetail :any = '';
+  let userDetail :any = '';
   let firmwareDetail: any = [];
   try {
     if(idUser !== undefined){
@@ -139,10 +139,10 @@ const getFirmware = async (req: any, res: any) => {
       });
       let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
       userhandlerProfil.forEach(async (doc:any) =>{
-          // userDetail = doc.data();
+          userDetail = doc.data();
       });
       if(globalFirmwareChangeCount === 0){
-        let firmwareHandler = await db.collection('firmware-handler').where('BuildNumber', '==', lastPublicFirmwareChangeCount).get();
+        let firmwareHandler = await db.collection('firmware-handler').where('buildNumber', '==', lastPublicFirmwareChangeCount).get();
         firmwareHandler.forEach(async (doc:any) =>{
           firmwareDetail =doc.data()
         });
@@ -151,6 +151,8 @@ const getFirmware = async (req: any, res: any) => {
             result:'success',
             message:''
           },
+          privateFirmwareBuildNumber:userDetail.privateFirmwareBuildNumber,
+          privateFirmwareId:userDetail.privateFirmwareId,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
           firmwareDetail:firmwareDetail
         });
@@ -162,12 +164,14 @@ const getFirmware = async (req: any, res: any) => {
             message:''
           },
           idUser:idUser,
+          privateFirmwareBuildNumber:userDetail.privateFirmwareBuildNumber,
+          privateFirmwareId:userDetail.privateFirmwareId,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
           firmwareDetail:firmwareDetail
         });
       }
       else if(globalFirmwareChangeCount < lastPublicFirmwareChangeCount && globalFirmwareChangeCount !== 0){
-        let firmwareHandler = await db.collection('firmware-handler').where('BuildNumber', '==', lastPublicFirmwareChangeCount).get();
+        let firmwareHandler = await db.collection('firmware-handler').where('buildNumber', '==', lastPublicFirmwareChangeCount).get();
         firmwareHandler.forEach(async (doc:any) =>{
           firmwareDetail =doc.data();
           
@@ -178,6 +182,8 @@ const getFirmware = async (req: any, res: any) => {
             message:''
           },
           idUser:idUser,
+          privateFirmwareBuildNumber:userDetail.privateFirmwareBuildNumber,
+          privateFirmwareId:userDetail.privateFirmwareId,
           lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
           firmwareDetail:firmwareDetail
         });
@@ -200,6 +206,23 @@ const getFirmware = async (req: any, res: any) => {
   catch(error:any) { return res.status(500).json(error.message) }
  }
 
+
+ const getFirmwaresList = async (req: any, res: any) => {
+
+  try{
+    return res.status(200).json({
+      response: {
+        result:'success',
+        message:''
+      },
+      // idUser:idUser,
+      // lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
+      // firmwareDetail:firmwareDetail
+    });
+  }
+  catch(error:any) { return res.status(500).json(error.message) }
+ }
+
 // const checkFirmware = async (req: any, res: Response) => {
 //   // let newUuid = uuidv4();
 //   try {
@@ -213,4 +236,4 @@ const getFirmware = async (req: any, res: any) => {
 
 
 
-export { createFirmware, getFirmware }
+export { createFirmware, getFirmware, getFirmwaresList }

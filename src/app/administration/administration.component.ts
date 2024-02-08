@@ -226,7 +226,7 @@ export class AdministrationComponent implements OnInit{
   namer = new FormControl('');
   email = new FormControl('');
 
-
+  widthScreenMobile:boolean = false;
   constructor(
     private firmWareService:FirmWareService,
     private stripeServices:StripeServices,
@@ -267,6 +267,14 @@ export class AdministrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
+
+    var widthScreen = window.innerWidth;
+    if(widthScreen < 600){
+      this.widthScreenMobile = true;
+      this.displayedColumnsAccounts = ['firstName','actions'];
+
+    }
+    console.log('Le width du screen : !',widthScreen)
     this.userHandlersServiceCustomer.getUpdateallUsers();
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
