@@ -48,6 +48,22 @@ export class FirmWareService {
     this.http.get(this.baseURL+'getFirmware', {'headers':{ 'token': token, 'id':id, 'firmwareid':'063a8ffd-b0bd-46bd-9587-7226b1bc6dd3'}}).subscribe((rep:any) =>{
       console.log('LA REP DU GET FIRMWARE : ! ',rep)
     });
-
   }
+
+  getFirmwareList(){
+    console.log('get la list')
+    let token = localStorage.getItem('token') || '{}';
+    this.http.get(this.baseURL+'getFirmwaresList', {'headers':{ 'token': token}}).subscribe((rep:any) =>{
+      console.log('LA REP DU GET FIRMWARELIST : ! ',rep)
+    });
+  }
+
+  getfirmwareDetails(account:any){
+    console.log('Le account : ! ',account)
+    let token = localStorage.getItem('token') || '{}';
+    // this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'id':id, 'firmwareid':'063a8ffd-b0bd-46bd-9587-7226b1bc6dd3'}}).subscribe((rep:any) =>{
+    //   console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
+    // });
+  }
+
 }

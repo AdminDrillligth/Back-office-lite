@@ -215,6 +215,27 @@ const getFirmware = async (req: any, res: any) => {
 
 
  const getFirmwaresList = async (req: any, res: any) => {
+  let firmwareList:any = [];
+  let firmwareHandler = await db.collection('firmware-handler').get();
+  firmwareHandler.forEach((firmware:any)=>{
+    firmwareList.push(firmware.data());
+  })
+  try{
+    return res.status(200).json({
+      response: {
+        result:'success',
+        message:''
+      },
+      firmwareList:firmwareList
+      // idUser:idUser,
+      // lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
+      // firmwareDetail:firmwareDetail
+    });
+  }
+  catch(error:any) { return res.status(500).json(error.message) }
+ }
+
+ const getFirmwareDetails = async (req: any, res: any) => {
   let firmwareHandler = await db.collection('firmware-handler').get();
   try{
     return res.status(200).json({
@@ -244,4 +265,4 @@ const getFirmware = async (req: any, res: any) => {
 
 
 
-export { createFirmware, getFirmware, getFirmwaresList }
+export { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails }

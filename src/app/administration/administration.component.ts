@@ -391,6 +391,8 @@ export class AdministrationComponent implements OnInit{
   }
 
   displayModalOfPrivateFirmware(account:any){
+    this.firmWareService.getfirmwareDetails(account);
+    this.firmWareService.getFirmwareList();
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
     if(this.displayModalFirmware){
