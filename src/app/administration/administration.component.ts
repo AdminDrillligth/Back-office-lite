@@ -213,6 +213,10 @@ export class AdministrationComponent implements OnInit{
   public showColors: boolean = false;
   public showCss: boolean = false;
   public showImage: boolean = false;
+  public displayModalAction:boolean = false;
+  public displayModalFirmware:boolean = false;
+  public privateExerciceOnly = false;
+  public moderationAccount = false; 
 
 
   resultsLength = 0;
@@ -355,6 +359,56 @@ export class AdministrationComponent implements OnInit{
   uploadZip(){
 
   }
+  
+  modalAccount:any;
+  openModalActions(account:any){
+    this.modalAccount = account;
+    console.log('QUEL COMPTE : ! ',account)
+    this.displayModalAction = true;
+  }
+
+  // public privateExerciceOnly = false;
+  // public moderationAccount = false; 
+
+  modarateAccount(account:any){
+    this.displayModalAction = false;
+    console.log('QUEL COMPTE : ! ',account)
+    if(this.moderationAccount){
+      this.moderationAccount = false
+    }else{
+      this.moderationAccount = true
+    }
+   
+  }
+
+  privateExercice(account:any){
+    this.displayModalAction = false;
+    if(this.privateExerciceOnly){
+      this.privateExerciceOnly = false
+    }else{
+      this.privateExerciceOnly = true
+    }
+  }
+
+  displayModalOfPrivateFirmware(account:any){
+    this.displayModalAction = false;
+    console.log('QUEL COMPTE : ! ',account)
+    if(this.displayModalFirmware){
+      this.displayModalFirmware = false
+    }else{
+      this.displayModalFirmware = true
+    }
+  }
+
+  selectFirmwareForAccount(account:any){
+    this.displayModalFirmware = false;
+    this.displayModalAction = true;
+  }
+
+  closeModalFirmware(){
+    this.displayModalFirmware = false;
+    this.displayModalAction = true;
+  }
 
   gerVersion(event:any){
     console.log(event.target.value)
@@ -462,18 +516,19 @@ export class AdministrationComponent implements OnInit{
   accountDetailOfUser:any;
   seeAdmin(account:any){
     this.letsee = true;
+    this.displayModalAction = false;
     this.ProfilAccount = account;
     console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
     this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP : ',e.account)
+        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         this.ProfilAccount = e.account;
         // users
         this.ProfilAccount.users.forEach((user:any, index:number)=>{
           console.log('le user: ', user.id, index)
           this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
             resp.subscribe((e:any) =>{
-              console.log('le detail du user :! ', e.account)
+              console.log('le detail de chaque user du compte owner:! ', e.account)
               user = e.account;
               this.ProfilAccount.users[index] = e.account
               console.log(this.ProfilAccount.users)
@@ -485,7 +540,7 @@ export class AdministrationComponent implements OnInit{
           console.log('le staff: ', staff.id, index)
           this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
             resp.subscribe((e:any) =>{
-              console.log('le detail du staff :! ', e.account)
+              console.log('le detail de chaque staff du compte owner:! ', e.account)
               staff = e.account;
               this.ProfilAccount.staff[index] = e.account
               console.log(this.ProfilAccount.staff)

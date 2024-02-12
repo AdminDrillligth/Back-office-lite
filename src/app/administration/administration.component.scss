@@ -49,6 +49,41 @@
   background-color: #878787!important;
 }
 
+.display-modal-action{
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 70%;
+  position: absolute;
+  height: 450px;
+  background: #303030;
+  top: 140px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 4px 0px #ffffff61;
+}
+
+.display-modal-firmware{
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 70%;
+  position: absolute;
+  height: 450px;
+  background: #303030;
+  top: 140px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 4px 0px #ffffff61;
+}
+
+.header-of-actions{
+
+}
+
+.action-btn-modal{
+  display:block;
+  margin-bottom: 10px;
+}
+
 .displayTrained{
   display: inline-block;
   border:1px solid wheat;

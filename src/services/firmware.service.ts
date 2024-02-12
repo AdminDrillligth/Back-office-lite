@@ -45,7 +45,7 @@ export class FirmWareService {
   getFirmware(id:any){
     console.log('get firmware with this id: !',id)
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getFirmware', {'headers':{ 'token': token, 'id':id, 'globalFirmwareChangeCount':'1'}}).subscribe((rep:any) =>{
+    this.http.get(this.baseURL+'getFirmware', {'headers':{ 'token': token, 'id':id, 'firmwareid':'063a8ffd-b0bd-46bd-9587-7226b1bc6dd3'}}).subscribe((rep:any) =>{
       console.log('LA REP DU GET FIRMWARE : ! ',rep)
     });
 
