@@ -388,17 +388,17 @@
   </div>
   <div *ngIf="displayModalFirmware" class="display-modal-firmware">
     <h1 style="margin-bottom:15px;" class="header-of-actions">Gestion du firmware</h1>
+    <div *ngIf="modalAccount.privateFirmwareId !== undefined || modalAccount.privateFirmwareId !== '' " >Firmware privé :  {{modalAccount.privateFirmwareId}}</div>
     <!--  -->
     
-    <!-- *ngFor="let role of roles" [value]="role.value" -->
-    <!-- value="{{emp.role}}" -->
-    <!-- {{role.name}} -->
+    <!--  -->
+    <!--  -->
+    <!--  -->
 
     <mat-form-field>
       <mat-label>Chosir une version...</mat-label>
-      <mat-select value="">
-        <mat-option value="2.8.2">version 2.8.2</mat-option>
-        <mat-option value="2.8.4">version 2.8.4</mat-option>
+      <mat-select  value="">
+        <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" >{{firmware.version}}</mat-option>
       </mat-select>
     </mat-form-field>
     <div class="bottom-btn">

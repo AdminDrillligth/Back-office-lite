@@ -217,7 +217,7 @@ export class AdministrationComponent implements OnInit{
   public displayModalFirmware:boolean = false;
   public privateExerciceOnly = false;
   public moderationAccount = false; 
-
+  public firmWareList:any = [];
 
   resultsLength = 0;
   // TABLE INIT
@@ -362,8 +362,13 @@ export class AdministrationComponent implements OnInit{
   
   modalAccount:any;
   openModalActions(account:any){
-    this.modalAccount = account;
-    console.log('QUEL COMPTE : ! ',account)
+    this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        this.modalAccount = e.account;
+      })
+    })
+    console.log('QUEL COMPTE : ! ',this.modalAccount)
     this.displayModalAction = true;
   }
 
@@ -390,9 +395,20 @@ export class AdministrationComponent implements OnInit{
     }
   }
 
+  selectedFirmware(firmware:any){
+    console.log('FIRMWARE : ! ',firmware.id,firmware)
+  }
+
+
   displayModalOfPrivateFirmware(account:any){
-    this.firmWareService.getfirmwareDetails(account);
-    this.firmWareService.getFirmwareList();
+    this.firmWareService.getfirmwareDetails("");
+    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+      console.log('list of firwares: ',firmwareList)
+      firmwareList.subscribe((list:any)=>{
+        console.log('list of firwares: ',list.firmwareList)
+        this.firmWareList = list.firmwareList;
+      })
+    });
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
     if(this.displayModalFirmware){

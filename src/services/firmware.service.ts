@@ -50,20 +50,24 @@ export class FirmWareService {
     });
   }
 
-  getFirmwareList(){
+  async getFirmwareList(){
     console.log('get la list')
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getFirmwaresList', {'headers':{ 'token': token}}).subscribe((rep:any) =>{
-      console.log('LA REP DU GET FIRMWARELIST : ! ',rep)
-    });
+    let response = this.http.get(this.baseURL+'getFirmwaresList', {'headers':{ 'token': token}})
+    return response;
   }
 
-  getfirmwareDetails(account:any){
-    console.log('Le account : ! ',account)
-    let token = localStorage.getItem('token') || '{}';
-    // this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'id':id, 'firmwareid':'063a8ffd-b0bd-46bd-9587-7226b1bc6dd3'}}).subscribe((rep:any) =>{
-    //   console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
-    // });
+  getfirmwareDetails(idFirmware:string){
+    let idOfFirmware = "";
+    if(idFirmware !== undefined || idFirmware !== ""){
+      idOfFirmware = idFirmware;
+      let token = localStorage.getItem('token') || '{}';
+      this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'firmwareid':idOfFirmware}}).subscribe((rep:any) =>{
+        console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
+      });
+    }
+
+
   }
 
 }

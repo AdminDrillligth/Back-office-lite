@@ -236,17 +236,22 @@ const getFirmware = async (req: any, res: any) => {
  }
 
  const getFirmwareDetails = async (req: any, res: any) => {
-  let firmwareHandler = await db.collection('firmware-handler').get();
+  let reqs = req;
+  let headers = reqs.headers;
+  let firmwareDetail: any = "";
+  // let token = headers.token;
+  let firmwareId = headers.firmwareid;
+  let firmwareHandler = await db.collection('firmware-handler').where('id', '==', firmwareId).get();
+  firmwareHandler.forEach(async (doc:any) =>{
+    firmwareDetail = doc.data()
+  });
   try{
     return res.status(200).json({
       response: {
         result:'success',
         message:''
       },
-      firmwareHandler:firmwareHandler
-      // idUser:idUser,
-      // lastPublicFirmwareChangeCount:lastPublicFirmwareChangeCount,
-      // firmwareDetail:firmwareDetail
+      firmwareDetail:firmwareDetail
     });
   }
   catch(error:any) { return res.status(500).json(error.message) }
