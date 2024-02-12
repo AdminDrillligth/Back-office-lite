@@ -142,19 +142,34 @@ const getFirmware = async (req: any, res: any) => {
       userhandlerProfil.forEach(async (doc:any) =>{
           userDetail = doc.data();
       });
-      if(userDetail.privateFirmwareId !== ""){
-        let firmwareHandler = await db.collection('firmware-handler').where('id', '==', userDetail.privateFirmwareId).get();
-        firmwareHandler.forEach(async (doc:any) =>{
-          firmwareDetail = doc.data();
-        });
-        return res.status(200).json({
-          response: {
-            result:'success',
-            message:''
-          },
-          firmwareDetail:firmwareDetail
-        });
+      if(userDetail.privateFirmwareId !== undefined){
+        if(userDetail.privateFirmwareId !== "" ){
+          let firmwareHandler = await db.collection('firmware-handler').where('id', '==', userDetail.privateFirmwareId).get();
+          firmwareHandler.forEach(async (doc:any) =>{
+            firmwareDetail = doc.data();
+          });
+          return res.status(200).json({
+            response: {
+              result:'success',
+              message:''
+            },
+            firmwareDetail:firmwareDetail
+          });
+        }else{
+          let firmwareHandler = await db.collection('firmware-handler').where('id', '==', lastPublicFirmwareId).get();
+          firmwareHandler.forEach(async (doc:any) =>{
+            firmwareDetail =doc.data()
+          });
+          return res.status(200).json({
+            response: {
+              result:'success',
+              message:''
+            },
+            firmwareDetail:firmwareDetail
+          });
+        }
       }
+      
       else if(firmwareId !== lastPublicFirmwareId){
         let firmwareHandler = await db.collection('firmware-handler').where('id', '==', lastPublicFirmwareId).get();
         firmwareHandler.forEach(async (doc:any) =>{
