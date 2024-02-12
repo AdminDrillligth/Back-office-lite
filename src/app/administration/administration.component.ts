@@ -159,6 +159,14 @@ export class AdministrationComponent implements OnInit{
     { name: "Exercices", value: 122 },
     { name: "Vidéos", value: 50 },
   ]
+
+  roles = [
+    {name:'Admin', value:'admin'},
+    {name:'Owner', value:'owner'},
+    {name:'Staff', value:'staff'},
+    {name:'User', value:'user'},
+  ]
+
   chartData =  [
     { "name": "test1",
     "series": [ { "name": 87,"value": 45}, { "name": 41, "value": 801} ]
@@ -205,7 +213,11 @@ export class AdministrationComponent implements OnInit{
   public showColors: boolean = false;
   public showCss: boolean = false;
   public showImage: boolean = false;
-
+  public displayModalAction:boolean = false;
+  public displayModalFirmware:boolean = false;
+  public privateExerciceOnly = false;
+  public moderationAccount = false; 
+  public firmWareList:any = [];
 
   resultsLength = 0;
   // TABLE INIT
@@ -218,7 +230,7 @@ export class AdministrationComponent implements OnInit{
   namer = new FormControl('');
   email = new FormControl('');
 
-
+  widthScreenMobile:boolean = false;
   constructor(
     private firmWareService:FirmWareService,
     private stripeServices:StripeServices,
@@ -259,6 +271,14 @@ export class AdministrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
+
+    var widthScreen = window.innerWidth;
+    if(widthScreen < 600){
+      this.widthScreenMobile = true;
+      this.displayedColumnsAccounts = ['firstName','actions'];
+
+    }
+    console.log('Le width du screen : !',widthScreen)
     this.userHandlersServiceCustomer.getUpdateallUsers();
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
@@ -334,25 +354,107 @@ export class AdministrationComponent implements OnInit{
   srCzip:any="";
   global=false;
   private=false;
-  onchangeInputZip(zip:any){
-    console.log(zip)
-    const file = zip.target.files[0];
 
-    // Encode the file using the FileReader API
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        console.log(reader.result);
-        console.log(reader);
-        // this.base64ToBlob(reader.result);
-        this.srCzip = reader.result;
-        this.firmWareService.createFirmware(this.srCzip)
-        // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
-    };
-    reader.readAsDataURL(file);
-    
-    // this.unzip();
+
+  uploadZip(){
 
   }
+  
+  modalAccount:any;
+  openModalActions(account:any){
+    this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        this.modalAccount = e.account;
+      })
+    })
+    console.log('QUEL COMPTE : ! ',this.modalAccount)
+    this.displayModalAction = true;
+  }
+
+  // public privateExerciceOnly = false;
+  // public moderationAccount = false; 
+
+  modarateAccount(account:any){
+    this.displayModalAction = false;
+    console.log('QUEL COMPTE : ! ',account)
+    if(this.moderationAccount){
+      this.moderationAccount = false
+    }else{
+      this.moderationAccount = true
+    }
+   
+  }
+
+  privateExercice(account:any){
+    this.displayModalAction = false;
+    if(this.privateExerciceOnly){
+      this.privateExerciceOnly = false
+    }else{
+      this.privateExerciceOnly = true
+    }
+  }
+
+  selectedFirmware(firmware:any){
+    console.log('FIRMWARE : ! ',firmware.id,firmware)
+  }
+
+
+  displayModalOfPrivateFirmware(account:any){
+    this.firmWareService.getfirmwareDetails("");
+    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+      console.log('list of firwares: ',firmwareList)
+      firmwareList.subscribe((list:any)=>{
+        console.log('list of firwares: ',list.firmwareList)
+        this.firmWareList = list.firmwareList;
+      })
+    });
+    this.displayModalAction = false;
+    console.log('QUEL COMPTE : ! ',account)
+    if(this.displayModalFirmware){
+      this.displayModalFirmware = false
+    }else{
+      this.displayModalFirmware = true
+    }
+  }
+
+  selectFirmwareForAccount(account:any){
+    this.displayModalFirmware = false;
+    this.displayModalAction = true;
+  }
+
+  closeModalFirmware(){
+    this.displayModalFirmware = false;
+    this.displayModalAction = true;
+  }
+
+  gerVersion(event:any){
+    console.log(event.target.value)
+  }
+
+  // onchangeInputZip(zip:any){
+  //   console.log(zip)
+  //   const file = zip.target.files[0];
+  //   this.AccountOfUser.id
+  //   // Encode the file using the FileReader API
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //       console.log(reader.result);
+  //       console.log(reader);
+  //       // this.base64ToBlob(reader.result);
+  //       this.srCzip = reader.result;
+  //       this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
+  //       // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+  //   };
+  //   reader.readAsDataURL(file);
+    
+  //   // this.unzip();
+
+  // }
+
+  // getlastFirmware(){
+  //   this.firmWareService.getFirmware(this.AccountOfUser.id);
+  // }
 
   selectStatus(event:any){
     console.log('VALEUR DE CHANGEMENTS : ! ',event.value)
@@ -432,18 +534,19 @@ export class AdministrationComponent implements OnInit{
   accountDetailOfUser:any;
   seeAdmin(account:any){
     this.letsee = true;
+    this.displayModalAction = false;
     this.ProfilAccount = account;
     console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
     this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP : ',e.account)
+        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         this.ProfilAccount = e.account;
         // users
         this.ProfilAccount.users.forEach((user:any, index:number)=>{
           console.log('le user: ', user.id, index)
           this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
             resp.subscribe((e:any) =>{
-              console.log('le detail du user :! ', e.account)
+              console.log('le detail de chaque user du compte owner:! ', e.account)
               user = e.account;
               this.ProfilAccount.users[index] = e.account
               console.log(this.ProfilAccount.users)
@@ -455,7 +558,7 @@ export class AdministrationComponent implements OnInit{
           console.log('le staff: ', staff.id, index)
           this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
             resp.subscribe((e:any) =>{
-              console.log('le detail du staff :! ', e.account)
+              console.log('le detail de chaque staff du compte owner:! ', e.account)
               staff = e.account;
               this.ProfilAccount.staff[index] = e.account
               console.log(this.ProfilAccount.staff)

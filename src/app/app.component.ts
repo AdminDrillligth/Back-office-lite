@@ -24,7 +24,8 @@ export class AppComponent {
   profile:any=[];
   showFiller = true;
   seeNavigation = true;
-  toggleControl = new FormControl(false);
+  toggleControl = new FormControl(true);
+  opened = false;
   // Start of SideBArItems !
   sideBarItems:any[]= [
     {
@@ -37,7 +38,7 @@ export class AppComponent {
     },
     {
       id: 2,
-      name: 'Entraînements',
+      name: 'Bibliothèque',
       icone: 'assets/icons/menu_trainings.svg',
       link: 'trainings',
       activeClass: 'active_btn',
@@ -45,7 +46,7 @@ export class AppComponent {
     },
     {
       id: 3,
-      name: 'Administration',
+      name: 'Comptes',
       icone: 'assets/icons/menu_sports.svg',
       link: 'administration',
       activeClass: 'active_btn',
@@ -53,34 +54,35 @@ export class AppComponent {
     },
     {
       id: 4,
-      name: 'E-cônes',
+      name: 'E-Cones',
       icone: 'assets/icons/menu_econe.svg',
       link: 'econes',
       activeClass: 'active_btn',
       activatedRight:[]
     },
-    {
-      id: 5,
-      name: 'Vidéos',
-      icone: 'assets/icons/menu_videos.svg',
-      link: 'videos',
-      activeClass: 'active_btn',
-      activatedRight:[]
-    },
-    {
-      id: 6,
-      name: 'Paramètres',
-      icone: 'assets/icons/menu_settings.svg',
-      link: 'parameters',
-      activeClass: 'active_btn',
-      activatedRight:[]
-    },
+    // {
+    //   id: 5,
+    //   name: 'Vidéos',
+    //   icone: 'assets/icons/menu_videos.svg',
+    //   link: 'videos',
+    //   activeClass: 'active_btn',
+    //   activatedRight:[]
+    // },
+    // {
+    //   id: 6,
+    //   name: 'Paramètres',
+    //   icone: 'assets/icons/menu_settings.svg',
+    //   link: 'parameters',
+    //   activeClass: 'active_btn',
+    //   activatedRight:[]
+    // },
   ];
   seeAsAdmin:boolean=false;
   AccountOfUser:any;
   user:any = [];
   AllAccount:any[] = [];
   seeAsAccount:any;
+  seeNavBar = true;
   // 0 FULL, 1 AUTORITE, 2 UNDER AUTORITE, 3 USER
   constructor(
     private url:LocationStrategy,
@@ -93,13 +95,19 @@ export class AppComponent {
     localStorage.removeItem('account-data-user');
   }
 
+
   ngOnInit(): void {
         //*
+        this.seeNavBar = true;
+        const darkClassName = 'darkMode';
+        this.className = true ? darkClassName : '';
+        this.utilsService.changeThemeTemplate(this.className);
         this.toggleControl.valueChanges.subscribe((darkMode) => {
           const darkClassName = 'darkMode';
           this.className = darkMode ? darkClassName : '';
           this.utilsService.changeThemeTemplate(this.className);
         });
+
         let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
         console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
         this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
@@ -113,24 +121,49 @@ export class AppComponent {
             }
           }
         });
+        this.utilsService._seeNavigation.subscribe((seeNav:any) => {
+          console.log(seeNav)
+          if(seeNav == true){
+            this.seeNavigation = true;
+            this.opened = true;
+          }
+        })
+        
         this.updateData();
+  }
+
+  setSeenavBar(drawer:any){
+    console.log(drawer._opened)
+    this.seeNavBar = drawer._opened;
+
   }
 
   comeBackToAdmin(){
     localStorage.removeItem('account-data-user');
     this.seeAsAdmin = false;
+    this.utilsService.sendSeeAsAdmin(false);
     this.router.navigate(['administration']);
   }
 
   navigateTo(item:any){
     console.log('NAV TO ::: ',item);
-    this.utilsService.changeThemeTemplate(this.className);
-    this.router.navigate([item.link]);
+    if(item.link === 'trainings'){
+      console.log('go trainings')
+      this.router.navigate(['trainings']);
+    }else{
+      this.router.navigate([item.link]);
+    }
+    // this.utilsService.changeThemeTemplate(this.className);
+
   }
 
   logOut(){
-    this.afAuth.signOut();
+    // this.afAuth.signOut();
     this.router.navigate(['login']);
+  }
+
+  seenavbar(){
+    console.log('seenavbar')
   }
 
   updateData(){
@@ -138,25 +171,27 @@ export class AppComponent {
     if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
       console.log(this.router, this.url.path())
       this.seeNavigation = false;
+      this.opened = false;
     }else{
       this.seeNavigation = true;
-      console.log(this.router.url,this.url.path(), this.url.path().split("?"))
+      this.opened = true;
+    //   console.log(this.router.url,this.url.path())
     }
         this.AccountOfUser = '';
-        this.user = JSON.parse(localStorage.getItem('user') || '{}');
-        console.log(this.user)
-        this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
-        //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
-        this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-        // if(this.AccountOfUser.privileges.role === "Administrateur"){
-        //   this.userHandlersServiceAdmin.getAccountAdmin().subscribe((allAccount:any) => {
-        //     allAccount.docs.forEach((account:any) => {
-        //       this.AllAccount.push({account:account.data(), id:account.id})
-        //     })
-        //     localStorage.setItem('allaccount', JSON.stringify(this.AllAccount));
-        //   })
-        // }
-      });
+      //   this.user = JSON.parse(localStorage.getItem('user') || '{}');
+      //   console.log(this.user)
+      //   this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
+      //   //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));
+      //   this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+      //   // if(this.AccountOfUser.privileges.role === "Administrateur"){
+      //   //   this.userHandlersServiceAdmin.getAccountAdmin().subscribe((allAccount:any) => {
+      //   //     allAccount.docs.forEach((account:any) => {
+      //   //       this.AllAccount.push({account:account.data(), id:account.id})
+      //   //     })
+      //   //     localStorage.setItem('allaccount', JSON.stringify(this.AllAccount));
+      //   //   })
+      //   // }
+      // });
   }
 }
 

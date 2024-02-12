@@ -14,7 +14,7 @@ import { createExercise, getExerciseDetails, getExercisesList, updateExercise, d
 import { testgetSessionsList, createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
 import { createResult } from './resultsController';
-import { getFirmware, createFirmware } from './firmwareController';
+import { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails } from './firmwareController';
 
 const fileMiddleware = require('express-multipart-file-parser')
 
@@ -112,7 +112,11 @@ app.delete('/deleteEcone', deleteEcone)
 //
 app.post('/createResult', createResult)
 
-
+//
+app.post('/createFirmware', createFirmware)
+app.get('/getFirmware', getFirmware)
+app.get('/getFirmwaresList', getFirmwaresList)
+app.get('/getFirmwareDetails', getFirmwareDetails)
 //
 app.post('/login', connectToAccount)
 

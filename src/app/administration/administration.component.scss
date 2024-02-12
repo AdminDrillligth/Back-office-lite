@@ -49,6 +49,41 @@
   background-color: #878787!important;
 }
 
+.display-modal-action{
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 70%;
+  position: absolute;
+  height: 450px;
+  background: #303030;
+  top: 140px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 4px 0px #ffffff61;
+}
+
+.display-modal-firmware{
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 70%;
+  position: absolute;
+  height: 450px;
+  background: #303030;
+  top: 140px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 4px 0px #ffffff61;
+}
+
+.header-of-actions{
+
+}
+
+.action-btn-modal{
+  display:block;
+  margin-bottom: 10px;
+}
+
 .displayTrained{
   display: inline-block;
   border:1px solid wheat;
@@ -159,7 +194,7 @@
 
 
 .background-modal{
-  background-color:#110d24 !important;
+  // background-color:#110d24 !important;
   cursor:pointer;
   padding-top: 20px;
   padding-right: 15px;
@@ -280,9 +315,56 @@
 }
 
 
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 350px) and (max-width:600px){
   /* For mobile phones: */
   ::ng-deep mat-mdc-dialog-actions.mat-mdc-dialog-actions-align-end, .mat-mdc-dialog-actions {
     justify-content: center;
+  }
+
+  .image-logo{
+    display:none;
+  }
+
+  .header-title{
+    margin-left: 50px;
+  }
+
+  .align-title{
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: small;
+  }
+
+  .card-header-align{
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+
+
+@media only screen and (min-width: 600px) and  (max-width: 950px) {
+  /* For mobile phones: */
+  ::ng-deep mat-mdc-dialog-actions.mat-mdc-dialog-actions-align-end, .mat-mdc-dialog-actions {
+    justify-content: center;
+  }
+
+  .header-title{
+    margin-left: 50px;
+  }
+
+  .align-title{
+    font-size: x-small;
+    margin-top: 0px;
+    margin-bottom: 15px;
+    font-weight: 500;
+
+  }
+
+  .image-logo {
+    width: 30px;
+    margin-left: auto;
+    height: 30px;
   }
 }

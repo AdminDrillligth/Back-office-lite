@@ -1,30 +1,30 @@
 <div class="background-modal">
-    <h5 class="title-modal" style="color:black">Ajouter un E-cone en tant qu'administrateur</h5>
+    <h5 class="title-modal" style="color:white">Ajouter un E-cone en tant qu'administrateur</h5>
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
-          <mat-label style="color:black">Numéro de série : </mat-label>
+          <mat-label style="color:white">Numéro de série : </mat-label>
           <input [formControl]="serialNumber" maxlength="13" required matInput placeholder="xxxxxxx">
         </mat-form-field>
       </div>
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
-          <mat-label style="color:black">Firmware : </mat-label>
+          <mat-label style="color:white">Firmware : </mat-label>
            <input type='number' [formControl]="firmware" maxlength="13" min="0.1" max="10" required matInput placeholder="0.1">
         </mat-form-field>
       </div>
       <div class="col-12 divdial" mat-dialog-content>
-          <mat-label style="color:black"><b>En tant que Master : </b></mat-label>
+          <mat-label style="color:white"><b>En tant que Master : </b></mat-label>
           <mat-checkbox class=""></mat-checkbox>
       </div>
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
-          <mat-label style="color:black">SSID : </mat-label>
+          <mat-label style="color:white">SSID : </mat-label>
           <input [formControl]="SSID" maxlength="13" required matInput placeholder="nom du SSID">
         </mat-form-field>
       </div>
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
-          <mat-label style="color:black">Mot de passe SSID : </mat-label>
+          <mat-label style="color:white">Mot de passe SSID : </mat-label>
           <input [formControl]="password" maxlength="13" required matInput placeholder="nom du SSID">
         </mat-form-field>
       </div>
@@ -38,7 +38,7 @@
       </div>
       <div class="bottom-btn">
         <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Annuler</button>
-        <button mat-button  (click)='close()' class="btn-delete mg-btm-del" >Ajouter un E-cone</button>
+        <button mat-button  (click)='close()' class="btn-delete mg-btm-del" >Ajouter un E-Cone</button>
       </div>
 </div>
   

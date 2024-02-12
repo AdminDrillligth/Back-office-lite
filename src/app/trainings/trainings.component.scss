@@ -65,7 +65,13 @@
 }
 
 .title-card{
+ 
   font-size: 1em;
+}
+
+::ng-deep .mat-mdc-dialog-container {
+  
+  --mdc-dialog-container-color: #515151;
 }
 
 .header-image{
@@ -88,7 +94,7 @@
 
 .btn-add{
   display: inline-block;
-  width: 300px;
+  width: 275px;
 }
 
 .btn-card{
@@ -185,8 +191,7 @@
 }
 
 ::ng-deep mat-dialog-container {
-  background-color:#d9d9d9!important;
-  border: 1px solid rgba(255, 255, 255, 0.533);
+  box-shadow: 0px 0px 5px #ffffffa3;
   border-radius:8px;
 }
 
@@ -199,7 +204,6 @@
 }
 
 .background-modal{
-  background-color:#404054!important;
   cursor:pointer;
   text-align: center;
 }
@@ -283,6 +287,10 @@
   font-weight: 500;
 }
 
+.btn-add-right{
+  margin-left: 10px;
+}
+
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .card-exo{
@@ -301,4 +309,74 @@
     display: inline-block;
     width: 100%;
   }
+
+  .header-title{
+    margin-left: 50px;
+    font-size: larger;
+  }
+  .title{
+    font-size: large;
+  }
+
+  .btn-card{
+    margin-left: 10px;
+  }
+  .paragraph-card{
+    margin-left: 0;
+  }
+  .btn-add-right{
+    margin-left: 0px;
+  }
+  
 }
+
+
+@media only screen and (max-width: 950px) {
+  // /* For mobile phones: */
+  // .card-exo{
+  //   margin-left: auto;
+  //   margin-right: auto;
+  // }
+
+  .card-dashboard{
+  //  margin-top: 5px;
+    width: 100%;
+  }
+
+  // .selectors{
+  //   width: 98%;
+  // }
+  .btn-add-ex{
+    font-weight: 400;
+  }
+
+  .btn-add{
+    display: inline-block;
+    // width: 170px;
+    font-size: small;
+    // margin-left: 20px;
+  }
+
+  .header-title{
+    margin-left: 50px;
+    font-size: larger;
+  }
+
+  .hr-line{
+    margin-top: 3px;
+    height: 2px;
+  }
+  // .title{
+  //   font-size: large;
+  // }
+
+  // .btn-card{
+  //   margin-left: 10px;
+  // }
+  // .paragraph-card{
+  //   margin-left: 0;
+  // }
+}
+
+
+

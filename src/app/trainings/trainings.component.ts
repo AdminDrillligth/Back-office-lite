@@ -1,6 +1,6 @@
 import {  Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { trainingService } from '../../services/firebase/get-training-service';
+// import { trainingService } from '../../services/firebase/get-training-service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -59,22 +59,32 @@ export class TrainingsComponent implements OnInit {
     private exerciseService:ExerciseService,
     private router:Router,
     private utilsService: UtilsService,
-    private trainingservice:trainingService,
+    // private trainingservice:trainingService,
     public dialog: MatDialog
     ){}
   ngOnInit(): void {
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
-    this.idOfOwner = AccountOfUser.id;
-    this.utilsService._templateOptions.subscribe((theme:any) => {
-      console.log('THEME !: ',theme)
-     });
+   
+    if(AccountOfUser !== undefined ){
+      let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+      console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
+      this.idOfOwner = AccountOfUser.id;
+      
+    }
+  
+    // this.utilsService._templateOptions.subscribe((theme:any) => {
+    //   console.log('THEME !: ',theme)
+    //  });
      this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       if(asAdmin !== null){
         if(asAdmin === true){
-          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
-          console.log('LE DETAIL DU USER : ! ',userDetailAccount)
-          this.userSource = userDetailAccount;
+          // if(JSON.parse(localStorage.getItem('account-data-user') || '{}') !== undefined){
+            let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+            console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+            this.userSource = userDetailAccount;
+            this.getInfoGLobal();
+          // }
+
         }
       }
     });
@@ -85,25 +95,12 @@ export class TrainingsComponent implements OnInit {
     
     this.getExercicesList();
     this.getSessionsList();
-    this.trainingservice.getTrainings().then((e:any)=>{
-      // console.log('First log: ',e)
-      this.trainingservice.getinject().then((inject:any)=>{
-        // console.log('First logs: ',inject)
-        this.recentTrainings = inject[0];
-        console.log(this.recentTrainings)
-        this.categoryOneTrainings =inject[1];
-        // console.log('VIEW',this.categoryOneTrainings)
-        this.categoryTwoTrainings =inject[2];
-        this.categoryTreeTrainings =inject[3];
-        // this.highlightedsExercices = inject[4];
-      })
-    });
   }
 
 
   getExercicesList(){
-  
-  if(this.userSource !== undefined){
+  console.log('le user source : ! ',this.userSource)
+  if(this.userSource !== undefined ){
     this.exerciseService.getExerciceList(this.userSource.id).then((resp:any)=>{
       console.log(this.userSource.id)
       resp.subscribe((response:any)=>{
@@ -124,8 +121,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
-        this.publicTrainings.cards.sort(this.compareByName)
-        this.privateTrainings.cards.sort(this.compareByName)
       })
     });
   }else{
@@ -148,8 +143,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
-        this.publicTrainings.cards.sort(this.compareByName)
-        this.privateTrainings.cards.sort(this.compareByName)
       })
     });
   }
@@ -178,8 +171,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
         }
-        this.publicSessions.cards.sort(this.compareByName)
-        this.privateSessions.cards.sort(this.compareByName)
       })
     });
   }else{
@@ -204,8 +195,6 @@ export class TrainingsComponent implements OnInit {
           })
           console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
         }
-        this.publicSessions.cards.sort(this.compareByName)
-        this.privateSessions.cards.sort(this.compareByName)
       })
     });
   }
@@ -219,8 +208,10 @@ export class TrainingsComponent implements OnInit {
 
   applyFilter(event: Event) {
     console.log('LE SEARCH : ',event)
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSourceAccounts.filter = filterValue.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value;
+    console.log('LE SEARCH : ',filterValue.trim().toLowerCase())
+    // this.publicTrainings.cards = 
+    // this.publicTrainings.cards.filter = filterValue.trim().toLowerCase();
   }
 
 
@@ -304,7 +295,8 @@ export class DialogContentExampleDialog implements OnInit{
   ) {}
 
   ngOnInit(): void {
-   console.log('LES DATAS MODALS ',this.data.item)
+    console.log('LES DATAS MODALS  : ! ',this.data)
+   console.log('LES DATAS MODALS ',)
   }
 
   addVideoToExercice(data:any){
@@ -343,6 +335,7 @@ export class ContentUploadDialog implements OnInit{
   ngOnInit(): void {
     this.userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
     console.log('LE DETAIL DU USER : ! ',this.userDetailAccount)
+    console.log('LES DATAS MODALS  : ! ',this.data.header.image)
     if(this.userDetailAccount.id !== undefined){
       this.idOfUser = this.userDetailAccount.id;
     }
@@ -385,10 +378,12 @@ export class ContentUploadDialog implements OnInit{
 
   // https://www.npmjs.com/package/image-resize
   onchangeInputImg(file:any){
+    // 
     var imageResize = new ImageResize({
       format: 'jpg',
       width: 256
     });
+    
     imageResize.play(file.target.files[0]).then((e:any)=>{
       this.dataBase64 = e;
       console.log(file)

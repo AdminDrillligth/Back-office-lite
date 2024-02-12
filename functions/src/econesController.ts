@@ -51,7 +51,7 @@ const createEcone = async (req: any, res: Response) => {
     creationDateIso: isoDateString, // STATIC
     customerId:data.idOfCustomer, // ADMIN
     name: '', // SYNC
-    avatarimages:'', // SYNC
+    avatarImages:'', // SYNC
     asMaster:true, // SYNC
     SSID:data.SSID, // SYNC
     passwordSSID: data.passwordSSID, // SYNC
@@ -60,6 +60,7 @@ const createEcone = async (req: any, res: Response) => {
     lastUseDate:'', // SYNC
     lastUseDateIso:'', // SYNC
   };
+  
   try {
     // const entry = db.collection('e-cones-handler')
     jwt.verify(token, 'secret', { expiresIn: '24h' }, function(err:any, decoded:any) {

@@ -10,12 +10,17 @@
 // createResult
 const createResult = async (req: any, res: any) => {
     // let newUuid = uuidv4();
+
+    let reqs = req;
+    let body = reqs.body;
+    let results = body.reports
     try {
       return res.status(200).json({
         response: {
             result:'success',
-            message:'Utilisateur ajouté avec succés'
+            message:''
         },
+        results:results
       })
     }
     catch(error:any) { return res.status(500).json(error.message) }

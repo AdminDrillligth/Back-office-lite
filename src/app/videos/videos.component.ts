@@ -81,8 +81,8 @@ export class VideosComponent {
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
      });
-    this.user = JSON.parse(localStorage.getItem('user') || '{}');
-    console.log(this.user)
+    // this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    // console.log(this.user)
     this.GetterVideoListing()
 
   }
@@ -95,29 +95,29 @@ export class VideosComponent {
 
   GetterVideoListing(info?:any){
     this.allVideos.cards.length = 0;
-    setTimeout(() => {
-      this.fireStoreServiceVideos.getVideoOfUser().subscribe((docSnap: any) => {
-        console.log('Le snap ::', docSnap)
-        docSnap.forEach((e:any) => {
-          let favorite;
-          if(e.data().favorite !== undefined || e.data().favorite !== null){ favorite = e.data().favorite;}else{favorite = false;}
-          console.log('chooose ::: ',e.id);
-          console.log('chooose les datas de la videos ::: ::: ',e.data());
-          this.allVideos.cards.push({ id_video: e.data().id_video,selectedTraineds: e.data().selectedTraineds, id: e.id, image: this.imagesArray[this.counterData].url,time: '15', text: e.data().name,
-            days_left: 2, iconType: 'heart', createDate: e.data().date,usermail:e.data().usermail, favorite: favorite,etiquette:e.data().etiquette, title:e.data().title, comment:e.data().comment})
-          if(this.allVideos.cards[this.allVideos.cards.length-1].favorite === true){
-            this.favorites.cards.push(this.allVideos.cards[this.allVideos.cards.length-1])
-          }
-          this.counterData = this.counterData + 1;
-          console.log('IMAGES :: ',this.imagesArray[this.counterData])
-          })
-        console.log('La videos ::: ::: ',this.allVideos.cards);
-        this.userHandlersServiceAdmin.getAccountWithEmail(this.allVideos.cards[0].usermail).subscribe((e:any)=>{
-          console.log('le retour du account', e.docs[0].data().traineds)
-          this.traineds = e.docs[0].data().traineds;
-        })
-      });
-    }, 300);
+    // setTimeout(() => {
+    //   this.fireStoreServiceVideos.getVideoOfUser().subscribe((docSnap: any) => {
+    //     console.log('Le snap ::', docSnap)
+    //     docSnap.forEach((e:any) => {
+    //       let favorite;
+    //       if(e.data().favorite !== undefined || e.data().favorite !== null){ favorite = e.data().favorite;}else{favorite = false;}
+    //       console.log('chooose ::: ',e.id);
+    //       console.log('chooose les datas de la videos ::: ::: ',e.data());
+    //       this.allVideos.cards.push({ id_video: e.data().id_video,selectedTraineds: e.data().selectedTraineds, id: e.id, image: this.imagesArray[this.counterData].url,time: '15', text: e.data().name,
+    //         days_left: 2, iconType: 'heart', createDate: e.data().date,usermail:e.data().usermail, favorite: favorite,etiquette:e.data().etiquette, title:e.data().title, comment:e.data().comment})
+    //       if(this.allVideos.cards[this.allVideos.cards.length-1].favorite === true){
+    //         this.favorites.cards.push(this.allVideos.cards[this.allVideos.cards.length-1])
+    //       }
+    //       this.counterData = this.counterData + 1;
+    //       console.log('IMAGES :: ',this.imagesArray[this.counterData])
+    //       })
+    //     console.log('La videos ::: ::: ',this.allVideos.cards);
+    //     this.userHandlersServiceAdmin.getAccountWithEmail(this.allVideos.cards[0].usermail).subscribe((e:any)=>{
+    //       console.log('le retour du account', e.docs[0].data().traineds)
+    //       this.traineds = e.docs[0].data().traineds;
+    //     })
+    //   });
+    // }, 300);
   }
 
   removeVideo() {

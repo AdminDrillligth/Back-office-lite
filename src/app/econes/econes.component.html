@@ -1,16 +1,78 @@
 <div class="container-main" >
-  <h3 style="color:black">E-cones</h3>
-  <div  style="color:white;margin-bottom: 20px;" class="col-md-2">
+  <h3 style="color:white" class="header-title">E-Cones</h3>
+  <div  style="color:white;margin-bottom: 20px;">
         <button (click)="search()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>search</mat-icon>
         </button>
         <button (click)="parameters()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>settings</mat-icon>
         </button>
-        <button *ngIf="account.asAdmin == true"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
+        <button *ngIf="account.role == 'admin'"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>add</mat-icon>
         </button>
+        <div style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-4  col-md-6">
+          <mat-card  (click)="uploadZip()" class="card-dashboard">
+            <mat-card-header>
+              <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
+      
+              <mat-card-title style="margin-right: 15px;" class="align-title">Téléverser une mise à jour</mat-card-title>
+            </mat-card-header>
+          </mat-card>
+        </div>
   </div>
+
+  <div *ngIf="displayModal" class="modal-zip" >
+    <h1>Chargement d'une mise à jour</h1>
+    <input *ngIf="!displayListOfUSer" type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip">
+    <!-- <button *ngIf="displayBtnUpload" (click)="chargeZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Charger le firmware
+      <mat-icon>add</mat-icon>
+    </button> -->
+    <mat-checkbox *ngIf="!displayListOfUSer" [(ngModel)]="private" class="example-margin">Privé</mat-checkbox>
+    <button (click)="getZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Récupérer le dernier Firmware
+      <mat-icon>add</mat-icon>
+    </button>
+    <br>
+    <mat-form-field class="example-full-width">
+      <mat-label>Version</mat-label>
+      <input (keyup)="versionOfFirmware($event)" matInput placeholder="0.0.1" value="">
+    </mat-form-field>
+    <br>
+    <mat-form-field style="width: 98%;" class="example-full-width">
+      <mat-label>Description</mat-label>
+      <textarea (keyup)="commentOfFirmware($event)" matInput placeholder="..."></textarea>
+    </mat-form-field>
+    <mat-form-field *ngIf="displayListOfUSer" style="width: 95%;">
+      <mat-label>Choisir le compte</mat-label>
+      <mat-select  [(ngModel)]="selectedUser" >
+        <mat-option  *ngFor="let account of allAccountsAdminOwner" [value]="account.id">{{'Nom: '+account.fullName+ ', id: '+account.id }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="!displayListOfUSer" class="bottom-btn">
+      <button mat-button  (click)='closeModal()' class="btn-warn mg-btm-del" >Annuler</button>
+      <button mat-button (click)='uploadZipAndUser()' class="btn-modifie mg-btm-del" color="primary">Charger la mise à jour</button>
+    </div>
+    <div *ngIf="displayListOfUSer" class="bottom-btn">
+      <button mat-button  (click)='uploadZipAndUserFalse()'  class="btn-warn mg-btm-del" >Annuler</button>
+      <button mat-button  (click)="chargeZipFirmwareWithUser()" class="btn-modifie mg-btm-del" color="primary">Charger la mise à jour</button>
+    </div>
+  </div>
+  <!-- [disabled]="true" -->
+  <!--  -->
+  <!-- <mat-radio-group aria-label="Select an option"> -->
+    <!-- <input type="radio" (click)="selectStatus($event.target)" [checked]="global" value="global">Global
+    <input type="radio" (click)="selectStatus($event.target)" [checked]="private" value="private">Privé -->
+  <!-- </mat-radio-group> -->
+    <!-- <input type="text" (keyup)="gerVersion($event)">
+  <button *ngIf="srCzip !== ''"><a href="{{srCzip}}" download="firmware">Lien du firmware</a></button>
+  <div style="color:white" class="col-sm-4  col-md-4">
+    <mat-card (click)="getlastFirmware()" class="card-dashboard">
+      <mat-card-header>
+        <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
+
+        <mat-card-title  class="align-title">recuperer le dernier Firmware</mat-card-title>
+      </mat-card-header>
+    </mat-card> -->
+  <!-- </div> -->
 
 <div  *ngFor="let Econe of Econes" >
   <div *ngIf="Econe.SeeQrCode"  class="modalQr" >

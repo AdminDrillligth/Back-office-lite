@@ -17,8 +17,8 @@ const createExercise  = async (req: any, res: any) => {
     let token = headers.token;
     let body = reqs.body;
     let globalHandler:any = [];
-    let lastPublicChangeCount="";
-    let lastSessionChangeCount = "";
+    // let lastPublicChangeCount="";
+    // let lastSessionChangeCount = "";
     let userDetail :any = '';
     let idTable:any;
 
@@ -42,23 +42,18 @@ const createExercise  = async (req: any, res: any) => {
                 querySnapshotGlobalHandler.forEach((doc: any) => {
                   globalHandler.push(doc.data());
                 });
-                globalHandler.forEach((global:any)=>{
-                  if(global.publicExercisesChangeCount !== undefined){
-                    lastPublicChangeCount = global.publicExercisesChangeCount;
-                    lastSessionChangeCount = global.publicSessionsChangeCount;
-                  }
-                })
-                let data = {publicExercisesChangeCount:lastPublicChangeCount+1, publicSessionsChangeCount:lastSessionChangeCount}
 
+                globalHandler[0].lastPublicChangeCount = globalHandler[0].lastPublicChangeCount +1;
                 const global_handler = db.collection('global_handler');
-                global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(data).then((ref:any) => {
+                global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0]).then((ref:any) => {
+
                   return res.status(200).json({
                     response: {
                       result:'success',
                       message:''
                     },
                     json:json.json,
-                    lastPublicChangeCount:data.publicExercisesChangeCount
+                    lastPublicChangeCount:globalHandler[0].publicExercisesChangeCount
                   });
                 })
               }else{
@@ -115,14 +110,14 @@ const getExerciseDetails = async (req: any, res: any) => {
   //   jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
   //       if(err) {
   //         decodeds = 'err';
-  //         return res.status(200).json({
-  //           response: {
-  //             result:'expiredTokenError',
-  //             message:'Votre token a expiré'
-  //           }
-  //           token:token,
-  //           decoded:decodeds
-  //         });
+          // return res.status(200).json({
+          //   response: {
+          //     result:'expiredTokenError',
+          //     message:'Votre token a expiré'
+          //   }
+          //   token:token,
+          //   decoded:decodeds
+          // });
   //       } else {
   //         decodeds = 'no error';
   //         const querySnapshot = await db.collection('exercise-handler').doc(idExercise).get();
@@ -196,18 +191,21 @@ const getExercisesList = async (req: any, res: any) => {
         })
         let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
         if(publicExercisesChangeCount === lastPublicChangeCount || publicExercisesChangeCount > lastPublicChangeCount){
-          
+
           if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
 
           }
           if(privateExercisesChangeCount === 0){
             const querySnapshot = await db.collection('exercise-handler').get();
+
             querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
+
             allExercises.forEach((exercise:any)=> {
               if(exercise.data.header.status === 'private'){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) }
+                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data)
+                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                   }
                 }
               }
@@ -215,12 +213,15 @@ const getExercisesList = async (req: any, res: any) => {
           }
           else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
             const querySnapshot = await db.collection('exercise-handler').get();
+
             querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
+
             allExercises.forEach((exercise:any)=> {
               if(exercise.data.header.status === 'private'){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) }
+                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                   }
                 }
               }
@@ -248,7 +249,14 @@ const getExercisesList = async (req: any, res: any) => {
           });
           allExercises.forEach((exercise:any)=> {
             if(exercise.data.header.status === 'public'){
-              publicExercises.push(exercise.data)
+              if(userDetail.privateOnly !== undefined ){
+                if(userDetail.privateOnly === false){
+                  publicExercises.push(exercise.data)  
+                }
+              }else{
+                publicExercises.push(exercise.data)  
+              }
+              publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
             }else{
               if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
 
@@ -256,14 +264,16 @@ const getExercisesList = async (req: any, res: any) => {
               if(privateExercisesChangeCount === 0){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) }
+                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                   }
                 }
               }
               else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) }
+                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                   }
                 }
               }
@@ -293,7 +303,13 @@ const getExercisesList = async (req: any, res: any) => {
           });
           allExercises.forEach((exercise:any)=> {
             if(exercise.data.header.status === 'public'){
-              publicExercises.push(exercise.data)
+              if(userDetail.privateOnly !== undefined ){
+                if(userDetail.privateOnly === false){
+                  publicExercises.push(exercise.data)  
+                }
+              }else{
+                publicExercises.push(exercise.data)  
+              }
             }else{
               if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
 
@@ -301,20 +317,24 @@ const getExercisesList = async (req: any, res: any) => {
               if(privateExercisesChangeCount === 0){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) }
+                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+                    }
                   }
                 }
               }
               else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) }
+                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                   }
                 }
               }
             }
           })
-
+          publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+          // publicExercises.sort(compareByName())
           return res.status(200).json({
             response: {
               result:'success',
@@ -331,164 +351,14 @@ const getExercisesList = async (req: any, res: any) => {
           });
 
         }
-
-        // if(userDetail.lastAppDataUpdate !== undefined){
-
-          // lastUserChangeDate = userDetail.lastAppDataUpdate;
-          // let userLast = new Date(userDetail.lastAppDataUpdate);
-          // let lastpub = new Date(lastPublicChangeDate);
-          //compare date to assign exercices:
-  
-          // if (lastpub.getTime() < userLast.getTime()) {
-            // dateEarler = "last public earler last update"
-  
-  
-          // } else {
-            // publicChanged = true;
-            // dateEarler = "last public later last update";
-            // userDetail.lastAppDataUpdate = isoDateString;
-            // const account_handler = db.collection('account-handler'); 
-            // account_handler.doc(idTable).update(userDetail);
-            // const querySnapshot = await db.collection('exercise-handler').get();
-            // querySnapshot.forEach((doc: any) => {
-            //     allExercises.push({data:doc.data(), id: doc.id});
-            // });
-            // allExercises.forEach((exercise:any)=> {
-            //   if(exercise.data.header.status === 'public'){
-            //     publicExercises.push(exercise.data)
-            //     // publicExercises.sort()
-            //   }else{
-            //     // if(userDetail.lastPrivateChangeDate !== undefined){
-            //     //   lastPrivateChangeDate = userDetail.lastPrivateChangeDate;
-            //     //   let lastPrivate = new Date(lastPrivateChangeDate);
-            //     //   if (lastPrivate.getTime() < userLast.getTime()) {
-            //     //     dateEarlerPrivate = "last private earler last update"
-          
-          
-            //     //   } else {
-            //     //     dateEarlerPrivate = "last private later last update";
-
-            //     //   }
-            //     // }
-  
-            //         if(idUser !== 'null'){
-            //           if(exercise.data.header.owner  !== undefined){
-            //             if(idUser === exercise.data.header.owner.id){
-            //               privateExercises.push(exercise.data)
-            //               // privateExercises.sort()
-            //             }
-            //           }
-            //         }
-            //       }
-            // });
-
-        //  }
-        // if(userDetail.lastPrivateChangeDate !== undefined){
-        //   lastPrivateChangeDate = userDetail.lastPrivateChangeDate;
-        //   let lastPrivate = new Date(lastPrivateChangeDate);
-        //   if (lastPrivate.getTime() < userLast.getTime()) {
-        //     // dateEarlerPrivate = "last private earler last update"
-  
-  
-        //   } else {
-        //     // dateEarlerPrivate = "last private later last update";
-
-        //   }
-        // }
-
-       
-      //   }else{
-      //     // si le lastUpdate n'existe pas
-      //     publicChanged = true;
-      //     userDetail.lastAppDataUpdate = isoDateString;
-      //     // lastUserChangeDate = userDetail.lastAppDataUpdate;
-      //     const account_handler = db.collection('account-handler'); 
-      //     account_handler.doc(idTable).update(userDetail);
-      //     const querySnapshot = await db.collection('exercise-handler').get();
-      //       querySnapshot.forEach((doc: any) => {
-      //           allExercises.push({data:doc.data(), id: doc.id});
-      //       });
-      //       allExercises.forEach((exercise:any)=> {
-      //         if(exercise.data.header.status === 'public'){
-      //           publicExercises.push(exercise.data)
-      //           // publicExercises.sort()
-      //         }else{
-      //           if(idUser !== 'null'){
-      //             if(exercise.data.header.owner  !== undefined){
-      //               if(idUser === exercise.data.header.owner.id){
-      //                 privateExercises.push(exercise.data)
-      //                 // privateExercises.sort()
-      //               }
-      //             }
-      //           }
-      //         }
-      //       })
-
-      //   }
-      
-      //   // 
-      // }
-
-      // const account_handler = db.collection('account-handler'); 
-      // account_handler.doc(idTable).update(userDetail);
-      // const allExercisesOfUser: any[] = [];
-      // const querySnapshot = await db.collection('exercise-handler').get();
-      // querySnapshot.forEach((doc: any) => {
-      //     allExercises.push({data:doc.data(), id: doc.id});
-      // });
-      // allExercises.forEach((exercise:any)=> {
-      //   if(exercise.data.header.status === 'public'){
-      //     publicExercises.push(exercise.data)
-      //     // publicExercises.sort()
-      //   }else{
-      //     if(idUser !== 'null'){
-      //       if(exercise.data.header.owner  !== undefined){
-      //         if(idUser === exercise.data.header.owner.id){
-      //           privateExercises.push(exercise.data)
-      //           // privateExercises.sort()
-      //         }
-      //       }
-      //     }
-      //   }
-
-      // });
-
-      // jwt.verify(token, 'secret', { expiresIn: '24h' },  function(err:any, decoded:any) {
-      //     if(err) {
-      //       return res.status(200).json({
-      //         response: {
-      //           result:'expiredTokenError',
-      //           message:''
-      //         },
-      //       });
-      //     }else {
-            // return res.status(200).json({
-            //   response: {
-            //     result:'success',
-            //     message:''
-            //   },
-            //   publicExercises:publicExercises,
-            //   privateExercises:privateExercises,
-            //   // headers:headers,
-            //   // lastPublicChangeDate:lastPublicChangeDate,
-            //   // lastUserChangeDate:lastUserChangeDate,
-            //   // dateEarler:dateEarler,
-            //   // dateEarlerPrivate:dateEarlerPrivate,
-            //   publicChanged:publicChanged,
-            //   privateChanged:true,
-            //   publicExercisesChangeCount:publicExercisesChangeCount,
-            //   privateExercisesChangeCount:1,
-            //   lastPublicChangeCount:lastPublicChangeCount,
-            //   // globalHandler:querySnapshotGlobalHandler,
-            //   // globalHandlers:globalHandler,
-            //   // userDetail:userDetail,
-            //   // token: token,
-            //   idUser:idUser,
-            // });
-          }
+      }
     //  });
     } catch(error:any) { return res.status(500).json(error.message) }
   }
+
+
+
+  
 
   const updateExercise = async (req: any, res: any) => {
     let reqs = req;

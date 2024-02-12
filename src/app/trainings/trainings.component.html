@@ -1,12 +1,12 @@
 <div class="container-main">
-  <h3 style="color:white">Entraînements</h3>
+  <h3 style="color:white" class="header-title">Bibliothèque</h3>
   <mat-form-field style="width:100%">
     <mat-label>Chercher par noms, catégories, dates, ... </mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
   </mat-form-field>
 
   <div class="row">
-    <div (click)="select(item)" *ngFor="let item of itemsNav" style="color:white" class="col-md-2">
+    <div (click)="select(item)" *ngFor="let item of itemsNav" style="color:white" class="col-md-4">
       <mat-card  class="card-dashboard">
         <mat-card-header>
           <mat-card-title>{{item.value}}</mat-card-title>
@@ -14,10 +14,12 @@
         </mat-card>
         <hr *ngIf="item.selected !== false" class="hr-line" >
     </div>
-    <div *ngIf="chooseType === 'Exercices'"  class="btn-add" (click)="createExercice()" ><button class="btn-add-ex">Créer un exercice</button></div>
-    <div *ngIf="chooseType === 'Exercices'"  class="btn-add" (click)="uploadExercice()" ><button class="btn-add-ex">Charger un exercice</button></div>
-    <div *ngIf="chooseType === 'Sessions'" class="btn-add" (click)="createSession()" ><button class="btn-add-ex">Créer une session</button></div>
-    <div *ngIf="chooseType === 'Sessions'"  class="btn-add" (click)="uploadSession()" ><button class="btn-add-ex">Charger une session</button></div>
+    <div style="text-align:center;">
+      <div *ngIf="chooseType === 'Exercices'"  class="btn-add col-md-3" (click)="createExercice()" ><button class="btn-add-ex">Créer un exercice</button></div>
+      <div  *ngIf="chooseType === 'Exercices'"  class="btn-add-right btn-add col-md-3" (click)="uploadExercice()" ><button class="btn-add-ex">Charger un exercice</button></div>
+      <div *ngIf="chooseType === 'Sessions'" class="btn-add col-md-3" (click)="createSession()" ><button class="btn-add-ex">Créer une session</button></div>
+      <div  *ngIf="chooseType === 'Sessions'"  class="btn-add-right btn-add col-md-3" (click)="uploadSession()" ><button class="btn-add-ex">Charger une session</button></div>
+    </div>
     <!-- <div class="btn-add" (click)="subscribes()" ><button class="btn-card">S'abonner au bouquet d'exercices</button></div> -->
   </div>
   <!-- LIST OF EXERCIES OF DRILLLIGHT -->
@@ -44,7 +46,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of publicTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
       <div style="height: 180px;
@@ -66,7 +68,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of privateTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privé</span>
       <div style="height: 180px;
@@ -142,7 +144,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of publicSessions.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
       <div style="height: 180px;
@@ -161,7 +163,7 @@
   <div  class="row scroll">
     <mat-card  *ngFor="let item of privateSessions.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
-        <mat-card-title class="title-card">{{item.header.title}}</mat-card-title>
+        <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privées</span>
       <div style="height: 180px;

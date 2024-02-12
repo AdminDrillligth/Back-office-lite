@@ -1,13 +1,13 @@
 <div class="container-main">
   <div *ngIf="ProfilAccount === undefined" >
     <div class="row">
-    <h3 style="color:white">Administration</h3>
+    <h3 style="color:white" class="header-title">Comptes</h3>
 
 
     <!-- <p>Rechargement image download</p> -->
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="createAdmin()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title class="align-title">Ajouter un Administrateur</mat-card-title>
           </mat-card-header>
@@ -15,7 +15,7 @@
       </div>
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="createCustomer()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
 
             <mat-card-title  class="align-title">Ajouter un Client</mat-card-title>
@@ -24,29 +24,23 @@
       </div>
       <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
         </mat-card>
       </div>
     </div>
-    <input type="file" class="file-upload" (change)="onchangeInputZip($event)" accept=".zip">
-    <!-- <mat-radio-group aria-label="Select an option"> -->
-      <input type="radio" (click)="selectStatus($event.target)" [checked]="global" value="global">Global
-      <input type="radio" (click)="selectStatus($event.target)" [checked]="private" value="private">Privé
-    <!-- </mat-radio-group> -->
 
-    <button *ngIf="srCzip !== ''"><a href="{{srCzip}}" download="firmware">Lien du firmware</a></button>
   </div>
 
   <div *ngIf="ProfilAccount !== undefined" >
     <div class="row">
-    <h3 style="color:white">Administration</h3>
+    <h3 style="color:white" class="header-title">Comptes</h3>
 
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="addStaffOfGroup(ProfilAccount)" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title class="align-title">Ajouter un membre du Staff</mat-card-title>
           </mat-card-header>
@@ -54,7 +48,7 @@
       </div>
       <div style="color:white" class="col-sm-4  col-md-4">
         <mat-card (click)="addAccountOfGroup(ProfilAccount)" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Ajouter un Utilisateur</mat-card-title>
           </mat-card-header>
@@ -62,7 +56,7 @@
       </div>
       <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
-          <mat-card-header>
+          <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
@@ -88,9 +82,16 @@
         <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
         <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
       </ng-container>
-      <ng-container matColumnDef="role" >
-        <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Role </th>
-        <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.role}} </td>
+      <ng-container  matColumnDef="role" >
+        <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
+        <!-- <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.role}} </td> -->
+        <td  mat-cell *matCellDef="let emp" style='text-align:center;'>
+          <mat-select value="{{emp.role}}">
+            <mat-option *ngFor="let role of roles" [value]="role.value">
+              {{role.name}}
+            </mat-option>
+          </mat-select>
+        </td>
       </ng-container>
       <!-- <ng-container matColumnDef="role">
         <th mat-header-cell *matHeaderCellDef> Rôle </th> -->
@@ -105,17 +106,29 @@
         <!-- <td mat-cell *matCellDef="let emp"> {{emp.date}} </td> -->
         <!-- <td mat-cell *matCellDef="let emp"> {{emp.date}} </td> -->
       <!-- </ng-container> -->
-        <ng-container matColumnDef="moderation">
+        <ng-container  matColumnDef="moderation">
           <!-- https://material.angular.io/components/checkbox/examples -->
-          <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Modération </th>
-          <td mat-cell *matCellDef="let emp" style='text-align:center;'><span  > <mat-checkbox class="" [(ngModel)]="emp.warning"></mat-checkbox> </span></td>
+          <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
+          <td  mat-cell *matCellDef="let emp" style='text-align:center;'><span  > <mat-checkbox class="" [(ngModel)]="emp.warning"></mat-checkbox> </span></td>
         </ng-container>
        <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Actions </th>
         <td mat-cell *matCellDef="let emp" style='text-align:center;'>
-          <button (click)="seeAdmin(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon> contacts</mat-icon></button>
+          <!-- <mat-select value="{{emp.role}}">
+            <mat-option *ngFor="let role of roles" [value]="role.value">
+              {{role.name}}
+            </mat-option> 
+            <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Détails du compte ...</button></mat-option>
+            <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Comptes rattachés ...</button></mat-option>
+            <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Matériels rattachés ...</button></mat-option>
+             <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Compte validé </button></mat-option> 
+            <mat-option>V Exercices privés uniquement </mat-option>
+          </mat-select> -->
+          <button (click)="openModalActions(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
+          <!-- <button (click)="seeAdmin(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon> contacts</mat-icon></button>
           <button (click)="updateAccount(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon>create</mat-icon></button>
           <button (click)="sendResetPassword(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon>mail</mat-icon></button>
+          <button *ngIf="emp.role === 'admin' || emp.role === 'owner'"  type="button" class="btn btn-link btn-sm btn-rounded"><img src="assets/icons/menu_econe.svg"></button> -->
         </td>
       </ng-container> 
       <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
@@ -360,6 +373,37 @@
           <span>DATA:</span>
         </div> -->
       </div>
+    </div>
+  </div>
+  <div *ngIf="displayModalAction" class="display-modal-action">
+    <h1 class="header-of-actions">Actions</h1>
+    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Détails du compte...</button></div>
+    <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Comptes rattachés...</button></div>
+    <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div>
+    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
+    <hr>
+    <div class="action-btn-modal"><button (click)="privateExercice(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Exercices privés seulement <mat-icon *ngIf="privateExerciceOnly">done</mat-icon></button></div>
+    <div class="action-btn-modal"><button (click)="displayModalOfPrivateFirmware(modalAccount)"  mat-raised-button  style="color:white;width: 100%;" class="">Gestion du firmware...</button></div>
+    <div class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div>
+  </div>
+  <div *ngIf="displayModalFirmware" class="display-modal-firmware">
+    <h1 style="margin-bottom:15px;" class="header-of-actions">Gestion du firmware</h1>
+    <div *ngIf="modalAccount.privateFirmwareId !== undefined || modalAccount.privateFirmwareId !== '' " >Firmware privé :  {{modalAccount.privateFirmwareId}}</div>
+    <!--  -->
+    
+    <!--  -->
+    <!--  -->
+    <!--  -->
+
+    <mat-form-field>
+      <mat-label>Chosir une version...</mat-label>
+      <mat-select  value="">
+        <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" >{{firmware.version}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="bottom-btn">
+      <button (click)="closeModalFirmware()"  mat-button mat-dialog-close class="btn-modifie mg-btm-del">Annuler</button>
+      <button mat-button (click)="selectFirmwareForAccount(modalAccount)"  class="btn-delete mg-btm-del" >Ok</button>
     </div>
   </div>
 </div>

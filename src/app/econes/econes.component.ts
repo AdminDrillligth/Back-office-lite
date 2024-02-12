@@ -28,7 +28,7 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { FirmWareService } from '../../services/firmware.service';
 type ListType = { title: string; val: number }[];
 
 export interface EconeDatas {
@@ -99,6 +99,7 @@ export class EconesComponent implements OnInit {
 
   resultsLength = 40;
   constructor(
+    private firmWareService:FirmWareService,
     private econesService:EconesService,
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
     private utilsService: UtilsService,
@@ -134,14 +135,25 @@ export class EconesComponent implements OnInit {
   Econes:any[any] = [];
   SeeQrCode:any = false;
   dataSourceEcones!: MatTableDataSource<EconeDatas>;
-
+  allAccounts:any;
+  allAccountsAdminOwner:any = [];
+  selectedUser:string ="";
+  private:boolean=false;
   ngOnInit(): void {
+    this.allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+    this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+    this.allAccounts.forEach((account:any) =>{
+      if(account.role === 'admin' || account.role === 'owner'){
+        this.allAccountsAdminOwner.push(account)
+      }
+    })
+    console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme);
     });
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.account = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('account : ! ',this.account.privileges)
+    console.log('account : ! ',this.account)
     this.getEconesFromDataBase();
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
@@ -225,6 +237,100 @@ export class EconesComponent implements OnInit {
   closeModalQr(Econe:any){
     
   }
+
+  uploadZip(){
+    console.log('upload zip')
+    this.displayModal = true;
+  }
+  
+  closeModal(){
+    this.displayModal = false;
+  }
+
+  selectUser(){
+    console.log(this.selectedUser)
+  }
+
+  uploadZipAndUserFalse(){
+    if(this.displayListOfUSer = true){
+      this.displayListOfUSer = false;
+      this.private = false;;
+    }
+  }
+
+  displayListOfUSer = false;
+  uploadZipAndUser(){
+    console.log(this.private)
+    if(this.private == true){
+      this.displayListOfUSer = true;
+    }else{
+      this.chargeZipFirmware();
+    }
+
+  }
+
+  displayModal = false;
+  displayBtnUpload = false;
+  srCzip :any = "";
+  //ZIP FIRMWARE CHECK AND UPDATE  
+  onchangeInputZip(zip:any){
+    console.log(zip)
+    const file = zip.target.files[0];
+    // this.AccountOfUser.id
+    // // Encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        console.log(reader.result);
+        console.log(reader);
+        this.displayBtnUpload = true;
+        // this.base64ToBlob(reader.result);
+        this.srCzip = reader.result;
+        // this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
+        // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+    };
+    reader.readAsDataURL(file);
+    
+    // // this.unzip();
+
+  }
+
+  versionOfFirmwareValue:string="";
+  commentOfFirmwareValue:string="";
+  versionOfFirmware(event:any){
+    console.log(event.target.value)
+    this.versionOfFirmwareValue = event.target.value;
+  }
+
+  commentOfFirmware(event:any){
+    console.log(event.target.value)
+    this.commentOfFirmwareValue = event.target.value;
+  }
+
+  AccountOfUser:any;
+  chargeZipFirmware(){
+    if(this.srCzip !== ''){
+      console.log('LE ZIP SRC : ',this.srCzip)
+      let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
+      this.firmWareService.createFirmware(firmwareData, this.AccountOfUser.id,false);
+    }
+    this.displayModal = false;
+    
+  }
+
+  chargeZipFirmwareWithUser(){
+    if(this.srCzip !== ''){
+      console.log('LE ZIP SRC : ',this.srCzip)
+      let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
+      this.firmWareService.createFirmware(firmwareData, this.selectedUser, true);
+    }
+    this.displayModal = false;
+    
+  }
+
+  getZipFirmware(){
+    this.firmWareService.getFirmware(this.AccountOfUser.id);
+  }
+
 
 
   displayQrOfEcone(Econe:any){
@@ -470,3 +576,4 @@ export class addEconesAdmin implements OnInit{
   }
 
 }
+

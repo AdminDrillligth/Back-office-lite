@@ -32,7 +32,7 @@ export class ExerciseService {
   async getExerciceList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les exercices ! ')
-    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'1'}})
+    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'0'}})
     return response;
   }
 
@@ -40,7 +40,7 @@ export class ExerciseService {
   async getSessionList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les Sessions ! ')
-    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id,'publicSessionsChangeCount':'1', 'privateSessionsChangeCount':'2'}})
+    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id,'publicSessionsChangeCount':'1', 'privateSessionsChangeCount':'0'}})
     console.log(response)
     return response;
   }
@@ -48,16 +48,11 @@ export class ExerciseService {
   updateExercise(json:any, id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('LE TOKEN',token,json,id );
-    // header = 
     const body = JSON.stringify({json:json, id:id});
     console.log(body)
     this.http.post(this.baseURL+'createExercise', body,{'headers':{ 'token': token}}).subscribe((rep:any) =>{
       console.log('LA REP DU CREATE EXERCISE : ! ',rep)
-
-      // let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-      // // console.log('LA REP DU ALL USERS : ! ',allAccounts)
-      // this.utilsService.sendRequestGetnewAccount(true);
-    })
+    });
   }
 
   updateSession(json:any, id:any){
