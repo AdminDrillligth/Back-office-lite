@@ -388,7 +388,8 @@
   </div>
   <div *ngIf="displayModalFirmware" class="display-modal-firmware">
     <h1 style="margin-bottom:15px;" class="header-of-actions">Gestion du firmware</h1>
-    <div *ngIf="modalAccount.privateFirmwareId !== undefined || modalAccount.privateFirmwareId !== '' " >Firmware privé :  {{modalAccount.privateFirmwareId}}</div>
+    <div *ngIf="privateFirmwareId" ><p *ngIf="privateFirmwareId" >Firmware privé :  {{modalAccount.privateFirmwareId}}</p></div>
+    <div *ngIf="privateFirmwareId" class="action-btn-modal"><button *ngIf="privateFirmwareId" (click)="removePrivateFirmware(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Suppression de la version privée</button></div>
     <!--  -->
     
     <!--  -->
@@ -402,7 +403,7 @@
       </mat-select>
     </mat-form-field>
     <div class="bottom-btn">
-      <button (click)="closeModalFirmware()"  mat-button mat-dialog-close class="btn-modifie mg-btm-del">Annuler</button>
+      <button (click)="closeModalFirmware()"  mat-button class="btn-modifie mg-btm-del">Annuler</button>
       <button mat-button (click)="selectFirmwareForAccount(modalAccount)"  class="btn-delete mg-btm-del" >Ok</button>
     </div>
   </div>

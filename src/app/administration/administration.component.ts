@@ -218,7 +218,7 @@ export class AdministrationComponent implements OnInit{
   public privateExerciceOnly = false;
   public moderationAccount = false; 
   public firmWareList:any = [];
-
+  public privateFirmwareId = false;
   resultsLength = 0;
   // TABLE INIT
   AccountOfUser:any=[];
@@ -366,6 +366,11 @@ export class AdministrationComponent implements OnInit{
       resp.subscribe((e:any) =>{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         this.modalAccount = e.account;
+        if(this.modalAccount.privateFirmwareId !== undefined){
+          if(this.modalAccount.privateFirmwareId !== ""){
+            this.privateFirmwareId = true;
+          }
+        }
       })
     })
     console.log('QUEL COMPTE : ! ',this.modalAccount)
@@ -397,10 +402,20 @@ export class AdministrationComponent implements OnInit{
 
   selectedFirmware(firmware:any){
     console.log('FIRMWARE : ! ',firmware.id,firmware)
+    this.selectedVersion = firmware;
   }
 
 
+
+
   displayModalOfPrivateFirmware(account:any){
+    console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
+    if(account.privateFirmwareId !== undefined){
+      if(account.privateFirmwareId !== ""){
+        this.privateFirmwareId = true;
+      }
+    }
+
     this.firmWareService.getfirmwareDetails("");
     this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
       console.log('list of firwares: ',firmwareList)
@@ -419,8 +434,32 @@ export class AdministrationComponent implements OnInit{
   }
 
   selectFirmwareForAccount(account:any){
-    this.displayModalFirmware = false;
-    this.displayModalAction = true;
+   
+    console.log(account,this.selectedVersion)
+    if(this.selectedVersion !== ""){
+      this.displayModalFirmware = false;
+      this.displayModalAction = true;
+      account.privateFirmwareId = this.selectedVersion.id;
+      console.log(this.selectedVersion, account)
+      this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update user owner: ! ', response)
+
+        })
+      });
+    }
+    // 
+  }
+
+  removePrivateFirmware(account:any){
+    console.log(account)
+    account.privateFirmwareId = "";
+    this.privateFirmwareId = false;
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user owner: ! ', response)
+      })
+    });
   }
 
   closeModalFirmware(){
@@ -428,8 +467,10 @@ export class AdministrationComponent implements OnInit{
     this.displayModalAction = true;
   }
 
+  selectedVersion:any="";
   gerVersion(event:any){
     console.log(event.target.value)
+
   }
 
   // onchangeInputZip(zip:any){
