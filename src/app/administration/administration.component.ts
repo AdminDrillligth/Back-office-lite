@@ -371,10 +371,37 @@ export class AdministrationComponent implements OnInit{
             this.privateFirmwareId = true;
           }
         }
+        if(this.modalAccount.privateOnly !== undefined){
+          this.privateExerciceOnly = this.modalAccount.privateOnly;
+        }
+        if(this.modalAccount.privateOnly === undefined){
+          this.privateExerciceOnly = false;
+        }
+        if(this.modalAccount.warning !== undefined){
+          this.moderationAccount = this.modalAccount.warning;
+        }
+        if(this.modalAccount.warning === undefined){
+          this.moderationAccount = false;
+        }
       })
     })
+    if(this.firmWareList.length !== 0 ){
+
+    }else{
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          console.log('list of firwares: ',list.firmwareList)
+          this.firmWareList = list.firmwareList;
+        })
+      });
+    }
+
     console.log('QUEL COMPTE : ! ',this.modalAccount)
-    this.displayModalAction = true;
+    setTimeout(() => {
+      this.displayModalAction = true;
+    }, 400);
+    
   }
 
   // public privateExerciceOnly = false;
@@ -388,7 +415,14 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.moderationAccount = true
     }
-   
+    account.warning = this.moderationAccount;
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user: ! ', response)
+
+      })
+    });
+    console.log('Warning Only ? :',account.warning);
   }
 
   privateExercice(account:any){
@@ -398,6 +432,14 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.privateExerciceOnly = true
     }
+    account.privateOnly = this.privateExerciceOnly;
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user: ! ', response)
+
+      })
+    });
+    console.log('Private Only ? :',account.privateOnly);
   }
 
   selectedFirmware(firmware:any){
@@ -417,13 +459,6 @@ export class AdministrationComponent implements OnInit{
     }
 
     this.firmWareService.getfirmwareDetails("");
-    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-      console.log('list of firwares: ',firmwareList)
-      firmwareList.subscribe((list:any)=>{
-        console.log('list of firwares: ',list.firmwareList)
-        this.firmWareList = list.firmwareList;
-      })
-    });
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
     if(this.displayModalFirmware){
@@ -431,6 +466,7 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.displayModalFirmware = true
     }
+
   }
 
   selectFirmwareForAccount(account:any){
@@ -460,6 +496,10 @@ export class AdministrationComponent implements OnInit{
         console.log('la resp du update user owner: ! ', response)
       })
     });
+  }
+
+  closeModalAction(){
+    this.displayModalAction = false;
   }
 
   closeModalFirmware(){
