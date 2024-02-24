@@ -12,3 +12,26 @@
   min-width: 20%;
   display: inline-block;
 }
+
+
+@media only screen and (max-width: 768px) {
+
+  .header-title{
+    margin-left: 50px;
+    font-size: larger;
+  }
+
+  .align-title{
+    margin-bottom: 20px;
+  }
+}
+
+
+
+@media only screen and (max-width: 950px) {
+
+  .header-title{
+    margin-left: 50px;
+    font-size: larger;
+  }
+}

@@ -60,6 +60,15 @@ export class AppComponent {
       activeClass: 'active_btn',
       activatedRight:[]
     },
+    {
+      id: 5,
+      name: 'Résultats',
+      icone: 'assets/icons/graph-svgrepo-com.svg',
+      link: 'history',
+      activeClass: 'active_btn',
+      activatedRight:[]
+    },
+    // <mat-icon> show_chart</mat-icon>
     // {
     //   id: 5,
     //   name: 'Vidéos',
