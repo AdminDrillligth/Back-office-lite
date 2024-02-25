@@ -8,9 +8,10 @@ import { v4 as uuidv4 } from 'uuid';
 // var isoDateString = new Date().toISOString();
 
 // createResult
+db.settings({ ignoreUndefinedProperties: true })
 const createResult = async (req: any, res: any) => {
     // let newUuid = uuidv4();
-    let newUuid = uuidv4();
+    // let newUuid = uuidv4();
     let reqs = req;
     let body = reqs.body;
     let results = body.data;
@@ -71,7 +72,7 @@ const createResult = async (req: any, res: any) => {
         // let Account = {id:result.coach.id, email:result.coach.email}
         // let infos = { idExercise: result.events[0].event.id, name: result.events[0].event.title }
         // pour chaque exercice l'on insere dans le tableau dataBinding
-      dataBinding.push({coach:result.coach,idExercise: result.events[0].event.id,startTime:'', factor: result.factor ,events:[], title: result.events[0].event.title})
+      dataBinding.push({coach:result.coach,idExercise: result.events[0].event.id,startDate:result.events[0].date, factor: result.factor ,events:[], title: result.events[0].event.title})
       // let kpi = {factor: result.factor , name: result.events[0].event.title , loop:0, detections:0, touchs:0, right:0, left:0, start:""}
       // pour chaque evenements de l'exercice l'on rajout dans le dataBinding
       result.events.forEach((event:any)=>{
@@ -125,14 +126,29 @@ const createResult = async (req: any, res: any) => {
       });
     })
 
+   
+
+      // newJsonOfData[newJsonOfData.length-1].countPass360i = countPass360i.length;
+      // newJsonOfData[newJsonOfData.length-1].countPass360 = countPass360.length;
+      // newJsonOfData[newJsonOfData.length-1].countTouch = countTouch.length;
+      // newJsonOfData[newJsonOfData.length-1].countJump = countJump.length;
+
     // Une fois chaque parti de l'exercice l'on va commecer les calculs et générer les resultats
     dataBinding.forEach((exercise:any,  lastDataBindIndex:number) =>{
+      let passleft =  exercise.events.filter((element:any) => element.action === 'passleft');
+      let passright = exercise.events.filter((element:any) => element.action === 'passright');
+
+    // let countTouch;
+    // let countJump;
+    functions.logger.log("Find how many pass left ", passleft.length )
+    functions.logger.log("Find how many pass right ", passright.length )
+    let detections = passleft.length+passright.length;
       // Account = {id:result.coach.id, email:result.coach.email}
       // let infos = { idExercise: result.events[0].event.id, name: result.events[0].event.title }
       DataBind.push({
         account:{id:exercise.coach.id, email:exercise.coach.email},
-        infos:{ idExercise: exercise.idExercise, name: exercise.title},
-        kpi : {factor: exercise.factor , name: exercise.title , loop:0, detections:0, touchs:0, right:0, left:0, start:""},
+        infos:{ idExercise: exercise.idExercise, name: exercise.title, startDate: exercise.startDate},
+        kpi : {factor: exercise.factor , name: exercise.title , loop:0, detections:detections, touchs:0, right:passright.length, left: passleft.length, start:exercise.startDate},
         eventToDisplay:[]
       })
       exercise.loopEnd = [];
@@ -243,7 +259,17 @@ const createResult = async (req: any, res: any) => {
           exercise.totalTime = exercise.totalTime.slice(0, exercise.totalTime.length - 1);
 
           }
+          DataBind[DataBind.length-1].kpi.loop =   exercise.totalOfLoop;
+          DataBind[DataBind.length-1].infos.totalTime =  exercise.totalTime;
           functions.logger.log("Exercice END ",event.hours,':',event.mins,':',event.scds,':',event.mlscs ,' //previous event:',exercise.events[inde-1])
+          const results_handler = db.collection('results-handler');
+          // let data: any  = { DataBind:DataBind }
+      
+          functions.logger.log("DATA DECODED ERROR: resultsS! ",DataBind[DataBind.length -1])
+          let newUuidResult = uuidv4();
+          results_handler.doc(newUuidExercise).set(DataBind[DataBind.length -1], idExercice:DataBind[DataBind.length -1].infos.idExercise, idResult:newUuidResult, idAccount:DataBind[DataBind.length -1].account.id ).then( async (ref:any) => {
+            functions.logger.log("DATA DECODED ERROR: resultsS! ",ref)
+          })
         }
         //each step Start
         if(event.kind === 'step_start' ){
@@ -567,6 +593,9 @@ const createResult = async (req: any, res: any) => {
                         event.chrono = event.chrono.slice(0, event.chrono.length - 1);
                     }
                   }
+                  DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].endTime = event.date;
+                  DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].totalTime =  event.chrono;
+
                   functions.logger.log("Reelle fin d'un step time_with_jump", event.chrono )
                 }
               }else{
@@ -683,6 +712,9 @@ const createResult = async (req: any, res: any) => {
                             event.chrono = event.chrono.slice(0, event.chrono.length - 1);
                         }
                       }
+                      functions.logger.log("Reelle fin d'un step mode time_with_jump ou loop DATABIND DATABIND DATABIND",DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1])
+                      DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].endTime = event.date;
+                      DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].totalTime =  event.chrono;
                       functions.logger.log("Reelle fin d'un step mode time_with_jump ou loop ",event.chrono)
                       // }
                     }else{
@@ -1053,15 +1085,15 @@ const createResult = async (req: any, res: any) => {
                 // functions.logger.log("Reelle fin d'un step ", event.hours,':',event.mins,':',event.scds,':',event.mlscs)
               
                 if(event.chrono !== undefined){
-                  if(event.timePreviousLastAction === "00:00:00"){
+                  if(event.timePreviousLastAction === "00:00:00" || event.timePreviousLastAction === undefined){
                     functions.logger.log("DataBind Action START time_with_jump: In action", DataBind[DataBind.length-1].eventToDisplay ,'LAST EVENT',exercise.events[inde-1],'THIS EVENT',event) 
                     DataBind[DataBind.length-1].eventToDisplay.push({
                         index: exercise.events[inde-1].number,
                         chronoTime: exercise.events[inde-1].chrono,
                         participants: exercise.events[inde-1].person,
                         startTime: exercise.events[inde-1].date,
-                      //     endTime: string;
-                      //     totalTime: number;
+                        endTime: "",
+                        totalTime: "",
                         actions:[]
                     })
                     DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].actions.push({
@@ -1369,15 +1401,15 @@ const createResult = async (req: any, res: any) => {
                 functions.logger.log("End of action type 3 : index: ", event.pod_index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
            
               }
-              if(event.timePreviousLastAction === "00:00:00"){
+              if(event.timePreviousLastAction === "00:00:00" || event.timePreviousLastAction === undefined){
                 functions.logger.log("DataBind Action START time: In action", DataBind[DataBind.length-1].eventToDisplay ,'LAST EVENT',exercise.events[inde-1],'THIS EVENT',event) 
                   DataBind[DataBind.length-1].eventToDisplay.push({
                     index: exercise.events[inde-1].number,
                     chronoTime: exercise.events[inde-1].chrono,
                     participants: exercise.events[inde-1].person,
                     startTime: exercise.events[inde-1].date,
-                  //     endTime: string;
-                  //     totalTime: number;
+                    endTime: "",
+                    totalTime: "",
                     actions:[]
                 })
                 DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].actions.push({
@@ -1406,14 +1438,36 @@ const createResult = async (req: any, res: any) => {
           // functions.logger.log("End of action type 3 : index: ", event.index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
         }
       })
+
+    
+
+
     })
-    let data: any  = {results: dataBinding, reports: results, DataBind:DataBind }
-    // functions.logger.log("DATA DECODED ERROR: resultsS! ", results[0].events)
+    // let dataReport: any  = {results: dataBinding, reports: results }
+    // results: dataBinding, reports: results,
+
     // functions.logger.log("DATA DECODED ERROR: dataBinding! ", dataBinding)
     // functions.logger.log("DATA DECODED ERROR: ! ", data)
     try {
-      const results_handler = db.collection('results-handler');
-      results_handler.doc(newUuid).set(data).then( async (ref:any) => {
+
+      
+      // const results_handler = db.collection('results-handler');
+      // DataBind.forEach((exercise:any)=>{
+      //   let newUuidExercise = uuidv4();
+      //   functions.logger.log("DATA DECODED ERROR: resultsS INSERT ! EXERCISE :: !  ",exercise)
+      //   results_handler.doc(newUuidExercise).set(data).then( async (ref:any) => {
+      //     functions.logger.log("Push With REf! ",exercise)
+      //     // return res.status(200).json({
+      //     //   response: {
+      //     //       result:'success',
+      //     //       message:''
+      //     //   },
+      //     //   result:DataBind
+      //     // })
+  
+      //   })
+      // })
+      // results_handler.doc(newUuid).set(data).then( async (ref:any) => {
         return res.status(200).json({
           response: {
               result:'success',
@@ -1422,7 +1476,7 @@ const createResult = async (req: any, res: any) => {
           result:DataBind
         })
 
-      })
+      // })
 
     }
     catch(error:any) { return res.status(500).json(error.message) }
@@ -1433,12 +1487,20 @@ const createResult = async (req: any, res: any) => {
   // Exercise details
 const getResultsList = async (req: any, res: any) => {
   //
-  // let reqs = req;
-  // let headers = reqs.headers;
+  let reqs = req;
+  let headers = reqs.headers;
   // let token = headers.token;
-  // let username = headers.username;
-  // let idExercise = headers.id
+  let idUser = headers.id;
+  let results: any = [];
   try {
+
+    let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).get();
+    functions.logger.log("Result handler resp with Iduser ", resultsHandler)
+    resultsHandler.forEach(async (doc:any) =>{
+      functions.logger.log("Result handler resp with Iduser ", doc)
+           
+      results = doc.data();
+    });
   //   let decodeds: any;
   //   let Exercise: any = [];
   //   let ExerciseDetails : {header:any, steps:any} = {header:"", steps:""};
@@ -1478,6 +1540,8 @@ const getResultsList = async (req: any, res: any) => {
         result:'success',
         message:''
     },
+    idUser:idUser,
+    resultsHandler:resultsHandler
     // data:data
   })
   } catch(error:any) { return res.status(500).json(error.message) }
