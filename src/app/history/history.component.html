@@ -1,13 +1,17 @@
 <div class="container-main">
-<mat-card  *ngFor="let history of historyData" class="card-history">
+  <h3 style="color:white" class="header-title">Résultats</h3>
+  <mat-card *ngFor="let result of results" class="card-history">
     <mat-card-header>
       <mat-card-title-group>
-        <mat-card-title>{{history.title}}</mat-card-title>
-        <mat-card-subtitle>{{history.dateparse}}</mat-card-subtitle>
+       <mat-card-title>{{result.result.kpi.name}}</mat-card-title> 
+        <mat-card-subtitle>{{result.result.infos.date+'   '+  result.result.infos.time}} </mat-card-subtitle> 
+        
       </mat-card-title-group>
+      
     </mat-card-header>
     <mat-card-content>
-      <button (click)="seeDetailOfExercice(history)" mat-raised-button color="primary">Voir le détail</button>
+      <mat-card-subtitle style="color:#88e8ff">Temps total :{{result.result.infos.totalTime}}</mat-card-subtitle> 
+      <button (click)="seeDetailOfResult(result)" mat-raised-button color="primary">Voir le détail</button>
       <!-- gfgiyfgyiguyfhyfgbh_yughu -->
     </mat-card-content>
   </mat-card>

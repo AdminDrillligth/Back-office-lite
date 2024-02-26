@@ -27,7 +27,7 @@
     <!-- <button *ngIf="displayBtnUpload" (click)="chargeZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Charger le firmware
       <mat-icon>add</mat-icon>
     </button> -->
-    <mat-checkbox *ngIf="!displayListOfUSer" [(ngModel)]="private" class="example-margin">Privé</mat-checkbox>
+    <!-- <mat-checkbox *ngIf="!displayListOfUSer" [(ngModel)]="private" class="example-margin">Privé</mat-checkbox> -->
     <button (click)="getZipFirmware()" type="button"  mat-raised-button  style="margin: 10px;" color="primary"> Récupérer le dernier Firmware
       <mat-icon>add</mat-icon>
     </button>
@@ -41,20 +41,20 @@
       <mat-label>Description</mat-label>
       <textarea (keyup)="commentOfFirmware($event)" matInput placeholder="..."></textarea>
     </mat-form-field>
-    <mat-form-field *ngIf="displayListOfUSer" style="width: 95%;">
+    <!-- <mat-form-field *ngIf="displayListOfUSer" style="width: 95%;">
       <mat-label>Choisir le compte</mat-label>
       <mat-select  [(ngModel)]="selectedUser" >
         <mat-option  *ngFor="let account of allAccountsAdminOwner" [value]="account.id">{{'Nom: '+account.fullName+ ', id: '+account.id }}</mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
     <div *ngIf="!displayListOfUSer" class="bottom-btn">
       <button mat-button  (click)='closeModal()' class="btn-warn mg-btm-del" >Annuler</button>
       <button mat-button (click)='uploadZipAndUser()' class="btn-modifie mg-btm-del" color="primary">Charger la mise à jour</button>
     </div>
-    <div *ngIf="displayListOfUSer" class="bottom-btn">
+    <!-- <div *ngIf="displayListOfUSer" class="bottom-btn">
       <button mat-button  (click)='uploadZipAndUserFalse()'  class="btn-warn mg-btm-del" >Annuler</button>
       <button mat-button  (click)="chargeZipFirmwareWithUser()" class="btn-modifie mg-btm-del" color="primary">Charger la mise à jour</button>
-    </div>
+    </div> -->
   </div>
   <!-- [disabled]="true" -->
   <!--  -->

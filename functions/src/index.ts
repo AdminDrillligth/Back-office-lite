@@ -13,7 +13,7 @@ import { connectToAccount } from './loggerController';
 import { createExercise, getExerciseDetails, getExercisesList, updateExercise, deleteExercise } from './exercisesController';
 import { testgetSessionsList, createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
-import { createResult } from './resultsController';
+import { createResult, getResultsList } from './resultsController';
 import { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails } from './firmwareController';
 
 const fileMiddleware = require('express-multipart-file-parser')
@@ -111,6 +111,7 @@ app.delete('/deleteEcone', deleteEcone)
 
 //
 app.post('/createResult', createResult)
+app.get('/getResultsList', getResultsList)
 
 //
 app.post('/createFirmware', createFirmware)

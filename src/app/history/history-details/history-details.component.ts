@@ -18,9 +18,9 @@ export class HistoryDetailsComponent {
     private router: Router ){}
 
     ngOnInit(): void {
-      this.utilsService._newhistoryDetail.subscribe((historyDetail:any) =>{
-        console.log('HISTORY : ! ',historyDetail)
-        this.historyDataDetail = historyDetail;
+      this.utilsService._newhistoryDetail.subscribe((resultDetail:any) =>{
+        console.log('HISTORY : ! ',resultDetail)
+        this.historyDataDetail = resultDetail.result;
         let result = document.getElementsByClassName("card-history");
         // set the color of step by done signal
         // red none do

@@ -398,6 +398,10 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.licensed !== undefined){ userDetail.licensed = dataBodyOfRequest.licensed }
             if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
             if(dataBodyOfRequest.privateOnly !== undefined){ userDetail.privateOnly = dataBodyOfRequest.privateOnly }
+            if(dataBodyOfRequest.privateFirmwareId !== undefined){ userDetail.privateFirmwareId = dataBodyOfRequest.privateFirmwareId }
+            
+            
+
             userDetail.update = DateString;
             userDetail.updateIso = isoDateString;
             const account_handler = db.collection('account-handler');

@@ -218,7 +218,7 @@ export class AdministrationComponent implements OnInit{
   public privateExerciceOnly = false;
   public moderationAccount = false; 
   public firmWareList:any = [];
-
+  public privateFirmwareId = false;
   resultsLength = 0;
   // TABLE INIT
   AccountOfUser:any=[];
@@ -349,12 +349,10 @@ export class AdministrationComponent implements OnInit{
     });
   }
 
-
   //chargeZip
   srCzip:any="";
   global=false;
   private=false;
-
 
   uploadZip(){
 
@@ -366,15 +364,58 @@ export class AdministrationComponent implements OnInit{
       resp.subscribe((e:any) =>{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         this.modalAccount = e.account;
+        if(this.modalAccount.privateFirmwareId !== undefined){
+          if(this.modalAccount.privateFirmwareId !== ""){
+            this.privateFirmwareId = true;
+          }
+        }
+        if(this.modalAccount.privateOnly !== undefined){
+          this.privateExerciceOnly = this.modalAccount.privateOnly;
+        }
+        if(this.modalAccount.privateOnly === undefined){
+          this.privateExerciceOnly = false;
+        }
+        if(this.modalAccount.warning !== undefined){
+          this.moderationAccount = this.modalAccount.warning;
+        }
+        if(this.modalAccount.warning === undefined){
+          this.moderationAccount = false;
+        }
       })
     })
+    if(this.firmWareList.length !== 0 ){
+
+    }else{
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          console.log('list of firwares: ',list.firmwareList)
+          this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+          })
+        
+        })
+      });
+    }
     console.log('QUEL COMPTE : ! ',this.modalAccount)
-    this.displayModalAction = true;
+    setTimeout(() => {
+      this.displayModalAction = true;
+    }, 400);
+    
   }
 
   // public privateExerciceOnly = false;
   // public moderationAccount = false; 
-
   modarateAccount(account:any){
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
@@ -383,7 +424,14 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.moderationAccount = true
     }
-   
+    account.warning = this.moderationAccount;
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user: ! ', response)
+
+      })
+    });
+    console.log('Warning Only ? :',account.warning);
   }
 
   privateExercice(account:any){
@@ -393,22 +441,30 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.privateExerciceOnly = true
     }
+    account.privateOnly = this.privateExerciceOnly;
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user: ! ', response)
+
+      })
+    });
+    console.log('Private Only ? :',account.privateOnly);
   }
 
   selectedFirmware(firmware:any){
     console.log('FIRMWARE : ! ',firmware.id,firmware)
+    this.selectedVersion = firmware;
   }
 
-
   displayModalOfPrivateFirmware(account:any){
+    console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
+    if(account.privateFirmwareId !== undefined){
+      if(account.privateFirmwareId !== ""){
+        this.privateFirmwareId = true;
+      }
+    }
+
     this.firmWareService.getfirmwareDetails("");
-    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-      console.log('list of firwares: ',firmwareList)
-      firmwareList.subscribe((list:any)=>{
-        console.log('list of firwares: ',list.firmwareList)
-        this.firmWareList = list.firmwareList;
-      })
-    });
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
     if(this.displayModalFirmware){
@@ -416,11 +472,40 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.displayModalFirmware = true
     }
+
   }
 
   selectFirmwareForAccount(account:any){
-    this.displayModalFirmware = false;
-    this.displayModalAction = true;
+   
+    console.log(account,this.selectedVersion)
+    if(this.selectedVersion !== ""){
+      this.displayModalFirmware = false;
+      this.displayModalAction = true;
+      account.privateFirmwareId = this.selectedVersion.id;
+      console.log(this.selectedVersion, account)
+      this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update user owner: ! ', response)
+
+        })
+      });
+    }
+    // 
+  }
+
+  removePrivateFirmware(account:any){
+    console.log(account)
+    account.privateFirmwareId = "";
+    this.privateFirmwareId = false;
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user owner: ! ', response)
+      })
+    });
+  }
+
+  closeModalAction(){
+    this.displayModalAction = false;
   }
 
   closeModalFirmware(){
@@ -428,8 +513,10 @@ export class AdministrationComponent implements OnInit{
     this.displayModalAction = true;
   }
 
+  selectedVersion:any="";
   gerVersion(event:any){
     console.log(event.target.value)
+
   }
 
   // onchangeInputZip(zip:any){
