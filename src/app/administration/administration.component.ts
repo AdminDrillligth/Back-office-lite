@@ -349,12 +349,10 @@ export class AdministrationComponent implements OnInit{
     });
   }
 
-
   //chargeZip
   srCzip:any="";
   global=false;
   private=false;
-
 
   uploadZip(){
 
@@ -393,10 +391,22 @@ export class AdministrationComponent implements OnInit{
         firmwareList.subscribe((list:any)=>{
           console.log('list of firwares: ',list.firmwareList)
           this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+          })
+        
         })
       });
     }
-
     console.log('QUEL COMPTE : ! ',this.modalAccount)
     setTimeout(() => {
       this.displayModalAction = true;
@@ -406,7 +416,6 @@ export class AdministrationComponent implements OnInit{
 
   // public privateExerciceOnly = false;
   // public moderationAccount = false; 
-
   modarateAccount(account:any){
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
@@ -446,9 +455,6 @@ export class AdministrationComponent implements OnInit{
     console.log('FIRMWARE : ! ',firmware.id,firmware)
     this.selectedVersion = firmware;
   }
-
-
-
 
   displayModalOfPrivateFirmware(account:any){
     console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
