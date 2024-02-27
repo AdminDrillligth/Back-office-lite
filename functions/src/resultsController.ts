@@ -20,11 +20,11 @@ let saveIndataBase = async (result:any)=>{
 
 let saveDataReports = async (report:any)=>{
   functions.logger.log("DATA DECODED REPORT TO SAVE : ! ", report)
-  // const reports_handler = db.collection('reports-handler');
-  // let newUuidResult = uuidv4();
-  // reports_handler.doc(newUuidResult).set({report:report}).then( async (ref:any) => {
-  //           functions.logger.log("DATA DECODED ERROR: Report! ",ref)
-  // })
+  const reports_handler = db.collection('reports-handler');
+  let newUuidReport = uuidv4();
+  reports_handler.doc(newUuidReport).set({report:report}).then( async (ref:any) => {
+            functions.logger.log("DATA DECODED ERROR: Report! ",ref)
+  })
 }
 
 // createResult
@@ -73,6 +73,8 @@ const createResult = async (req: any, res: any) => {
     //     name: string;
     //     factor: number;
     //   }
+
+
 
 
     let DataBind :any = []
@@ -590,10 +592,10 @@ const createResult = async (req: any, res: any) => {
                         event.chrono = event.chrono.slice(0, event.chrono.length - 1);
                     }
                   }
-                  DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].endTime = event.date;
+                  DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].endTime = new Date(event.date).toLocaleTimeString('fr-FR');
                   DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].totalTime =  event.chrono;
 
-                  functions.logger.log("Reelle fin d'un step time_with_jump", event.chrono )
+                  // functions.logger.log("LOG TIME IN LOCAL TIME", new Date(event.date).toLocaleTimeString('fr-FR') )
                 }
               }else{
                   if( exercise.events[inde+1] !== undefined){
@@ -713,7 +715,7 @@ const createResult = async (req: any, res: any) => {
                         functions.logger.log("Reelle fin d'un step mode time_with_jump ou loop DATABIND DATABIND DATABIND",DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1])
                         functions.logger.log("Reelle fin d'un step mode time_with_jump ou loop ",event.chrono)
                         if(DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1] !==  undefined){
-                          DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].endTime = event.date;
+                          DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].endTime = new Date(event.date).toLocaleTimeString('fr-FR');
                           DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].totalTime =  event.chrono;
                         }
 
@@ -1090,11 +1092,14 @@ const createResult = async (req: any, res: any) => {
                 if(event.chrono !== undefined){
                   if(event.timePreviousLastAction === "00:00:00" || event.timePreviousLastAction === undefined){
                     functions.logger.log("DataBind Action START time_with_jump: In action", DataBind[DataBind.length-1].eventToDisplay ,'LAST EVENT',exercise.events[inde-1],'THIS EVENT',event) 
+                    
+                    // functions.logger.log("LOG TIME IN LOCAL TIME", new Date(exercise.events[inde-1].date).toLocaleTimeString('fr-FR') )
+                    let STARTTIME = new Date(exercise.events[inde-1].date).toLocaleTimeString('fr-FR')
                     DataBind[DataBind.length-1].eventToDisplay.push({
                         index: exercise.events[inde-1].number,
                         chronoTime: exercise.events[inde-1].chrono,
                         participants: exercise.events[inde-1].person,
-                        startTime: exercise.events[inde-1].date,
+                        startTime: STARTTIME,
                         endTime: "",
                         totalTime: "",
                         actions:[]
@@ -1406,11 +1411,14 @@ const createResult = async (req: any, res: any) => {
               }
               if(event.timePreviousLastAction === "00:00:00" || event.timePreviousLastAction === undefined){
                 functions.logger.log("DataBind Action START time: In action", DataBind[DataBind.length-1].eventToDisplay ,'LAST EVENT',exercise.events[inde-1],'THIS EVENT',event) 
-                  DataBind[DataBind.length-1].eventToDisplay.push({
+                
+                // functions.logger.log("LOG TIME IN LOCAL TIME", new Date(exercise.events[inde-1].date).toLocaleTimeString('fr-FR') )
+                      let STARTTIME = new Date(exercise.events[inde-1].date).toLocaleTimeString('fr-FR');
+                DataBind[DataBind.length-1].eventToDisplay.push({
                     index: exercise.events[inde-1].number,
                     chronoTime: exercise.events[inde-1].chrono,
                     participants: exercise.events[inde-1].person,
-                    startTime: exercise.events[inde-1].date,
+                    startTime: STARTTIME,
                     endTime: "",
                     totalTime: "",
                     actions:[]
