@@ -119,7 +119,7 @@ app.post('/createFirmware', createFirmware)
 app.get('/getFirmware', getFirmware)
 app.get('/getFirmwaresList', getFirmwaresList)
 app.get('/getFirmwareDetails', getFirmwareDetails)
-app.get('/updateGlobalFirmware', updateGlobalFirmware)
+app.post('/updateGlobalFirmware', updateGlobalFirmware)
 
 //
 app.post('/login', connectToAccount)

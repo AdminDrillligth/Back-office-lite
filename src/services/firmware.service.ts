@@ -70,4 +70,13 @@ export class FirmWareService {
 
   }
 
+  updateGlobalFirmware(firmware:any){
+    console.log('FIRMWARE : ',firmware.id)
+    let token = localStorage.getItem('token') || '{}';
+    const body = JSON.stringify({ idfirmware:firmware.id });
+    this.http.post(this.baseURL+'updateGlobalFirmware', body,{'headers':{ 'token': token}}).subscribe((rep:any) =>{
+      console.log('LA REP DU UPDATE GLOBAL FIRMWARE : ! ',rep)
+    });
+  }
+
 }

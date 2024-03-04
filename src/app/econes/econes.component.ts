@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, inject } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -29,7 +29,31 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FirmWareService } from '../../services/firmware.service';
+import { MatSnackBar, MatSnackBarModule, MatSnackBarRef } from '@angular/material/snack-bar';
+
+
+
 type ListType = { title: string; val: number }[];
+
+
+
+@Component({
+  selector: 'snack-bar',
+  templateUrl: './snack/snack-bar.html',
+  styles: [
+    `:host { display: flex;}
+    .example-pizza-party { color: black;}
+    `,],
+  standalone: true,
+  imports: [MatButtonModule, MatSnackBarModule],
+})
+
+
+export class snackComponent {
+  snackBarRef = inject(MatSnackBarRef);
+}
+
+
 
 export interface EconeDatas {
   SeeQrCode:boolean,
@@ -93,12 +117,16 @@ export class EconesComponent implements OnInit {
   public showImage: boolean = false;
   displayedColumnsEcones: string[] = [' ','id', 'serial','date','client','actions'];
   EmpDatasEcones : EconeDatas[] = [];
+  public firmWareList:any = [];
+  public privateFirmwareId = false;
+
 
   @ViewChild('paginatorEcones')
   paginatorEcones!: MatPaginator;
 
   resultsLength = 40;
   constructor(
+    private _snackBar: MatSnackBar,
     private firmWareService:FirmWareService,
     private econesService:EconesService,
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
@@ -154,6 +182,28 @@ export class EconesComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.account = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('account : ! ',this.account)
+    if(this.account.role ==="admin"){
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          console.log('list of firwares: ',list.firmwareList)
+          this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+          })
+        
+        })
+      });
+    }
     this.getEconesFromDataBase();
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
@@ -314,6 +364,7 @@ export class EconesComponent implements OnInit {
       this.firmWareService.createFirmware(firmwareData, this.AccountOfUser.id,false);
     }
     this.displayModal = false;
+    this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
     
   }
 
@@ -331,8 +382,30 @@ export class EconesComponent implements OnInit {
     this.firmWareService.getFirmware(this.AccountOfUser.id);
   }
 
+  updateGlobalFirmware(){
+    if(this.selectedVersion !== ""){
+      this.displayModalUpdateFirmware = false;
+      console.log(this.selectedVersion);
+      this.firmWareService.updateGlobalFirmware(this.selectedVersion);
+    }
+
+  }
+  
+  displayModalUpdateFirmware = false;
   chooseFirmwareGlobal(){
+    this.displayModalUpdateFirmware = true
     console.log("on va choose le firmware : !")
+  }
+
+  selectedVersion:any="";
+  selectedFirmware(firmware:any){
+    console.log('FIRMWARE : ! ',firmware.id,firmware)
+    this.selectedVersion = firmware;
+  }
+
+  closeModalUpdateFirmware(){
+    this.displayModalUpdateFirmware = false
+    // console.log("on va choose le firmware : !")
   }
 
   displayQrOfEcone(Econe:any){

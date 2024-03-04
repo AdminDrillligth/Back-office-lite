@@ -132,7 +132,7 @@ const createFirmware = async (req: any, res: any) => {
 const updateGlobalFirmware = async (req: any, res: any) =>{
   let reqs = req;
   let headers = reqs.headers;
-  let token = headers.token;
+  // let token = headers.token;
   let idFirmware = headers.idfirmware;
   try {
     return res.status(200).json({
