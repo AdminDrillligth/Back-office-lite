@@ -141,13 +141,7 @@ const updateGlobalFirmware = async (req: any, res: any) =>{
         message:''
       },        
       idFirmware:idFirmware
-      // token: token,
-      // // BuildNumber:BuildNumber,
-      // id:json.id,
-      // // private:privated,
-      // newUuid:newUuid,
-      // firmwareObject:firmwareObject,
-      // globalHandler:globalHandler
+
     });
   }
   catch(error:any) { return res.status(500).json(error.message) }

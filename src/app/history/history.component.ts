@@ -14,6 +14,7 @@ export class HistoryComponent {
   historyData:any = [];
   AccountOfUser:any;
   results : any = [];
+  users:any = [];
   constructor(
     private userHandlerHistoricalService:UserHandlerHistoricalService,
     private utilsService: UtilsService,
@@ -40,18 +41,18 @@ export class HistoryComponent {
 
     getResultsList(){
       console.log(this.AccountOfUser.id)
+      console.log("ACCOUNT OF USER :  !",this.AccountOfUser)
       this.userHandlerHistoricalService.getResultsList(this.AccountOfUser.id).subscribe((resp:any)=>{
         console.log(resp)
         this.results = resp.results;
-        console.log(this.results)
-        console.log(this.results[0].result.kpi.name)
-        console.log(this.results[0].result.infos.startDate)
+        // console.log(this.results)
+        // console.log(this.results[0].result.kpi.name)
+        // console.log(this.results[0].result.infos.startDate)
 
         this.results.forEach((result:any)=>{
-
           result.result.infos.time = new Date(result.result.infos.startDate).toLocaleTimeString('fr-FR')
           result.result.infos.date = new Date(result.result.infos.startDate).toLocaleDateString('en-GB')
-          console.log(result.result.infos.date)
+          // console.log(result.result.infos.date)
         })
 
   

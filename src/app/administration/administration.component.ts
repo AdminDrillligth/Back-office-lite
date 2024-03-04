@@ -309,7 +309,6 @@ export class AdministrationComponent implements OnInit{
       console.log('THEME !: ',theme)
     });
     this.utilsService._newaccount.subscribe((update:any) =>{
-      console.log('ALLONS NOUS UPDATE ? ',update)
        if(update !== null){
          if(update == true){
           this.Accounts = [];
@@ -317,17 +316,13 @@ export class AdministrationComponent implements OnInit{
           console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{
-            console.log('LE DATILS DES ACCOUNTS :  :',account)
             if(account.role === 'admin' || account.role === 'owner'){
               this.Accounts.push(account)
             }
-           
-            // console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
           });
           this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
           this.dataSourceAccounts.paginator = this.paginatorAccounts;
           this.resultsLength = this.Accounts.length;
-
           this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
           //  this.letsee = true;
           //  this.ProfilAccount = {data: this.AccountOfUser};
@@ -341,8 +336,9 @@ export class AdministrationComponent implements OnInit{
       let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
       this.Accounts.length = 0
       allAccounts.forEach((account:any)=>{
-        this.Accounts.push(account)
-        // console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+        if(account.role === 'admin' || account.role === 'owner'){
+          this.Accounts.push(account)
+        }
       });
       setTimeout(() => {
         this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
@@ -366,7 +362,6 @@ export class AdministrationComponent implements OnInit{
                 console.log('le detail de chaque user du compte owner:! ', e.account)
                 user = e.account;
                 this.ProfilAccount.users[index] = e.account
-                console.log('LES USERS DU ACCOUNT',this.ProfilAccount.users)
                 this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
                 this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
                 this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;

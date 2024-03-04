@@ -204,7 +204,7 @@ export class EconesComponent implements OnInit {
         })
       });
     }
-    this.getEconesFromDataBase();
+    // this.getEconesFromDataBase();
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
       this.Econes = listEcones;
@@ -221,14 +221,14 @@ export class EconesComponent implements OnInit {
       console.log('ALLONS NOUS UPDATE ? ',update)
        if(update !== null){
          if(update == true){
-          let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
-          this.UserDataAccount =  allAccounts;
-          console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
-          if(this.Econes !== null){
-            if(this.Econes.length > 0){
-              setTimeout(()=>{ this.parserEconesToCustomers(); },300)
-            }
-          }
+          // let allAccounts = JSON.parse(localStorage.getItem('account-datas') || '{}');
+          // this.UserDataAccount =  allAccounts;
+          // console.log('ECONES ! : ',this.Econes,'ACCOUNTS', this.UserDataAccount )
+          // if(this.Econes !== null){
+          //   if(this.Econes.length > 0){
+          //     setTimeout(()=>{ this.parserEconesToCustomers(); },300)
+          //   }
+          // }
         }
         }
       })
@@ -251,7 +251,7 @@ export class EconesComponent implements OnInit {
   getEconesFromDataBase(){
     this.UserDataAccount = [];
     this.Econes = [];
-    this.econesService.getAllEcones();
+    // this.econesService.getAllEcones();
     this.userHandlersServiceAdmin.getAccountAdmin()
   }
 

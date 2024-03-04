@@ -1,11 +1,19 @@
 <div class="container-main">
   <h3 style="color:white" class="header-title">Résultats</h3>
+
+
+  <mat-form-field>
+    <mat-label>Participant</mat-label>
+    <mat-select >
+      <mat-option  *ngFor="let user of users" value="{{user.id}}">{{user.fullName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
   <mat-card *ngFor="let result of results" class="card-history">
     <mat-card-header>
       <mat-card-title-group>
        <mat-card-title>{{result.result.kpi.name}}</mat-card-title> 
         <mat-card-subtitle>{{result.result.infos.date+'   '+  result.result.infos.time}} </mat-card-subtitle> 
-        
       </mat-card-title-group>
       
     </mat-card-header>

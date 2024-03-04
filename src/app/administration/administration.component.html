@@ -116,16 +116,11 @@
   <div *ngIf="letsee && ProfilAccount !== undefined || seeAsOwner" >
   
     <div class="profil-container">
-      <h3 style="margin-left:20px;padding-top: 20px;">Fiche profil</h3>
-      <!-- *ngIf="ProfilAccount.role === 'admin'" -->
+      <h2 style="margin-left:20px;padding-top: 20px;">Profil</h2>
       <button *ngIf="!seeAsOwner " class="back-button" type="button" (click)="backToList()" mat-mini-fab color="accent" >
         <mat-icon >highlight_off</mat-icon>
       </button>
-
-      <div>
-        <!-- <button (click)="seeAsUser(ProfilAccount)" type="button" style="margin-bottom: 20px;margin-left:20px;" mat-mini-fab color="accent" class="btn btn-link btn-sm btn-rounded">
-          <mat-icon> visibility</mat-icon>
-        </button> -->
+    <div>
         <br>
         <span class="comment-line"> Profil : <b>{{ProfilAccount.fullName}}</b></span>
         <br>
@@ -133,7 +128,6 @@
         <br>
         <span class="comment-line"> Email : <b>{{ProfilAccount.email}}</b></span>
       </div>
-
       <div *ngIf="ProfilAccount.staff.length > 0" #staff>
         <h3 style="margin-left: 30px ;">Staff Technique</h3>
         <!-- NEW ARRAY MAT TABLE STAFF  -->

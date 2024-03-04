@@ -66,8 +66,6 @@ export class FirmWareService {
         console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
       });
     }
-
-
   }
 
   updateGlobalFirmware(firmware:any){
