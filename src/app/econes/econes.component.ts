@@ -331,7 +331,9 @@ export class EconesComponent implements OnInit {
     this.firmWareService.getFirmware(this.AccountOfUser.id);
   }
 
-
+  chooseFirmwareGlobal(){
+    console.log("on va choose le firmware : !")
+  }
 
   displayQrOfEcone(Econe:any){
     //  console.log(Econe.id)

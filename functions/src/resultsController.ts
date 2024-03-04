@@ -29,7 +29,27 @@ let saveDataReports = async (report:any)=>{
 
 // createResult
 db.settings({ ignoreUndefinedProperties: true })
+
+
 const createResult = async (req: any, res: any) => {
+  let reqs = req;
+  let body = reqs.body;
+  let results = body.data;
+
+  try {
+      return res.status(200).json({
+        response: {
+            result:'success',
+            message:''
+        },
+        resultBodyData:results
+      })
+
+  }
+  catch(error:any) { return res.status(500).json(error.message) }
+}
+
+const createResultOld = async (req: any, res: any) => {
     let reqs = req;
     let body = reqs.body;
     let results = body.data;
@@ -148,7 +168,7 @@ const createResult = async (req: any, res: any) => {
       DataBind.push({
         account:{id:exercise.coach.id, email:exercise.coach.email},
         infos:{ idExercise: exercise.idExercise, name: exercise.title, startDate: exercise.startDate},
-        kpi : {factor: exercise.factor , name: exercise.title , loop:0, detections:detections, touchs:touch, right:passright.length, left: passleft.length, start:exercise.startDate},
+        kpi : {factor: exercise.factor , name: exercise.title , loop:0, detections:detections, touchs:touch.length, right:passright.length, left: passleft.length, start:exercise.startDate},
         eventToDisplay:[]
       })
       exercise.loopEnd = [];
@@ -274,6 +294,9 @@ const createResult = async (req: any, res: any) => {
         if(event.kind === 'step_start' ){
           // functions.logger.log("STEP START EVENT : ", event ,'//next event:',exercise.events[inde+1] )
           if(exercise.events[inde-1].kind === 'exercise_start'){
+            event.chrono = '00:00:00';
+          }
+          if(exercise.events[inde-1].kind === 'loop_start'){
             event.chrono = '00:00:00';
           }
           if(exercise.startTime === event.parsedTime){
@@ -473,7 +496,6 @@ const createResult = async (req: any, res: any) => {
           //  lorsque le step se termine
 
             // functions.logger.log("Event of step End",  event)
-
             const isLastNumb = (element:any) => element.chrono === '00:00:00';
             // on recupere  le dernier indice ou le chrono est  à 00:00:00;
             let indexOflast = exercise.events.findLastIndex(isLastNumb);
@@ -599,6 +621,7 @@ const createResult = async (req: any, res: any) => {
                 }
               }else{
                   if( exercise.events[inde+1] !== undefined){
+                    // functions.logger.log("Reelle fin d'un step mode time_with_jump ou loop", )
                     if(exercise.events[inde+1].action === 'jump'){
                       // functions.logger.log("Reelle fin d'un step mode time_with_jump ou loop ", exercise.events[inde+1] ,'LE EVENT ',event ,inde)
                       // functions.logger.log("Reelle fin d'un step  mode time_with_jump ou loop ", exercise.events[indexOflast] ,'LE EVENT ',event ,inde)
@@ -739,12 +762,402 @@ const createResult = async (req: any, res: any) => {
 
         // Lors de chaque action
         if(event.kind === 'action' ){
-          // functions.logger.log("exercise.events[inde-1].kind ", exercise.events[inde-1].kind )
+          functions.logger.log("START OF ACTION WITH TOUCH ?? ", event.action, exercise.modeType )
           if(exercise.events[inde-1].kind === 'step_start'){
+            functions.logger.log("START OF ACTION WITH TOUCH ?? 2", event.action, exercise )
             // functions.logger.log("eexercise.events[inde-1].kind 2 ", exercise.events[inde-1].kind )
             // Si nous avons déja le mode de l'exo
             if(exercise.modeType !== undefined){
               let indexOflast;
+              if(exercise.modeType === 'loop'){
+                functions.logger.log("START OF ACTION WITH TOUCH ?? 2", event )
+                // const isLastNumb = (element:any) => element.chrono === '00:00:00';
+                // indexOflast = exercise.events.findLastIndex(isLastNumb);
+                // functions.logger.log("START OF ACTION WITH TOUCH ?? INDEX OF LAST 00", exercise.events[indexOflast] )
+                if( event.chrono !== '00:00:00'){
+                
+
+                  const isLastNumb = (element:any) => element.chrono === '00:00:00';
+                  // on recupere  le dernier indice ou le chrono est  à 00:00:00;
+  
+  
+                  indexOflast = exercise.events.findLastIndex(isLastNumb);
+  
+                  // Si l'heure est la même que celle de départ du step
+                  if(exercise.events[inde-1].hours === event.hours){
+                    // let newhoursChrono = event.hours - exercise.events[indexOflast].hours;
+  
+                    // Nous calculons, le temps écoulé depuis le depart du step
+                    let newminsChrono =  event.mins - exercise.events[indexOflast].mins;
+                    let newscdsChrono = (event.scds +(newminsChrono *60)) - exercise.events[indexOflast].scds;
+                    let newmlscdsChrono;
+                    if(newscdsChrono < 60 ){
+                      newminsChrono = 0;
+                      // newhoursChrono = 0;
+                    }
+                    if(newscdsChrono >59){
+                        newminsChrono = Math.floor(newscdsChrono/60)
+                        newscdsChrono = newscdsChrono-(Math.floor(newscdsChrono/60)*60)
+                    }
+                    if(exercise.events[indexOflast].mlscs > event.mlscs){
+                        newmlscdsChrono = event.mlscs+1000;
+                        newscdsChrono = newscdsChrono-1;
+                    }else{
+                        newmlscdsChrono = event.mlscs;
+                    }
+                    if(newminsChrono < 10){
+                        if(newscdsChrono < 10){
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = '0'+newminsChrono.toString()+':0'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = '0'+newminsChrono.toString()+':0'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }else{
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = '0'+newminsChrono.toString()+':'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = '0'+newminsChrono.toString()+':'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }
+                    }else{
+                        if(newscdsChrono < 10){
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = newminsChrono.toString()+':0'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = newminsChrono.toString()+':0'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }else{
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = newminsChrono.toString()+':'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = newminsChrono.toString()+':'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }
+                    }
+  
+  
+                    if(event.chrono.length - 1 > 7){
+                        event.chrono = event.chrono.slice(0, event.chrono.length - 1);
+                    }
+  
+                    // Calcul du temps écoulé depuis le lancement de la nouvelle action avant réaction = actionTotalTime
+                    let newmins =  event.mins - exercise.events[inde-1].mins;
+                    let newscds = (event.scds +(newmins *60)) - exercise.events[inde-1].scds;
+                    let newmlscds;
+  
+                    if(newscds < 60 ){
+                      newmins = 0;
+                      // newhours =0;
+                    }
+                    if(newscds >59){
+                        newmins = Math.floor(newscds/60)
+                        newscds = newscds-(Math.floor(newscds/60)*60)
+                    }
+                    if(exercise.events[inde-1].mlscs > event.mlscs){
+                        newmlscds = event.mlscs+1000;
+                        newscds = newscds-1;
+                    }else{
+                        newmlscds = event.mlscs;
+                    }
+                    // console.log('LE RESULT EN MLLSCDS ',newmlscds-exercise.events[inde-1].mlscs)
+  
+                    // console.log('TOTAL TIME after the previous start', newmins,':'+newscds,':',newmlscds-ex.events[inde-1].mlscs);
+                    if(newmins < 10){
+                        if(newscds < 10){
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = '0'+newmins.toString()+':0'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = '0'+newmins.toString()+':0'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+  
+                        }else{
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = '0'+newmins.toString()+':'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = '0'+newmins.toString()+':'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+                        }
+                    }else{
+                        if(newscds < 10){
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = newmins.toString()+':0'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = newmins.toString()+':0'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+  
+                        }else{
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = newmins.toString()+':'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = newmins.toString()+':'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+                        }
+                    }
+                    if(event.actionTotalTime.length - 1 > 7){
+                        event.actionTotalTime = event.actionTotalTime.slice(0, event.actionTotalTime.length - 1);
+                    }
+  
+                    //
+                    let newArray = exercise.events.filter((el:any,i:any)=> i < inde )
+                    const isLastNumbBefore = (element:any) => element.kind === 'action' && element.action !== 'jump';
+                    // Ici l'on recherche la durée de l'etape ou de la répétition
+                    let result = newArray.findLastIndex(isLastNumbBefore)
+  
+                    if(event.chrono === event.actionTotalTime){
+                      // console.log('meme timing !! ')
+                      event.timePreviousLastAction = '00:00:00';
+                    }else{
+                      if(exercise.events[result] !== undefined){
+  
+                        if(exercise.events[result].timePreviousLastAction !== undefined){
+                          if(exercise.events[result].number === event.number){
+                            let previoustime = exercise.events[result].chrono.split(':')
+                            let time = event.chrono.split(':')
+                            // console.log('SPLIT : ! ',time, previoustime);
+                            // let hoursPreviousTotalTime
+                            // let minsPreviousTotalTime
+                            let scdsPreviousTotalTime  =  Number(time[1])  -Number(previoustime[1]);
+                            let mlscdsPreviousTotalTime =  Number(time[2]) -Number(previoustime[2]);
+  
+                            // console.log(Math.sign(mlscdsPreviousTotalTime));
+                                if(Math.sign(mlscdsPreviousTotalTime) == -1){
+                                    // console.log('SPLIT : UNDER ! ',scdsPreviousTotalTime, mlscdsPreviousTotalTime);
+                                    // console.log(Math.sign(mlscdsPreviousTotalTime));
+                                    mlscdsPreviousTotalTime = (Number(time[2])+100) -Number(previoustime[2]);
+                                    scdsPreviousTotalTime = scdsPreviousTotalTime-1;
+                                }
+                                // console.log('SPLIT : ! ',scdsPreviousTotalTime, mlscdsPreviousTotalTime);
+                                if(scdsPreviousTotalTime< 10){
+                                    if(mlscdsPreviousTotalTime < 10){
+                                        event.timePreviousLastAction =  '00:0'+scdsPreviousTotalTime.toString()+':0'+mlscdsPreviousTotalTime.toString()
+                                    }else{
+                                        event.timePreviousLastAction = '00:0'+scdsPreviousTotalTime.toString()+':'+mlscdsPreviousTotalTime.toString()
+                                    }
+  
+                                }else{
+                                    if(mlscdsPreviousTotalTime < 10){
+                                        event.timePreviousLastAction =  '00:'+scdsPreviousTotalTime.toString()+':0'+mlscdsPreviousTotalTime.toString()
+                                    }else{
+                                        event.timePreviousLastAction = '00:'+scdsPreviousTotalTime.toString()+':'+mlscdsPreviousTotalTime.toString()
+                                    }
+                                }
+  
+                                // on insere dans ce cas le temps la durée de l'etape ou de la répétition avec la variable, timePreviousLastAction
+                            }
+                          }else{
+  
+                          }
+                        }
+                      }
+                    }
+                  }
+                  if(exercise.events[inde-1].hours < event.hours){
+  
+                    // Chronometre depuis le lancement de l'exercice, pour le début de chaque étapes
+                    let newhoursChrono = event.hours - exercise.events[indexOflast].hours;
+                    let newminsChrono =  (event.mins+(newhoursChrono*60)) - exercise.events[indexOflast].mins;
+                    let newscdsChrono = (event.scds +(newminsChrono *60)) - exercise.events[indexOflast].scds;
+                    let newmlscdsChrono;
+                    if(newscdsChrono <60 ){
+                      newminsChrono = 0;
+                      newhoursChrono =0;
+                    }
+                    if(newscdsChrono >59){
+                        newminsChrono = Math.floor(newscdsChrono/60)
+                        newscdsChrono = newscdsChrono-(Math.floor(newscdsChrono/60)*60)
+                    }
+                    if(exercise.events[indexOflast].mlscs > event.mlscs){
+                        newmlscdsChrono = event.mlscs+1000;
+                        newscdsChrono = newscdsChrono-1;
+                    }else{
+                        newmlscdsChrono = event.mlscs;
+                    }
+                    if(newminsChrono < 10){
+                        if(newscdsChrono < 10){
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = '0'+newminsChrono.toString()+':0'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = '0'+newminsChrono.toString()+':0'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }else{
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = '0'+newminsChrono.toString()+':'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = '0'+newminsChrono.toString()+':'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }
+                    }else{
+                        if(newscdsChrono < 10){
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = newminsChrono.toString()+':0'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = newminsChrono.toString()+':0'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }else{
+                            if(newmlscdsChrono-exercise.events[indexOflast].mlscs < 10){
+                                event.chrono = newminsChrono.toString()+':'+newscdsChrono.toString()+':0'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }else{
+                                event.chrono = newminsChrono.toString()+':'+newscdsChrono.toString()+':'+(newmlscdsChrono-exercise.events[indexOflast].mlscs).toString()
+                            }
+                        }
+                    }
+                    if(event.chrono.length - 1 > 7){
+                        event.chrono = event.chrono.slice(0, event.chrono.length - 1);
+                    }
+  
+                    // le temps de l\'action depius le début le début de  l\'étape
+                    let newhours= event.hours - exercise.events[inde-1].hours;
+                    let newmins =  (event.mins+(newhours*60)) - exercise.events[inde-1].mins;
+                    let newscds = (event.scds +(newmins *60)) - exercise.events[inde-1].scds;
+                    let newmlscds;
+  
+                    if(newscds <60 ){
+                      newmins = 0;
+                      newhours =0;
+                    }
+                    if(newscds >59){
+                        newmins = Math.floor(newscds/60)
+                        newscds = newscds-(Math.floor(newscds/60)*60)
+                    }
+                    if(exercise.mlscs > event.mlscs){
+                        newmlscds = event.mlscs+1000;
+                        newscds = newscds-1;
+                    }else{
+                        newmlscds = event.mlscs;
+                    }
+                    // console.log('LE RESULT EN MLLSCDS ',newmlscds-ex.events[inde-1].mlscs)
+                    if(newmins < 10){
+                        if(newscds < 10){
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = '0'+newmins.toString()+':0'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = '0'+newmins.toString()+':0'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+  
+                        }else{
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = '0'+newmins.toString()+':'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = '0'+newmins.toString()+':'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+                        }
+                    }else{
+                        if(newscds < 10){
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = newmins.toString()+':0'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = newmins.toString()+':0'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+  
+                        }else{
+                            if(newmlscds-exercise.events[inde-1].mlscs < 10){
+                                event.actionTotalTime = newmins.toString()+':'+newscds.toString()+':0'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }else{
+                                event.actionTotalTime = newmins.toString()+':'+newscds.toString()+':'+(newmlscds-exercise.events[inde-1].mlscs).toString()
+                            }
+                        }
+                    }
+                    if(event.actionTotalTime.length - 1 > 7){
+                        event.actionTotalTime = event.actionTotalTime.slice(0, event.actionTotalTime.length - 1);
+                    }
+  
+                    // Ici l'on recherche la durée de l'etape ou de la répétition
+                    let newArray = exercise.events.filter((el:any,i:any)=> i < inde )
+                    const isLastNumbBefore = (element:any) => element.kind === 'action' && element.action !== 'jump';
+                    let result = newArray.findLastIndex(isLastNumbBefore)
+  
+                    if(event.chrono === event.actionTotalTime){
+                            // console.log('meme timing !! ')
+                            event.timePreviousLastAction = '00:00:00';
+                    }else{
+                        if(exercise.events[result] !== undefined){
+                            if(exercise.events[result].timePreviousLastAction !== undefined){
+                                if(exercise.events[result].number === event.number){
+                                    let previoustime = exercise.events[result].chrono.split(':')
+                                    let time = event.chrono.split(':')
+                                    let scdsPreviousTotalTime  =  Number(time[1])  -Number(previoustime[1]);
+                                    let mlscdsPreviousTotalTime =  Number(time[2]) -Number(previoustime[2]);
+                                    if(Math.sign(mlscdsPreviousTotalTime) == -1){
+                                        // console.log('SPLIT : UNDER ! ',scdsPreviousTotalTime, mlscdsPreviousTotalTime);
+                                        // console.log(Math.sign(mlscdsPreviousTotalTime));
+                                        mlscdsPreviousTotalTime = (Number(time[2])+100) -Number(previoustime[2]);
+                                        scdsPreviousTotalTime = scdsPreviousTotalTime-1;
+                                    }
+                                    if(scdsPreviousTotalTime< 10){
+                                        if(mlscdsPreviousTotalTime < 10){
+                                            event.timePreviousLastAction =  '00:0'+scdsPreviousTotalTime.toString()+':0'+mlscdsPreviousTotalTime.toString()
+                                        }else{
+                                            event.timePreviousLastAction = '00:0'+scdsPreviousTotalTime.toString()+':'+mlscdsPreviousTotalTime.toString()
+                                        }
+  
+                                    }else{
+                                        if(mlscdsPreviousTotalTime < 10){
+                                            event.timePreviousLastAction =  '00:'+scdsPreviousTotalTime.toString()+':0'+mlscdsPreviousTotalTime.toString()
+                                        }else{
+                                            event.timePreviousLastAction = '00:'+scdsPreviousTotalTime.toString()+':'+mlscdsPreviousTotalTime.toString()
+                                        }
+                                    }
+                                    // console.log('SPLIT : ! ',scdsPreviousTotalTime, mlscdsPreviousTotalTime);
+                                }
+                            }else{
+                                // console.log('pas le meme timing !! ',event.chrono,event.actionTotalTime,ex.events[result].event.number,event.event.number )
+                                // console.log('LAST ACTION JUMP',ex.events[result]);
+                                // console.log('EX EVENTS START JUMP : ',ex.events[indexOflast], 'EVENT', event)
+                            }
+                            }
+                            }
+  
+                  }
+  
+                  // end of <
+                  // img:event.imgActionWhite,
+                  // person:event.person,
+                  // totaltime:event.actionTotalTime,
+                  // DataBind.push({index:event.index,step:event.step,action:event.action, loop:exercise.totalOfLoop, chrono:event.chrono, totaltime:event.actionTotalTime, timeprevious: event.timePreviousLastAction})  
+                  // functions.logger.log("Reelle fin d'un step ", exercise.events[indexOflast] ,'LE EVENT ',event ,inde)
+                  // functions.logger.log("Reelle fin d'un step ", event.hours,':',event.mins,':',event.scds,':',event.mlscs)
+                
+                  // if(event.chrono !== undefined){
+                  //   functions.logger.log("Time previous last action loop :: ",event.timePreviousLastAction, event) 
+                  //   if(event.timePreviousLastAction === "00:00:00" || event.timePreviousLastAction === undefined){
+                  //     functions.logger.log("DataBind Action START loop: In action loop", DataBind[DataBind.length-1].eventToDisplay ,'LAST EVENT',exercise.events[inde-1],'THIS EVENT',event) 
+                      
+                  //     // functions.logger.log("LOG TIME IN LOCAL TIME", new Date(exercise.events[inde-1].date).toLocaleTimeString('fr-FR') )
+                  //     let STARTTIME = new Date(exercise.events[inde-1].date).toLocaleTimeString('fr-FR')
+                  //     DataBind[DataBind.length-1].eventToDisplay.push({
+                  //         index: exercise.events[inde-1].number,
+                  //         chronoTime: exercise.events[inde-1].chrono,
+                  //         participants: exercise.events[inde-1].person,
+                  //         startTime: STARTTIME,
+                  //         endTime: "",
+                  //         totalTime: "",
+                  //         actions:[]
+                  //     })
+                  //     DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].actions.push({
+                  //           deltaLastAction: event.timePreviousLastAction,
+                  //           chrono: event.chrono,
+                  //           icon: event.action,
+                  //           econe: event.pod_index,
+                  //           timeInStep: event.actionTotalTime
+                  //     })
+                  //   }else{
+                  //     functions.logger.log("DataBind Action START loop 2: In action loop", event) 
+                  //     DataBind[DataBind.length-1].eventToDisplay[DataBind[DataBind.length-1].eventToDisplay.length-1].actions.push({
+                  //       deltaLastAction: event.timePreviousLastAction,
+                  //       chrono: event.chrono,
+                  //       icon: event.action,
+                  //       econe: event.pod_index,
+                  //       timeInStep: event.actionTotalTime
+                  //     })
+                  //   }
+                 
+                  //   functions.logger.log("End of action type loop : index: ", event.pod_index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
+                  // }else{
+  
+                  //   // functions.logger.log("End of action type 1 Undefined ? ", event )
+                  //   // functions.logger.log("End of action type 1 : index: ", event.pod_index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
+                  // }
+              }
               // functions.logger.log("LE EVENT ACTION ", event )
               if(exercise.modeType === 'time_with_jump' && event.chrono !== '00:00:00'){
                 
@@ -1124,6 +1537,7 @@ const createResult = async (req: any, res: any) => {
                
                   functions.logger.log("End of action type 1 : index: ", event.pod_index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
                 }else{
+
                   // functions.logger.log("End of action type 1 Undefined ? ", event )
                   // functions.logger.log("End of action type 1 : index: ", event.pod_index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
                 }
@@ -1444,7 +1858,7 @@ const createResult = async (req: any, res: any) => {
               }
           }
           else{
-
+              functions.logger.log("MODE LOOP ")
           }
           // functions.logger.log("End of action type 3 : index: ", event.index ,'action ',event.action, 'loop:',exercise.totalOfLoop,'chrono:',event.chrono, 'totaltime:',event.actionTotalTime,'timeprevious',event.timePreviousLastAction )
         }
@@ -1502,6 +1916,7 @@ const getResultsList = async (req: any, res: any) => {
   let headers = reqs.headers;
   // let token = headers.token;
   let idUser = headers.id;
+  // let resultNumber =  headers.resultnumber;
   let results: any = [];
   try {
 
@@ -1564,4 +1979,4 @@ const getResultsList = async (req: any, res: any) => {
 
 
 
-  export { createResult, getResultsList }
+  export { createResult, getResultsList, createResultOld }

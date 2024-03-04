@@ -10,12 +10,19 @@
         <button *ngIf="account.role == 'admin'"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>add</mat-icon>
         </button>
-        <div style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-4  col-md-6">
+        <div style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-3  col-md-4">
           <mat-card  (click)="uploadZip()" class="card-dashboard">
             <mat-card-header>
               <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
       
               <mat-card-title style="margin-right: 15px;" class="align-title">Téléverser une mise à jour</mat-card-title>
+            </mat-card-header>
+          </mat-card>
+        </div>
+        <div style="color:white; margin-bottom: 10px;display: inline-block;margin-left:10px;" class="display-text col-sm-3  col-md-4">
+          <mat-card  (click)="chooseFirmwareGlobal()" class="card-dashboard">
+            <mat-card-header style="padding-bottom: 19px;">
+              <mat-card-title style="margin-right: 15px;" class="align-title">Sélectionner le firmware global</mat-card-title>
             </mat-card-header>
           </mat-card>
         </div>

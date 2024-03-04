@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit{
     if (this.emailFormControl.valid && this.passwordFormControl.valid) {
     if(this.emailFormControl.value !== null && this.passwordFormControl.value !== null){
         const authorizationValue = 'Basic ' + Buffer.from( this.emailFormControl.value + ':' + this.passwordFormControl.value ).toString('base64');
+        console.log('Le basic : ',authorizationValue)
         const headers = { 'content-type': 'application/json'}  
         const body = JSON.stringify({username:this.emailFormControl.value,password:this.passwordFormControl.value});
           console.log(body)

@@ -129,6 +129,31 @@ const createFirmware = async (req: any, res: any) => {
   catch(error:any) { return res.status(500).json(error.message) }
 }
 
+const updateGlobalFirmware = async (req: any, res: any) =>{
+  let reqs = req;
+  let headers = reqs.headers;
+  let token = headers.token;
+  let idFirmware = headers.idfirmware;
+  try {
+    return res.status(200).json({
+      response: {
+        result:'success',
+        message:''
+      },        
+      idFirmware:idFirmware
+      // token: token,
+      // // BuildNumber:BuildNumber,
+      // id:json.id,
+      // // private:privated,
+      // newUuid:newUuid,
+      // firmwareObject:firmwareObject,
+      // globalHandler:globalHandler
+    });
+  }
+  catch(error:any) { return res.status(500).json(error.message) }
+}
+
+
 const getFirmware = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
@@ -328,4 +353,4 @@ const getFirmware = async (req: any, res: any) => {
 
 
 
-export { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails }
+export { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails, updateGlobalFirmware }
