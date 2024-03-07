@@ -66,8 +66,10 @@ const getToken = async (req: any, res: any) => {
                 })
               }else{
                 return res.status(200).json({
-                  status: 'invalidPasswordError',
-                  message: 'Mot de passe incorrect',
+                  response: {
+                    result:'invalidPasswordError',
+                    message:'Mot de passe incorrect'
+                  },
                   // authorizationValue: authorizationValue
                   // userDetailpasswordHash: userDetail.passwordHash,
                   // passwordhash:passwordhash,
@@ -77,9 +79,12 @@ const getToken = async (req: any, res: any) => {
           })
         }
         else {
+          
           return res.status(200).json({
-            status: 'error',
-            message: 'aucun utilisateur',
+            response: {
+              result:'error',
+              message:'aucun utilisateur'
+            },
           });
        }
     }

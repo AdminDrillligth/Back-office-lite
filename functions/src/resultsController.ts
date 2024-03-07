@@ -7,13 +7,13 @@ import { v4 as uuidv4 } from 'uuid';
 // var DateString = new Date().toLocaleDateString('en-GB');
 // var isoDateString = new Date().toISOString();
 
+db.settings({ ignoreUndefinedProperties: true })
 
-
-let saveIndataBase = async (result:any)=>{
+let saveIndataBase = async (result:any,coach:any)=>{
   functions.logger.log("DATA DECODED RESULT TO SAVE : ! ", result)
   const results_handler = db.collection('results-handler');
   let newUuidResult = uuidv4();
-  results_handler.doc(newUuidResult).set({result:result, idExercice:result.infos.idExercise, idResult:newUuidResult, idAccount:result.account.id }).then( async (ref:any) => {
+  results_handler.doc(newUuidResult).set({result:result, idExercice:result.infos.idExercise, idResult:newUuidResult, idAccount:coach.id }).then( async (ref:any) => {
             functions.logger.log("DATA DECODED ERROR: resultsS! ",ref)
   })
 }
@@ -28,15 +28,25 @@ let saveDataReports = async (report:any)=>{
 }
 
 // createResult
-db.settings({ ignoreUndefinedProperties: true })
+
 
 
 const createResult = async (req: any, res: any) => {
   let reqs = req;
   let body = reqs.body;
   let results = body.data;
+  functions.logger.log("LOG body RESULT ", body );
+  functions.logger.log("LOG body RESULT ", results );
+  saveDataReports(body.data);
+  results.forEach((result:any) =>{
+    functions.logger.log("LOG body RESULT ", result );
+    functions.logger.log("LOG body RESULT ", result.results );
+    saveIndataBase(result.results, result.coach)
+  })
 
   try {
+
+
       return res.status(200).json({
         response: {
             result:'success',
@@ -284,7 +294,7 @@ const createResultOld = async (req: any, res: any) => {
           functions.logger.log("Exercice END ",event.hours,':',event.mins,':',event.scds,':',event.mlscs ,' //previous event:',exercise.events[inde-1])
           
           // let data: any  = { DataBind:DataBind }
-          saveIndataBase(DataBind[DataBind.length -1])
+          // saveIndataBase(DataBind[DataBind.length -1])
 
           
           functions.logger.log("DATA DECODED ERROR: resultsS! ",DataBind[DataBind.length -1])

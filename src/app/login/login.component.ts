@@ -71,6 +71,12 @@ export class LoginComponent implements OnInit{
           console.log(body)
           this.http.get(this.baseURL+'getToken' ,{'headers':{passwordhash:authorizationValue, username:this.emailFormControl.value}}).subscribe((response:any) => {
             console.log('LA REP DU GET TOKEN  : ',response)
+            if(response.response.result === "invalidPasswordError"){
+              this.badpassword = true;
+              setTimeout(() => {
+                this.badpassword = false;
+              }, 1000);
+            }
             if(response.response.result === "success"){
               localStorage.setItem('token', response.token);
               localStorage.setItem('userId', response.id);

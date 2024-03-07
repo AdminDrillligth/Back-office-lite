@@ -68,24 +68,9 @@ export class AppComponent {
       activeClass: 'active_btn',
       activatedRight:[]
     },
-    // <mat-icon> show_chart</mat-icon>
-    // {
-    //   id: 5,
-    //   name: 'Vidéos',
-    //   icone: 'assets/icons/menu_videos.svg',
-    //   link: 'videos',
-    //   activeClass: 'active_btn',
-    //   activatedRight:[]
-    // },
-    // {
-    //   id: 6,
-    //   name: 'Paramètres',
-    //   icone: 'assets/icons/menu_settings.svg',
-    //   link: 'parameters',
-    //   activeClass: 'active_btn',
-    //   activatedRight:[]
-    // },
   ];
+
+
   seeAsAdmin:boolean=false;
   AccountOfUser:any;
   user:any = [];
@@ -131,7 +116,12 @@ export class AppComponent {
           }
         });
         this.utilsService._seeNavigation.subscribe((seeNav:any) => {
-          console.log(seeNav)
+          this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+          console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+          if(this.AccountOfUser.role !== 'admin'){
+            this.sideBarItems.splice(3,1)
+          }
+          console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
           if(seeNav == true){
             this.seeNavigation = true;
             this.opened = true;
@@ -143,6 +133,11 @@ export class AppComponent {
 
   setSeenavBar(drawer:any){
     console.log(drawer._opened)
+    this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+    console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+    if(this.AccountOfUser.role !== 'admin'){
+      this.sideBarItems.splice(3,1)
+    }
     this.seeNavBar = drawer._opened;
 
   }

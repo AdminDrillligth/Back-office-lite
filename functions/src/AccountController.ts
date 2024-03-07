@@ -274,12 +274,18 @@ const getAccountsList = async (req: any, res: any) => {
               querySnapshot.forEach((doc: any) => {
                 accounts.push({data:doc.data()});
               });
+             
               accounts.forEach((account:any)=> {
+                let validate = false;
+                if(account.passwordHash !== ""){
+                  validate = true;
+                }
                   UsersOfAccount.push({
                     fullName:account.data.fullName,
                     id:account.data.id,
                     email:account.data.email,
-                    role:account.data.role
+                    role:account.data.role,
+                    validate: validate
                   })
               });
                 return res.status(200).json({

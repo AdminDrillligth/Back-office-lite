@@ -22,14 +22,14 @@
           </mat-card-header>
         </mat-card>
       </div>
-      <div style="color:white" class=" col-sm-4 col-md-4">
+      <!-- <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
         </mat-card>
-      </div>
+      </div> -->
     </div>
 
   </div>
@@ -50,18 +50,18 @@
         <mat-card (click)="addAccountOfGroup(ProfilAccount)" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
-            <mat-card-title  class="align-title">Ajouter un Utilisateur</mat-card-title>
+            <mat-card-title  class="align-title">Ajouter un participant</mat-card-title>
           </mat-card-header>
         </mat-card>
       </div>
-      <div style="color:white" class=" col-sm-4 col-md-4">
+      <!-- <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
         </mat-card>
-      </div>
+      </div> -->
     </div>
 
   </div>
@@ -194,7 +194,7 @@
         <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Fermer</button>
       </div>
       <div *ngIf="ProfilAccount.users.length > 0"  #users>
-        <h3 style="margin-left: 30px ;">Utilisateurs</h3>
+        <h3 style="margin-left: 30px ;">Participants</h3>
 
 
         <!--  NEW ARRAY WITH MAT TABLE -->
@@ -238,7 +238,7 @@
 
       </div> 
 
-      <div class="container-graphique">
+      <!-- <div class="container-graphique">
         <div>
           <button class="button-graph" type="button" mat-mini-fab color="accent" >
             <mat-icon>pie_chart</mat-icon>
@@ -278,10 +278,10 @@
             (deactivate)="onDeactivate($event)">
           </ngx-charts-bar-vertical>
         </div>
-        <!-- <div style="margin-right:100px" class="charts-container">
+         <div style="margin-right:100px" class="charts-container">
           <span>DATA:</span>
-        </div> -->
-      </div>
+        </div>
+      </div> -->
     </div>
   </div>
   <div *ngIf="displayModalAction" class="display-modal-action">

@@ -19,35 +19,35 @@
           A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
           bred for hunting.
         </p> -->
-        <span style="color:red;" *ngIf="warning == true">
-          Vous avez atteinds votre maximum de poste
-        </span>
+        <!-- <span style="color:red;" *ngIf="warning == true">
+          Vous avez atteint votre maximum de licences.
+        </span> -->
         <form class="form-login">
           <mat-form-field >
             <mat-label>Email</mat-label>
             <input class="full-width" type="email" matInput [formControl]="emailFormControl" placeholder="Ex. xxx@example.com">
             <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-              Intégrer un email valide
+              Saisir un email valide.
             </mat-error>
             <mat-error *ngIf="emailFormControl.hasError('required')">
               Quel est votre email ?
             </mat-error>
           </mat-form-field>
           <span style="color:red;" *ngIf="badpassuser !== false">
-            Cet email n'est pas valide
+            Cet email n'est pas valide.
           </span>
           <mat-form-field >
-            <mat-label>Password</mat-label>
+            <mat-label>Mot de passe</mat-label>
             <input class="full-width" type="password" matInput [formControl]="passwordFormControl" placeholder="*****">
             <!-- <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
               Please enter a valid email address
             </mat-error> -->
             <mat-error *ngIf="passwordFormControl.hasError('required')">
-             Mot de passe nécessaire
+             Mot de passe nécessaire.
             </mat-error>
           </mat-form-field>
           <span style="color:red;" *ngIf="badpassword !== false">
-            Erreur dans le mot de passe
+            Erreur dans le mot de passe.
           </span>
           <button (click)="doLogin()" class="login-btn" mat-flat-button >Connexion</button>
         </form>

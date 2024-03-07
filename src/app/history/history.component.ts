@@ -42,6 +42,7 @@ export class HistoryComponent {
     getResultsList(){
       console.log(this.AccountOfUser.id)
       console.log("ACCOUNT OF USER :  !",this.AccountOfUser)
+      this.users = this.AccountOfUser.users
       this.userHandlerHistoricalService.getResultsList(this.AccountOfUser.id).subscribe((resp:any)=>{
         console.log(resp)
         this.results = resp.results;
