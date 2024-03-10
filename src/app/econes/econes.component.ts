@@ -379,7 +379,9 @@ export class EconesComponent implements OnInit {
   }
 
   getZipFirmware(){
-    this.firmWareService.getFirmware(this.AccountOfUser.id);
+    this.firmWareService.getFirmware(this.AccountOfUser.id).then((response)=>{
+      console.log('when get firmware :  ',response)
+    });
   }
 
   updateGlobalFirmware(){
@@ -392,9 +394,25 @@ export class EconesComponent implements OnInit {
   }
   
   displayModalUpdateFirmware = false;
+  detailsLastGlobalFirmware :any ="";
   chooseFirmwareGlobal(){
     this.displayModalUpdateFirmware = true
     console.log("on va choose le firmware : !")
+
+    this.firmWareService.getGlobalFirmware().then((response)=>{
+      console.log('Last global firmware  :  ',response)
+      response.subscribe((resp:any)=>{
+        if(resp !== undefined){
+          console.log('la resp du details', resp.globalFirmware)
+          this.detailsLastGlobalFirmware = resp.globalFirmware
+        }
+  
+        // 
+
+
+      })
+    });
+   
   }
 
   selectedVersion:any="";

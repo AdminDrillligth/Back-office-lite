@@ -1,6 +1,6 @@
 import { Response } from "express"
 import { db } from './config/firebase'
-// import * as functions from 'firebase-functions'
+import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
 // var btoa = require('btoa');
@@ -277,7 +277,8 @@ const getAccountsList = async (req: any, res: any) => {
              
               accounts.forEach((account:any)=> {
                 let validate = false;
-                if(account.passwordHash !== ""){
+                functions.logger.log("account,account.passwordHash ",account,account.data.passwordHash )
+                if(account.data.passwordHash !== ""){
                   validate = true;
                 }
                   UsersOfAccount.push({

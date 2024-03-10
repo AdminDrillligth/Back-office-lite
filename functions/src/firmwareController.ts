@@ -1,6 +1,6 @@
 // import { Response } from "express"
 import { db } from './config/firebase'
-// // import * as functions from 'firebase-functions'
+import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
 // // var btoa = require('btoa');
@@ -131,16 +131,31 @@ const createFirmware = async (req: any, res: any) => {
 
 const updateGlobalFirmware = async (req: any, res: any) =>{
   let reqs = req;
-  let headers = reqs.headers;
+  let bodys = reqs.body;
+  let globalHandler :any = [];
   // let token = headers.token;
-  let idFirmware = headers.idfirmware;
+  // let idFirmware = headers.idfirmware;
+  functions.logger.log("idFirmware :: ! ",bodys)
+  // const querySnapshotGlobalHandler = await db.collection('global_handler').get();
+  // querySnapshotGlobalHandler.forEach((doc: any) => {
+  //   globalHandler.push(doc.data());
+  // });
+  // // BuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
+  // globalHandler[0].publicFirmwareId = newUuid;
   try {
+    const querySnapshotGlobalHandler = await db.collection('global_handler').get();
+    querySnapshotGlobalHandler.forEach((doc: any) => {
+      globalHandler.push(doc.data());
+    });
+    globalHandler[0].publicFirmwareId = bodys.headers.firmwareid;
+    const global_handlerData = db.collection('global_handler');
+    global_handlerData.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0]);
     return res.status(200).json({
       response: {
         result:'success',
-        message:''
+        message:'Mise à jour du firmware global effectuée'
       },        
-      idFirmware:idFirmware
+      newfirmwareid:bodys.headers.firmwareid
 
     });
   }
@@ -334,6 +349,33 @@ const getFirmware = async (req: any, res: any) => {
   catch(error:any) { return res.status(500).json(error.message) }
  }
 
+
+ const getGlobalFirmware = async (req: any, res: any) =>{
+  let globalHandler :any = [];
+  let firmwareDetail: any = "";
+  try{
+    // if(idUser !== undefined){
+      const querySnapshotGlobalHandler = await db.collection('global_handler').get();
+      querySnapshotGlobalHandler.forEach((doc: any) => {
+        globalHandler.push(doc.data());
+      });
+      let firmwareHandler = await db.collection('firmware-handler').where('id', '==', globalHandler[0].publicFirmwareId).get();
+      firmwareHandler.forEach(async (doc:any) =>{
+        firmwareDetail = doc.data()
+      });
+      // 
+    // }
+    return res.status(200).json({
+      response: {
+        result:'success',
+        message:''
+      },
+      globalFirmware:firmwareDetail
+    });
+  }
+  catch(error:any) { return res.status(500).json(error.message) }
+ }
+
 // const checkFirmware = async (req: any, res: Response) => {
 //   // let newUuid = uuidv4();
 //   try {
@@ -347,4 +389,4 @@ const getFirmware = async (req: any, res: any) => {
 
 
 
-export { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails, updateGlobalFirmware }
+export { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails, updateGlobalFirmware,getGlobalFirmware }

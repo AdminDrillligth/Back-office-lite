@@ -81,8 +81,12 @@
     </mat-card> -->
   <!-- </div> -->
   <div *ngIf="displayModalUpdateFirmware" class="modal-zip" >
-    <h1>Modifier la version globale du firmware</h1>
-    <mat-form-field style="width:100%" class="firmware-select">
+    <h2>Modifier la version globale du firmware</h2>
+
+    <h5>Firmware global actuel:{{detailsLastGlobalFirmware.version}} </h5>
+    <p>Description : {{detailsLastGlobalFirmware.description}}</p>
+    <p>Date de l'update : {{detailsLastGlobalFirmware.creationDate}}</p>
+    <mat-form-field style="width:98%" class="firmware-select">
       <mat-label>Chosir une version...</mat-label>
       <mat-select  value="">
         <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><p style="font-weigth:500;">Version :{{firmware.version}}</p><p>Date de mise a jour: {{firmware.date}}</p></mat-option>

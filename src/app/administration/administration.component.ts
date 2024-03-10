@@ -313,6 +313,7 @@ export class AdministrationComponent implements OnInit{
          if(update == true){
           this.Accounts = [];
           let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+          console.log('ICI all accounts :: ',allAccounts)
           console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{

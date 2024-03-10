@@ -77,6 +77,7 @@ export class AppComponent {
   AllAccount:any[] = [];
   seeAsAccount:any;
   seeNavBar = true;
+  changeNav =  false;
   // 0 FULL, 1 AUTORITE, 2 UNDER AUTORITE, 3 USER
   constructor(
     private url:LocationStrategy,
@@ -116,13 +117,28 @@ export class AppComponent {
           }
         });
         this.utilsService._seeNavigation.subscribe((seeNav:any) => {
-          this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-          console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
-          if(this.AccountOfUser.role !== 'admin'){
-            this.sideBarItems.splice(3,1)
-          }
-          console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
+          setTimeout(() => {
+            let check = this.url.path().split("?")
+            this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+            if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
+             
+            }else{
+              if(this.AccountOfUser.role !== 'admin'){
+                if( this.changeNav == false){
+                  this.changeNav = true;
+                  this.sideBarItems.splice(3,1)
+                }
+              }
+            }
+            console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
+          }, 400);
+         
+          
+          
+          
           if(seeNav == true){
+
             this.seeNavigation = true;
             this.opened = true;
           }
@@ -133,11 +149,6 @@ export class AppComponent {
 
   setSeenavBar(drawer:any){
     console.log(drawer._opened)
-    this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
-    if(this.AccountOfUser.role !== 'admin'){
-      this.sideBarItems.splice(3,1)
-    }
     this.seeNavBar = drawer._opened;
 
   }
