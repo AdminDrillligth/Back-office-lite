@@ -224,6 +224,16 @@ const getAccountDetails = async (req: any, res: any) => {
               let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
               userhandlerProfil.forEach((doc:any) =>{
               userDetails = doc.data();
+              // If user is Owner, Admin, get all details of users and staff
+              // UsersOfAccount.push({
+              //   fullName:account.data.fullName,
+              //   id:account.data.id,
+              //   email:account.data.email,
+              //   validate: validate
+              // })
+
+              // If Staff je recupere l'ensemble des staff du owner, l'ensemble des users du owner, avec leurs roles, email, fullname et id
+              // Aussi le owner devient membre de staff
                 if(userDetails !== ""){
                   return res.status(200).json({
                       response: {
