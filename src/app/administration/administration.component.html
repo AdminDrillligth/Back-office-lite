@@ -117,17 +117,26 @@
   
     <div class="profil-container">
       <h2 style="margin-left:20px;padding-top: 20px;">Profil</h2>
-      <button *ngIf="!seeAsOwner " style="position: relative; top: -50px;" class="back-button" type="button" (click)="backToList()" mat-mini-fab color="accent" >
+      <!-- <button *ngIf="!seeAsOwner " style="position: relative; top: -50px;" class="back-button" type="button" (click)="backToList()" mat-mini-fab color="accent" >
         <mat-icon >highlight_off</mat-icon>
-      </button>
-    <div>
+      </button> -->
+      <div style="background: #424242;border-radius: 5px;">
+        <div>
         <br>
-        <span class="comment-line"> Profil : <b>{{ProfilAccount.fullName}}</b></span>
-        <br>
-        <span class="comment-line"> Role : <b>{{ProfilAccount.role}}</b></span>
-        <br>
-        <span class="comment-line"> Email : <b>{{ProfilAccount.email}}</b></span>
+          <span class="comment-line"> Profil : <b>{{ProfilAccount.fullName}}</b></span>
+          <br>
+          <span class="comment-line"> Role : <b>{{ProfilAccount.role}}</b></span>
+          <br>
+          <span class="comment-line"> Email : <b>{{ProfilAccount.email}}</b></span>
+        </div>
+        <div>
+          <button  type="button"  mat-button color="primary">
+            Modifier le profil
+            <!-- <mat-icon class="" (click)="closeModalSend()">close</mat-icon> -->
+          </button>
+        </div>
       </div>
+      <hr>
       <div *ngIf="ProfilAccount.staff.length > 0" #staff>
         <h3 style="margin-left: 30px ;">Staff Technique</h3>
         <!-- NEW ARRAY MAT TABLE STAFF  -->
@@ -139,9 +148,8 @@
             <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
             <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
           </ng-container>
-          <ng-container  matColumnDef="role" >
+          <!-- <ng-container  matColumnDef="role" >
             <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
-            <!-- <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.role}} </td> -->
             <td  mat-cell *matCellDef="let emp" style='text-align:center;'>
               <mat-select value="{{emp.role}}">
                 <mat-option *ngFor="let role of rolesUsers" [value]="role.value">
@@ -149,7 +157,7 @@
                 </mat-option>
               </mat-select>
             </td>
-          </ng-container>
+          </ng-container> -->
             <ng-container  matColumnDef="moderation">
               <!-- https://material.angular.io/components/checkbox/examples -->
               <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
@@ -158,7 +166,7 @@
            <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Actions </th>
             <td mat-cell *matCellDef="let emp" style='text-align:center;'>
-              <button (click)="openModalActions(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
+              <button (click)="openModalActionsOwner(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
             </td>
           </ng-container> 
           <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
@@ -206,9 +214,8 @@
             <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
             <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
           </ng-container>
-          <ng-container  matColumnDef="role" >
+          <!-- <ng-container  matColumnDef="role" >
             <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
-            <!-- <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.role}} </td> -->
             <td  mat-cell *matCellDef="let emp" style='text-align:center;'>
               <mat-select value="{{emp.role}}">
                 <mat-option *ngFor="let role of rolesUsers" [value]="role.value">
@@ -216,7 +223,7 @@
                 </mat-option>
               </mat-select>
             </td>
-          </ng-container>
+          </ng-container> -->
             <ng-container  matColumnDef="moderation">
               <!-- https://material.angular.io/components/checkbox/examples -->
               <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
@@ -225,7 +232,7 @@
            <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Actions </th>
             <td mat-cell *matCellDef="let emp" style='text-align:center;'>
-              <button (click)="openModalActions(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
+              <button (click)="openModalActionsOwner(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
             </td>
           </ng-container> 
           <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
@@ -286,15 +293,31 @@
   </div>
   <div *ngIf="displayModalAction" class="display-modal-action">
     <h1 class="header-of-actions">Actions</h1>
-    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Détails du compte...</button></div>
+    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte...</button></div>
     <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Comptes rattachés...</button></div>
-    <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div>
-    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
-    <hr>
+    <!-- <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div> -->
+    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Compte bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
+    <hr *ngIf="AccountOfUser.role === 'admin'">
     <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="privateExercice(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Exercices privés seulement <mat-icon *ngIf="privateExerciceOnly">done</mat-icon></button></div>
     <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="displayModalOfPrivateFirmware(modalAccount)"  mat-raised-button  style="color:white;width: 100%;" class="">Gestion du firmware...</button></div>
-    <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div>
-    <div *ngIf="AccountOfUser.role === 'admin'" class="bottom-btn">
+    <!-- <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div> -->
+    <div class="bottom-btn">
+      <button (click)="closeModalAction()"  mat-button class="btn-modifie mg-btm-del">Fermer</button>
+    </div>
+  </div>
+  <div *ngIf="displayModalActionOwner" class="display-modal-action">
+    <h1 class="header-of-actions">Actions</h1>
+    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccountOwner)" mat-raised-button  style="color:white;width: 100%;" class="">Profil...</button></div>
+    <div  *ngIf="modalAccountOwner.role === 'staff'" class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Participants rattachés...</button></div>
+    <!-- <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div> -->
+    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccountOwner)" mat-raised-button  style="color:white;width: 100%;" class="">Compte bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
+    <div *ngIf="modalAccountOwner.role === 'staff'" class="action-btn-modal"><button (click)="privateExercice(modalAccountOwner)" mat-raised-button  style="color:white;width: 100%;" class="">Exercices privés seulement <mat-icon *ngIf="privateExerciceOnly">done</mat-icon></button></div>
+    <div *ngIf="modalAccountOwner.role === 'staff'" class="action-btn-modal"><button  mat-raised-button  style="color:white;width: 100%;" class="">Désigner comme participant</button></div>
+      <!-- <hr *ngIf="AccountOfUser.role === 'admin'">
+    
+    <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="displayModalOfPrivateFirmware(modalAccount)"  mat-raised-button  style="color:white;width: 100%;" class="">Gestion du firmware...</button></div> -->
+    <!-- <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div> -->
+    <div class="bottom-btn">
       <button (click)="closeModalAction()"  mat-button class="btn-modifie mg-btm-del">Fermer</button>
     </div>
   </div>

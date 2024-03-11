@@ -361,6 +361,7 @@ const updateAccount = async (req:any, res: any) => {
   let token = headers.token;
   let idUser =dataBodyOfRequest.id;
   let userDetail :any = '';
+  functions.logger.log("ACCOUNT UPDATE DETAILS ",bodyOfRequest.data, 'ID : ',dataBodyOfRequest.id )
    try {
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
       if(err) {
@@ -411,6 +412,7 @@ const updateAccount = async (req:any, res: any) => {
 
             userDetail.update = DateString;
             userDetail.updateIso = isoDateString;
+            functions.logger.log("ACCOUNT UPDATE DETAILS NEW USER DETAIL : ",userDetail )
             const account_handler = db.collection('account-handler');
             account_handler.doc(idOfUser).update(userDetail).then((ref:any) => {
                 return res.status(200).json({

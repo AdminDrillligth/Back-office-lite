@@ -129,7 +129,7 @@ export interface ProfilAccountDatas{
 export class AdministrationComponent implements OnInit{
   panelOpenState = false;
   // ,'date'
-  displayedColumnsAccounts: string[] = ['firstName', 'role', 'moderation', 'actions'];
+  displayedColumnsAccounts: string[] = ['firstName',  'moderation', 'actions'];
   dataSourceAccounts!: MatTableDataSource<any>;
   resultsLength = 0;
   @ViewChild('paginatorAccounts')
@@ -138,14 +138,14 @@ export class AdministrationComponent implements OnInit{
   displayedColumnsProfilAccount: string[] = ['firstName', 'role', 'licences', 'date', 'actions', 'moderation'];
   dataSourceProfilAccount!: MatTableDataSource<any>;
 
-  displayedColumnsOfChoosenAccount : string[] = ['firstName', 'role', 'moderation', 'actions'];
+  displayedColumnsOfChoosenAccount : string[] = ['firstName',  'moderation', 'actions'];
   dataSourceUserOfChoosenAccount!: MatTableDataSource<any>;
   resultsLengthUsersAccounts = 0;
   @ViewChild('paginatorUsersAccounts')
   paginatorUsersAccounts!: MatPaginator;
 
 
-  displayedColumnsStaffOfChoosenAccount : string[] = ['firstName', 'role', 'moderation', 'actions'];
+  displayedColumnsStaffOfChoosenAccount : string[] = ['firstName',  'moderation', 'actions'];
   dataSourceStaffOfChoosenAccount!: MatTableDataSource<any>;
   resultsLengthStaffAccounts = 0;
   @ViewChild('paginatorStaffAccounts')
@@ -237,6 +237,7 @@ export class AdministrationComponent implements OnInit{
   public showCss: boolean = false;
   public showImage: boolean = false;
   public displayModalAction:boolean = false;
+  public displayModalActionOwner:boolean = false;
   public displayModalFirmware:boolean = false;
   public privateExerciceOnly = false;
   public moderationAccount = false; 
@@ -308,6 +309,60 @@ export class AdministrationComponent implements OnInit{
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
     });
+    this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
+      console.log('admin see as admin : ', asAdmin)
+
+      if(asAdmin == false){
+        this.letsee = false;
+        this.ProfilAccount = undefined;
+    
+      }
+      if(asAdmin == true){
+        this.letsee = true;
+        console.log('WE COME BACK WITH THIS ACCOUNT : ! ',this.ProfilAccount)
+        let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+        console.log('profil complet userDetailAccount :',userDetailAccount)
+        this.ProfilAccount = userDetailAccount
+        this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
+          resp.subscribe((e:any) =>{
+            console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+            this.ProfilAccount = e.account;
+            // users
+            this.ProfilAccount.users.forEach((user:any, index:number)=>{
+              console.log('le user: ', user.id, index)
+              this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+                resp.subscribe((e:any) =>{
+                  console.log('le detail de chaque user du compte owner:! ', e.account)
+                  user = e.account;
+                  this.ProfilAccount.users[index] = e.account
+                  this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+                  this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+                  this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+    
+                })
+              })
+            })
+            // staff
+            this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+              console.log('le staff: ', staff.id, index)
+              this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+                resp.subscribe((e:any) =>{
+                  console.log('le detail de chaque staff du compte owner:! ', e.account)
+                  staff = e.account;
+                  this.ProfilAccount.staff[index] = e.account
+                  console.log(this.ProfilAccount.staff)
+                  this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+                  this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+                  this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+    
+                })
+              })
+            })
+          })
+        });
+      }
+    })
     this.utilsService._newaccount.subscribe((update:any) =>{
        if(update !== null){
          if(update == true){
@@ -476,10 +531,39 @@ export class AdministrationComponent implements OnInit{
       });
     }
     console.log('QUEL COMPTE : ! ',this.modalAccount)
+    // if(this.modalAccount === undefined){
+    //   this.router.navigate(['login']);
+    // }
     setTimeout(() => {
       this.displayModalAction = true;
     }, 400);
     
+  }
+
+  modalAccountOwner:any;
+  openModalActionsOwner(account:any){
+    this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        this.modalAccountOwner = e.account;
+        console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
+        if(this.modalAccountOwner.privateOnly !== undefined){
+          this.privateExerciceOnly = this.modalAccountOwner.privateOnly;
+        }
+        if(this.modalAccountOwner.privateOnly === undefined){
+          this.privateExerciceOnly = false;
+        }
+        if(this.modalAccountOwner.warning !== undefined){
+          this.moderationAccount = this.modalAccountOwner.warning;
+        }
+        if(this.modalAccountOwner.warning === undefined){
+          this.moderationAccount = false;
+        }
+      })
+    })
+    setTimeout(() => {
+      this.displayModalActionOwner = true;
+    }, 400);
   }
 
   // public privateExerciceOnly = false;
@@ -574,6 +658,7 @@ export class AdministrationComponent implements OnInit{
 
   closeModalAction(){
     this.displayModalAction = false;
+    this.displayModalActionOwner = false;
   }
 
   closeModalFirmware(){
@@ -692,6 +777,15 @@ export class AdministrationComponent implements OnInit{
     this.displayModalAction = false;
     this.ProfilAccount = account;
     console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
+
+    localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
+    let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+    console.log('profil complet userDetailAccount :',userDetailAccount)
+    localStorage.setItem('seeAsAdmin', 'true');
+    let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
+    this.utilsService.sendSeeAsAdmin(true);
+
     this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
@@ -865,6 +959,8 @@ export class AdministrationComponent implements OnInit{
   backToList(){
     this.letsee = false;
     this.ProfilAccount = undefined;
+
+
   }
 
   createCustomer(){

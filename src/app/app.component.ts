@@ -106,12 +106,46 @@ export class AppComponent {
         let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
         console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
         this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
           // this.seeAsAccount = account;
-          console.log('ACCOUNT : ! ',asAdmin);
+          console.log('ACCOUNT : ! ',asAdmin,'LE DETAIL DU USER SELECTIONNE ; : ! ', userDetailAccount);
           if(asAdmin !== null){
             if(asAdmin === true){
               this.seeAsAdmin = true;
+              if(userDetailAccount.role === 'admin'){
+                console.log(this.sideBarItems.length)
+                if(this.sideBarItems.length !== 5){
+                  this.sideBarItems.splice(3, 0, 
+                    {
+                      id: 4,
+                      name: 'E-Cones',
+                      icone: 'assets/icons/menu_econe.svg',
+                      link: 'econes',
+                      activeClass: 'active_btn',
+                      activatedRight:[]
+                    });
+                }
+                
+              }
+              if(userDetailAccount.role === 'owner'){
+                if(this.sideBarItems.length === 5){
+                  this.sideBarItems.splice(3,1)
+                }
+                
+              }
             }else{
+              console.log('seeasadmin === false')
+              if(this.sideBarItems.length !== 5){
+                this.sideBarItems.splice(3, 0, 
+                  {
+                    id: 4,
+                    name: 'E-Cones',
+                    icone: 'assets/icons/menu_econe.svg',
+                    link: 'econes',
+                    activeClass: 'active_btn',
+                    activatedRight:[]
+                  });
+              }
               this.seeAsAdmin = false;
             }
           }
@@ -154,6 +188,7 @@ export class AppComponent {
   }
 
   comeBackToAdmin(){
+    console.log('come back to admin : ! ')
     localStorage.removeItem('account-data-user');
     this.seeAsAdmin = false;
     this.utilsService.sendSeeAsAdmin(false);

@@ -18,6 +18,11 @@
   margin-bottom: 0px;
 }
 
+.container-of-seeadmin{
+  left: 80%;
+  position: fixed;
+}
+
 .container-side{
   // background: url("/../../../assets/images/login-bg.png") no-repeat;
   background-size: cover;
@@ -73,6 +78,7 @@
 
 .sidenav-content{
   z-index: 99999999999999;
+  width: 100%;
   position: fixed;
   margin-top: 20px;
   margin-left: 10px;
