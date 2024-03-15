@@ -97,11 +97,25 @@ const createAccount = async (req: any, res: Response) => {
     let role = "user";
     let id = "";
     let privateOnly = false;
+    let userDetailOwner:any = []
     if(dataBodyOfRequest.id !== undefined){
       id = dataBodyOfRequest.id;
     }else{
       id = newUuid;
     }
+    if(dataBodyOfRequest.owner !== undefined){
+      let userhandlerProfilOwner = await db.collection('account-handler').where('id', '==', dataBodyOfRequest.owner).get();
+      userhandlerProfilOwner.forEach(async (doc:any) =>{
+        userDetailOwner = doc.data();
+        userDetailOwner.users.push({id:id})
+        functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",userDetailOwner.users )
+        await entry.doc(dataBodyOfRequest.owner).set(userDetailOwner)
+      })
+      
+
+      
+    }
+    functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",dataBodyOfRequest )
     if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
     if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
     if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
@@ -208,22 +222,132 @@ const getAccountDetails = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
   let userId = headers.id;
-  let token = headers.token;
+  // let token = headers.token;
   let userDetails :any = '';
+  let staffData:any = [];
+  let userData:any = [];
+  let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
+  userhandlerProfil.forEach((doc:any) =>{
+  userDetails = doc.data();
+  
+  })
+  
   try {
-        jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
-            if(err) {
+  // functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails, userDetails.role )
+
+  if(userDetails.role === 'owner' || userDetails.role === 'admin'){
+    functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
+    userDetails.owner = [];
+    if(userDetails.staff.length > 0){
+      userDetails.staff.forEach(async (staff:any, index:number)=>{
+      let userhandlerProfilStaff = await db.collection('account-handler').where('id', '==', staff.id).get();
+
+      userhandlerProfilStaff.forEach(async (thisStaff:any) =>{
+          staffData.push({id: thisStaff.data().id, email:thisStaff.data().email, role:thisStaff.data().role,fullName:thisStaff.data().fullName} )
+      })
+    
+      if(staffData.length === userDetails.staff.length){
+        // functions.logger.log("END OF STAFF LENGTH ::::  ",staffData.length, userDetails.staff.length, staffData, userData )
+        if(userDetails.users.length > 0){
+          // functions.logger.log("IL Y A DES USERS :   ",userDetails.users.length )
+          userDetails.users.forEach(async (user:any,index:number)=>{
+            // functions.logger.log("Ce user :   ",user.id )
+            let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
+
+            userhandlerProfilUser.forEach(async (thisUser:any) =>{
+              userData.push({id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
+              if(userData.length === userDetails.users.length){
+                // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
+                userDetails.users = userData;
+                userDetails.staff = staffData;
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  account: userDetails
+                });
+              }
+            })
+          })
+        }else{
+          // il n'y a pas encore de users
+                userDetails.staff = staffData;
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  account: userDetails
+                });
+        }
+       
+      }
+      })
+        
+    }
+    else{
+      // Si il n'y a pas de staff
+      if(userDetails.users.length > 0){
+        userDetails.users.forEach(async (user:any,index:number)=>{
+          // functions.logger.log("Ce user :   ",user.id )
+          let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
+
+          userhandlerProfilUser.forEach(async (thisUser:any) =>{
+            userData.push({id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
+            if(userData.length === userDetails.users.length){
+              // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
+              userDetails.users = userData;
               return res.status(200).json({
                 response: {
-                  result:'expiredTokenError',
-                  message:'Votre token a expiré'
+                  result:'success',
+                  message:''
                 },
-                token:token,
+                account: userDetails
               });
-            }else {
-              let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
-              userhandlerProfil.forEach((doc:any) =>{
-              userDetails = doc.data();
+            }
+          })
+        })
+      }
+    }
+
+  }
+
+
+
+        // jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+        //     if(err) {
+        //       return res.status(200).json({
+        //         response: {
+        //           result:'expiredTokenError',
+        //           message:'Votre token a expiré'
+        //         },
+        //         token:token,
+        //       });
+        //     }else {
+              // functions.logger.log("USER DETAILS ALL ::::  ",userDetails,staffData, userData)  
+                // if(userDetails !== ""){
+                //   // if(userData.length === userDetails.users.length && staffData.length === userDetails.staff.length){
+                //     functions.logger.log("USER DETAILS ALL ::::  ",userDetails,staffData, userData)  
+                //     return res.status(200).json({
+                //         response: {
+                //           result:'success',
+                //           message:''
+                //         },
+                //       account: userDetails
+                //     });
+                //   }else{
+                //     return res.status(200).json({
+                //       response: {
+                //         result:'noAccountError',
+                //         message:''
+                //       },
+                //     });
+                //   // }
+                //   }
+                  
+              // }
+         
               // If user is Owner, Admin, get all details of users and staff
               // UsersOfAccount.push({
               //   fullName:account.data.fullName,
@@ -234,25 +358,9 @@ const getAccountDetails = async (req: any, res: any) => {
 
               // If Staff je recupere l'ensemble des staff du owner, l'ensemble des users du owner, avec leurs roles, email, fullname et id
               // Aussi le owner devient membre de staff
-                if(userDetails !== ""){
-                  return res.status(200).json({
-                      response: {
-                        result:'success',
-                        message:''
-                      },
-                    account: userDetails
-                  });
-                }else{
-                  return res.status(200).json({
-                    response: {
-                      result:'noAccountError',
-                      message:''
-                    },
-                  });
-                }
-              })
-            }
-       });
+              
+              // })
+        
 
   } catch(error:any) { return res.status(500).json(error.message) }
 }
@@ -372,6 +480,7 @@ const updateAccount = async (req:any, res: any) => {
   let idUser =dataBodyOfRequest.id;
   let userDetail :any = '';
   functions.logger.log("ACCOUNT UPDATE DETAILS ",bodyOfRequest.data, 'ID : ',dataBodyOfRequest.id )
+  // functions.logger.log("account,account.passwordHash ",account,account.data.passwordHash )
    try {
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
       if(err) {

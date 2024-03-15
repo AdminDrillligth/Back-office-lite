@@ -409,38 +409,38 @@ export class AdministrationComponent implements OnInit{
       this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
           console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-          this.ProfilAccount = e.account;
-          // users
-          this.ProfilAccount.users.forEach((user:any, index:number)=>{
-            console.log('le user: ', user.id, index)
-            this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-              resp.subscribe((e:any) =>{
-                console.log('le detail de chaque user du compte owner:! ', e.account)
-                user = e.account;
-                this.ProfilAccount.users[index] = e.account
-                this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-                this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-                this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+          // this.ProfilAccount = e.account;
+          // // users
+          // this.ProfilAccount.users.forEach((user:any, index:number)=>{
+          //   console.log('le user: ', user.id, index)
+          //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+          //     resp.subscribe((e:any) =>{
+          //       console.log('le detail de chaque user du compte owner:! ', e.account)
+          //       user = e.account;
+          //       this.ProfilAccount.users[index] = e.account
+          //       this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          //       this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          //       this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
   
-              })
-            })
-          })
-          // staff
-          this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-            console.log('le staff: ', staff.id, index)
-            this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-              resp.subscribe((e:any) =>{
-                console.log('le detail de chaque staff du compte owner:! ', e.account)
-                staff = e.account;
-                this.ProfilAccount.staff[index] = e.account
-                console.log(this.ProfilAccount.staff)
-                this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-                this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-                this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+          //     })
+          //   })
+          // })
+          // // staff
+          // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+          //   console.log('le staff: ', staff.id, index)
+          //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+          //     resp.subscribe((e:any) =>{
+          //       console.log('le detail de chaque staff du compte owner:! ', e.account)
+          //       staff = e.account;
+          //       this.ProfilAccount.staff[index] = e.account
+          //       console.log(this.ProfilAccount.staff)
+          //       this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+          //       this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+          //       this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
   
-              })
-            })
-          })
+          //     })
+          //   })
+          // })
         })
       });
     }
@@ -791,37 +791,41 @@ export class AdministrationComponent implements OnInit{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         this.ProfilAccount = e.account;
         // users
-        this.ProfilAccount.users.forEach((user:any, index:number)=>{
-          console.log('le user: ', user.id, index)
-          this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-            resp.subscribe((e:any) =>{
-              console.log('le detail de chaque user du compte owner:! ', e.account)
-              user = e.account;
-              this.ProfilAccount.users[index] = e.account
-              console.log('LES USERS DU ACCOUNT',this.ProfilAccount.users)
-              this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-              this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-              this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        // this.ProfilAccount.users.forEach((user:any, index:number)=>{
+        //   console.log('le user: ', user.id, index)
+        //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+        //     resp.subscribe((e:any) =>{
+        //       console.log('le detail de chaque user du compte owner:! ', e.account)
+        //       user = e.account;
+        //       this.ProfilAccount.users[index] = e.account
+        //       console.log('LES USERS DU ACCOUNT',this.ProfilAccount.users)
+       
 
-            })
-          })
-        })
+        //     })
+        //   })
+        // })
         // staff
-        this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-          console.log('le staff: ', staff.id, index)
-          this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-            resp.subscribe((e:any) =>{
-              console.log('le detail de chaque staff du compte owner:! ', e.account)
-              staff = e.account;
-              this.ProfilAccount.staff[index] = e.account
-              console.log(this.ProfilAccount.staff)
-              this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-              this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-              this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
 
-            })
-          })
-        })
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+
+        // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+        //   console.log('le staff: ', staff.id, index)
+        //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+        //     resp.subscribe((e:any) =>{
+        //       console.log('le detail de chaque staff du compte owner:! ', e.account)
+        //       staff = e.account;
+        //       this.ProfilAccount.staff[index] = e.account
+        //       console.log(this.ProfilAccount.staff)
+      
+
+        //     })
+        //   })
+        // })
       })
     });
   }
@@ -1860,12 +1864,13 @@ export class DialogCreateUser implements OnInit{
             resp.subscribe((response:any)=>{
               console.log('la resp du add user : ! ', response)
               this.data.users.push({id:response.account.id})
-              this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
-                resp.subscribe((response:any)=>{
-                  console.log('la resp du update user owner: ! ', response)
 
-                })
-              });
+              // this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
+              //   resp.subscribe((response:any)=>{
+              //     console.log('la resp du update user owner: ! ', response)
+
+              //   })
+              // });
             })
           });
       }else{
@@ -2144,14 +2149,14 @@ export class DialogCreateStaff implements OnInit{
           console.log('STAFF : ! ',this.data, data)
           this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
             resp.subscribe((response:any)=>{
-              console.log('la resp du add user : ! ', response.account.id)
-              this.data.staff.push({id:response.account.id})
-              this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
-                resp.subscribe((response:any)=>{
-                  console.log('la resp du update staff owner: ! ', response)
+              console.log('la resp du add user : ! ', response)
+              // this.data.staff.push({id:response.account.id})
+              // this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
+              //   resp.subscribe((response:any)=>{
+              //     console.log('la resp du update staff owner: ! ', response)
 
-                })
-              });
+              //   })
+              // });
             })
           });
       }else{
