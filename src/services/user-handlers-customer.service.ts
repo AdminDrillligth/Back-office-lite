@@ -34,7 +34,7 @@ export class UserHandlersServiceCustomer {
     this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
       if(response.response.result === "success"){
         localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-        console.log('LIST DES USERS : ! ', response.accounts)
+        // console.log('LIST DES USERS : ! ', response.accounts)
         this.utilsService.sendRequestGetnewAccount(true);
       }
     })
@@ -46,7 +46,7 @@ export class UserHandlersServiceCustomer {
     this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
       if(response.response.result === "success"){
         localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-        console.log('LIST DES USERS : ! ', response.accounts)
+        // console.log('LIST DES USERS : ! ', response.accounts)
         this.utilsService.sendRequestGetnewAccount(true);
       }
     })

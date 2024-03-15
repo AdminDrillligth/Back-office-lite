@@ -42,13 +42,28 @@ export class FirmWareService {
 
   }
 
-  getFirmware(id:any){
+  async getFirmware(id:any){
     console.log('get firmware with this id: !',id)
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getFirmware', {'headers':{ 'token': token, 'id':id, 'firmwareid':'063a8ffd-b0bd-46bd-9587-7226b1bc6dd3'}}).subscribe((rep:any) =>{
-      console.log('LA REP DU GET FIRMWARE : ! ',rep)
-    });
+    let response = await this.http.get(this.baseURL+'getFirmware', {'headers':{ 'token': token, 'id':id, 'firmwareid':'063a8ffd-b0bd-46bd-9587-7226b1bc6dd3'}})
+    console.log(response)
+    response.subscribe((resp:any)=>{
+      console.log(resp)
+    })
+    return response;
   }
+
+
+  async getGlobalFirmware(){
+    let token = localStorage.getItem('token') || '{}';
+    let response = await this.http.get(this.baseURL+'getGlobalFirmware', {'headers':{ 'token': token}})
+    console.log(response)
+    response.subscribe((resp:any)=>{
+      console.log(resp)
+    })
+    return response;
+  }
+  
 
   async getFirmwareList(){
     console.log('get la list')
@@ -66,8 +81,15 @@ export class FirmWareService {
         console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
       });
     }
+  }
 
+  updateGlobalFirmware(firmware:any){
+    console.log('FIRMWARE : ',firmware.id)
+    let token = localStorage.getItem('token') || '{}';
 
+    this.http.post(this.baseURL+'updateGlobalFirmware', {'headers':{ 'token': token, 'firmwareid':firmware.id}}).subscribe((rep:any) =>{
+      console.log('LA REP DU UPDATE GLOBAL FIRMWARE : ! ',rep)
+    });
   }
 
 }

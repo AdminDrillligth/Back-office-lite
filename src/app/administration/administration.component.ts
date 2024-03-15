@@ -129,13 +129,29 @@ export interface ProfilAccountDatas{
 export class AdministrationComponent implements OnInit{
   panelOpenState = false;
   // ,'date'
-  displayedColumnsAccounts: string[] = ['firstName', 'role', 'moderation', 'actions'];
-  //
-  // , 'role', 'licences', 'date', 'actions', 'moderation'
+  displayedColumnsAccounts: string[] = ['firstName',  'moderation', 'actions'];
   dataSourceAccounts!: MatTableDataSource<any>;
+  resultsLength = 0;
+  @ViewChild('paginatorAccounts')
+  paginatorAccounts!: MatPaginator;
 
   displayedColumnsProfilAccount: string[] = ['firstName', 'role', 'licences', 'date', 'actions', 'moderation'];
   dataSourceProfilAccount!: MatTableDataSource<any>;
+
+  displayedColumnsOfChoosenAccount : string[] = ['firstName',  'moderation', 'actions'];
+  dataSourceUserOfChoosenAccount!: MatTableDataSource<any>;
+  resultsLengthUsersAccounts = 0;
+  @ViewChild('paginatorUsersAccounts')
+  paginatorUsersAccounts!: MatPaginator;
+
+
+  displayedColumnsStaffOfChoosenAccount : string[] = ['firstName',  'moderation', 'actions'];
+  dataSourceStaffOfChoosenAccount!: MatTableDataSource<any>;
+  resultsLengthStaffAccounts = 0;
+  @ViewChild('paginatorStaffAccounts')
+  paginatorStaffAccounts!: MatPaginator;
+
+  seeAsOwner = false;
   Accounts:any[]=[];
   ProfilAccount:any;
   name: string ="";
@@ -163,8 +179,15 @@ export class AdministrationComponent implements OnInit{
   roles = [
     {name:'Admin', value:'admin'},
     {name:'Owner', value:'owner'},
+    // {name:'Staff', value:'staff'},
+    // {name:'User', value:'user'},
+  ]
+
+  rolesUsers = [
     {name:'Staff', value:'staff'},
     {name:'User', value:'user'},
+    // {name:'Staff', value:'staff'},
+    // {name:'User', value:'user'},
   ]
 
   chartData =  [
@@ -214,16 +237,19 @@ export class AdministrationComponent implements OnInit{
   public showCss: boolean = false;
   public showImage: boolean = false;
   public displayModalAction:boolean = false;
+  public displayModalActionOwner:boolean = false;
   public displayModalFirmware:boolean = false;
   public privateExerciceOnly = false;
   public moderationAccount = false; 
   public firmWareList:any = [];
   public privateFirmwareId = false;
-  resultsLength = 0;
+ 
+
+
+
   // TABLE INIT
   AccountOfUser:any=[];
-  @ViewChild('paginatorAccounts')
-  paginatorAccounts!: MatPaginator;
+
   @ViewChild(MatAccordion) accordion!: MatAccordion;
   @ViewChild('paginatorProfilAccount')
   paginatorProfilAccount!: MatPaginator;
@@ -283,22 +309,76 @@ export class AdministrationComponent implements OnInit{
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme)
     });
+    this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
+      console.log('admin see as admin : ', asAdmin)
+
+      if(asAdmin == false){
+        this.letsee = false;
+        this.ProfilAccount = undefined;
+    
+      }
+      if(asAdmin == true){
+        this.letsee = true;
+        console.log('WE COME BACK WITH THIS ACCOUNT : ! ',this.ProfilAccount)
+        let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+        console.log('profil complet userDetailAccount :',userDetailAccount)
+        this.ProfilAccount = userDetailAccount
+        this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
+          resp.subscribe((e:any) =>{
+            console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+            this.ProfilAccount = e.account;
+            // users
+            this.ProfilAccount.users.forEach((user:any, index:number)=>{
+              console.log('le user: ', user.id, index)
+              this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+                resp.subscribe((e:any) =>{
+                  console.log('le detail de chaque user du compte owner:! ', e.account)
+                  user = e.account;
+                  this.ProfilAccount.users[index] = e.account
+                  this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+                  this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+                  this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+    
+                })
+              })
+            })
+            // staff
+            this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+              console.log('le staff: ', staff.id, index)
+              this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+                resp.subscribe((e:any) =>{
+                  console.log('le detail de chaque staff du compte owner:! ', e.account)
+                  staff = e.account;
+                  this.ProfilAccount.staff[index] = e.account
+                  console.log(this.ProfilAccount.staff)
+                  this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+                  this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+                  this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+    
+                })
+              })
+            })
+          })
+        });
+      }
+    })
     this.utilsService._newaccount.subscribe((update:any) =>{
-      console.log('ALLONS NOUS UPDATE ? ',update)
        if(update !== null){
          if(update == true){
           this.Accounts = [];
           let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+          console.log('ICI all accounts :: ',allAccounts)
           console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{
-            this.Accounts.push(account)
-            // console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+            if(account.role === 'admin' || account.role === 'owner'){
+              this.Accounts.push(account)
+            }
           });
           this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
           this.dataSourceAccounts.paginator = this.paginatorAccounts;
           this.resultsLength = this.Accounts.length;
-
           this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
           //  this.letsee = true;
           //  this.ProfilAccount = {data: this.AccountOfUser};
@@ -312,14 +392,57 @@ export class AdministrationComponent implements OnInit{
       let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
       this.Accounts.length = 0
       allAccounts.forEach((account:any)=>{
-        this.Accounts.push(account)
-        // console.log('ICI ADMIN ACOUNTS : !:: ',this.Accounts)
+        if(account.role === 'admin' || account.role === 'owner'){
+          this.Accounts.push(account)
+        }
       });
       setTimeout(() => {
         this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
         this.dataSourceAccounts.paginator = this.paginatorAccounts;
         this.resultsLength = this.Accounts.length;
       }, 1000);
+    }
+    if(this.AccountOfUser.role === 'owner'){
+      this.seeAsOwner = true;
+      this.ProfilAccount = this.AccountOfUser;
+      console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
+      this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+          // this.ProfilAccount = e.account;
+          // // users
+          // this.ProfilAccount.users.forEach((user:any, index:number)=>{
+          //   console.log('le user: ', user.id, index)
+          //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+          //     resp.subscribe((e:any) =>{
+          //       console.log('le detail de chaque user du compte owner:! ', e.account)
+          //       user = e.account;
+          //       this.ProfilAccount.users[index] = e.account
+          //       this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          //       this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          //       this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+  
+          //     })
+          //   })
+          // })
+          // // staff
+          // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+          //   console.log('le staff: ', staff.id, index)
+          //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+          //     resp.subscribe((e:any) =>{
+          //       console.log('le detail de chaque staff du compte owner:! ', e.account)
+          //       staff = e.account;
+          //       this.ProfilAccount.staff[index] = e.account
+          //       console.log(this.ProfilAccount.staff)
+          //       this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+          //       this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+          //       this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+  
+          //     })
+          //   })
+          // })
+        })
+      });
     }
   }
 
@@ -408,10 +531,39 @@ export class AdministrationComponent implements OnInit{
       });
     }
     console.log('QUEL COMPTE : ! ',this.modalAccount)
+    // if(this.modalAccount === undefined){
+    //   this.router.navigate(['login']);
+    // }
     setTimeout(() => {
       this.displayModalAction = true;
     }, 400);
     
+  }
+
+  modalAccountOwner:any;
+  openModalActionsOwner(account:any){
+    this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        this.modalAccountOwner = e.account;
+        console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
+        if(this.modalAccountOwner.privateOnly !== undefined){
+          this.privateExerciceOnly = this.modalAccountOwner.privateOnly;
+        }
+        if(this.modalAccountOwner.privateOnly === undefined){
+          this.privateExerciceOnly = false;
+        }
+        if(this.modalAccountOwner.warning !== undefined){
+          this.moderationAccount = this.modalAccountOwner.warning;
+        }
+        if(this.modalAccountOwner.warning === undefined){
+          this.moderationAccount = false;
+        }
+      })
+    })
+    setTimeout(() => {
+      this.displayModalActionOwner = true;
+    }, 400);
   }
 
   // public privateExerciceOnly = false;
@@ -506,6 +658,7 @@ export class AdministrationComponent implements OnInit{
 
   closeModalAction(){
     this.displayModalAction = false;
+    this.displayModalActionOwner = false;
   }
 
   closeModalFirmware(){
@@ -624,34 +777,55 @@ export class AdministrationComponent implements OnInit{
     this.displayModalAction = false;
     this.ProfilAccount = account;
     console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
+
+    localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
+    let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+    console.log('profil complet userDetailAccount :',userDetailAccount)
+    localStorage.setItem('seeAsAdmin', 'true');
+    let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
+    this.utilsService.sendSeeAsAdmin(true);
+
     this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         this.ProfilAccount = e.account;
         // users
-        this.ProfilAccount.users.forEach((user:any, index:number)=>{
-          console.log('le user: ', user.id, index)
-          this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-            resp.subscribe((e:any) =>{
-              console.log('le detail de chaque user du compte owner:! ', e.account)
-              user = e.account;
-              this.ProfilAccount.users[index] = e.account
-              console.log(this.ProfilAccount.users)
-            })
-          })
-        })
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        // this.ProfilAccount.users.forEach((user:any, index:number)=>{
+        //   console.log('le user: ', user.id, index)
+        //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+        //     resp.subscribe((e:any) =>{
+        //       console.log('le detail de chaque user du compte owner:! ', e.account)
+        //       user = e.account;
+        //       this.ProfilAccount.users[index] = e.account
+        //       console.log('LES USERS DU ACCOUNT',this.ProfilAccount.users)
+       
+
+        //     })
+        //   })
+        // })
         // staff
-        this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-          console.log('le staff: ', staff.id, index)
-          this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-            resp.subscribe((e:any) =>{
-              console.log('le detail de chaque staff du compte owner:! ', e.account)
-              staff = e.account;
-              this.ProfilAccount.staff[index] = e.account
-              console.log(this.ProfilAccount.staff)
-            })
-          })
-        })
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+
+        // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
+        //   console.log('le staff: ', staff.id, index)
+        //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+        //     resp.subscribe((e:any) =>{
+        //       console.log('le detail de chaque staff du compte owner:! ', e.account)
+        //       staff = e.account;
+        //       this.ProfilAccount.staff[index] = e.account
+        //       console.log(this.ProfilAccount.staff)
+      
+
+        //     })
+        //   })
+        // })
       })
     });
   }
@@ -672,6 +846,9 @@ export class AdministrationComponent implements OnInit{
               user = e.account;
               this.ProfilAccount.users[index] = e.account
               console.log(this.ProfilAccount.users)
+              this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+              this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+              this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
             })
           })
         })
@@ -684,6 +861,9 @@ export class AdministrationComponent implements OnInit{
               staff = e.account;
               this.ProfilAccount.staff[index] = e.account
               console.log(this.ProfilAccount.staff)
+              this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+              this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+              this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
             })
           })
         })
@@ -693,9 +873,12 @@ export class AdministrationComponent implements OnInit{
 
 
   seeAsUser(ProfilAccount:any){
+    console.log('profil complet :',ProfilAccount)
     console.log('profil complet :',this.ProfilAccount)
-    localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
+    localStorage.setItem('account-data-user', JSON.stringify(ProfilAccount));
     let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+    console.log('profil complet userDetailAccount :',userDetailAccount)
     localStorage.setItem('seeAsAdmin', 'true');
     let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
     this.utilsService.sendSeeAsAdmin(true);
@@ -780,6 +963,8 @@ export class AdministrationComponent implements OnInit{
   backToList(){
     this.letsee = false;
     this.ProfilAccount = undefined;
+
+
   }
 
   createCustomer(){
@@ -952,7 +1137,9 @@ export class AdministrationComponent implements OnInit{
     });
     dialogRef.afterClosed().subscribe(result => {
       this.userHandlersServiceCustomer.getUpdateallUsers();
-      this.updateUsersOfProfilAccount()
+      setTimeout(() => {
+        this.updateUsersOfProfilAccount()
+      }, 900);
       // this.getAdminCustomerUsers();
     });
   }
@@ -965,8 +1152,12 @@ export class AdministrationComponent implements OnInit{
       width:'80%'
     });
     dialogRef.afterClosed().subscribe(result => {
+      console.log('LE RESULT AFTER ADD A STAFF : !',result)
       this.userHandlersServiceCustomer.getUpdateallUsers();
-      this.updateUsersOfProfilAccount()
+      setTimeout(() => {
+        this.updateUsersOfProfilAccount()
+      }, 900);
+
       // this.getAdminCustomerUsers();
     });
   }
@@ -1673,12 +1864,13 @@ export class DialogCreateUser implements OnInit{
             resp.subscribe((response:any)=>{
               console.log('la resp du add user : ! ', response)
               this.data.users.push({id:response.account.id})
-              this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
-                resp.subscribe((response:any)=>{
-                  console.log('la resp du update user owner: ! ', response)
 
-                })
-              });
+              // this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
+              //   resp.subscribe((response:any)=>{
+              //     console.log('la resp du update user owner: ! ', response)
+
+              //   })
+              // });
             })
           });
       }else{
@@ -1957,14 +2149,14 @@ export class DialogCreateStaff implements OnInit{
           console.log('STAFF : ! ',this.data, data)
           this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
             resp.subscribe((response:any)=>{
-              console.log('la resp du add user : ! ', response.account.id)
-              this.data.staff.push({id:response.account.id})
-              this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
-                resp.subscribe((response:any)=>{
-                  console.log('la resp du update staff owner: ! ', response)
+              console.log('la resp du add user : ! ', response)
+              // this.data.staff.push({id:response.account.id})
+              // this.userHandlersServiceCustomer.updateAccount(this.data).then((resp:any)=>{
+              //   resp.subscribe((response:any)=>{
+              //     console.log('la resp du update staff owner: ! ', response)
 
-                })
-              });
+              //   })
+              // });
             })
           });
       }else{
@@ -1979,7 +2171,7 @@ export class DialogCreateStaff implements OnInit{
 
     }
     setTimeout(() => {
-      this.dialogRef.close();
+      this.dialogRef.close(this.data);
       // this.userHandlersServiceAdmin.getAccountWithEmail(this.user.email).subscribe((dataAccount:any) =>{
       //   console.log('WE GONE SAVE THIS DATA : ! ',dataAccount.docs[0].data())
       //   //localStorage.setItem('account', JSON.stringify(dataAccount.docs[0].data()));

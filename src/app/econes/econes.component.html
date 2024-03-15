@@ -10,12 +10,19 @@
         <button *ngIf="account.role == 'admin'"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>add</mat-icon>
         </button>
-        <div style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-4  col-md-6">
+        <div *ngIf="account.role === 'admin'"  style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-3  col-md-4">
           <mat-card  (click)="uploadZip()" class="card-dashboard">
             <mat-card-header>
               <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
       
               <mat-card-title style="margin-right: 15px;" class="align-title">Téléverser une mise à jour</mat-card-title>
+            </mat-card-header>
+          </mat-card>
+        </div>
+        <div *ngIf="account.role === 'admin'" style="color:white; margin-bottom: 10px;display: inline-block;margin-left:10px;" class="display-text col-sm-3  col-md-4">
+          <mat-card  (click)="chooseFirmwareGlobal()" class="card-dashboard">
+            <mat-card-header style="padding-bottom: 19px;">
+              <mat-card-title style="margin-right: 15px;" class="align-title">Sélectionner le firmware global</mat-card-title>
             </mat-card-header>
           </mat-card>
         </div>
@@ -73,6 +80,25 @@
       </mat-card-header>
     </mat-card> -->
   <!-- </div> -->
+  <div *ngIf="displayModalUpdateFirmware" class="modal-zip" >
+    <h2>Modifier la version globale du firmware</h2>
+
+    <h5>Firmware global actuel:{{detailsLastGlobalFirmware.version}} </h5>
+    <p>Description : {{detailsLastGlobalFirmware.description}}</p>
+    <p>Date de l'update : {{detailsLastGlobalFirmware.creationDate}}</p>
+    <mat-form-field style="width:98%" class="firmware-select">
+      <mat-label>Chosir une version...</mat-label>
+      <mat-select  value="">
+        <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><p style="font-weigth:500;">Version :{{firmware.version}}</p><p>Date de mise a jour: {{firmware.date}}</p></mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="!displayListOfUSer" class="bottom-btn">
+      <button mat-button  (click)='closeModalUpdateFirmware()' class="btn-warn mg-btm-del" >Annuler</button>
+      <button mat-button (click)='updateGlobalFirmware()' class="btn-modifie mg-btm-del" color="primary">Mise à jour du firmware global</button>
+    </div>
+
+  </div>
+
 
 <div  *ngFor="let Econe of Econes" >
   <div *ngIf="Econe.SeeQrCode"  class="modalQr" >

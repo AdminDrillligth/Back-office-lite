@@ -22,14 +22,14 @@
           </mat-card-header>
         </mat-card>
       </div>
-      <div style="color:white" class=" col-sm-4 col-md-4">
+      <!-- <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
         </mat-card>
-      </div>
+      </div> -->
     </div>
 
   </div>
@@ -50,18 +50,18 @@
         <mat-card (click)="addAccountOfGroup(ProfilAccount)" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
-            <mat-card-title  class="align-title">Ajouter un Utilisateur</mat-card-title>
+            <mat-card-title  class="align-title">Ajouter un participant</mat-card-title>
           </mat-card-header>
         </mat-card>
       </div>
-      <div style="color:white" class=" col-sm-4 col-md-4">
+      <!-- <div style="color:white" class=" col-sm-4 col-md-4">
         <mat-card (click)="econeAdministration()" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
             <mat-card-title  class="align-title">Gestion des e-cones</mat-card-title>
           </mat-card-header>
         </mat-card>
-      </div>
+      </div> -->
     </div>
 
   </div>
@@ -74,12 +74,12 @@
     <mat-label>Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
   </mat-form-field>
-    <table  *ngIf="!letsee" style='text-align:center;' mat-table [dataSource]="dataSourceAccounts">
+  <div *ngIf="!seeAsOwner">
+    <table  *ngIf="!letsee " style='text-align:center;' mat-table [dataSource]="dataSourceAccounts">
       <!--PICTURE ?  -->
       <!-- <img *ngIf="!account.avatarimages" src="https://mdbootstrap.com/img/new/avatars/8.jpg"
             alt="" style="width: 45px; height: 45px" class="rounded-circle"/> -->
       <ng-container matColumnDef="firstName">
-        
         <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
         <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
       </ng-container>
@@ -94,42 +94,15 @@
           </mat-select>
         </td>
       </ng-container>
-      <!-- <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef> Rôle </th> -->
-       <!-- <td mat-cell *matCellDef="let emp"> {{emp.role}} </td> -->
-      <!-- </ng-container>
-      <ng-container matColumnDef="licences">
-        <th mat-header-cell *matHeaderCellDef> Nombre de licences </th>
-        <td mat-cell *matCellDef="let emp"> {{emp.date}} </td>
-      </ng-container>
-       <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef> Inscription </th> -->
-        <!-- <td mat-cell *matCellDef="let emp"> {{emp.date}} </td> -->
-        <!-- <td mat-cell *matCellDef="let emp"> {{emp.date}} </td> -->
-      <!-- </ng-container> -->
         <ng-container  matColumnDef="moderation">
           <!-- https://material.angular.io/components/checkbox/examples -->
           <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
-          <td  mat-cell *matCellDef="let emp" style='text-align:center;'><span  > <mat-checkbox class="" [(ngModel)]="emp.warning"></mat-checkbox> </span></td>
+          <td  mat-cell *matCellDef="let emp" style='text-align:center;'><span  >  <mat-icon *ngIf="emp.validate" >done</mat-icon >  </span></td>
         </ng-container>
        <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Actions </th>
         <td mat-cell *matCellDef="let emp" style='text-align:center;'>
-          <!-- <mat-select value="{{emp.role}}">
-            <mat-option *ngFor="let role of roles" [value]="role.value">
-              {{role.name}}
-            </mat-option> 
-            <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Détails du compte ...</button></mat-option>
-            <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Comptes rattachés ...</button></mat-option>
-            <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Matériels rattachés ...</button></mat-option>
-             <mat-option><button style="color:white;" class="btn btn-sm btn-rounded">Compte validé </button></mat-option> 
-            <mat-option>V Exercices privés uniquement </mat-option>
-          </mat-select> -->
           <button (click)="openModalActions(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
-          <!-- <button (click)="seeAdmin(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon> contacts</mat-icon></button>
-          <button (click)="updateAccount(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon>create</mat-icon></button>
-          <button (click)="sendResetPassword(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon>mail</mat-icon></button>
-          <button *ngIf="emp.role === 'admin' || emp.role === 'owner'"  type="button" class="btn btn-link btn-sm btn-rounded"><img src="assets/icons/menu_econe.svg"></button> -->
         </td>
       </ng-container> 
       <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
@@ -138,104 +111,71 @@
 
       <tr mat-row  *matRowDef="let emprow; columns: displayedColumnsAccounts;"></tr>
     </table>
-    <mat-paginator *ngIf="!letsee" style="margin-bottom: 20px;" #paginatorAccounts [length]="resultsLength" [pageSize]="10" aria-label="Choisir la page"></mat-paginator>
-
-  <div *ngIf="letsee && ProfilAccount !== undefined" >
+    <mat-paginator *ngIf="!letsee " style="margin-bottom: 20px;" #paginatorAccounts [length]="resultsLength" [pageSize]="10" aria-label="Choisir la page"></mat-paginator>
+  </div>
+  <div *ngIf="letsee && ProfilAccount !== undefined || seeAsOwner" >
   
     <div class="profil-container">
-      <h3 style="margin-left:20px;padding-top: 20px;">Fiche profil</h3>
-      <!-- *ngIf="ProfilAccount.role === 'admin'" -->
-      <button  class="back-button" type="button" (click)="backToList()" mat-mini-fab color="accent" >
+      <h2 style="margin-left:20px;padding-top: 20px;">Profil</h2>
+      <!-- <button *ngIf="!seeAsOwner " style="position: relative; top: -50px;" class="back-button" type="button" (click)="backToList()" mat-mini-fab color="accent" >
         <mat-icon >highlight_off</mat-icon>
-      </button>
-
-      <div>
-        <button (click)="seeAsUser(ProfilAccount)" type="button" style="margin-bottom: 20px;margin-left:20px;" mat-mini-fab color="accent" class="btn btn-link btn-sm btn-rounded">
-          <mat-icon> visibility</mat-icon>
-        </button>
+      </button> -->
+      <div style="background: #424242;border-radius: 5px;">
+        <div>
         <br>
-        <span class="comment-line"> Profil : <b>{{ProfilAccount.fullName}}</b></span>
-        <br>
-        <span class="comment-line"> Role : <b>{{ProfilAccount.role}}</b></span>
-        <br>
-        <span class="comment-line"> Email : <b>{{ProfilAccount.email}}</b></span>
+          <span class="comment-line"> Profil : <b>{{ProfilAccount.fullName}}</b></span>
+          <br>
+          <span class="comment-line"> Role : <b>{{ProfilAccount.role}}</b></span>
+          <br>
+          <span class="comment-line"> Email : <b>{{ProfilAccount.email}}</b></span>
+        </div>
+        <div>
+          <button  type="button"  mat-button color="primary">
+            Modifier le profil
+            <!-- <mat-icon class="" (click)="closeModalSend()">close</mat-icon> -->
+          </button>
+        </div>
       </div>
-
+      <hr>
       <div *ngIf="ProfilAccount.staff.length > 0" #staff>
         <h3 style="margin-left: 30px ;">Staff Technique</h3>
-
-        <table class="table-admin table align-middle mb-0 bg-white">
-          <thead class="bg-light">
-            <tr>
-              <th>Nom</th>
-              <!-- <th>Discipline(s)</th>
-              <th>Objectif(s)</th> -->
-              <th>Actions</th>
-              <th>Modération</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="size-tr" *ngFor="let staff of ProfilAccount.staff">
-              <td>
-                <div class="d-flex align-items-center">
-                  <img *ngIf="!staff.avatarimages"
-                      src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                      alt=""
-                      style="width: 45px; height: 45px"
-                      class="rounded-circle"
-                      />
-                      <img *ngIf="staff.avatarimages"
-                      alt=""
-                      style="width: 45px; height: 45px"
-                      class="rounded-circle-personal"
-                      src="{{staff.avatarimages}}" />
-                  <div class="ms-3">
-                    <p class="fw-bold mb-1">{{staff.fullName }}</p>
-                    <p class="text-muted mb-0">{{staff.email}}</p>
-                  </div>
-                </div>
-              </td>
-            <!-- <th>
-              <mat-form-field>
-                <mat-label>Disciplines</mat-label>
-                <mat-select  >
-                  <mat-option disabled *ngFor="let itemDiscipline of accountStaff.discipline" [value]="itemDiscipline">{{itemDiscipline}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </th>
-            <th>
-              <mat-form-field>
-                <mat-label>Roles</mat-label>
-                <mat-select  >
-                  <mat-option disabled *ngFor="let roles of accountStaff.roles" [value]="roles">{{roles}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </th>
-            <th>
-              <mat-form-field>
-                <mat-label>Coaché(e)s</mat-label>
-                <mat-select  >
-                  <mat-option disabled *ngFor="let trained of accountStaff.traineds" [value]="trained">{{trained.name +''+trained.firstname}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              </th> -->
-            <td>
-              <button (click)="seeStaffProfil(staff)" type="button" class="btn btn-link btn-sm btn-rounded">
-                <mat-icon> visibility</mat-icon>
-              </button>
-              <button (click)="updateAccountStaff(ProfilAccount, staff)" type="button" class="btn btn-link btn-sm btn-rounded">
-                <mat-icon>create</mat-icon>
-              </button>
-              <button (click)="sendResetPasswordStaff(staff)" type="button" class="btn btn-link btn-sm btn-rounded">
-                <mat-icon>mail</mat-icon>
-              </button>
-          </td>
-          <td >
-            <mat-checkbox class="checkbox-color" [disabled]="true"  ></mat-checkbox>
-          </td>
-          </tr>
-          </tbody>
-        </table> 
+        <!-- NEW ARRAY MAT TABLE STAFF  -->
+        <table  style='text-align:center;' mat-table [dataSource]="dataSourceStaffOfChoosenAccount">
+          <!--PICTURE ?  -->
+          <!-- <img *ngIf="!account.avatarimages" src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                alt="" style="width: 45px; height: 45px" class="rounded-circle"/> -->
+          <ng-container matColumnDef="firstName">
+            <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
+            <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
+          </ng-container>
+          <!-- <ng-container  matColumnDef="role" >
+            <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
+            <td  mat-cell *matCellDef="let emp" style='text-align:center;'>
+              <mat-select value="{{emp.role}}">
+                <mat-option *ngFor="let role of rolesUsers" [value]="role.value">
+                  {{role.name}}
+                </mat-option>
+              </mat-select>
+            </td>
+          </ng-container> -->
+            <ng-container  matColumnDef="moderation">
+              <!-- https://material.angular.io/components/checkbox/examples -->
+              <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
+              <td  mat-cell *matCellDef="let emp" style='text-align:center;'><span  > <mat-icon *ngIf="emp.passwordHash !== ''" >done</mat-icon >  </span></td>
+            </ng-container>
+           <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Actions </th>
+            <td mat-cell *matCellDef="let emp" style='text-align:center;'>
+              <button (click)="openModalActionsOwner(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
+            </td>
+          </ng-container> 
+          <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
+    
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsStaffOfChoosenAccount"></tr>
+    
+          <tr mat-row  *matRowDef="let emprow; columns: displayedColumnsStaffOfChoosenAccount;"></tr>
+        </table>
+        <mat-paginator  style="margin-bottom: 20px;" #paginatorStaffAccounts [length]="resultsLengthStaffAccounts" [pageSize]="10" aria-label="Choisir la page"></mat-paginator>
       </div>
       <br>
             <!-- *ngIf="Econe.SeeQrCode" -->
@@ -262,76 +202,50 @@
         <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Fermer</button>
       </div>
       <div *ngIf="ProfilAccount.users.length > 0"  #users>
-        <h3 style="margin-left: 30px ;">Utilisateurs</h3>
-        <table class="table-admin table align-middle mb-0 bg-white">
-          <thead class="bg-light">
-            <tr>
-              <th>Nom</th>
-              <th>Inscription</th>
-              <!-- <th>Discipline(s)</th> -->
-              <!-- <th>Objectif(s)</th> -->
-              <th>Actions</th>
-              <th>Modération</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="size-tr" *ngFor="let user of ProfilAccount.users">
-              <td>
-                <div class="d-flex align-items-center">
-                  <img *ngIf="!user.avatarimages"
-                      src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                      alt=""
-                      style="width: 45px; height: 45px"
-                      class="rounded-circle"
-                      />
-                      <img *ngIf="user.avatarimages"
-                      alt=""
-                      style="width: 45px; height: 45px"
-                      class="rounded-circle-personal"
-                      src="{{user.avatarimages}}" />
-                  <div class="ms-3">
-                    <p class="fw-bold mb-1">{{user.fullName }}</p>
-                    <p class="text-muted mb-0">{{user.email}}</p>
-                  </div>
-                </div>
-              </td>
-              <th>{{user.date}}</th>
-              <th>
-              <!-- <mat-form-field>
-                <mat-label>Disciplines</mat-label>
-                <mat-select  >
-                  <mat-option disabled *ngFor="let itemDiscipline of accountTraineds.discipline" [value]="itemDiscipline">{{itemDiscipline}}</mat-option>
-                </mat-select>
-              </mat-form-field> -->
-            </th>
-              <!-- <th>
-              <mat-form-field>
-                <mat-label>Objectifs</mat-label>
-                <mat-select  >
-                  <mat-option disabled *ngFor="let itemObjectif of accountTraineds.objectif" [value]="itemObjectif">{{itemObjectif}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              </th> -->
-              <td>
-              <button (click)="seeTrainedProfil(user)" type="button" class="btn btn-link btn-sm btn-rounded">
-                <mat-icon> visibility</mat-icon>
-              </button>
-              <button (click)="updateAccountTrained(ProfilAccount, user)" type="button" class="btn btn-link btn-sm btn-rounded">
-                <mat-icon>create</mat-icon>
-              </button>
-              <button (click)="sendResetPasswordTrained(user)" type="button" class="btn btn-link btn-sm btn-rounded">
-                <mat-icon>mail</mat-icon>
-              </button>
-          </td>
-          <td >
-            <mat-checkbox class="checkbox-color" [disabled]="true"  [(ngModel)]="user.moderate"></mat-checkbox>
-          </td>
-          </tr>
-          </tbody>
-        </table> 
+        <h3 style="margin-left: 30px ;">Participants</h3>
+
+
+        <!--  NEW ARRAY WITH MAT TABLE -->
+        <table  style='text-align:center;' mat-table [dataSource]="dataSourceUserOfChoosenAccount">
+          <!--PICTURE ?  -->
+          <!-- <img *ngIf="!account.avatarimages" src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                alt="" style="width: 45px; height: 45px" class="rounded-circle"/> -->
+          <ng-container matColumnDef="firstName">
+            <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
+            <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
+          </ng-container>
+          <!-- <ng-container  matColumnDef="role" >
+            <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
+            <td  mat-cell *matCellDef="let emp" style='text-align:center;'>
+              <mat-select value="{{emp.role}}">
+                <mat-option *ngFor="let role of rolesUsers" [value]="role.value">
+                  {{role.name}}
+                </mat-option>
+              </mat-select>
+            </td>
+          </ng-container> -->
+            <ng-container  matColumnDef="moderation">
+              <!-- https://material.angular.io/components/checkbox/examples -->
+              <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
+              <td  mat-cell *matCellDef="let emp" style='text-align:center;'><span  > <mat-icon *ngIf="emp.passwordHash !== ''" >done</mat-icon > </span></td>
+            </ng-container>
+           <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Actions </th>
+            <td mat-cell *matCellDef="let emp" style='text-align:center;'>
+              <button (click)="openModalActionsOwner(emp)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
+            </td>
+          </ng-container> 
+          <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
+    
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsOfChoosenAccount"></tr>
+    
+          <tr mat-row  *matRowDef="let emprow; columns: displayedColumnsOfChoosenAccount;"></tr>
+        </table>
+        <mat-paginator  style="margin-bottom: 20px;" #paginatorUsersAccounts [length]="resultsLengthUsersAccounts" [pageSize]="10" aria-label="Choisir la page"></mat-paginator>
+
       </div> 
 
-      <div class="container-graphique">
+      <!-- <div class="container-graphique">
         <div>
           <button class="button-graph" type="button" mat-mini-fab color="accent" >
             <mat-icon>pie_chart</mat-icon>
@@ -371,23 +285,39 @@
             (deactivate)="onDeactivate($event)">
           </ngx-charts-bar-vertical>
         </div>
-        <!-- <div style="margin-right:100px" class="charts-container">
+         <div style="margin-right:100px" class="charts-container">
           <span>DATA:</span>
-        </div> -->
-      </div>
+        </div>
+      </div> -->
     </div>
   </div>
   <div *ngIf="displayModalAction" class="display-modal-action">
     <h1 class="header-of-actions">Actions</h1>
-    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Détails du compte...</button></div>
+    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte...</button></div>
     <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Comptes rattachés...</button></div>
-    <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div>
-    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
-    <hr>
+    <!-- <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div> -->
+    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Compte bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
+    <hr *ngIf="AccountOfUser.role === 'admin'">
     <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="privateExercice(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Exercices privés seulement <mat-icon *ngIf="privateExerciceOnly">done</mat-icon></button></div>
     <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="displayModalOfPrivateFirmware(modalAccount)"  mat-raised-button  style="color:white;width: 100%;" class="">Gestion du firmware...</button></div>
-    <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div>
-    <div *ngIf="AccountOfUser.role === 'admin'" class="bottom-btn">
+    <!-- <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div> -->
+    <div class="bottom-btn">
+      <button (click)="closeModalAction()"  mat-button class="btn-modifie mg-btm-del">Fermer</button>
+    </div>
+  </div>
+  <div *ngIf="displayModalActionOwner" class="display-modal-action">
+    <h1 class="header-of-actions">Actions</h1>
+    <div class="action-btn-modal"><button (click)="seeAdmin(modalAccountOwner)" mat-raised-button  style="color:white;width: 100%;" class="">Profil...</button></div>
+    <div  *ngIf="modalAccountOwner.role === 'staff'" class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Participants rattachés...</button></div>
+    <!-- <div class="action-btn-modal"><button mat-raised-button  style="color:white;width: 100%;" class="">Matériels rattachés...</button></div> -->
+    <div class="action-btn-modal"><button (click)="modarateAccount(modalAccountOwner)" mat-raised-button  style="color:white;width: 100%;" class="">Compte bloqué <mat-icon *ngIf="moderationAccount" >done</mat-icon ></button></div>
+    <div *ngIf="modalAccountOwner.role === 'staff'" class="action-btn-modal"><button (click)="privateExercice(modalAccountOwner)" mat-raised-button  style="color:white;width: 100%;" class="">Exercices privés seulement <mat-icon *ngIf="privateExerciceOnly">done</mat-icon></button></div>
+    <div *ngIf="modalAccountOwner.role === 'staff'" class="action-btn-modal"><button  mat-raised-button  style="color:white;width: 100%;" class="">Désigner comme participant</button></div>
+      <!-- <hr *ngIf="AccountOfUser.role === 'admin'">
+    
+    <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="displayModalOfPrivateFirmware(modalAccount)"  mat-raised-button  style="color:white;width: 100%;" class="">Gestion du firmware...</button></div> -->
+    <!-- <div *ngIf="AccountOfUser.role === 'admin'" class="action-btn-modal"><button (click)="seeAsUser(modalAccount)" mat-raised-button  style="color:white;width: 100%;" class="">Visualiser ce compte</button></div> -->
+    <div class="bottom-btn">
       <button (click)="closeModalAction()"  mat-button class="btn-modifie mg-btm-del">Fermer</button>
     </div>
   </div>

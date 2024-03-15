@@ -13,8 +13,8 @@ import { connectToAccount } from './loggerController';
 import { createExercise, getExerciseDetails, getExercisesList, updateExercise, deleteExercise } from './exercisesController';
 import { testgetSessionsList, createSession, getSessionDetails, getSessionsList, updateSession, deleteSession } from './sessionsController';
 import { getToken, validateToken, passwordHash } from './tokenController';
-import { createResult, getResultsList } from './resultsController';
-import { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails } from './firmwareController';
+import { createResult, getResultsList, createResultOld } from './resultsController';
+import { createFirmware, getFirmware, getFirmwaresList, getFirmwareDetails, updateGlobalFirmware,getGlobalFirmware } from './firmwareController';
 
 const fileMiddleware = require('express-multipart-file-parser')
 
@@ -112,12 +112,18 @@ app.delete('/deleteEcone', deleteEcone)
 //
 app.post('/createResult', createResult)
 app.get('/getResultsList', getResultsList)
+app.post('/createResultOld', createResultOld)
 
 //
 app.post('/createFirmware', createFirmware)
 app.get('/getFirmware', getFirmware)
 app.get('/getFirmwaresList', getFirmwaresList)
 app.get('/getFirmwareDetails', getFirmwareDetails)
+app.get('/getGlobalFirmware', getGlobalFirmware)
+app.post('/updateGlobalFirmware', updateGlobalFirmware)
+
+
+
 //
 app.post('/login', connectToAccount)
 

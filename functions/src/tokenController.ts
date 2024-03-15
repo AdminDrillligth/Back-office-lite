@@ -3,7 +3,7 @@ const fs = require('firebase-admin');
 const db = fs.firestore();
 import { v4 as uuidv4 } from 'uuid';
 // var btoa = require('btoa');
-
+import * as functions from 'firebase-functions'
 // 
 
 
@@ -36,6 +36,7 @@ const getToken = async (req: any, res: any) => {
             userhandlerProfil.forEach(async (doc:any) =>{
               userDetail = doc.data();
               if(userDetail.passwordHash === passwordhash){
+                functions.logger.log("account detail with token : ",userDetail )
                 // Si le hash est correct : 
                 jwt.sign({
                   hash:userDetail.passwordHash,
@@ -66,8 +67,10 @@ const getToken = async (req: any, res: any) => {
                 })
               }else{
                 return res.status(200).json({
-                  status: 'invalidPasswordError',
-                  message: 'Mot de passe incorrect',
+                  response: {
+                    result:'invalidPasswordError',
+                    message:'Mot de passe incorrect'
+                  },
                   // authorizationValue: authorizationValue
                   // userDetailpasswordHash: userDetail.passwordHash,
                   // passwordhash:passwordhash,
@@ -77,9 +80,12 @@ const getToken = async (req: any, res: any) => {
           })
         }
         else {
+          
           return res.status(200).json({
-            status: 'error',
-            message: 'aucun utilisateur',
+            response: {
+              result:'error',
+              message:'aucun utilisateur'
+            },
           });
        }
     }

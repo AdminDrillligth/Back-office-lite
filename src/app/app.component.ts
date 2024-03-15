@@ -68,30 +68,16 @@ export class AppComponent {
       activeClass: 'active_btn',
       activatedRight:[]
     },
-    // <mat-icon> show_chart</mat-icon>
-    // {
-    //   id: 5,
-    //   name: 'Vidéos',
-    //   icone: 'assets/icons/menu_videos.svg',
-    //   link: 'videos',
-    //   activeClass: 'active_btn',
-    //   activatedRight:[]
-    // },
-    // {
-    //   id: 6,
-    //   name: 'Paramètres',
-    //   icone: 'assets/icons/menu_settings.svg',
-    //   link: 'parameters',
-    //   activeClass: 'active_btn',
-    //   activatedRight:[]
-    // },
   ];
+
+
   seeAsAdmin:boolean=false;
   AccountOfUser:any;
   user:any = [];
   AllAccount:any[] = [];
   seeAsAccount:any;
   seeNavBar = true;
+  changeNav =  false;
   // 0 FULL, 1 AUTORITE, 2 UNDER AUTORITE, 3 USER
   constructor(
     private url:LocationStrategy,
@@ -120,19 +106,73 @@ export class AppComponent {
         let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
         console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
         this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
           // this.seeAsAccount = account;
-          console.log('ACCOUNT : ! ',asAdmin);
+          console.log('ACCOUNT : ! ',asAdmin,'LE DETAIL DU USER SELECTIONNE ; : ! ', userDetailAccount);
           if(asAdmin !== null){
             if(asAdmin === true){
               this.seeAsAdmin = true;
+              if(userDetailAccount.role === 'admin'){
+                console.log(this.sideBarItems.length)
+                if(this.sideBarItems.length !== 5){
+                  this.sideBarItems.splice(3, 0, 
+                    {
+                      id: 4,
+                      name: 'E-Cones',
+                      icone: 'assets/icons/menu_econe.svg',
+                      link: 'econes',
+                      activeClass: 'active_btn',
+                      activatedRight:[]
+                    });
+                }
+                
+              }
+              if(userDetailAccount.role === 'owner'){
+                if(this.sideBarItems.length === 5){
+                  this.sideBarItems.splice(3,1)
+                }
+                
+              }
             }else{
+              console.log('seeasadmin === false')
+              if(this.sideBarItems.length !== 5){
+                this.sideBarItems.splice(3, 0, 
+                  {
+                    id: 4,
+                    name: 'E-Cones',
+                    icone: 'assets/icons/menu_econe.svg',
+                    link: 'econes',
+                    activeClass: 'active_btn',
+                    activatedRight:[]
+                  });
+              }
               this.seeAsAdmin = false;
             }
           }
         });
         this.utilsService._seeNavigation.subscribe((seeNav:any) => {
-          console.log(seeNav)
+          setTimeout(() => {
+            let check = this.url.path().split("?")
+            this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+            if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
+             
+            }else{
+              if(this.AccountOfUser.role !== 'admin'){
+                if( this.changeNav == false){
+                  this.changeNav = true;
+                  this.sideBarItems.splice(3,1)
+                }
+              }
+            }
+            console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
+          }, 400);
+         
+          
+          
+          
           if(seeNav == true){
+
             this.seeNavigation = true;
             this.opened = true;
           }
@@ -148,6 +188,7 @@ export class AppComponent {
   }
 
   comeBackToAdmin(){
+    console.log('come back to admin : ! ')
     localStorage.removeItem('account-data-user');
     this.seeAsAdmin = false;
     this.utilsService.sendSeeAsAdmin(false);
