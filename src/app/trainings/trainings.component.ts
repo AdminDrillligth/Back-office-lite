@@ -30,9 +30,9 @@ export class TrainingsComponent implements OnInit {
   theme = new FormControl('');
   categorieslist = ['U7', 'U9', 'U11', 'U13', 'U15', 'U17', 'U19', 'SENIOR'];
   itemsNav = [
-    {type:'Exercices', value:'Exercices', selected:true},
-    {type:'Séances', value:'Sessions', selected:false},
-    {type:'Programmes', value:'Programmes', selected:false},
+    // {type:'Exercices', value:'Exercices', selected:true},
+    // {type:'Séances', value:'Sessions', selected:false},
+    // {type:'Programmes', value:'Programmes', selected:false},
   ];
 
   levelsArray = [{id:0, name:'Facile'},{id:1, name:'Intermediaire'} ,{id:2, name:'Difficile'} ];
@@ -56,6 +56,7 @@ export class TrainingsComponent implements OnInit {
   chooseType:string='Exercices';
   audience:string='public';
   userSource:any;
+  AccountOfUser:any
   idOfOwner:any;
   constructor(
     private exerciseService:ExerciseService,
@@ -66,7 +67,7 @@ export class TrainingsComponent implements OnInit {
     ){}
   ngOnInit(): void {
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-   
+    this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     if(AccountOfUser !== undefined ){
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
@@ -207,6 +208,11 @@ export class TrainingsComponent implements OnInit {
     return a.header.title.localeCompare(b.header.title);
   }
   
+
+  displayTypeOf:any = "list"
+  changeDisplay(type:any){
+    this.displayTypeOf = type; 
+  }
 
   applyFilter(event: Event) {
     console.log('LE SEARCH : ',event)
