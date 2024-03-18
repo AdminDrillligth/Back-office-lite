@@ -133,6 +133,17 @@
   -o-transition: 0.70s;
 }
 
+
+.choosen-firmware{
+  display: inline-block;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  margin-right: 10px;
+  background:#3855ff;
+}
+
+
 .rotate:hover {
   transition: 0.70s;
   -webkit-transition: 0.70s;

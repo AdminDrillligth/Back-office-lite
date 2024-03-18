@@ -69,6 +69,9 @@ export class LoginComponent implements OnInit{
         const headers = { 'content-type': 'application/json'}  
         const body = JSON.stringify({username:this.emailFormControl.value,password:this.passwordFormControl.value});
           console.log(body)
+
+        
+
           this.http.get(this.baseURL+'getToken' ,{'headers':{passwordhash:authorizationValue, username:this.emailFormControl.value}}).subscribe((response:any) => {
             console.log('LA REP DU GET TOKEN  : ',response)
             if(response.response.result === "invalidPasswordError"){

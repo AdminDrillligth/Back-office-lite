@@ -175,6 +175,13 @@ export class EconesComponent implements OnInit {
         this.allAccountsAdminOwner.push(account)
       }
     })
+    this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
+      console.log('Last global firmware  :  ',response)
+      if(response !== undefined){
+        console.log('la resp du details', response.globalFirmware)
+        this.detailsLastGlobalFirmware = response.globalFirmware
+      }
+    });
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme);
@@ -199,8 +206,14 @@ export class EconesComponent implements OnInit {
           });
           this.firmWareList.forEach((firmware:any)=>{
             firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+            if(this.detailsLastGlobalFirmware.id === firmware.id){
+              console.log('the same id of firm global ! ', firmware.id)
+              firmware.choosen = true;
+            }else{
+              firmware.choosen = false;
+            }
           })
-        
+          
         })
       });
     }
@@ -399,18 +412,12 @@ export class EconesComponent implements OnInit {
     this.displayModalUpdateFirmware = true
     console.log("on va choose le firmware : !")
 
-    this.firmWareService.getGlobalFirmware().then((response)=>{
+    this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
       console.log('Last global firmware  :  ',response)
-      response.subscribe((resp:any)=>{
-        if(resp !== undefined){
-          console.log('la resp du details', resp.globalFirmware)
-          this.detailsLastGlobalFirmware = resp.globalFirmware
-        }
-  
-        // 
-
-
-      })
+      if(response !== undefined){
+        console.log('la resp du details', response.globalFirmware)
+        this.detailsLastGlobalFirmware = response.globalFirmware
+      }
     });
    
   }

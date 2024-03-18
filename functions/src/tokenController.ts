@@ -35,7 +35,16 @@ const getToken = async (req: any, res: any) => {
             // si le token de ce user existe
             userhandlerProfil.forEach(async (doc:any) =>{
               userDetail = doc.data();
-              if(userDetail.passwordHash === passwordhash){
+              functions.logger.log("USER DETAIL THIS PROFIL WITH WARNING : !   ::::  ", userDetail.warning )
+              if(userDetail.warning){
+                return res.status(200).json({
+                  response: {
+                    result:'errorBlockedAccount',
+                    message:''
+                  },
+                });
+              }
+              else if(userDetail.passwordHash === passwordhash){
                 functions.logger.log("account detail with token : ",userDetail )
                 // Si le hash est correct : 
                 jwt.sign({
@@ -98,6 +107,13 @@ const validateToken = async  (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
   let token = headers.token;
+  let idUser = headers.id;
+
+  functions.logger.log("account detail with token : ",idUser );
+  let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
+  functions.logger.log("LENGTH ACCOUNT : ",userhandlerProfil );
+
+  
   try{
     jwt.verify(token, 'secret', { expiresIn: '7d' },  function(err:any, decoded:any) {
       if(err){

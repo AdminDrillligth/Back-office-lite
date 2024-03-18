@@ -243,7 +243,11 @@ const getAccountDetails = async (req: any, res: any) => {
       let userhandlerProfilStaff = await db.collection('account-handler').where('id', '==', staff.id).get();
 
       userhandlerProfilStaff.forEach(async (thisStaff:any) =>{
-          staffData.push({id: thisStaff.data().id, email:thisStaff.data().email, role:thisStaff.data().role,fullName:thisStaff.data().fullName} )
+        let validateStaff = false;
+        if(thisStaff.data().passwordHash !== ""){
+          validateStaff = true;
+        }
+          staffData.push({validate:validateStaff,id: thisStaff.data().id, email:thisStaff.data().email, role:thisStaff.data().role,fullName:thisStaff.data().fullName} )
       })
     
       if(staffData.length === userDetails.staff.length){
@@ -255,7 +259,11 @@ const getAccountDetails = async (req: any, res: any) => {
             let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
 
             userhandlerProfilUser.forEach(async (thisUser:any) =>{
-              userData.push({id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
+              let validate = false;
+              if(thisUser.data().passwordHash !== ""){
+                validate = true;
+              }
+              userData.push({validate:validate,id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
               if(userData.length === userDetails.users.length){
                 // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
                 userDetails.users = userData;
@@ -290,11 +298,16 @@ const getAccountDetails = async (req: any, res: any) => {
       // Si il n'y a pas de staff
       if(userDetails.users.length > 0){
         userDetails.users.forEach(async (user:any,index:number)=>{
+    
           // functions.logger.log("Ce user :   ",user.id )
           let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
 
           userhandlerProfilUser.forEach(async (thisUser:any) =>{
-            userData.push({id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
+            let validate = false;
+            if(thisUser.data().passwordHash !== ""){
+              validate = true;
+            }
+            userData.push({validate:validate, id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
             if(userData.length === userDetails.users.length){
               // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
               userDetails.users = userData;

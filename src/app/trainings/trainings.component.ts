@@ -12,6 +12,8 @@ import { ExerciseService } from '../../services/exercise-handler.service';
 import { MatRadioModule } from '@angular/material/radio';
 import ImageResize from 'image-resize';
 import { uid } from 'uid';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
 
 @Component({
   selector: 'app-trainings',

@@ -54,12 +54,12 @@ export class FirmWareService {
   }
 
 
-  async getGlobalFirmware(){
+  getGlobalFirmware(){
     let token = localStorage.getItem('token') || '{}';
-    let response = await this.http.get(this.baseURL+'getGlobalFirmware', {'headers':{ 'token': token}})
+    let response = this.http.get(this.baseURL+'getGlobalFirmware', {'headers':{ 'token': token}})
     console.log(response)
     response.subscribe((resp:any)=>{
-      console.log(resp)
+      console.log('ON VEUT LE GLOBAL FIRMWARE : ',resp)
     })
     return response;
   }
@@ -77,9 +77,14 @@ export class FirmWareService {
     if(idFirmware !== undefined || idFirmware !== ""){
       idOfFirmware = idFirmware;
       let token = localStorage.getItem('token') || '{}';
-      this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'firmwareid':idOfFirmware}}).subscribe((rep:any) =>{
+      let response = this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'firmwareid':idOfFirmware}});
+      response.subscribe((rep:any) =>{
         console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
       });
+
+      return response;
+    }else{
+      return null;
     }
   }
 

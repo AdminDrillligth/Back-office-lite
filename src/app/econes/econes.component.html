@@ -89,7 +89,7 @@
     <mat-form-field style="width:98%" class="firmware-select">
       <mat-label>Chosir une version...</mat-label>
       <mat-select  value="">
-        <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><p style="font-weigth:500;">Version :{{firmware.version}}</p><p>Date de mise a jour: {{firmware.date}}</p></mat-option>
+        <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><div class="choosen-firmware" *ngIf="firmware.choosen !== undefined && firmware.choosen === true"></div><p style="display:inline-block;width:80%;">Version :{{firmware.version}}</p><p>Date de mise a jour: {{firmware.date}}</p></mat-option>
       </mat-select>
     </mat-form-field>
     <div *ngIf="!displayListOfUSer" class="bottom-btn">

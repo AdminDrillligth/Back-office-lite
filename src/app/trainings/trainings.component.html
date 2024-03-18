@@ -63,13 +63,15 @@
   </div>
 
 
-  
+  <!-- <button>Selection d'éxercices</button> -->
   <h4 *ngIf="privateTrainings.cards.length > 0" class="title">Exercices Privés</h4>
   <div  class="row scroll">
     <mat-card  *ngFor="let item of privateTrainings.cards" class="card-exo col-lg-3 col-md-6 col-12 col-sm-6">
       <mat-card-header>
+     
         <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
+      <mat-slide-toggle class="display-toggle">Activé</mat-slide-toggle>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privé</span>
       <div style="height: 180px;
       overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>

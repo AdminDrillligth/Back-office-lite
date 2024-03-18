@@ -33,9 +33,18 @@
   padding-top: 8px!important;
 }
 
+.display-toggle{
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom:5px;
+  font-size: large;
+}
+
 .mat-mdc-card-header{
   padding-top: 5px !important;
   height: 60px;
+  font-size: x-large;
   text-align: center;
   display: block;
 }

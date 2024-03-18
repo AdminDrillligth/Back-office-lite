@@ -16,7 +16,7 @@ import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.ser
 export class DashboardComponent implements OnInit{
   widthcard:number=0;
   heigthCard:number=0;
-  saleData :any[] = [];
+  usersData :any[] = [];
   DataUsers:any[] = [];
   theme : any = "";
   user:any;
@@ -38,27 +38,49 @@ export class DashboardComponent implements OnInit{
     
     setTimeout(() => {
         let card = document.getElementById('cardChart');
+    
+        this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+        console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
         if(card !== null){
           // console.log(card.offsetWidth)
           this.widthcard=card.offsetWidth-80;
           this.heigthCard=card.offsetHeight-80;
-          this.saleData = [
-            { name: "Utilisateurs total", value: 56 },
-            { name: "Administrateurs", value:3},
-            { name: "Clients", value:3 },
-            { name: "Staff Clients", value:3},
-            { name: "Utilisateurs Clients", value:3},
-            { name: "Exercices", value: 122 },
-            { name: "Vidéos", value: 50 },
+          this.usersData = [
+            { name: "Staff", value:this.AccountOfUser.staff.length},
+            { name: "Participants", value:this.AccountOfUser.users.length}
           ]
           this.DataUsers = [
-            { name: "Entraineurs", value: 56 },
-            { name: "Joueurs", value: 122 },
-            { name: "Staff Technique", value: 50 },
+            {
+              "name": "12-03-2024",
+              "value": 112
+            },
+            {
+              "name": "13-03-2024",
+              "value": 170
+            },
+            {
+              "name": "14-03-2024",
+              "value": 108
+            },
+            {
+              "name": "15-03-2024",
+              "value": 203
+            },
+            {
+              "name": "16-03-2024",
+              "value": 133
+            },
+            {
+              "name": "17-03-2024",
+              "value": 20
+            },
+            {
+              "name": "18-03-2024",
+              "value": 53
+            }
           ]
+          
         }
-        this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-        console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     }, 1000);
   }
 

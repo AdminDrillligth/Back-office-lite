@@ -243,6 +243,7 @@ export class AdministrationComponent implements OnInit{
   public moderationAccount = false; 
   public firmWareList:any = [];
   public privateFirmwareId = false;
+  public globalFirmwareId = false;
  
 
 
@@ -329,6 +330,7 @@ export class AdministrationComponent implements OnInit{
             console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
             this.ProfilAccount = e.account;
             // users
+            // TO TEST 
             this.ProfilAccount.users.forEach((user:any, index:number)=>{
               console.log('le user: ', user.id, index)
               this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
@@ -363,6 +365,26 @@ export class AdministrationComponent implements OnInit{
         });
       }
     })
+    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+      console.log('list of firwares: ',firmwareList)
+      firmwareList.subscribe((list:any)=>{
+        console.log('list of firwares: ',list.firmwareList)
+        this.firmWareList = list.firmwareList;
+        this.firmWareList = this.firmWareList.sort((a, b) => {
+          if (a.version > b.version) {
+              return -1;
+          }
+          if (a.version < b.version) {
+              return 1;
+          }
+          return 0;
+        });
+        this.firmWareList.forEach((firmware:any)=>{
+          firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+        })
+      
+      })
+    });
     this.utilsService._newaccount.subscribe((update:any) =>{
        if(update !== null){
          if(update == true){
@@ -482,28 +504,34 @@ export class AdministrationComponent implements OnInit{
   }
   
   modalAccount:any;
+  displayButtonSeeAccount = false;
   openModalActions(account:any){
+    this.displayButtonSeeAccount = false;
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-        this.modalAccount = e.account;
-        if(this.modalAccount.privateFirmwareId !== undefined){
-          if(this.modalAccount.privateFirmwareId !== ""){
-            this.privateFirmwareId = true;
+        if(e.account !== undefined){
+          this.displayButtonSeeAccount = true;
+          this.modalAccount = e.account;
+          if(this.modalAccount.privateFirmwareId !== undefined){
+            if(this.modalAccount.privateFirmwareId !== ""){
+              this.privateFirmwareId = true;
+            }
+          }
+          if(this.modalAccount.privateOnly !== undefined){
+            this.privateExerciceOnly = this.modalAccount.privateOnly;
+          }
+          if(this.modalAccount.privateOnly === undefined){
+            this.privateExerciceOnly = false;
+          }
+          if(this.modalAccount.warning !== undefined){
+            this.moderationAccount = this.modalAccount.warning;
+          }
+          if(this.modalAccount.warning === undefined){
+            this.moderationAccount = false;
           }
         }
-        if(this.modalAccount.privateOnly !== undefined){
-          this.privateExerciceOnly = this.modalAccount.privateOnly;
-        }
-        if(this.modalAccount.privateOnly === undefined){
-          this.privateExerciceOnly = false;
-        }
-        if(this.modalAccount.warning !== undefined){
-          this.moderationAccount = this.modalAccount.warning;
-        }
-        if(this.modalAccount.warning === undefined){
-          this.moderationAccount = false;
-        }
+      
       })
     })
     if(this.firmWareList.length !== 0 ){
@@ -608,15 +636,74 @@ export class AdministrationComponent implements OnInit{
     this.selectedVersion = firmware;
   }
 
+
+  globalFirmwareForThisAccount:any=[];
+  privateFirmwareForThisAccount:any=[];
+
   displayModalOfPrivateFirmware(account:any){
     console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
     if(account.privateFirmwareId !== undefined){
-      if(account.privateFirmwareId !== ""){
-        this.privateFirmwareId = true;
+      if(account.privateFirmwareId !== "" ){
+        this.firmWareService.getfirmwareDetails(account.privateFirmwareId).subscribe((element:any)=>{
+          console.log('LE PRIVATE  : ',element)
+          if(element.response.result === "success"){
+                  this.privateFirmwareForThisAccount = element.firmwareDetail;
+                  this.privateFirmwareId = true;
+                  this.globalFirmwareId = false;
+                  console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+                    this.firmWareList.forEach((firmware:any)=>{
+                      if(firmware.id === this.privateFirmwareForThisAccount.id){
+                        firmware.choosen = true;
+                        console.log('LE IDENTIQUE : !',firmware)
+                      }else{
+                        firmware.choosen = false;
+                      }
+                    })
+          }
+        })
+
+      }else{
+        this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+          console.log('la resp du firmware global : ', element)
+            if(element.response.result === "success"){
+              this.globalFirmwareForThisAccount = element.globalFirmware;
+              this.globalFirmwareId = true;
+              this.privateFirmwareId = false;
+              console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+              this.firmWareList.forEach((firmware:any)=>{
+                if(firmware.id === this.globalFirmwareForThisAccount.id){
+                  firmware.choosen = true;
+                  console.log('LE IDENTIQUE : !',firmware)
+                }else{
+                  firmware.choosen = false;
+                }
+              })
+            }
+          })
       }
+    }else{
+      this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+        console.log('la resp du firmware global : ', element)
+        if(element.response.result === "success"){
+          this.globalFirmwareForThisAccount = element.globalFirmware;
+          this.globalFirmwareId = true;
+          this.privateFirmwareId = false;
+          console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+          this.firmWareList.forEach((firmware:any)=>{
+            if(firmware.id === this.globalFirmwareForThisAccount.id){
+              firmware.choosen = true;
+              console.log('LE IDENTIQUE : !',firmware)
+            }else{
+              firmware.choosen = false;
+            }
+          })
+        }
+      })
+      this.globalFirmwareId = true;
+      this.privateFirmwareId = false;
     }
 
-    this.firmWareService.getfirmwareDetails("");
+    // this.firmWareService.getfirmwareDetails("");
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
     if(this.displayModalFirmware){
@@ -654,6 +741,26 @@ export class AdministrationComponent implements OnInit{
         console.log('la resp du update user owner: ! ', response)
       })
     });
+
+    this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+      console.log('la resp du firmware global : ', element)
+      if(element.response.result === "success"){
+        this.globalFirmwareForThisAccount = element.globalFirmware;
+        this.globalFirmwareId = true;
+        this.privateFirmwareId = false;
+        console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount)
+        this.firmWareList.forEach((firmware:any)=>{
+          if(firmware.id === this.globalFirmwareForThisAccount.id){
+            firmware.choosen = true;
+            console.log('LE IDENTIQUE : !',firmware)
+          }else{
+            firmware.choosen = false;
+          }
+        })
+      }
+    })
+    this.globalFirmwareId = true;
+    this.privateFirmwareId = false;
   }
 
   closeModalAction(){
