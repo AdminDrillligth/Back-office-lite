@@ -19,6 +19,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from '../../services/utils.service';
+import { TokenService } from '../../services/token.service';
 import { Buffer } from 'buffer';
 
 
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit{
   badpassword : boolean= false;
   badpassuser : boolean= false;
   constructor(
+    private tokenService:TokenService,
     private utilsService: UtilsService,
     public dialog: MatDialog,
     private http:HttpClient,
@@ -70,7 +72,7 @@ export class LoginComponent implements OnInit{
         const body = JSON.stringify({username:this.emailFormControl.value,password:this.passwordFormControl.value});
           console.log(body)
 
-        
+
 
           this.http.get(this.baseURL+'getToken' ,{'headers':{passwordhash:authorizationValue, username:this.emailFormControl.value}}).subscribe((response:any) => {
             console.log('LA REP DU GET TOKEN  : ',response)
@@ -86,6 +88,7 @@ export class LoginComponent implements OnInit{
               let tokenlocal = localStorage.getItem('token') || '{}';
               let userId = localStorage.getItem('userId') || '{}';
               console.log(tokenlocal,userId );
+              this.tokenService.validateToken(userId);
               this.http.get(this.baseURL+'getAccountDetails' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
                 console.log('resp get details of user: ', response.account)
                 if(response.response.result === "success"){

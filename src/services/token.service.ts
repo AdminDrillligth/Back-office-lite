@@ -31,16 +31,16 @@ export class TokenService {
 
   }
 
-  // createFirmware(firmwareData:any, id:any, privated:boolean){
-  //   let token = localStorage.getItem('token') || '{}';
-  //   // console.log('ZIP BASE 64 : !',zipBase64)
-  //   const body = JSON.stringify({firmwareData:firmwareData, id:id, privated:privated});
-  //   console.log(body);
-  //   this.http.post(this.baseURL+'createFirmware', body,{'headers':{ 'token': token}}).subscribe((rep:any) =>{
-  //     console.log('LA REP DU CREATE FIRMWARE : ! ',rep)
-  //   });
+  validateToken(accountId:any){
+    let token = localStorage.getItem('token') || '{}';
+    console.log('accountId : !',accountId)
+    // const body = JSON.stringify({firmwareData:firmwareData, id:id, privated:privated});
+    // console.log(body);
+    this.http.get(this.baseURL+'validateToken',{'headers':{ 'token': token}}).subscribe((rep:any) =>{
+      console.log('LA REP DU CREATE FIRMWARE : ! ',rep)
+    });
 
-  // }
+  }
 
   // async getFirmware(id:any){
   //   console.log('get firmware with this id: !',id)
