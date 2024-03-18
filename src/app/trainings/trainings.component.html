@@ -68,12 +68,9 @@
     <mat-card class="card-list" *ngFor="let item of publicTrainings.cards">
       <div><img class="img-card-list" style="margin:2px;width:150px;" mat-card-image src="{{item.header.image}}" alt=""></div>
       <div class="display-title-list"><p>{{item.header.title}}</p></div>
-      <div class="display-desc-list"><p style="width: 80%;
-        overflow: hidden;
-        height: 20px;">{{item.header.description}}</p></div>
-           <mat-slide-toggle style="position: absolute;
-           right: 5px;
-           top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
+      <div class="display-desc-list"><p style="width: 80%; overflow: hidden; height: 20px;">{{item.header.description}}</p></div>
+      <mat-slide-toggle style="position: absolute; right: 5px;top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
+      <button (click)="openDialog(item)" class="btn-card-list" mat-button><mat-icon> list_alt</mat-icon></button>
     </mat-card>
   </div>
 
@@ -107,12 +104,9 @@
     <mat-card class="card-list" *ngFor="let item of privateTrainings.cards">
       <div><img class="img-card-list" style="margin:2px;width:150px;" mat-card-image src="{{item.header.image}}" alt=""></div>
       <div class="display-title-list"><p>{{item.header.title}}</p></div>
-      <div class="display-desc-list"><p style="width: 80%;
-        overflow: hidden;
-        height: 20px;">{{item.header.description}}</p></div>
-           <mat-slide-toggle style="position: absolute;
-           right: 5px;
-           top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
+      <div class="display-desc-list"><p style="width: 80%; overflow: hidden; height: 20px;">{{item.header.description}}</p></div>
+      <mat-slide-toggle style="position: absolute; right: 5px; top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
+      <button (click)="openDialog(item)" class="btn-card-list" mat-button><mat-icon> list_alt</mat-icon></button>
     </mat-card>
   </div>
   <!-- "Pré-formation" -->
