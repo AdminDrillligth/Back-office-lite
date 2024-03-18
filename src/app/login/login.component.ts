@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit{
   value :number = 50;
   badpassword : boolean= false;
   badpassuser : boolean= false;
+  bademail : boolean= false;
   constructor(
     private tokenService:TokenService,
     private utilsService: UtilsService,
@@ -68,7 +69,7 @@ export class LoginComponent implements OnInit{
     if(this.emailFormControl.value !== null && this.passwordFormControl.value !== null){
         const authorizationValue = 'Basic ' + Buffer.from( this.emailFormControl.value + ':' + this.passwordFormControl.value ).toString('base64');
         console.log('Le basic : ',authorizationValue)
-        const headers = { 'content-type': 'application/json'}  
+        const headers = { 'content-type': 'application/json'}
         const body = JSON.stringify({username:this.emailFormControl.value,password:this.passwordFormControl.value});
           console.log(body)
 
@@ -80,17 +81,23 @@ export class LoginComponent implements OnInit{
               this.badpassword = true;
               setTimeout(() => {
                 this.badpassword = false;
-              }, 1000);
+              }, 1500);
+            }
+            if(response.response.result === "errorNoAccount"){
+              this.bademail = true;
+              setTimeout(() => {
+                this.bademail = false;
+              }, 1500);
             }
             if(response.response.result === "success"){
               localStorage.setItem('token', response.token);
               localStorage.setItem('userId', response.id);
               let tokenlocal = localStorage.getItem('token') || '{}';
               let userId = localStorage.getItem('userId') || '{}';
-              console.log(tokenlocal,userId );
+              console.log('RESP WHEN WE LOGIN : ! ',tokenlocal,userId );
               this.tokenService.validateToken(userId);
               this.http.get(this.baseURL+'getAccountDetails' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
-                console.log('resp get details of user: ', response.account)
+                console.log('resp get details of user WHEN WE LOGIN : ', response.account)
                 if(response.response.result === "success"){
                   localStorage.setItem('account', JSON.stringify(response.account));
                   this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
@@ -104,24 +111,24 @@ export class LoginComponent implements OnInit{
                 }
               })
             }else{
-              
-              // NO ACCOUNT 
+
+              // NO ACCOUNT
               // IF NO ACCOUNT
             }
           })
     }
   }
-    // 
+    //
   }
 
   disconectedMode(){
     if(localStorage.getItem('user') !== null){
       let user :any = localStorage.getItem('user')
       console.log('Notre user',user)
-      // Lets 3hours for this local Timing ! 
+      // Lets 3hours for this local Timing !
 
        if(user !== null && user.email !== undefined ){
-        
+
         console.log('connexion locale ! ')
       //   if (user.timeStamp < timeStamp - user.localDateIso){
       //     console.log('connexion after time stamp ! ')
@@ -138,7 +145,7 @@ export class LoginComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     //   this.afAuth.auth.resetPasswordInit(result)
-    //   .then(() => 
+    //   .then(() =>
     //     alert('A password reset link has been sent to your email address'),
     //      (rejectionReason:any) => alert(rejectionReason))
     //   .catch(e => alert('An error occurred while attempting to reset your password'));

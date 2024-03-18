@@ -238,6 +238,8 @@ const getAccountDetails = async (req: any, res: any) => {
   if(userDetails.role === 'owner' || userDetails.role === 'admin'){
     functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
     userDetails.owner = [];
+    delete userDetails.passwordHash;
+    functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
     if(userDetails.staff.length > 0){
       userDetails.staff.forEach(async (staff:any, index:number)=>{
       let userhandlerProfilStaff = await db.collection('account-handler').where('id', '==', staff.id).get();

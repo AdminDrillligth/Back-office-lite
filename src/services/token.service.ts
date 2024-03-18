@@ -36,7 +36,7 @@ export class TokenService {
     console.log('accountId : !',accountId)
     // const body = JSON.stringify({firmwareData:firmwareData, id:id, privated:privated});
     // console.log(body);
-    this.http.get(this.baseURL+'validateToken',{'headers':{ 'token': token}}).subscribe((rep:any) =>{
+    this.http.get(this.baseURL+'validateToken',{'headers':{ 'token': token, 'id':accountId}}).subscribe((rep:any) =>{
       console.log('LA REP DU CREATE FIRMWARE : ! ',rep)
     });
 

@@ -49,6 +49,9 @@
           <span style="color:red;" *ngIf="badpassword !== false">
             Erreur dans le mot de passe.
           </span>
+          <span style="color:red;" *ngIf="bademail !== false">
+            Email incorrect.
+          </span>
           <button (click)="doLogin()" class="login-btn" mat-flat-button >Connexion</button>
         </form>
         <span ><button (click)="resetPassWord()" style="margin-top:20px;color:white;" mat-button>Mot de passe oublié ?</button></span>
