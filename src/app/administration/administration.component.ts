@@ -312,7 +312,6 @@ export class AdministrationComponent implements OnInit{
     });
     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       console.log('admin see as admin : ', asAdmin)
-
       if(asAdmin == false){
         this.letsee = false;
         this.ProfilAccount = undefined;
@@ -329,38 +328,6 @@ export class AdministrationComponent implements OnInit{
           resp.subscribe((e:any) =>{
             console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
             this.ProfilAccount = e.account;
-            // users
-            // TO TEST 
-            this.ProfilAccount.users.forEach((user:any, index:number)=>{
-              console.log('le user: ', user.id, index)
-              this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-                resp.subscribe((e:any) =>{
-                  console.log('le detail de chaque user du compte owner:! ', e.account)
-                  user = e.account;
-                  this.ProfilAccount.users[index] = e.account
-                  this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-                  this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-                  this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-    
-                })
-              })
-            })
-            // staff
-            this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-              console.log('le staff: ', staff.id, index)
-              this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-                resp.subscribe((e:any) =>{
-                  console.log('le detail de chaque staff du compte owner:! ', e.account)
-                  staff = e.account;
-                  this.ProfilAccount.staff[index] = e.account
-                  console.log(this.ProfilAccount.staff)
-                  this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-                  this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-                  this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-    
-                })
-              })
-            })
           })
         });
       }
@@ -431,43 +398,33 @@ export class AdministrationComponent implements OnInit{
       this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
           console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-          // this.ProfilAccount = e.account;
-          // // users
-          // this.ProfilAccount.users.forEach((user:any, index:number)=>{
-          //   console.log('le user: ', user.id, index)
-          //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-          //     resp.subscribe((e:any) =>{
-          //       console.log('le detail de chaque user du compte owner:! ', e.account)
-          //       user = e.account;
-          //       this.ProfilAccount.users[index] = e.account
-          //       this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-          //       this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-          //       this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-  
-          //     })
-          //   })
-          // })
-          // // staff
-          // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-          //   console.log('le staff: ', staff.id, index)
-          //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-          //     resp.subscribe((e:any) =>{
-          //       console.log('le detail de chaque staff du compte owner:! ', e.account)
-          //       staff = e.account;
-          //       this.ProfilAccount.staff[index] = e.account
-          //       console.log(this.ProfilAccount.staff)
-          //       this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-          //       this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-          //       this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-  
-          //     })
-          //   })
-          // })
         })
       });
     }
   }
 
+
+  getDetails(accountOwner:any){
+    console.log("TEST OWNER TO GET THE NEW DATA",accountOwner)
+    this.userHandlersServiceCustomer.getAccountDetails(accountOwner).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        console.log('LA RESP DU GET AFTER UPDATE DETAILS: ',e.account)
+        localStorage.setItem('account-data-user', JSON.stringify(e.account));
+
+        this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+        // users
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+
+        // staff
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+      })
+    });
+  }
 
   // CHARTS LINE UP
   onSelect(data:any): void {
@@ -507,6 +464,7 @@ export class AdministrationComponent implements OnInit{
   displayButtonSeeAccount = false;
   openModalActions(account:any){
     this.displayButtonSeeAccount = false;
+    console.log('ON CHOOS E CE ACCOUNT : ! ',account)
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
         console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
@@ -569,10 +527,17 @@ export class AdministrationComponent implements OnInit{
   }
 
   modalAccountOwner:any;
-  openModalActionsOwner(account:any){
+  topOfModal = '140px'
+  openModalActionsOwner(account:any,event:any){
+    console.log('le event de la mouse : ', event)
+    console.log('le event de la mouse : ', event.layerY)
+    console.log('LE ACCOUNT SELECT  : ! ',account)
+    this.topOfModal = event.layerY-200+'px'
+    this.modalAccountOwner = account
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
+
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
         this.modalAccountOwner = e.account;
         console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
         if(this.modalAccountOwner.privateOnly !== undefined){
@@ -587,7 +552,9 @@ export class AdministrationComponent implements OnInit{
         if(this.modalAccountOwner.warning === undefined){
           this.moderationAccount = false;
         }
+  
       })
+
     })
     setTimeout(() => {
       this.displayModalActionOwner = true;
@@ -631,6 +598,50 @@ export class AdministrationComponent implements OnInit{
     console.log('Private Only ? :',account.privateOnly);
   }
 
+
+  gradeToRole(account:any, type:string){
+    if(type ===  'staff'){
+      account.role = 'user';
+      this.modalAccount.staff.forEach((staff:any, index:number)=>{
+        if(account.id === staff.id){
+          console.log(staff.id,index)
+          console.log(this.modalAccount.staff,this.modalAccount.users)
+          this.modalAccount.users.push(account)
+          this.modalAccount.staff = this.modalAccount.staff.filter((staff:any) => staff.id !== account.id)
+          console.log(this.modalAccount.staff,this.modalAccount.users)
+        }
+      })
+      console.log(this.modalAccount.staff,this.modalAccount.users)
+    }else{
+      account.role = 'staff';
+      this.modalAccount.users.forEach((user:any, index:number)=>{
+        if(account.id === user.id){
+          this.modalAccount.staff.push(account)
+          this.modalAccount.users = this.modalAccount.users.filter((user:any) => user.id !== account.id)
+          console.log(this.modalAccount.staff,this.modalAccount.users)
+
+          console.log(user.id,index)
+        }
+      })
+      console.log(this.modalAccount.staff,this.modalAccount.users)
+    }
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user or staff: ! ', response)
+        // this.getDetails(account.owner);
+      })
+    });
+    this.userHandlersServiceCustomer.updateAccount(this.modalAccount).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user or staff: ! ', response)
+        this.getDetails(this.modalAccount.id);
+      })
+    });
+    
+  }
+
+
+
   selectedFirmware(firmware:any){
     console.log('FIRMWARE : ! ',firmware.id,firmware)
     this.selectedVersion = firmware;
@@ -641,67 +652,70 @@ export class AdministrationComponent implements OnInit{
   privateFirmwareForThisAccount:any=[];
 
   displayModalOfPrivateFirmware(account:any){
-    console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
-    if(account.privateFirmwareId !== undefined){
-      if(account.privateFirmwareId !== "" ){
-        this.firmWareService.getfirmwareDetails(account.privateFirmwareId).subscribe((element:any)=>{
-          console.log('LE PRIVATE  : ',element)
-          if(element.response.result === "success"){
-                  this.privateFirmwareForThisAccount = element.firmwareDetail;
-                  this.privateFirmwareId = true;
-                  this.globalFirmwareId = false;
-                  console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
-                    this.firmWareList.forEach((firmware:any)=>{
-                      if(firmware.id === this.privateFirmwareForThisAccount.id){
-                        firmware.choosen = true;
-                        console.log('LE IDENTIQUE : !',firmware)
-                      }else{
-                        firmware.choosen = false;
-                      }
-                    })
-          }
-        })
-
+    if(account !== undefined){
+      if(account.privateFirmwareId !== undefined){
+        console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
+        if(account.privateFirmwareId !== "" ){
+          this.firmWareService.getfirmwareDetails(account.privateFirmwareId).subscribe((element:any)=>{
+            console.log('LE PRIVATE  : ',element)
+            if(element.response.result === "success"){
+                    this.privateFirmwareForThisAccount = element.firmwareDetail;
+                    this.privateFirmwareId = true;
+                    this.globalFirmwareId = false;
+                    console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+                      this.firmWareList.forEach((firmware:any)=>{
+                        if(firmware.id === this.privateFirmwareForThisAccount.id){
+                          firmware.choosen = true;
+                          console.log('LE IDENTIQUE : !',firmware)
+                        }else{
+                          firmware.choosen = false;
+                        }
+                      })
+            }
+          })
+  
+        }else{
+          this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+            console.log('la resp du firmware global : ', element)
+              if(element.response.result === "success"){
+                this.globalFirmwareForThisAccount = element.globalFirmware;
+                this.globalFirmwareId = true;
+                this.privateFirmwareId = false;
+                console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+                this.firmWareList.forEach((firmware:any)=>{
+                  if(firmware.id === this.globalFirmwareForThisAccount.id){
+                    firmware.choosen = true;
+                    console.log('LE IDENTIQUE : !',firmware)
+                  }else{
+                    firmware.choosen = false;
+                  }
+                })
+              }
+            })
+        }
       }else{
         this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
           console.log('la resp du firmware global : ', element)
-            if(element.response.result === "success"){
-              this.globalFirmwareForThisAccount = element.globalFirmware;
-              this.globalFirmwareId = true;
-              this.privateFirmwareId = false;
-              console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
-              this.firmWareList.forEach((firmware:any)=>{
-                if(firmware.id === this.globalFirmwareForThisAccount.id){
-                  firmware.choosen = true;
-                  console.log('LE IDENTIQUE : !',firmware)
-                }else{
-                  firmware.choosen = false;
-                }
-              })
-            }
-          })
+          if(element.response.result === "success"){
+            this.globalFirmwareForThisAccount = element.globalFirmware;
+            this.globalFirmwareId = true;
+            this.privateFirmwareId = false;
+            console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+            this.firmWareList.forEach((firmware:any)=>{
+              if(firmware.id === this.globalFirmwareForThisAccount.id){
+                firmware.choosen = true;
+                console.log('LE IDENTIQUE : !',firmware)
+              }else{
+                firmware.choosen = false;
+              }
+            })
+          }
+        })
+        this.globalFirmwareId = true;
+        this.privateFirmwareId = false;
       }
-    }else{
-      this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
-        console.log('la resp du firmware global : ', element)
-        if(element.response.result === "success"){
-          this.globalFirmwareForThisAccount = element.globalFirmware;
-          this.globalFirmwareId = true;
-          this.privateFirmwareId = false;
-          console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
-          this.firmWareList.forEach((firmware:any)=>{
-            if(firmware.id === this.globalFirmwareForThisAccount.id){
-              firmware.choosen = true;
-              console.log('LE IDENTIQUE : !',firmware)
-            }else{
-              firmware.choosen = false;
-            }
-          })
-        }
-      })
-      this.globalFirmwareId = true;
-      this.privateFirmwareId = false;
     }
+    
 
     // this.firmWareService.getfirmwareDetails("");
     this.displayModalAction = false;
@@ -901,38 +915,13 @@ export class AdministrationComponent implements OnInit{
         this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
         this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
         this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-        // this.ProfilAccount.users.forEach((user:any, index:number)=>{
-        //   console.log('le user: ', user.id, index)
-        //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-        //     resp.subscribe((e:any) =>{
-        //       console.log('le detail de chaque user du compte owner:! ', e.account)
-        //       user = e.account;
-        //       this.ProfilAccount.users[index] = e.account
-        //       console.log('LES USERS DU ACCOUNT',this.ProfilAccount.users)
-       
 
-        //     })
-        //   })
-        // })
         // staff
 
         this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
         this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
         this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
 
-        // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-        //   console.log('le staff: ', staff.id, index)
-        //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-        //     resp.subscribe((e:any) =>{
-        //       console.log('le detail de chaque staff du compte owner:! ', e.account)
-        //       staff = e.account;
-        //       this.ProfilAccount.staff[index] = e.account
-        //       console.log(this.ProfilAccount.staff)
-      
-
-        //     })
-        //   })
-        // })
       })
     });
   }

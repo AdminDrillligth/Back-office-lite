@@ -224,8 +224,14 @@ export class TrainingsComponent implements OnInit {
 
 
   openDialog(item:any) {
+    let dataAccount:any=[];
+    // if(this.userSource !== undefined ){
+    //   dataAccount = this.userSource;
+    // }else{
+      dataAccount = this.AccountOfUser;
+    // }
     const dialogRef = this.dialog.open(DialogContentExampleDialog, {
-      data: {item: item},
+      data: {item: item, account:dataAccount },
       panelClass: 'bg-color',
       width:'80%'
     });
@@ -284,6 +290,7 @@ export class TrainingsComponent implements OnInit {
   createSession(){
 
   }
+
 }
 
 
@@ -304,13 +311,29 @@ export class DialogContentExampleDialog implements OnInit{
 
   ngOnInit(): void {
     console.log('LES DATAS MODALS  : ! ',this.data)
-   console.log('LES DATAS MODALS ',)
+   console.log('LES DATAS MODALS ',this.data.account.role)
   }
 
   addVideoToExercice(data:any){
     console.log('Les datas de l\'exercices',data)
   }
 
+  downloadJson(dataJson:any){
+    console.log('DATA EXO ; : §',dataJson)
+    let fileName = dataJson.header.id+'.json';
+    var blob = new Blob([JSON.stringify(dataJson)], { type: 'application/json;charset=utf-8' });
+    console.log('UPDATE JSON:',blob)
+    var a = document.createElement("a"),
+    url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+   setTimeout(function() {
+     document.body.removeChild(a);
+     window.URL.revokeObjectURL(url);
+   }, 0);
+  }
 
 }
 

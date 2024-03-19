@@ -327,6 +327,15 @@ const getAccountDetails = async (req: any, res: any) => {
     }
 
   }
+  if(userDetails.role === 'staff' || userDetails.role === 'user'){
+      return res.status(200).json({
+        response: {
+          result:'success',
+          message:''
+        },
+        account: userDetails
+      });
+  }
 
 
 
