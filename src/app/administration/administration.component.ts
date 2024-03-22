@@ -34,7 +34,7 @@ import { StripeServices } from '../../services/stripe.service';
 import { MatAccordion } from '@angular/material/expansion';
 import { FirmWareService } from '../../services/firmware.service';
 import { MatRadioModule } from '@angular/material/radio';
-
+import ImageResize from 'image-resize';
 
 type ListType = { title: string; val: number }[];
 
@@ -473,11 +473,12 @@ export class AdministrationComponent implements OnInit{
   }
 
   displayModalUpdateDataProfil = false;
-  familyName = new FormControl('', [ Validators.required ]);
-  firstName = new FormControl('', [ Validators.required ]);
-  userEmail = new FormControl('', [ Validators.required ]);
-  phone = new FormControl('', [ Validators.required ]);
-  address = new FormControl('', [ Validators.required ]);
+  familyName = new FormControl('', [ Validators.required ]); //
+  firstName = new FormControl('', [ Validators.required ]); //
+  userEmail = new FormControl('', [ Validators.required ]); //
+  phone = new FormControl('', [ Validators.required ]); //
+  address1 = new FormControl('', [ Validators.required ]);
+  address2 = new FormControl('', [ Validators.required ]);
   zip = new FormControl('', [ Validators.required ]);
   city = new FormControl('', [ Validators.required ]);
   region = new FormControl('', [ Validators.required ]);
@@ -491,9 +492,10 @@ export class AdministrationComponent implements OnInit{
   eventImageFile:any;
   uploadedImages:any;
   update=false;
-
+  dataBase64 = "";
 
   updateProfilDatas(ProfilAccount:any){
+    this.urlImg = undefined;
     console.log('PROFILE TO UPDATE :   ! ',ProfilAccount)
     this.displayModalUpdateDataProfil = true;
     this.update = true;
@@ -502,26 +504,74 @@ export class AdministrationComponent implements OnInit{
       this.firstName.setValue(ProfilAccount.firstName);
       this.phone.setValue(ProfilAccount.personalInfo.phone);
       this.userEmail.setValue(ProfilAccount.email);
+      this.address1.setValue(ProfilAccount.personalInfo.address1);
+      this.address2.setValue(ProfilAccount.personalInfo.address2);
+      this.zip.setValue(ProfilAccount.personalInfo.zip);
+      this.city.setValue(ProfilAccount.personalInfo.city);
+      this.region.setValue(ProfilAccount.personalInfo.region);
+
+
+      this.urlImg = ProfilAccount.avatarURL;
+
+
     }
   }
 
-  updateProfilSender(ProfilAccount:any){
-    ProfilAccount.familyName = this.familyName.value;
-    ProfilAccount.firstName = this.firstName.value;
-    ProfilAccount.personalInfo.phone = this.phone.value;
-    console.log('LES NOUVELLES DATAS DU ACCOUNT : ',ProfilAccount)
-    this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
-      resp.subscribe((response:any)=>{
-        console.log('la resp du update user: ! ', response)
-        // localStorage.setItem('account-data-user', JSON.stringify(e.account));
 
-        // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
-        // localStorage.setItem('account', JSON.stringify(response.account));
-        // this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-        // this.getDetails(this.modalAccount.id);
-      })
-    });
+  wrongMail = true;
+  updateEmail(){
+    // test REGEX MAIL
+    const re = /\S+@\S+\.\S+/;
+    console.log(re.test(this.userEmail.value));
+    if(!re.test(this.userEmail.value)){ this.wrongMail = false; }else{ this.wrongMail = true; }
+  }
+
+  wrongPhone = true;
+  updatePhone(){
+    const re = /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/;
+    console.log(re.test(this.phone.value));
+    if(!re.test(this.phone.value)){ this.wrongPhone = false; }else{ this.wrongPhone = true; }
+  }
+
+
+  updateProfilSender(ProfilAccount:any){
+    if(this.wrongMail && this.wrongPhone){
+      ProfilAccount.familyName = this.familyName.value;
+      ProfilAccount.firstName = this.firstName.value;
+      ProfilAccount.personalInfo.phone = this.phone.value;
+      ProfilAccount.email = this.userEmail.value;
+      ProfilAccount.avatarURL = this.urlImg;
+      console.log('LES NOUVELLES DATAS DU ACCOUNT : ',ProfilAccount, this.dataBase64)
+      this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update user: ! ', response)
+          // localStorage.setItem('account-data-user', JSON.stringify(e.account));
+  
+          // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+          // localStorage.setItem('account', JSON.stringify(response.account));
+          // this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+          // this.getDetails(this.modalAccount.id);
+        })
+      });
+    }
+
     // this.displayModalUpdateDataProfil = false;
+  }
+
+  urlImg :any= undefined;
+  onchangeInputImg(file:any){
+    // 
+    var imageResize = new ImageResize({
+      format: 'jpg',
+      width: 256
+    });
+    
+    imageResize.play(file.target.files[0]).then((e:any)=>{
+      this.dataBase64 = e;
+      console.log(file)
+      console.log(this.dataBase64)
+      this.urlImg = this.dataBase64
+    });
   }
 
   closeModalUpdateProfil(){

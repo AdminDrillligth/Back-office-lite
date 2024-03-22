@@ -363,16 +363,22 @@
     </mat-form-field>
     <mat-form-field class="field-update">
       <mat-label style="color:white">Numéro de téléphone</mat-label>
-      <input [formControl]="phone"  matInput required placeholder="0X XX XX XX XX" >
+      <input [formControl]="phone" (keyup)="updatePhone()" matInput required placeholder="0X XX XX XX XX" >
     </mat-form-field>
     <mat-form-field class="field-update">
       <mat-label style="color:white">Email</mat-label>
-      <input [formControl]="userEmail"  matInput required placeholder="xxxx@xxx.xx" >
+      <input [formControl]="userEmail" (keyup)="updateEmail()"  matInput required placeholder="xxxx@xxx.xx" >
     </mat-form-field>
+    <p *ngIf="!wrongMail" style="color:red;">Veuillez renseigner un email valide.</p>
+    <p *ngIf="!wrongPhone" style="color:red;">Veuillez renseigner un numéro valide.</p>
     <div>
-      <button  type="button" mat-raised-button style="margin-top: 5px;margin-bottom: 5px;color: white; width: 70%; margin-right: auto; margin-left: auto; display: block;"  mat-button color="primary">
-        Charger un photo de profil
+      <div *ngIf="urlImg !== undefined" class="container-img-display">
+        <img class="container-img-avatar" src="{{urlImg}}">
+      </div>
+      <button  (click)="fileInput.click()" type="button" mat-raised-button style="margin-top: 5px;margin-bottom: 5px;color: white; width: 70%; margin-right: auto; margin-left: auto; display: block;"  mat-button color="primary">
+        Charger une photo de profil
       </button>
+      <input style="display:none;" #fileInput type="file" class="file-upload" (change)="onchangeInputImg($event)" accept="image/jpeg">
     </div>
 
 

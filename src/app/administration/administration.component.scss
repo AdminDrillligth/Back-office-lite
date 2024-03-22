@@ -103,9 +103,8 @@
   width: 70%;
   z-index: 1;
   position: absolute;
-  height: 450px;
   background: #303030;
-  top: 140px;
+  top: 100px;
   right: 110px;
   border-radius: 7px;
   box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.3803921569);
@@ -297,11 +296,14 @@
 
 
 .container-img-avatar{
-  max-width:40%;
+  max-width:20%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .container-img-display{
-  min-height: 55%;
+  min-height: 20%;
   max-height: 222px;
   display: contents;
 }
