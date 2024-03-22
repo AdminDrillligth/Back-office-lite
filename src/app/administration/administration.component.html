@@ -380,8 +380,26 @@
       </button>
       <input style="display:none;" #fileInput type="file" class="file-upload" (change)="onchangeInputImg($event)" accept="image/jpeg">
     </div>
-
-
+    <mat-form-field style="width:100%" class="field-update">
+      <mat-label>Adresse </mat-label>
+      <input matInput matGoogleMapsAutocomplete value="{{address1}}" (onAutocompleteSelected)="onAutocompleteSelected($event)">
+    </mat-form-field>
+    <mat-form-field class="field-update">
+      <mat-label>Complément </mat-label>
+      <input  [formControl]="address2" placeholder="xxxxxx" matInput>
+    </mat-form-field>
+    <mat-form-field class="field-update">
+      <mat-label>Ville </mat-label>
+      <input value="{{city}}" matInput>
+    </mat-form-field>
+    <mat-form-field class="field-update">
+      <mat-label>Zip code </mat-label>
+      <input value="{{zip}}" matInput>
+    </mat-form-field>
+    <mat-form-field class="field-update">
+      <mat-label>Pays </mat-label>
+      <input value="{{region}}" matInput>
+    </mat-form-field>
     <div class="bottom-btn">
       <button (click)="closeModalUpdateProfil()"  mat-button class="btn-modifie mg-btm-del">Annuler</button>
       <button mat-button (click)="updateProfilSender(ProfilAccount)"  class="btn-delete mg-btm-del" >Mettre à jour</button>

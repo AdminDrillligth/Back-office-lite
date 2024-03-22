@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, Inject, ViewChild, inject } from '@angular/core';
+import { Injectable, Component, OnInit, Inject, ViewChild, inject,EventEmitter,Input,AfterViewInit,Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -35,6 +35,9 @@ import { MatAccordion } from '@angular/material/expansion';
 import { FirmWareService } from '../../services/firmware.service';
 import { MatRadioModule } from '@angular/material/radio';
 import ImageResize from 'image-resize';
+import {Location, Appearance } from '@angular-material-extensions/google-maps-autocomplete';
+declare var google;
+import PlaceResult = google.maps.places.PlaceResult;
 
 type ListType = { title: string; val: number }[];
 
@@ -126,6 +129,18 @@ export interface ProfilAccountDatas{
 
 
 export class AdministrationComponent implements OnInit{
+  // public appearance = Appearance;
+  // public zoom: number;
+  // public latitude: number;
+  // public longitude: number;
+  public selectedAddress: PlaceResult;
+  // AutoComplete Select for Adress Google Maps
+  // @Input() adressType: string;
+  // @Output() setAddress: EventEmitter<any> = new EventEmitter();
+  // @ViewChild('addresstext') addresstext: any;
+  // autocompleteInput: string;
+  // queryWait: boolean;
+
   panelOpenState = false;
   // ,'date'
   displayedColumnsAccounts: string[] = ['firstName',  'moderation', 'actions'];
@@ -265,7 +280,6 @@ export class AdministrationComponent implements OnInit{
     private afAuth: AngularFireAuth,
     private storageServiceMail:storageServiceMail,
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
-    private userHandlersServiceAdmin:UserHandlersServiceAdmin,
     public dialog: MatDialog,
     private gocardlessService:GocardlessService,
     private router: Router
@@ -414,7 +428,6 @@ export class AdministrationComponent implements OnInit{
   }
 
 
-
   // ICI ON GET LES DETAILS D'UN COMPTE EN PARTICULIER : => UN COMPTE SELECTIONNE
   getDetails(accountOwner:any){
     console.log("TEST OWNER TO GET THE NEW DATA",accountOwner)
@@ -473,15 +486,15 @@ export class AdministrationComponent implements OnInit{
   }
 
   displayModalUpdateDataProfil = false;
-  familyName = new FormControl('', [ Validators.required ]); //
-  firstName = new FormControl('', [ Validators.required ]); //
-  userEmail = new FormControl('', [ Validators.required ]); //
-  phone = new FormControl('', [ Validators.required ]); //
-  address1 = new FormControl('', [ Validators.required ]);
-  address2 = new FormControl('', [ Validators.required ]);
-  zip = new FormControl('', [ Validators.required ]);
-  city = new FormControl('', [ Validators.required ]);
-  region = new FormControl('', [ Validators.required ]);
+  familyName = new FormControl(''); //
+  firstName = new FormControl(''); //
+  userEmail = new FormControl(''); //
+  phone = new FormControl(''); //
+  address1 :any= "";
+  address2 = new FormControl('');
+  zip :any= "";
+  city :any= "";
+  region :any = "";
   selectedFile!: File;
   comment= new FormControl('');
   birthdate:any='';
@@ -494,6 +507,17 @@ export class AdministrationComponent implements OnInit{
   update=false;
   dataBase64 = "";
 
+
+  onAutocompleteSelected(result: PlaceResult) {
+    console.log('onAutocompleteSelected: ', result.address_components);
+    this.region = result.address_components[5].long_name;
+    this.city = result.address_components[2].long_name;
+    this.zip =  result.address_components[6].long_name;
+    this.address1 = result.address_components[0].long_name + ' ' + result.address_components[1].long_name;
+  }
+
+
+
   updateProfilDatas(ProfilAccount:any){
     this.urlImg = undefined;
     console.log('PROFILE TO UPDATE :   ! ',ProfilAccount)
@@ -504,13 +528,11 @@ export class AdministrationComponent implements OnInit{
       this.firstName.setValue(ProfilAccount.firstName);
       this.phone.setValue(ProfilAccount.personalInfo.phone);
       this.userEmail.setValue(ProfilAccount.email);
-      this.address1.setValue(ProfilAccount.personalInfo.address1);
+      this.address1 = ProfilAccount.personalInfo.address1;
       this.address2.setValue(ProfilAccount.personalInfo.address2);
-      this.zip.setValue(ProfilAccount.personalInfo.zip);
-      this.city.setValue(ProfilAccount.personalInfo.city);
-      this.region.setValue(ProfilAccount.personalInfo.region);
-
-
+      this.zip = ProfilAccount.personalInfo.zip;
+      this.city = ProfilAccount.personalInfo.city;
+      this.region = ProfilAccount.personalInfo.region;
       this.urlImg = ProfilAccount.avatarURL;
 
 
@@ -540,11 +562,17 @@ export class AdministrationComponent implements OnInit{
       ProfilAccount.firstName = this.firstName.value;
       ProfilAccount.personalInfo.phone = this.phone.value;
       ProfilAccount.email = this.userEmail.value;
+      ProfilAccount.personalInfo.address1 = this.address1;
+      ProfilAccount.personalInfo.zip = this.zip;
+      ProfilAccount.personalInfo.city = this.city;
+      ProfilAccount.personalInfo.region = this.region;
+
       ProfilAccount.avatarURL = this.urlImg;
       console.log('LES NOUVELLES DATAS DU ACCOUNT : ',ProfilAccount, this.dataBase64)
       this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
         resp.subscribe((response:any)=>{
           console.log('la resp du update user: ! ', response)
+          this.displayModalUpdateDataProfil = false;
           // localStorage.setItem('account-data-user', JSON.stringify(e.account));
   
           // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
@@ -554,8 +582,6 @@ export class AdministrationComponent implements OnInit{
         })
       });
     }
-
-    // this.displayModalUpdateDataProfil = false;
   }
 
   urlImg :any= undefined;
