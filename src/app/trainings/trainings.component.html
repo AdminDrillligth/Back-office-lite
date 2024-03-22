@@ -25,6 +25,8 @@
   <!-- LIST OF EXERCIES OF DRILLLIGHT -->
   <button *ngIf="displayTypeOf === 'module'" style="margin: 2px;" (click)="changeDisplay('list')" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">view_list</mat-icon></button>
   <button *ngIf="displayTypeOf === 'list'" style="margin: 2px;" (click)="changeDisplay('module')" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">view_module</mat-icon></button>
+  <button *ngIf="AccountOfUser.trainings.length >0"  style="margin: 2px;" (click)="resetSelectedExercices(AccountOfUser)" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">clear</mat-icon>Supprimer la sélection d'exercices</button>
+  
   <div *ngIf="chooseType === 'Exercices'">
   <!-- <h4 class="title">Bouquet d'exercices Drilllight</h4>
   <div class="row">
@@ -50,6 +52,7 @@
       <mat-card-header>
         <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
+      <mat-slide-toggle checked="{{item.selected}}" (change)="selectExercices($event,item, AccountOfUser)" #{{item.header.id}} class="display-toggle">Activé</mat-slide-toggle>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
       <div style="height: 180px;
       overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
@@ -69,7 +72,7 @@
       <div><img class="img-card-list" style="margin:2px;width:150px;" mat-card-image src="{{item.header.image}}" alt=""></div>
       <div class="display-title-list"><p>{{item.header.title}}</p></div>
       <div class="display-desc-list"><p style="width: 80%; overflow: hidden; height: 20px;">{{item.header.description}}</p></div>
-      <mat-slide-toggle style="position: absolute; right: 5px;top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
+      <mat-slide-toggle checked="{{item.selected}}" (change)="selectExercices($event,item, AccountOfUser)" #{{item.header.id}} style="position: absolute; right: 5px;top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
       <button (click)="openDialog(item)" class="btn-card-list" mat-button><mat-icon> list_alt</mat-icon></button>
     </mat-card>
   </div>
@@ -84,7 +87,7 @@
      
         <mat-card-title class="title-card" style="overflow: hidden;">{{item.header.title}}</mat-card-title>
       </mat-card-header>
-      <mat-slide-toggle class="display-toggle">Activé</mat-slide-toggle>
+      <mat-slide-toggle checked="{{item.selected}}" (change)="selectExercices($event,item, AccountOfUser)" #{{item.header.id}} class="display-toggle">Activé</mat-slide-toggle>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privé</span>
       <div style="height: 180px;
       overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
@@ -105,7 +108,7 @@
       <div><img class="img-card-list" style="margin:2px;width:150px;" mat-card-image src="{{item.header.image}}" alt=""></div>
       <div class="display-title-list"><p>{{item.header.title}}</p></div>
       <div class="display-desc-list"><p style="width: 80%; overflow: hidden; height: 20px;">{{item.header.description}}</p></div>
-      <mat-slide-toggle style="position: absolute; right: 5px; top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
+      <mat-slide-toggle (change)="selectExercices($event,item,AccountOfUser)" checked="{{item.selected}}" #{{item.header.id}} style="position: absolute; right: 5px; top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
       <button (click)="openDialog(item)" class="btn-card-list" mat-button><mat-icon> list_alt</mat-icon></button>
     </mat-card>
   </div>

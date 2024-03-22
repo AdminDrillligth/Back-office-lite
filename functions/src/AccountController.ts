@@ -323,6 +323,14 @@ const getAccountDetails = async (req: any, res: any) => {
             }
           })
         })
+      }else{
+        return res.status(200).json({
+                response: {
+                  result:'success',
+                  message:''
+                },
+                account: userDetails
+              });
       }
     }
 
@@ -524,7 +532,7 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
             if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
             if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }
-            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.fullName }
+            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.familyName + ' '+dataBodyOfRequest.firstName }
             if(dataBodyOfRequest.avatarURL !== undefined){ userDetail.avatarURL = dataBodyOfRequest.avatarURL }
             if(dataBodyOfRequest.role !== undefined){ userDetail.role = dataBodyOfRequest.role }
                 if(dataBodyOfRequest.personalInfo !== undefined){

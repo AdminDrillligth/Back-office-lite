@@ -41,7 +41,7 @@ const createFirmware = async (req: any, res: any) => {
       globalHandler.push(doc.data());
     });
     // BuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
-    globalHandler[0].publicFirmwareId = newUuid;
+    // globalHandler[0].publicFirmwareId = newUuid;
     // globalHandler[0].publicFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
     // globalHandler[0].lastFirmwareBuildNumber = globalHandler[0].lastFirmwareBuildNumber +1;
     let firmwareObject = {
@@ -54,8 +54,8 @@ const createFirmware = async (req: any, res: any) => {
     };
       const entry = db.collection('firmware-handler')
       await entry.doc(newUuid).set(firmwareObject).then( async (ref:any) => {
-        const global_handler = db.collection('global_handler');
-        global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0]);
+        // const global_handler = db.collection('global_handler');
+        // global_handler.doc("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d").set(globalHandler[0]);
         return res.status(200).json({
           response: {
             result:'success',

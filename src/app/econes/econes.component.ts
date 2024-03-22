@@ -376,6 +376,34 @@ export class EconesComponent implements OnInit {
       let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
       this.firmWareService.createFirmware(firmwareData, this.AccountOfUser.id,false);
     }
+    // if(this.account.role ==="admin"){
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          console.log('list of firwares: ',list.firmwareList)
+          this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+            if(this.detailsLastGlobalFirmware.id === firmware.id){
+              console.log('the same id of firm global ! ', firmware.id)
+              firmware.choosen = true;
+            }else{
+              firmware.choosen = false;
+            }
+          })
+          
+        })
+      });
+    // }
     this.displayModal = false;
     this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
     

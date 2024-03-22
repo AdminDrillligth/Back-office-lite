@@ -1,6 +1,6 @@
 // import { Response } from "express"
 import { db } from './config/firebase'
-// import * as functions from 'firebase-functions'
+import * as functions from 'firebase-functions'
 // import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
 // var btoa = require('btoa');
@@ -190,6 +190,10 @@ const getExercisesList = async (req: any, res: any) => {
             // idTable = doc.id
         })
         let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
+        functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",userDetail )
+        functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",userDetail.trainings )
+
+        
         if(publicExercisesChangeCount === lastPublicChangeCount || publicExercisesChangeCount > lastPublicChangeCount){
 
           if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
@@ -204,7 +208,10 @@ const getExercisesList = async (req: any, res: any) => {
               if(exercise.data.header.status === 'private'){
                 if(idUser !== 'null'){
                   if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data)
+                    if(idUser === exercise.data.header.owner.id){ 
+                      // if a selection was doing trainings data inside account : 
+                      // if()
+                      privateExercises.push(exercise.data)
                       privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                   }
                 }
@@ -227,6 +234,7 @@ const getExercisesList = async (req: any, res: any) => {
               }
             })
           }
+          // functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",lastPrivateExercisesChangeCount )
           return res.status(200).json({
             response: {
               result:'success',
@@ -237,7 +245,7 @@ const getExercisesList = async (req: any, res: any) => {
             publicChanged:false,
             privateChanged:false,
             publicExercisesChangeCount:lastPublicChangeCount,
-            privateExercisesChangeCount:1,
+            privateExercisesChangeCount:lastPrivateExercisesChangeCount,
             idUser:idUser,
           });
 
@@ -291,7 +299,7 @@ const getExercisesList = async (req: any, res: any) => {
             publicChanged:true,
             privateChanged:false,
             publicExercisesChangeCount:lastPublicChangeCount,
-            privateExercisesChangeCount:1,
+            privateExercisesChangeCount:lastPrivateExercisesChangeCount,
             idUser:idUser,
           });
 

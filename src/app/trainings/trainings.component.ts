@@ -13,7 +13,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import ImageResize from 'image-resize';
 import { uid } from 'uid';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-
+import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
 
 @Component({
   selector: 'app-trainings',
@@ -58,7 +58,9 @@ export class TrainingsComponent implements OnInit {
   userSource:any;
   AccountOfUser:any
   idOfOwner:any;
+  asAdmin = false;
   constructor(
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     private exerciseService:ExerciseService,
     private router:Router,
     private utilsService: UtilsService,
@@ -71,6 +73,7 @@ export class TrainingsComponent implements OnInit {
     if(AccountOfUser !== undefined ){
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
+      console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
       this.idOfOwner = AccountOfUser.id;
       
     }
@@ -81,13 +84,17 @@ export class TrainingsComponent implements OnInit {
      this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       if(asAdmin !== null){
         if(asAdmin === true){
+          this.asAdmin = true;
           // if(JSON.parse(localStorage.getItem('account-data-user') || '{}') !== undefined){
             let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
             console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+            console.log('LE DETAIL DU USER : ! EXERCICES:! : ', userDetailAccount.trainings);
             this.userSource = userDetailAccount;
             this.getInfoGLobal();
           // }
 
+        }else{
+          this.asAdmin = false;
         }
       }
     });
@@ -97,9 +104,54 @@ export class TrainingsComponent implements OnInit {
   getInfoGLobal(){
     
     this.getExercicesList();
-    this.getSessionsList();
+    // this.getSessionsList();
   }
 
+
+  resetSelectedExercices(AccountOfUser:any){
+    console.log('LES TRAININGS DU USER : ! ',AccountOfUser.trainings)
+  }
+
+  selectExercices(event:any,item:any,account:any){
+    console.log('Choose de l\'exercice :',event.checked,item,account)
+    console.log('somme nous en asAdmin?', this.asAdmin)
+    console.log(account.trainings)
+    if(event.checked === true){
+      account.trainings.push(item.header.id)
+      // update Account :
+      console.log(account.trainings)
+      this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update account: ! ', response)
+          // this.getDetails(account.owner);
+          if(this.asAdmin === false){
+            localStorage.setItem('account', JSON.stringify(response.account));
+            this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+          }else{
+
+          }
+          
+        })
+      });
+    }else{
+      account.trainings = account.trainings.filter((training:any) => training !== item.header.id)
+      console.log('Le nouvel array : ! ',account.trainings)
+      this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update account: ! ', response)
+          // this.getDetails(account.owner);
+          if(this.asAdmin === false){
+            localStorage.setItem('account', JSON.stringify(response.account));
+            this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+          }else{
+
+          }
+          
+        })
+      });
+    }
+   
+  }
 
   getExercicesList(){
   console.log('le user source : ! ',this.userSource)
@@ -108,8 +160,8 @@ export class TrainingsComponent implements OnInit {
       console.log(this.userSource.id)
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
-          console.log('LA RESP DANS TRAINING : ',response)
-          console.log('LA RESP DANS TRAINING : ',response.publicExercises)
+          // console.log('LA RESP DANS TRAINING : ',response)
+          // console.log('LA RESP DANS TRAINING : ',response.publicExercises)
           this.publicTrainings.cards = response.publicExercises;
           this.publicTrainings.cards.forEach((exo:any)=>{
             if(exo.header.image === ''){
@@ -118,38 +170,65 @@ export class TrainingsComponent implements OnInit {
           })
           this.privateTrainings.cards = response.privateExercises;
           this.privateTrainings.cards.forEach((exo:any)=>{
+            
             if(exo.header.image === ''){
               exo.header.image = '../../../assets/images/default_100.jpg'
             }
           })
-          console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
+          // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
       })
     });
   }else{
     this.exerciseService.getExerciceList(this.idOfOwner).then((resp:any)=>{
+      // Lors d'un mode normal
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
-          console.log('LA RESP DANS TRAINING : ',response)
-          console.log('LA RESP DANS TRAINING : ',response.publicExercises)
+          // console.log('LA RESP DANS TRAINING : ',response)
+          // console.log('LA RESP DANS TRAINING : ',response.publicExercises)
           this.publicTrainings.cards = response.publicExercises;
+          
+
           this.publicTrainings.cards.forEach((exo:any)=>{
-            if(exo.header.image === ''){
-              exo.header.image = '../../../assets/images/default_100.jpg'
-            }
+              exo.selected = false;
+              this.AccountOfUser.trainings.forEach((training:any) =>{
+              if(exo.header.id === training ){
+                console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
+                exo.selected = true;
+              }
+              if(exo.header.image === ''){
+                exo.header.image = '../../../assets/images/default_100.jpg'
+              }
+            })
+           
+            // console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
+
           })
           this.privateTrainings.cards = response.privateExercises;
-          this.privateTrainings.cards.forEach((exo:any)=>{
-            if(exo.header.image === ''){
-              exo.header.image = '../../../assets/images/default_100.jpg'
-            }
+          
+            this.privateTrainings.cards.forEach((exo:any)=>{
+             
+              exo.selected = false;
+              this.AccountOfUser.trainings.forEach((training:any) =>{
+              if(exo.header.id === training ){
+                console.log('nous avons trouvé l\'exo selectionné Private! ',exo,training)
+                exo.selected = true;
+              }  
+              // if(exo.header.id !== training ){
+              //   console.log('nous avons trouvé l\'exo selectionné ! ',training)
+              //   exo.selected = false;
+              // }
+              if(exo.header.image === ''){
+                exo.header.image = '../../../assets/images/default_100.jpg'
+              }
+            })
+
           })
-          console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
+          // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
       })
     });
   }
-   
   }
 
   getSessionsList(){
@@ -158,8 +237,8 @@ export class TrainingsComponent implements OnInit {
     this.exerciseService.getSessionList(this.userSource.id).then((resp:any)=>{
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
-          console.log('LA RESP DANS SESSIONS : ',response)
-          console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
+          // console.log('LA RESP DANS SESSIONS : ',response)
+          // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
           this.publicSessions.cards = response.publicSessions;
           this.privateSessions.cards = response.privateSessions;
           this.publicSessions.cards.forEach((session:any)=>{
@@ -172,7 +251,7 @@ export class TrainingsComponent implements OnInit {
               session.header.image = '../../../assets/images/default_100.jpg'
             }
           })
-          console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
+          // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
         }
       })
     });
@@ -182,8 +261,8 @@ export class TrainingsComponent implements OnInit {
       console.log(resp)
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
-          console.log('LA RESP DANS SESSIONS : ',response)
-          console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
+          // console.log('LA RESP DANS SESSIONS : ',response)
+          // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
           this.publicSessions.cards = response.publicSessions;
           this.privateSessions.cards = response.privateSessions;
           this.publicSessions.cards.forEach((session:any)=>{
@@ -196,7 +275,7 @@ export class TrainingsComponent implements OnInit {
               session.header.image = '../../../assets/images/default_100.jpg'
             }
           })
-          console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
+          // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
         }
       })
     });
@@ -280,7 +359,7 @@ export class TrainingsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       setTimeout(() => {
-        this.getSessionsList();
+        // this.getSessionsList();
       }, 1000);
 
       console.log(`Dialog session result: ${result}`);

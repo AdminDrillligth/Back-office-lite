@@ -83,13 +83,13 @@
   <div *ngIf="displayModalUpdateFirmware" class="modal-zip" >
     <h2>Modifier la version globale du firmware</h2>
 
-    <h5>Firmware global actuel:{{detailsLastGlobalFirmware.version}} </h5>
+    <h5>Firmware global actuel : {{detailsLastGlobalFirmware.version}} </h5>
     <p>Description : {{detailsLastGlobalFirmware.description}}</p>
-    <p>Date de l'update : {{detailsLastGlobalFirmware.creationDate}}</p>
+    <p>Date de mise à jour : {{detailsLastGlobalFirmware.creationDate}}</p>
     <mat-form-field style="width:98%" class="firmware-select">
       <mat-label>Chosir une version...</mat-label>
       <mat-select  value="">
-        <mat-option style="border-bottom: 5px white dotted;" (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><div class="choosen-firmware" *ngIf="firmware.choosen !== undefined && firmware.choosen === true"></div><p style="margin-top:4px;display:inline-block;width:80%;">Version :<b>{{firmware.version}}</b></p><p>description: {{firmware.description}}</p><p>Date de mise a jour: {{firmware.date}}</p></mat-option>
+        <mat-option style="border-bottom: 5px white dotted;" (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><div class="choosen-firmware" *ngIf="firmware.choosen !== undefined && firmware.choosen === true"></div><p style="margin-top:4px;display:inline-block;width:80%;">Version : <b>{{firmware.version}}</b></p><p>Description : {{firmware.description}}</p><p>Date de mise à jour : {{firmware.date}}</p></mat-option>
       </mat-select>
     </mat-form-field>
     <div *ngIf="!displayListOfUSer" class="bottom-btn">

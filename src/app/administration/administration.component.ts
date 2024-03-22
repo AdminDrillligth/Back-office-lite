@@ -16,7 +16,6 @@ import { SafeUrl } from '@angular/platform-browser';
 import { FireStoreServiceImages } from '../../services/firebase/firestoreservice-images';
 import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.service';
 import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
-import { UserHandlerHistoricalService } from '../../services/user-handlers-historical.service';
 import { uid } from 'uid';
 import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule } from '@angular/material/slide-toggle';
 import { DatePipe } from '@angular/common';
@@ -240,11 +239,11 @@ export class AdministrationComponent implements OnInit{
   public displayModalActionOwner:boolean = false;
   public displayModalFirmware:boolean = false;
   public privateExerciceOnly = false;
-  public moderationAccount = false; 
+  public moderationAccount = false;
   public firmWareList:any = [];
   public privateFirmwareId = false;
   public globalFirmwareId = false;
- 
+
 
 
 
@@ -315,7 +314,7 @@ export class AdministrationComponent implements OnInit{
       if(asAdmin == false){
         this.letsee = false;
         this.ProfilAccount = undefined;
-    
+
       }
       if(asAdmin == true){
         this.letsee = true;
@@ -328,6 +327,17 @@ export class AdministrationComponent implements OnInit{
           resp.subscribe((e:any) =>{
             console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
             this.ProfilAccount = e.account;
+        // users
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+
+        // staff
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+
           })
         });
       }
@@ -349,7 +359,7 @@ export class AdministrationComponent implements OnInit{
         this.firmWareList.forEach((firmware:any)=>{
           firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
         })
-      
+
       })
     });
     this.utilsService._newaccount.subscribe((update:any) =>{
@@ -404,6 +414,8 @@ export class AdministrationComponent implements OnInit{
   }
 
 
+
+  // ICI ON GET LES DETAILS D'UN COMPTE EN PARTICULIER : => UN COMPTE SELECTIONNE
   getDetails(accountOwner:any){
     console.log("TEST OWNER TO GET THE NEW DATA",accountOwner)
     this.userHandlersServiceCustomer.getAccountDetails(accountOwner).then((resp:any)=>{
@@ -459,7 +471,63 @@ export class AdministrationComponent implements OnInit{
   uploadZip(){
 
   }
-  
+
+  displayModalUpdateDataProfil = false;
+  familyName = new FormControl('', [ Validators.required ]);
+  firstName = new FormControl('', [ Validators.required ]);
+  userEmail = new FormControl('', [ Validators.required ]);
+  phone = new FormControl('', [ Validators.required ]);
+  address = new FormControl('', [ Validators.required ]);
+  zip = new FormControl('', [ Validators.required ]);
+  city = new FormControl('', [ Validators.required ]);
+  region = new FormControl('', [ Validators.required ]);
+  selectedFile!: File;
+  comment= new FormControl('');
+  birthdate:any='';
+  simpleBirthdate:any='';
+  audience:string='public';
+  rightsUser:any[]=[];
+  AdminAccounts:any[]=[];
+  eventImageFile:any;
+  uploadedImages:any;
+  update=false;
+
+
+  updateProfilDatas(ProfilAccount:any){
+    console.log('PROFILE TO UPDATE :   ! ',ProfilAccount)
+    this.displayModalUpdateDataProfil = true;
+    this.update = true;
+    if(ProfilAccount !== undefined){
+      this.familyName.setValue(ProfilAccount.familyName);
+      this.firstName.setValue(ProfilAccount.firstName);
+      this.phone.setValue(ProfilAccount.personalInfo.phone);
+      this.userEmail.setValue(ProfilAccount.email);
+    }
+  }
+
+  updateProfilSender(ProfilAccount:any){
+    ProfilAccount.familyName = this.familyName.value;
+    ProfilAccount.firstName = this.firstName.value;
+    ProfilAccount.personalInfo.phone = this.phone.value;
+    console.log('LES NOUVELLES DATAS DU ACCOUNT : ',ProfilAccount)
+    this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user: ! ', response)
+        // localStorage.setItem('account-data-user', JSON.stringify(e.account));
+
+        // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+        // localStorage.setItem('account', JSON.stringify(response.account));
+        // this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+        // this.getDetails(this.modalAccount.id);
+      })
+    });
+    // this.displayModalUpdateDataProfil = false;
+  }
+
+  closeModalUpdateProfil(){
+    this.displayModalUpdateDataProfil = false;
+  }
+
   modalAccount:any;
   displayButtonSeeAccount = false;
   openModalActions(account:any){
@@ -489,7 +557,7 @@ export class AdministrationComponent implements OnInit{
             this.moderationAccount = false;
           }
         }
-      
+
       })
     })
     if(this.firmWareList.length !== 0 ){
@@ -512,7 +580,7 @@ export class AdministrationComponent implements OnInit{
           this.firmWareList.forEach((firmware:any)=>{
             firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
           })
-        
+
         })
       });
     }
@@ -523,7 +591,7 @@ export class AdministrationComponent implements OnInit{
     setTimeout(() => {
       this.displayModalAction = true;
     }, 400);
-    
+
   }
 
   modalAccountOwner:any;
@@ -552,7 +620,7 @@ export class AdministrationComponent implements OnInit{
         if(this.modalAccountOwner.warning === undefined){
           this.moderationAccount = false;
         }
-  
+
       })
 
     })
@@ -562,7 +630,7 @@ export class AdministrationComponent implements OnInit{
   }
 
   // public privateExerciceOnly = false;
-  // public moderationAccount = false; 
+  // public moderationAccount = false;
   modarateAccount(account:any){
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
@@ -637,7 +705,7 @@ export class AdministrationComponent implements OnInit{
         this.getDetails(this.modalAccount.id);
       })
     });
-    
+
   }
 
 
@@ -673,7 +741,7 @@ export class AdministrationComponent implements OnInit{
                       })
             }
           })
-  
+
         }else{
           this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
             console.log('la resp du firmware global : ', element)
@@ -715,7 +783,7 @@ export class AdministrationComponent implements OnInit{
         this.privateFirmwareId = false;
       }
     }
-    
+
 
     // this.firmWareService.getfirmwareDetails("");
     this.displayModalAction = false;
@@ -729,7 +797,7 @@ export class AdministrationComponent implements OnInit{
   }
 
   selectFirmwareForAccount(account:any){
-   
+
     console.log(account,this.selectedVersion)
     if(this.selectedVersion !== ""){
       this.displayModalFirmware = false;
@@ -743,7 +811,7 @@ export class AdministrationComponent implements OnInit{
         })
       });
     }
-    // 
+    //
   }
 
   removePrivateFirmware(account:any){
@@ -808,7 +876,7 @@ export class AdministrationComponent implements OnInit{
   //       // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
   //   };
   //   reader.readAsDataURL(file);
-    
+
   //   // this.unzip();
 
   // }

@@ -32,7 +32,7 @@ export class ExerciseService {
   async getExerciceList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les exercices ! ')
-    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'0'}})
+    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'38'}})
     return response;
   }
 
