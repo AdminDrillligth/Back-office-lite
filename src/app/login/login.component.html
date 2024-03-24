@@ -1,11 +1,6 @@
 <div class="login">
   <div class="container">
-    <!-- <mat-progress-spinner
-    class="spinner-valid"
-    [color]="color"
-    [mode]="mode"
-    [value]="value">
-  </mat-progress-spinner> -->
+    <mat-spinner *ngIf="disabledSpinner" class="spinner-display"></mat-spinner>
     <mat-card style="text-align: center;" class="card-login">
       <mat-card-header>
         <div mat-card-avatar class="example-header-image"></div>

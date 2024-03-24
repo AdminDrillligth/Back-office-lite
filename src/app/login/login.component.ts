@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit{
   ipAddress:any;
   warning =  false;
   dataOfUser:any = [];
+  disabledSpinner = false;
   ngOnInit(): void {
     this.getIPAddress();
   }
@@ -67,6 +68,7 @@ export class LoginComponent implements OnInit{
   doLogin(){
     if (this.emailFormControl.valid && this.passwordFormControl.valid) {
     if(this.emailFormControl.value !== null && this.passwordFormControl.value !== null){
+        this.disabledSpinner = true;
         const authorizationValue = 'Basic ' + Buffer.from( this.emailFormControl.value + ':' + this.passwordFormControl.value ).toString('base64');
         console.log('Le basic : ',authorizationValue)
         const headers = { 'content-type': 'application/json'}
@@ -78,12 +80,14 @@ export class LoginComponent implements OnInit{
           this.http.get(this.baseURL+'getToken' ,{'headers':{passwordhash:authorizationValue, username:this.emailFormControl.value}}).subscribe((response:any) => {
             console.log('LA REP DU GET TOKEN  : ',response)
             if(response.response.result === "invalidPasswordError"){
+              this.disabledSpinner = false;
               this.badpassword = true;
               setTimeout(() => {
                 this.badpassword = false;
               }, 1500);
             }
             if(response.response.result === "errorNoAccount"){
+              this.disabledSpinner = false;
               this.bademail = true;
               setTimeout(() => {
                 this.bademail = false;
@@ -104,6 +108,7 @@ export class LoginComponent implements OnInit{
                     if(response.response.result === "success"){
                       localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
                       console.log('LIST DES USERS : ! ', response.accounts)
+                      this.disabledSpinner = false;
                       this.router.navigate(['dashboard']);
                       this.utilsService.howToSeeNavigation(true);
                     }

@@ -1,24 +1,26 @@
 <div class="container-main">
+  <!--   -->
+  <mat-spinner *ngIf="disabledSpinner" class="spinner-display"></mat-spinner>
   <div *ngIf="ProfilAccount === undefined" >
     <div class="row">
     <h3 style="color:white" class="header-title">Comptes</h3>
 
 
     <!-- <p>Rechargement image download</p> -->
-      <div style="color:white" class="col-sm-4  col-md-4">
+      <div style="color:white" class="col-sm-4  col-md-5">
         <mat-card (click)="createAdmin()" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <!-- <img class="image-logo" mat-card-image src="assets/icons/add.png"/> -->
-            <mat-icon >add</mat-icon>
+            <mat-icon class="header-icon">add</mat-icon>
             <mat-card-title class="align-title">Ajouter un Administrateur</mat-card-title>
           </mat-card-header>
         </mat-card>
       </div>
-      <div style="color:white" class="col-sm-4  col-md-4">
+      <div style="color:white" class="col-sm-4  col-md-5">
         <mat-card (click)="createCustomer()" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <!-- <img class="image-logo" mat-card-image src="assets/icons/add.png"/> -->
-            <mat-icon >add</mat-icon>
+            <mat-icon class="header-icon">add</mat-icon>
             <mat-card-title  class="align-title">Ajouter un Client</mat-card-title>
           </mat-card-header>
         </mat-card>
@@ -39,20 +41,20 @@
     <div class="row">
     <h3 style="color:white" class="header-title">Comptes</h3>
 
-      <div style="color:white" class="col-sm-4  col-md-4">
+      <div style="color:white" class="col-sm-4  col-md-5">
         <mat-card (click)="addStaffOfGroup(ProfilAccount)" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <!-- <img class="image-logo" mat-card-image src="assets/icons/add.png"/> -->
-              <mat-icon >add</mat-icon>
+              <mat-icon class="header-icon">add</mat-icon>
             <mat-card-title class="align-title">Ajouter un membre du Staff</mat-card-title>
           </mat-card-header>
         </mat-card>
       </div>
-      <div style="color:white" class="col-sm-4  col-md-4">
+      <div style="color:white" class="col-sm-4  col-md-5">
         <mat-card (click)="addAccountOfGroup(ProfilAccount)" class="card-dashboard">
           <mat-card-header class="card-header-align">
             <!-- <img class="image-logo" mat-card-image src="assets/icons/add.png"/> -->
-            <mat-icon >add</mat-icon>
+            <mat-icon class="header-icon">add</mat-icon>
             <mat-card-title  class="align-title">Ajouter un participant</mat-card-title>
           </mat-card-header>
         </mat-card>
@@ -84,7 +86,7 @@
             alt="" style="width: 45px; height: 45px" class="rounded-circle"/> -->
       <ng-container matColumnDef="firstName">
         <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
-        <td mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
+        <td [ngClass]="{'admin-row': emp.role === 'admin'}"  mat-cell *matCellDef="let emp" style='text-align:center;'>{{emp.fullName}} </td>
       </ng-container>
       <ng-container  matColumnDef="role" >
         <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
@@ -124,14 +126,17 @@
         <mat-icon >highlight_off</mat-icon>
       </button> -->
       <div style="background: #424242;border-radius: 5px;padding-bottom: 15px;">
-        <div>
+        <div style="width:70%;display:inline-block">
         <br>
           <span class="comment-line"> Profil : <b>{{ProfilAccount.fullName}}</b></span>
           <br>
           <span class="comment-line"> Role : <b>{{ProfilAccount.role}}</b></span>
           <br>
           <span class="comment-line"> Email : <b>{{ProfilAccount.email}}</b></span>
+          <br>
+          <span class="comment-line"> Date d' inscription : <b>{{ProfilAccount.date}}</b></span>
         </div>
+        <div style="width: 24%;margin-top: 25px;position: absolute;display: inline-block;"><img style="width:50%;max-width:120px" src="{{ProfilAccount.avatarURL}}"> </div>
         <div>
           <button  type="button" mat-raised-button (click)="updateProfilDatas(ProfilAccount)" style="margin-top: 20px;color: white; width: 90%; margin-right: auto; margin-left: auto; display: block;"  mat-button color="primary">
             Modifier le profil

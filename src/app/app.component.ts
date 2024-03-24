@@ -151,6 +151,8 @@ export class AppComponent {
           }
         });
         this.utilsService._seeNavigation.subscribe((seeNav:any) => {
+          console.log('WE SEE NAV ??? ',seeNav)
+
           setTimeout(() => {
             let check = this.url.path().split("?")
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
@@ -169,7 +171,11 @@ export class AppComponent {
           }, 400);
          
           
-          
+          if(seeNav === false){
+            this.seeNavigation = false;
+            this.opened = false;
+            // this.updateData()
+          }
           
           if(seeNav == true){
 

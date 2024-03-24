@@ -180,6 +180,7 @@ export class EconesComponent implements OnInit {
       if(response !== undefined){
         console.log('la resp du details', response.globalFirmware)
         this.detailsLastGlobalFirmware = response.globalFirmware
+        this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
       }
     });
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
@@ -213,6 +214,15 @@ export class EconesComponent implements OnInit {
               firmware.choosen = false;
             }
           })
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.date < b.date) {
+                return -1;
+            }
+            if (a.date > b.date) {
+                return 1;
+            }
+            return 0;
+          });
           
         })
       });
@@ -381,16 +391,10 @@ export class EconesComponent implements OnInit {
         console.log('list of firwares: ',firmwareList)
         firmwareList.subscribe((list:any)=>{
           console.log('list of firwares: ',list.firmwareList)
+          
           this.firmWareList = list.firmwareList;
-          this.firmWareList = this.firmWareList.sort((a, b) => {
-            if (a.version > b.version) {
-                return -1;
-            }
-            if (a.version < b.version) {
-                return 1;
-            }
-            return 0;
-          });
+          
+
           this.firmWareList.forEach((firmware:any)=>{
             firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
             if(this.detailsLastGlobalFirmware.id === firmware.id){
@@ -400,6 +404,17 @@ export class EconesComponent implements OnInit {
               firmware.choosen = false;
             }
           })
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+
+
           
         })
       });
@@ -445,6 +460,7 @@ export class EconesComponent implements OnInit {
       if(response !== undefined){
         console.log('la resp du details', response.globalFirmware)
         this.detailsLastGlobalFirmware = response.globalFirmware
+        this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
       }
     });
    

@@ -129,6 +129,8 @@ export interface ProfilAccountDatas{
 
 
 export class AdministrationComponent implements OnInit{
+
+  disabledSpinner = false;
   // public appearance = Appearance;
   // public zoom: number;
   // public latitude: number;
@@ -311,7 +313,7 @@ export class AdministrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.disabledSpinner = true;
     var widthScreen = window.innerWidth;
     if(widthScreen < 600){
       this.widthScreenMobile = true;
@@ -326,9 +328,27 @@ export class AdministrationComponent implements OnInit{
     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       console.log('admin see as admin : ', asAdmin)
       if(asAdmin == false){
+        this.disabledSpinner = true;
         this.letsee = false;
         this.ProfilAccount = undefined;
-
+        this.userHandlersServiceCustomer.getUpdateallUsers();
+        this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+        console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+        if(this.AccountOfUser.role === 'admin'){
+          let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+          this.Accounts.length = 0
+          allAccounts.forEach((account:any)=>{
+            if(account.role === 'admin' || account.role === 'owner'){
+              this.Accounts.push(account)
+            }
+          });
+          setTimeout(() => {
+            this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
+            this.dataSourceAccounts.paginator = this.paginatorAccounts;
+            this.resultsLength = this.Accounts.length;
+            this.disabledSpinner = false;
+          }, 1000);
+        }
       }
       if(asAdmin == true){
         this.letsee = true;
@@ -413,11 +433,13 @@ export class AdministrationComponent implements OnInit{
         this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
         this.dataSourceAccounts.paginator = this.paginatorAccounts;
         this.resultsLength = this.Accounts.length;
+        this.disabledSpinner = false;
       }, 1000);
     }
     if(this.AccountOfUser.role === 'owner'){
       this.seeAsOwner = true;
       this.ProfilAccount = this.AccountOfUser;
+      this.disabledSpinner = false;
       console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
       this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
@@ -571,8 +593,10 @@ export class AdministrationComponent implements OnInit{
       console.log('LES NOUVELLES DATAS DU ACCOUNT : ',ProfilAccount, this.dataBase64)
       this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
         resp.subscribe((response:any)=>{
-          console.log('la resp du update user: ! ', response)
+          console.log('la resp du update user: ! ', response.account)
+          // console.log(this.)
           this.displayModalUpdateDataProfil = false;
+          this.getDetails(response.account.id);
           // localStorage.setItem('account-data-user', JSON.stringify(e.account));
   
           // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
@@ -653,9 +677,11 @@ export class AdministrationComponent implements OnInit{
             }
             return 0;
           });
+
           this.firmWareList.forEach((firmware:any)=>{
             firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
           })
+
 
         })
       });
@@ -715,6 +741,7 @@ export class AdministrationComponent implements OnInit{
     }else{
       this.moderationAccount = true
     }
+
     account.warning = this.moderationAccount;
     this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
       resp.subscribe((response:any)=>{
@@ -722,6 +749,51 @@ export class AdministrationComponent implements OnInit{
 
       })
     });
+    let staffToUpdate:any = [];
+    account.staff.forEach((staff:any)=>{
+      this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          e.account.warning = account.warning;
+          staffToUpdate.push(e.account)
+          console.log('STAFF ACCOUNT : !',staffToUpdate)
+          if(account.staff.length === staffToUpdate.length){
+            console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
+            staffToUpdate.forEach((staff:any)=>{
+              this.userHandlersServiceCustomer.updateAccount(staff).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  console.log('la resp du update Staff Private only: ! ', response)
+                })
+              });
+            })
+          }
+        })
+      })
+    })
+    let userToUpdate:any = [];
+    account.users.forEach((user:any)=>{
+      this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          e.account.warning = account.warning;
+          userToUpdate.push(e.account)
+          console.log('STAFF ACCOUNT : !',userToUpdate)
+          if(account.users.length === userToUpdate.length){
+            console.log('SAME LENGTH STAFF ACCOUNT : !',userToUpdate)
+            userToUpdate.forEach((user:any)=>{
+              this.userHandlersServiceCustomer.updateAccount(user).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  console.log('la resp du update Staff Private only: ! ', response)
+                })
+              });
+            })
+          }
+        })
+      })
+    })
+
+
+
     console.log('Warning Only ? :',account.warning);
   }
 
@@ -739,6 +811,32 @@ export class AdministrationComponent implements OnInit{
 
       })
     });
+    let staffToUpdate:any = [];
+    account.staff.forEach((staff:any)=>{
+      this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          e.account.privateOnly = account.privateOnly;
+          staffToUpdate.push(e.account)
+          console.log('STAFF ACCOUNT : !',staffToUpdate)
+          if(account.staff.length === staffToUpdate.length){
+            console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
+            staffToUpdate.forEach((staff:any)=>{
+              this.userHandlersServiceCustomer.updateAccount(staff).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  console.log('la resp du update Staff Private only: ! ', response)
+                })
+              });
+            })
+          }
+        })
+      })
+     
+  
+    })
+
+
+
     console.log('Private Only ? :',account.privateOnly);
   }
 
@@ -1038,6 +1136,7 @@ export class AdministrationComponent implements OnInit{
   letsee = false;
   accountDetailOfUser:any;
   seeAdmin(account:any){
+    this.disabledSpinner = true;
     this.letsee = true;
     this.displayModalAction = false;
     this.ProfilAccount = account;
@@ -1065,7 +1164,7 @@ export class AdministrationComponent implements OnInit{
         this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
         this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
         this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-
+        this.disabledSpinner = false;
       })
     });
   }

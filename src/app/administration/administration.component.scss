@@ -39,6 +39,7 @@
 }
 
 .card-dashboard{
+  height: 60px;
   overflow: auto;
   margin-top: 4px;
   border: 1px solid transparent;
@@ -47,6 +48,25 @@
 
 .checkbox-color{
   background-color: #878787!important;
+}
+
+.header-icon{
+  position: relative;
+}
+
+.spinner-display{
+  position: relative;
+  z-index: 1;
+  margin-top: -100px;
+  top: 420px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-row{
+  border-left: #0d6efd 6px solid;
 }
 
 .display-modal-action{
@@ -73,6 +93,7 @@
   margin-right: 10px;
   background:#3855ff;
 }
+
 
 
 .display-modal-firmware{
@@ -114,6 +135,10 @@
 
 }
 
+.header-title{
+  margin-left: 15px;
+}
+
 .action-btn-modal{
   display:block;
   margin-bottom: 10px;
@@ -147,7 +172,7 @@
 }
 
 .align-title{
-  margin-top: 6px;
+  // margin-top: 6px;
 }
 
 ::ng-deep mat-dialog-container {

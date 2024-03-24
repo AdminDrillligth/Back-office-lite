@@ -59,6 +59,8 @@ export class TrainingsComponent implements OnInit {
   AccountOfUser:any
   idOfOwner:any;
   asAdmin = false;
+  disabledSpinner = false;
+
   constructor(
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     private exerciseService:ExerciseService,
@@ -68,9 +70,11 @@ export class TrainingsComponent implements OnInit {
     public dialog: MatDialog
     ){}
   ngOnInit(): void {
+    this.disabledSpinner = true;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     if(AccountOfUser !== undefined ){
+      
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
       // console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
@@ -229,6 +233,7 @@ export class TrainingsComponent implements OnInit {
             // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
           }
         })
+        // this.disabledSpinner = false;
       });
     }  
   }
@@ -269,9 +274,11 @@ export class TrainingsComponent implements OnInit {
               exo.header.image = '../../../assets/images/default_100.jpg'
             }
           })
+          this.disabledSpinner = false;
           // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
       })
+      // 
     });
   }
   }

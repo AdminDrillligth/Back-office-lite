@@ -35,6 +35,8 @@ const createResult = async (req: any, res: any) => {
   let reqs = req;
   let body = reqs.body;
   let results = body.data;
+  let headers = reqs.headers;
+  let token = headers.token;
   functions.logger.log("LOG body RESULT ", body );
   functions.logger.log("LOG body RESULT ", results );
   saveDataReports(body.data);
@@ -45,16 +47,26 @@ const createResult = async (req: any, res: any) => {
   })
 
   try {
+    // sign token
+    jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+        if(err) {
+          return res.status(200).json({
+            response: {
+              result:'expiredTokenError',
+              message:'Votre token a expiré'
+            },
+          });
+        }else {
 
-
-      return res.status(200).json({
-        response: {
-            result:'success',
-            message:''
-        },
-        resultBodyData:results
-      })
-
+            return res.status(200).json({
+                response: {
+                    result:'success',
+                    message:''
+                },
+                resultBodyData:results
+            })
+        }
+    })
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }
@@ -1924,20 +1936,29 @@ const getResultsList = async (req: any, res: any) => {
   //
   let reqs = req;
   let headers = reqs.headers;
-  // let token = headers.token;
+  let token = headers.token;
   let idUser = headers.id;
   // let resultNumber =  headers.resultnumber;
   let results: any = [];
   try {
-
-    let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).get();
-    // functions.logger.log("Result handler resp with Iduser ", resultsHandler)
-    if(resultsHandler.size !== 0){
-      resultsHandler.forEach(async (doc:any) =>{
-        // functions.logger.log("Result handler resp with Iduser ", doc);
-        results.push(doc.data());
-      });
-    }
+    // sign token
+    jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+        if(err) {
+          return res.status(200).json({
+            response: {
+              result:'expiredTokenError',
+              message:'Votre token a expiré'
+            },
+          });
+        }else {
+            let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).get();
+            // functions.logger.log("Result handler resp with Iduser ", resultsHandler)
+            if(resultsHandler.size !== 0){
+            resultsHandler.forEach(async (doc:any) =>{
+                // functions.logger.log("Result handler resp with Iduser ", doc);
+                results.push(doc.data());
+            });
+            }
 
   //   let decodeds: any;
   //   let Exercise: any = [];
@@ -1973,17 +1994,19 @@ const getResultsList = async (req: any, res: any) => {
   //         });
   //       }
   //   });
-  return res.status(200).json({
-    response: {
-        result:'success',
-        message:''
-    },
-    idUser:idUser,
-    // resultsHandlerSize:resultsHandler.size,
-    // resultsHandler:resultsHandler,
-    results:results
-    // data:data
-  })
+        return res.status(200).json({
+            response: {
+                result:'success',
+                message:''
+            },
+            idUser:idUser,
+            // resultsHandlerSize:resultsHandler.size,
+            // resultsHandler:resultsHandler,
+            results:results
+            // data:data
+        })
+        }
+    })
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 
