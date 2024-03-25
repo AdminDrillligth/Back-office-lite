@@ -117,12 +117,20 @@ const createAccount = async (req: any, res: Response) => {
         }else{
           id = newUuid;
         }
+        functions.logger.log("DATA dataBodyOfRequest LE ACCOUNT  ?  ::::  ",dataBodyOfRequest )
         if(dataBodyOfRequest.owner !== undefined){
           let userhandlerProfilOwner = await db.collection('account-handler').where('id', '==', dataBodyOfRequest.owner).get();
           userhandlerProfilOwner.forEach(async (doc:any) =>{
-            userDetailOwner = doc.data();
-            userDetailOwner.users.push({id:id})
-            functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",userDetailOwner.users )
+            if(dataBodyOfRequest.role === 'staff'){
+              userDetailOwner = doc.data();
+              userDetailOwner.staff.push({id:id})
+            }
+            if(dataBodyOfRequest.role === 'user'){
+              userDetailOwner = doc.data();
+              userDetailOwner.users.push({id:id})
+            }
+
+            functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",userDetailOwner )
             await entry.doc(dataBodyOfRequest.owner).set(userDetailOwner)
           })
           
