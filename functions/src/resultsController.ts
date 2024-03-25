@@ -2,7 +2,7 @@
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
-// var jwt = require("jsonwebtoken");
+var jwt = require("jsonwebtoken");
 // // var btoa = require('btoa');
 // var DateString = new Date().toLocaleDateString('en-GB');
 // var isoDateString = new Date().toISOString();
@@ -1951,7 +1951,7 @@ const getResultsList = async (req: any, res: any) => {
             },
           });
         }else {
-            let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).get();
+            let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).orderBy("result.infos.startDate", "desc").get();
             // functions.logger.log("Result handler resp with Iduser ", resultsHandler)
             if(resultsHandler.size !== 0){
             resultsHandler.forEach(async (doc:any) =>{

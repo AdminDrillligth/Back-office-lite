@@ -233,7 +233,7 @@ export class TrainingsComponent implements OnInit {
             // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
           }
         })
-        // this.disabledSpinner = false;
+        this.disabledSpinner = false;
       });
     }  
   }
