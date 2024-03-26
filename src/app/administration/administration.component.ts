@@ -1110,12 +1110,13 @@ export class AdministrationComponent implements OnInit{
           this.ownerAccountOf = this.ProfilAccount;
           this.ProfilAccount = e.account;
           this.comeBackToOwner = true;
-          // console.log('LA RESP DU ACCOUNT DETAILS: ',e.account, e.account.owner)
+          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
           // console.log('LE OLD PROFIL : ',this.ownerAccountOf)
           // this.ownerAccountOf = e.account.owner;
 
           if(this.ownerAccountOf.users.length > 0){
             // users
+
             this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
             this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
             this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
@@ -1159,6 +1160,12 @@ export class AdministrationComponent implements OnInit{
       if(event.checked){
         console.log('EVENT CHECKED : ', event.checked )
         this.ProfilAccount.users.push(emp.id)
+        console.log("this.ProfilAccount.users", this.ProfilAccount.users)
+        this.userHandlersServiceCustomer.updateAccount(this.ProfilAccount).then((resp:any)=>{
+          resp.subscribe((response:any)=>{
+            console.log('la resp du update user staff: ! ', response)
+          })
+        });
       }else{
         console.log('EVENT CHECKED : ', event.checked )
         this.ProfilAccount.users =  this.ProfilAccount.users.filter((user:any) => user !== emp.id)
