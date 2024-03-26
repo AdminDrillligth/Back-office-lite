@@ -320,10 +320,10 @@ export class AdministrationComponent implements OnInit{
       this.displayedColumnsAccounts = ['firstName','actions'];
 
     }
-    console.log('Le width du screen : !',widthScreen)
+    // console.log('Le width du screen : !',widthScreen)
     this.userHandlersServiceCustomer.getUpdateallUsers();
     this.utilsService._templateOptions.subscribe((theme:any) => {
-      console.log('THEME !: ',theme)
+      // console.log('THEME !: ',theme)
     });
     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       console.log('admin see as admin : ', asAdmin)
@@ -356,14 +356,14 @@ export class AdministrationComponent implements OnInit{
 
         setTimeout(() => {
           this.letsee = true;
-          console.log('WE COME BACK WITH THIS ACCOUNT SEE ADMIN  === TRUE : ! ',this.ProfilAccount)
+          // console.log('WE COME BACK WITH THIS ACCOUNT SEE ADMIN  === TRUE : ! ',this.ProfilAccount)
         let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
 
-        console.log('profil complet userDetailAccount ON PASSE ADMIN TRUE:',userDetailAccount)
+        // console.log('profil complet userDetailAccount ON PASSE ADMIN TRUE:',userDetailAccount)
         this.ProfilAccount = userDetailAccount
         this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
           resp.subscribe((e:any) =>{
-            console.log('LA RESP DU ACCOUNT DETAILS: DANS ADMIN TRUE ',e.account)
+            // console.log('LA RESP DU ACCOUNT DETAILS: DANS ADMIN TRUE ',e.account)
             this.ProfilAccount = e.account;
         // users
         if(this.ProfilAccount.users.length > 0 ){
@@ -388,9 +388,9 @@ export class AdministrationComponent implements OnInit{
       }
     })
     this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-      console.log('list of firwares: ',firmwareList)
+      // console.log('list of firwares: ',firmwareList)
       firmwareList.subscribe((list:any)=>{
-        console.log('list of firwares: ',list.firmwareList)
+        // console.log('list of firwares: ',list.firmwareList)
         this.firmWareList = list.firmwareList;
         this.firmWareList = this.firmWareList.sort((a, b) => {
           if (a.version > b.version) {
@@ -412,8 +412,8 @@ export class AdministrationComponent implements OnInit{
          if(update == true){
           this.Accounts = [];
           let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
-          console.log('ICI all accounts :: ',allAccounts)
-          console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
+          // console.log('ICI all accounts :: ',allAccounts)
+          // console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{
             if(account.role === 'admin' || account.role === 'owner'){
@@ -431,7 +431,7 @@ export class AdministrationComponent implements OnInit{
     })
 
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+    // console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     if(this.AccountOfUser.role === 'admin'){
       let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
       this.Accounts.length = 0
@@ -451,10 +451,10 @@ export class AdministrationComponent implements OnInit{
       this.seeAsOwner = true;
       this.ProfilAccount = this.AccountOfUser;
       this.disabledSpinner = false;
-      console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
+      // console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
       this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
-          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+          // console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         })
       });
     }
@@ -463,10 +463,10 @@ export class AdministrationComponent implements OnInit{
 
   // ICI ON GET LES DETAILS D'UN COMPTE EN PARTICULIER : => UN COMPTE SELECTIONNE
   getDetails(accountOwner:any){
-    console.log("TEST OWNER TO GET THE NEW DATA",accountOwner)
+    // console.log("TEST OWNER TO GET THE NEW DATA",accountOwner)
     this.userHandlersServiceCustomer.getAccountDetails(accountOwner).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU GET AFTER UPDATE DETAILS: ',e.account)
+        // console.log('LA RESP DU GET AFTER UPDATE DETAILS: ',e.account)
         localStorage.setItem('account-data-user', JSON.stringify(e.account));
 
         this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
@@ -491,15 +491,15 @@ export class AdministrationComponent implements OnInit{
 
   // CHARTS LINE UP
   onSelect(data:any): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
   onActivate(data:any): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
+    // console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
   onDeactivate(data:any): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
   // CREATE ADMIN !!
@@ -547,7 +547,7 @@ export class AdministrationComponent implements OnInit{
 
 
   onAutocompleteSelected(result: PlaceResult) {
-    console.log('onAutocompleteSelected: ', result.address_components);
+    // console.log('onAutocompleteSelected: ', result.address_components);
     this.region = result.address_components[5].long_name;
     this.city = result.address_components[2].long_name;
     this.zip =  result.address_components[6].long_name;
@@ -558,7 +558,7 @@ export class AdministrationComponent implements OnInit{
 
   updateProfilDatas(ProfilAccount:any){
     this.urlImg = undefined;
-    console.log('PROFILE TO UPDATE :   ! ',ProfilAccount)
+    // console.log('PROFILE TO UPDATE :   ! ',ProfilAccount)
     this.displayModalUpdateDataProfil = true;
     this.update = true;
     if(ProfilAccount !== undefined){
@@ -648,10 +648,10 @@ export class AdministrationComponent implements OnInit{
   displayButtonSeeAccount = false;
   openModalActions(account:any){
     this.displayButtonSeeAccount = false;
-    console.log('ON CHOOS E CE ACCOUNT : ! ',account)
+    // console.log('ON CHOOS E CE ACCOUNT : ! ',account)
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        // console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         if(e.account !== undefined){
           this.displayButtonSeeAccount = true;
           this.modalAccount = e.account;
@@ -680,9 +680,9 @@ export class AdministrationComponent implements OnInit{
 
     }else{
       this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-        console.log('list of firwares: ',firmwareList)
+        // console.log('list of firwares: ',firmwareList)
         firmwareList.subscribe((list:any)=>{
-          console.log('list of firwares: ',list.firmwareList)
+          // console.log('list of firwares: ',list.firmwareList)
           this.firmWareList = list.firmwareList;
           this.firmWareList = this.firmWareList.sort((a, b) => {
             if (a.version > b.version) {
@@ -702,7 +702,7 @@ export class AdministrationComponent implements OnInit{
         })
       });
     }
-    console.log('QUEL COMPTE : ! ',this.modalAccount)
+    // console.log('QUEL COMPTE : ! ',this.modalAccount)
     // if(this.modalAccount === undefined){
     //   this.router.navigate(['login']);
     // }
@@ -715,17 +715,17 @@ export class AdministrationComponent implements OnInit{
   modalAccountOwner:any;
   topOfModal = '140px'
   openModalActionsOwner(account:any,event:any){
-    console.log('le event de la mouse : ', event)
-    console.log('le event de la mouse : ', event.layerY)
-    console.log('LE ACCOUNT SELECT  : ! ',account)
+    // console.log('le event de la mouse : ', event)
+    // console.log('le event de la mouse : ', event.layerY)
+    // console.log('LE ACCOUNT SELECT  : ! ',account)
     this.topOfModal = event.layerY-200+'px'
     this.modalAccountOwner = account
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
 
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+        // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
         this.modalAccountOwner = e.account;
-        console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
+        // console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
         if(this.modalAccountOwner.privateOnly !== undefined){
           this.privateExerciceOnly = this.modalAccountOwner.privateOnly;
         }
@@ -751,7 +751,7 @@ export class AdministrationComponent implements OnInit{
   // public moderationAccount = false;
   modarateAccount(account:any){
     this.displayModalAction = false;
-    console.log('QUEL COMPTE : ! ',account)
+    // console.log('QUEL COMPTE : ! ',account)
     if(this.moderationAccount){
       this.moderationAccount = false
     }else{
@@ -761,7 +761,7 @@ export class AdministrationComponent implements OnInit{
     account.warning = this.moderationAccount;
     this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
       resp.subscribe((response:any)=>{
-        console.log('la resp du update user: ! ', response)
+        // console.log('la resp du update user: ! ', response)
 
       })
     });
@@ -769,16 +769,16 @@ export class AdministrationComponent implements OnInit{
     account.staff.forEach((staff:any)=>{
       this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
-          console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
           e.account.warning = account.warning;
           staffToUpdate.push(e.account)
-          console.log('STAFF ACCOUNT : !',staffToUpdate)
+          // console.log('STAFF ACCOUNT : !',staffToUpdate)
           if(account.staff.length === staffToUpdate.length){
-            console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
+            // console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
             staffToUpdate.forEach((staff:any)=>{
               this.userHandlersServiceCustomer.updateAccount(staff).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
-                  console.log('la resp du update Staff Private only: ! ', response)
+                  // console.log('la resp du update Staff Private only: ! ', response)
                 })
               });
             })
@@ -790,16 +790,16 @@ export class AdministrationComponent implements OnInit{
     account.users.forEach((user:any)=>{
       this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
-          console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
           e.account.warning = account.warning;
           userToUpdate.push(e.account)
-          console.log('STAFF ACCOUNT : !',userToUpdate)
+          // console.log('STAFF ACCOUNT : !',userToUpdate)
           if(account.users.length === userToUpdate.length){
-            console.log('SAME LENGTH STAFF ACCOUNT : !',userToUpdate)
+            // console.log('SAME LENGTH STAFF ACCOUNT : !',userToUpdate)
             userToUpdate.forEach((user:any)=>{
               this.userHandlersServiceCustomer.updateAccount(user).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
-                  console.log('la resp du update Staff Private only: ! ', response)
+                  // console.log('la resp du update Staff Private only: ! ', response)
                 })
               });
             })
@@ -810,7 +810,7 @@ export class AdministrationComponent implements OnInit{
 
 
 
-    console.log('Warning Only ? :',account.warning);
+    // console.log('Warning Only ? :',account.warning);
   }
 
   privateExercice(account:any){
@@ -831,16 +831,16 @@ export class AdministrationComponent implements OnInit{
     account.staff.forEach((staff:any)=>{
       this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
-          console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
           e.account.privateOnly = account.privateOnly;
           staffToUpdate.push(e.account)
           console.log('STAFF ACCOUNT : !',staffToUpdate)
           if(account.staff.length === staffToUpdate.length){
-            console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
+            // console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
             staffToUpdate.forEach((staff:any)=>{
               this.userHandlersServiceCustomer.updateAccount(staff).then((resp:any)=>{
                 resp.subscribe((response:any)=>{
-                  console.log('la resp du update Staff Private only: ! ', response)
+                  // console.log('la resp du update Staff Private only: ! ', response)
                 })
               });
             })
@@ -862,11 +862,11 @@ export class AdministrationComponent implements OnInit{
       account.role = 'user';
       this.modalAccount.staff.forEach((staff:any, index:number)=>{
         if(account.id === staff.id){
-          console.log(staff.id,index)
-          console.log(this.modalAccount.staff,this.modalAccount.users)
+          // console.log(staff.id,index)
+          // console.log(this.modalAccount.staff,this.modalAccount.users)
           this.modalAccount.users.push(account)
           this.modalAccount.staff = this.modalAccount.staff.filter((staff:any) => staff.id !== account.id)
-          console.log(this.modalAccount.staff,this.modalAccount.users)
+          // console.log(this.modalAccount.staff,this.modalAccount.users)
         }
       })
       console.log(this.modalAccount.staff,this.modalAccount.users)
@@ -876,9 +876,9 @@ export class AdministrationComponent implements OnInit{
         if(account.id === user.id){
           this.modalAccount.staff.push(account)
           this.modalAccount.users = this.modalAccount.users.filter((user:any) => user.id !== account.id)
-          console.log(this.modalAccount.staff,this.modalAccount.users)
+          // console.log(this.modalAccount.staff,this.modalAccount.users)
 
-          console.log(user.id,index)
+          // console.log(user.id,index)
         }
       })
       console.log(this.modalAccount.staff,this.modalAccount.users)
@@ -901,7 +901,7 @@ export class AdministrationComponent implements OnInit{
 
 
   selectedFirmware(firmware:any){
-    console.log('FIRMWARE : ! ',firmware.id,firmware)
+    // console.log('FIRMWARE : ! ',firmware.id,firmware)
     this.selectedVersion = firmware;
   }
 
@@ -912,7 +912,7 @@ export class AdministrationComponent implements OnInit{
   displayModalOfPrivateFirmware(account:any){
     if(account !== undefined){
       if(account.privateFirmwareId !== undefined){
-        console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
+        // console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
         if(account.privateFirmwareId !== "" ){
           this.firmWareService.getfirmwareDetails(account.privateFirmwareId).subscribe((element:any)=>{
             console.log('LE PRIVATE  : ',element)
@@ -934,7 +934,7 @@ export class AdministrationComponent implements OnInit{
 
         }else{
           this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
-            console.log('la resp du firmware global : ', element)
+            // console.log('la resp du firmware global : ', element)
               if(element.response.result === "success"){
                 this.globalFirmwareForThisAccount = element.globalFirmware;
                 this.globalFirmwareId = true;
@@ -943,7 +943,7 @@ export class AdministrationComponent implements OnInit{
                 this.firmWareList.forEach((firmware:any)=>{
                   if(firmware.id === this.globalFirmwareForThisAccount.id){
                     firmware.choosen = true;
-                    console.log('LE IDENTIQUE : !',firmware)
+                    // console.log('LE IDENTIQUE : !',firmware)
                   }else{
                     firmware.choosen = false;
                   }
@@ -996,7 +996,7 @@ export class AdministrationComponent implements OnInit{
       console.log(this.selectedVersion, account)
       this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
         resp.subscribe((response:any)=>{
-          console.log('la resp du update user owner: ! ', response)
+          // console.log('la resp du update user owner: ! ', response)
 
         })
       });
@@ -1010,7 +1010,7 @@ export class AdministrationComponent implements OnInit{
     this.privateFirmwareId = false;
     this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
       resp.subscribe((response:any)=>{
-        console.log('la resp du update user owner: ! ', response)
+        // console.log('la resp du update user owner: ! ', response)
       })
     });
 
@@ -1024,7 +1024,7 @@ export class AdministrationComponent implements OnInit{
         this.firmWareList.forEach((firmware:any)=>{
           if(firmware.id === this.globalFirmwareForThisAccount.id){
             firmware.choosen = true;
-            console.log('LE IDENTIQUE : !',firmware)
+            // console.log('LE IDENTIQUE : !',firmware)
           }else{
             firmware.choosen = false;
           }
@@ -1110,16 +1110,16 @@ export class AdministrationComponent implements OnInit{
           this.ownerAccountOf = this.ProfilAccount;
           this.ProfilAccount = e.account;
           this.comeBackToOwner = true;
-          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account, e.account.owner)
-          console.log('LE OLD PROFIL : ',this.ownerAccountOf)
+          // console.log('LA RESP DU ACCOUNT DETAILS: ',e.account, e.account.owner)
+          // console.log('LE OLD PROFIL : ',this.ownerAccountOf)
           // this.ownerAccountOf = e.account.owner;
 
-          // if(this.ownerAccountOf.users.length > 0){
-          //   // users
-          //   this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
-          //   this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-          //   this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
-          // }
+          if(this.ownerAccountOf.users.length > 0){
+            // users
+            this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
+            this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+            this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
+          }
           this.disabledSpinner = false;
         }else{
          
@@ -1127,7 +1127,7 @@ export class AdministrationComponent implements OnInit{
           localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
           let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
 
-          console.log('profil complet userDetailAccount :',userDetailAccount)
+          // console.log('profil complet userDetailAccount :',userDetailAccount)
           localStorage.setItem('seeAsAdmin', 'true');
           // if(this.ProfilAccount.users.length > 0 ){
           //   // users
@@ -1153,8 +1153,18 @@ export class AdministrationComponent implements OnInit{
   }
 
   selectUserOfStaff(event:any,emp:any){
-    console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
-
+    // console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
+    if(this.ProfilAccount.role === "staff"){
+      // console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
+      if(event.checked){
+        console.log('EVENT CHECKED : ', event.checked )
+        this.ProfilAccount.users.push(emp.id)
+      }else{
+        console.log('EVENT CHECKED : ', event.checked )
+        this.ProfilAccount.users =  this.ProfilAccount.users.filter((user:any) => user !== emp.id)
+        console.log("this.ProfilAccount.users", this.ProfilAccount.users)
+      }
+    }
   }
 
 
@@ -1163,7 +1173,6 @@ export class AdministrationComponent implements OnInit{
     this.ownerAccountOf = undefined;
     this.getDetails( this.ProfilAccount.id)
     this.comeBackToOwner = false;
-
   }
 
 

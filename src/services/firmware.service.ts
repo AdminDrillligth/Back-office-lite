@@ -71,7 +71,7 @@ export class FirmWareService {
   
 
   async getFirmwareList(){
-    console.log('get la list')
+    // console.log('get la list')
     let token = localStorage.getItem('token') || '{}';
     let response = this.http.get(this.baseURL+'getFirmwaresList', {'headers':{ 'token': token}})
     return response;

@@ -104,11 +104,11 @@ export class AppComponent {
         });
 
         let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
-        console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
+        // console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
         this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
           let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
           // this.seeAsAccount = account;
-          console.log('ACCOUNT : ! ',asAdmin,'LE DETAIL DU USER SELECTIONNE ; : ! ', userDetailAccount);
+          // console.log('ACCOUNT : ! ',asAdmin,'LE DETAIL DU USER SELECTIONNE ; : ! ', userDetailAccount);
           if(asAdmin !== null){
             if(asAdmin === true){
               this.seeAsAdmin = true;
@@ -151,12 +151,12 @@ export class AppComponent {
           }
         });
         this.utilsService._seeNavigation.subscribe((seeNav:any) => {
-          console.log('WE SEE NAV ??? ',seeNav)
+          // console.log('WE SEE NAV ??? ',seeNav)
 
           setTimeout(() => {
             let check = this.url.path().split("?")
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-            console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+            // console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
             if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
              
             }else{
@@ -167,7 +167,7 @@ export class AppComponent {
                 }
               }
             }
-            console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
+            // console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
           }, 400);
          
           
@@ -202,9 +202,9 @@ export class AppComponent {
   }
 
   navigateTo(item:any){
-    console.log('NAV TO ::: ',item);
+    // console.log('NAV TO ::: ',item);
     if(item.link === 'trainings'){
-      console.log('go trainings')
+      // console.log('go trainings')
       this.router.navigate(['trainings']);
     }else{
       this.router.navigate([item.link]);
@@ -219,7 +219,7 @@ export class AppComponent {
   }
 
   seenavbar(){
-    console.log('seenavbar')
+    console.log('seenavbar what this console ?? you can delete')
   }
 
   updateData(){
