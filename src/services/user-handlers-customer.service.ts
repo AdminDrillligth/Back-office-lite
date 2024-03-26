@@ -72,9 +72,9 @@ export class UserHandlersServiceCustomer {
     let token = localStorage.getItem('token') || '{}';
     let header = {'id':id, 'token':token }
     let response = await this.http.get(this.baseURL+'getAccountDetails', {'headers':header} )
-    console.log('LA RESP ',response)
+    // console.log('LA RESP ',response)
     response.subscribe((rep:any)=>{
-      console.log('LE SUBSCRIBE DE LA REP : ',rep)
+      // console.log('LE SUBSCRIBE DE LA REP : ',rep)
     })
     // if(response.response.result === "expiredTokenError"){
     //   this.router.navigate(['login']);

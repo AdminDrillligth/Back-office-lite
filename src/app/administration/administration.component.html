@@ -119,7 +119,7 @@
     <mat-paginator *ngIf="!letsee " style="margin-bottom: 20px;" #paginatorAccounts [length]="resultsLength" [pageSize]="10" aria-label="Choisir la page"></mat-paginator>
   </div>
   <div *ngIf="letsee && ProfilAccount !== undefined || seeAsOwner" >
-    
+
     <div class="profil-container">
       <button *ngIf="comeBackToOwner" (click)="comeBacktoProfilOwner()" style="position: relative; top: 50px;" class="back-button" type="button" mat-mini-fab color="accent" > <mat-icon >close</mat-icon></button>
       <h2 style="margin-left:20px;padding-top: 20px;">Profil</h2>
@@ -210,34 +210,23 @@
         </div>
         <button mat-button mat-dialog-close class="btn-modifie mg-btm-del" >Fermer</button>
       </div>
-      <div *ngIf="ProfilAccount !== undefined && ProfilAccount.users.length > 0 || ownerAccountOf.users.length > 0"  #users>
+      <div *ngIf="ProfilAccount !== undefined && ProfilAccount.users.length > 0 || ownerAccountOf !== undefined"  #users>
         <h3 style="margin-left: 30px ;">Participants</h3>
 
 
-        <!--  NEW ARRAY WITH MAT TABLE -->
+
         <table  style='text-align:center;' mat-table [dataSource]="dataSourceUserOfChoosenAccount">
-          <!--PICTURE ?  -->
-          <!-- <img *ngIf="!account.avatarimages" src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                alt="" style="width: 45px; height: 45px" class="rounded-circle"/> -->
+
           <ng-container matColumnDef="firstName">
             <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Nom </th>
-            <td mat-cell *matCellDef="let emp"> 
+            <td mat-cell *matCellDef="let emp">
               <div *ngIf="ownerAccountOf !== undefined" style="left: 0px;display: inline-block;position: absolute;"><mat-slide-toggle (change)="selectUserOfStaff($event,emp)" class="display-toggle">Sélectionné</mat-slide-toggle></div>
-              <div style="display:inline-block;margin-left: 150px;">{{emp.fullName}}</div> 
+              <div style="display:inline-block;margin-left: 150px;">{{emp.fullName}}</div>
             </td>
           </ng-container>
-          <!-- <ng-container  matColumnDef="role" >
-            <th  mat-header-cell *matHeaderCellDef style='text-align:center;'> Rôle </th>
-            <td  mat-cell *matCellDef="let emp" style='text-align:center;'>
-              <mat-select value="{{emp.role}}">
-                <mat-option *ngFor="let role of rolesUsers" [value]="role.value">
-                  {{role.name}}
-                </mat-option>
-              </mat-select>
-            </td>
-          </ng-container> -->
+
             <ng-container  matColumnDef="moderation">
-              <!-- https://material.angular.io/components/checkbox/examples -->
+
               <th mat-header-cell *matHeaderCellDef style='text-align:center;'> Compte validé </th>
               <td  mat-cell *matCellDef="let emp" style='text-align:center;'><span  > <mat-icon *ngIf="emp.validate" >done</mat-icon > </span></td>
             </ng-container>
@@ -247,7 +236,7 @@
               <button (click)="openModalActionsOwner(emp,$event)" type="button" class="btn btn-link btn-sm btn-rounded"><mat-icon >more_horiz</mat-icon></button>
             </td>
           </ng-container>
-          <!-- DEFINE A IMG ON TD :) WHEN TRUE OR FALSE -->
+
 
           <tr mat-header-row *matHeaderRowDef="displayedColumnsOfChoosenAccount"></tr>
 
@@ -257,50 +246,6 @@
 
       </div>
 
-      <!-- <div class="container-graphique">
-        <div>
-          <button class="button-graph" type="button" mat-mini-fab color="accent" >
-            <mat-icon>pie_chart</mat-icon>
-          </button>
-          <span class="span-graph" ><b>Données graphiques :       </b></span>
-          <mat-form-field>
-            <mat-label>Sélectionner les graphiques à afficher</mat-label>
-            <mat-select [(ngModel)]="selectedCharts" (selectionChange)="selectChangeChart($event)" multiple>
-              <mat-option *ngFor="let chart of Charts" [value]="chart">{{chart}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div style="margin-right:100px" class="charts-container">
-          <ngx-charts-pie-chart
-          [legendTitle]="'Statistiques'"
-          [legend]="true"
-          [results]="saleData"
-          [view]="[widthcard,heigthCard]"
-          [labels]="true" >
-        </ngx-charts-pie-chart>
-        </div>
-        <div>
-          <ngx-charts-bar-vertical
-            [view]="view"
-            [scheme]="colorScheme"
-            [results]="single"
-            [gradient]="gradient"
-            [xAxis]="showXAxis"
-            [yAxis]="showYAxis"
-            [legend]="showLegend"
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
-            [xAxisLabel]="xAxisLabel"
-            [yAxisLabel]="yAxisLabel"
-            (select)="onSelect($event)"
-            (activate)="onActivate($event)"
-            (deactivate)="onDeactivate($event)">
-          </ngx-charts-bar-vertical>
-        </div>
-         <div style="margin-right:100px" class="charts-container">
-          <span>DATA:</span>
-        </div>
-      </div> -->
     </div>
   </div>
   <div *ngIf="displayModalAction" class="display-modal-action">
@@ -412,6 +357,6 @@
     <div class="bottom-btn">
       <button (click)="closeModalUpdateProfil()"  mat-button class="btn-modifie mg-btm-del">Annuler</button>
       <button mat-button (click)="updateProfilSender(ProfilAccount)"  class="btn-delete mg-btm-del" >Mettre à jour</button>
-    </div> 
+    </div>
   </div>
 </div>

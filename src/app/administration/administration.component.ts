@@ -353,15 +353,17 @@ export class AdministrationComponent implements OnInit{
         }
       }
       if(asAdmin == true){
-        this.letsee = true;
-        console.log('WE COME BACK WITH THIS ACCOUNT : ! ',this.ProfilAccount)
+
+        setTimeout(() => {
+          this.letsee = true;
+          console.log('WE COME BACK WITH THIS ACCOUNT SEE ADMIN  === TRUE : ! ',this.ProfilAccount)
         let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
 
-        console.log('profil complet userDetailAccount :',userDetailAccount)
+        console.log('profil complet userDetailAccount ON PASSE ADMIN TRUE:',userDetailAccount)
         this.ProfilAccount = userDetailAccount
         this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
           resp.subscribe((e:any) =>{
-            console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+            console.log('LA RESP DU ACCOUNT DETAILS: DANS ADMIN TRUE ',e.account)
             this.ProfilAccount = e.account;
         // users
         if(this.ProfilAccount.users.length > 0 ){
@@ -381,6 +383,8 @@ export class AdministrationComponent implements OnInit{
 
           })
         });
+        }, 1000);
+
       }
     })
     this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
@@ -610,7 +614,7 @@ export class AdministrationComponent implements OnInit{
           this.displayModalUpdateDataProfil = false;
           this.getDetails(response.account.id);
           // localStorage.setItem('account-data-user', JSON.stringify(e.account));
-  
+
           // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
           // localStorage.setItem('account', JSON.stringify(response.account));
           // this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
@@ -622,12 +626,12 @@ export class AdministrationComponent implements OnInit{
 
   urlImg :any= undefined;
   onchangeInputImg(file:any){
-    // 
+    //
     var imageResize = new ImageResize({
       format: 'jpg',
       width: 256
     });
-    
+
     imageResize.play(file.target.files[0]).then((e:any)=>{
       this.dataBase64 = e;
       console.log(file)
@@ -843,8 +847,8 @@ export class AdministrationComponent implements OnInit{
           }
         })
       })
-     
-  
+
+
     })
 
 
@@ -1094,14 +1098,14 @@ export class AdministrationComponent implements OnInit{
   ownerAccountOf = undefined;
   seeAdmin(account:any){
     this.disabledSpinner = true;
-    this.letsee = true;
+
     this.displayModalAction = false;
     this.displayModalActionOwner = false;
     // this.ProfilAccount = account;
-    // console.log('DETAILS ACCOUNT BEFORE: !',this.ProfilAccount)
+    console.log('DETAILS ACCOUNT BEFORE: WE SEE ADMIN :::  !',account)
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        
+
         if(e.account.role === "staff" || e.account.role === "user" ){
           this.ownerAccountOf = this.ProfilAccount;
           this.ProfilAccount = e.account;
@@ -1109,35 +1113,40 @@ export class AdministrationComponent implements OnInit{
           console.log('LA RESP DU ACCOUNT DETAILS: ',e.account, e.account.owner)
           console.log('LE OLD PROFIL : ',this.ownerAccountOf)
           // this.ownerAccountOf = e.account.owner;
-         
-          if(this.ownerAccountOf.users.length > 0){
-            // users
-            this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
-            this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-            this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
-          }
+
+          // if(this.ownerAccountOf.users.length > 0){
+          //   // users
+          //   this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
+          //   this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          //   this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
+          // }
           this.disabledSpinner = false;
         }else{
-          this.utilsService.sendSeeAsAdmin(true);
+         
           this.ProfilAccount = e.account;
-          if(this.ProfilAccount.users.length > 0 ){
-            // users
-            this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-            this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-            this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-          }
+          localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+          console.log('profil complet userDetailAccount :',userDetailAccount)
+          localStorage.setItem('seeAsAdmin', 'true');
+          // if(this.ProfilAccount.users.length > 0 ){
+          //   // users
+          //   this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          //   this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          //   this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+          // }
           if(this.ProfilAccount.staff.length > 0){
             // staff
             this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
             this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
             this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-            
+
           }
           this.disabledSpinner = false;
-  
-
+          this.letsee = true;
+          this.utilsService.sendSeeAsAdmin(true);
         }
- 
+
         
       })
     });
@@ -1145,7 +1154,7 @@ export class AdministrationComponent implements OnInit{
 
   selectUserOfStaff(event:any,emp:any){
     console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
-    
+
   }
 
 
