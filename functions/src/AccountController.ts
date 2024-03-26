@@ -141,7 +141,7 @@ const createAccount = async (req: any, res: Response) => {
         if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
         if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
         if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
-        if(dataBodyOfRequest.fullName !== undefined){ fullName = dataBodyOfRequest.familyName + ' ' +dataBodyOfRequest.firstName}
+        if(dataBodyOfRequest.fullName !== undefined){ fullName = dataBodyOfRequest.firstName  + ' ' +dataBodyOfRequest.familyName}
         if(dataBodyOfRequest.avatarURL !== undefined){ avatarURL = dataBodyOfRequest.avatarURL}
 
         if(dataBodyOfRequest.birthdate !== undefined){ birthdate = dataBodyOfRequest.birthdate}
@@ -374,6 +374,11 @@ const getAccountDetails = async (req: any, res: any) => {
 
         }
         if(userDetails.role === 'staff' || userDetails.role === 'user'){
+
+          if(userDetails.role === 'staff'){
+            let OwnerDetails = await db.collection('account-handler').where('id', '==', userDetails.owner).get();
+            functions.logger.log("LE DETAILS DU OWNER DE CE STAFF ::::  ",OwnerDetails.users,OwnerDetails )
+          }
             return res.status(200).json({
               response: {
                 result:'success',
@@ -528,7 +533,7 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
             if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
             if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }
-            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.familyName + ' '+dataBodyOfRequest.firstName }
+            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.firstName + ' '+dataBodyOfRequest.familyName }
             if(dataBodyOfRequest.avatarURL !== undefined){ userDetail.avatarURL = dataBodyOfRequest.avatarURL }
             if(dataBodyOfRequest.role !== undefined){ userDetail.role = dataBodyOfRequest.role }
                 if(dataBodyOfRequest.personalInfo !== undefined){

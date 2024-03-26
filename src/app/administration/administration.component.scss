@@ -349,6 +349,14 @@
   margin-left:10px;
 }
 
+.display-toggle{
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom:5px;
+  font-size: large;
+}
+
 .profil-container{
   margin-top: 15px;
   height: 800px;
@@ -377,7 +385,7 @@
 
 ::ng-deep .ngx-charts {
   text{
-      fill: #000000!important;
+      fill: #fff!important;
   }
 }
 

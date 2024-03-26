@@ -18,6 +18,7 @@ export class ExerciseService {
   headers = { 'content-type': 'application/json'}
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
   constructor(
+    private router:Router,
     private utilsService:UtilsService,
     private http:HttpClient,
     private fireStoreServiceImages:FireStoreServiceImages,
@@ -33,6 +34,12 @@ export class ExerciseService {
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les exercices ! ')
     let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'38'}})
+    response.subscribe((rep:any)=>{
+      if(rep.response.result === "expiredTokenError"){
+        this.utilsService.howToSeeNavigation(false);
+        this.router.navigate(['']);
+      }
+    })
     return response;
   }
 

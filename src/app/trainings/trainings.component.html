@@ -16,7 +16,7 @@
         </mat-card>
         <hr *ngIf="item.selected !== false" class="hr-line" >
     </div> -->
-    <div style="text-align:center;">
+    <div style="text-align:center;margin-bottom:5px;">
       <!-- <div *ngIf="chooseType === 'Exercices'"  class="btn-add col-md-3" (click)="createExercice()" ><button class="btn-add-ex">Créer un exercice</button></div> -->
       <div  *ngIf="chooseType === 'Exercices' && AccountOfUser.role === 'admin'"  class="btn-add-right btn-add col-md-3" (click)="uploadExercice()" ><button class="btn-add-ex">Charger un exercice</button></div>
       <!-- <div *ngIf="chooseType === 'Sessions'" class="btn-add col-md-3" (click)="createSession()" ><button class="btn-add-ex">Créer une session</button></div> -->
@@ -57,10 +57,10 @@
       </mat-card-header>
       <mat-slide-toggle checked="{{item.selected}}" (change)="selectExercices($event,item)" #{{item.header.id}} class="display-toggle">Activé</mat-slide-toggle>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Public</span>
-      <div style="height: 180px;
+      <div style="height: auto;
       overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
       <mat-card-content>
-        <p class="invisible-scrollbar paragraphe">{{item.header.description}}</p>
+        <div style="width:99%;height: 160px;overflow: auto;margin-top: 5px;"><p class="invisible-scrollbar paragraphe">{{item.header.description}}</p></div>
       </mat-card-content>
       <mat-card-actions>
         <div mat-card-avatar class="header-image"></div>
@@ -73,7 +73,7 @@
   <div *ngIf="displayTypeOf === 'list'">
     <mat-card class="card-list" *ngFor="let item of publicTrainings.cards">
       <div><img class="img-card-list" style="margin:2px;width:150px;" mat-card-image src="{{item.header.image}}" alt=""></div>
-      <div class="display-title-list"><p>{{item.header.title}}</p></div>
+      <div class="display-title-list"><h5>{{item.header.title}}</h5></div>
       <div class="display-desc-list"><p style="width: 80%; overflow: hidden; height: 20px;">{{item.header.description}}</p></div>
       <mat-slide-toggle checked="{{item.selected}}" (change)="selectExercices($event,item)" #{{item.header.id}} style="position: absolute; right: 5px;top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
       <button (click)="openDialog(item)" class="btn-card-list" mat-button><mat-icon> list_alt</mat-icon></button>
@@ -92,10 +92,11 @@
       </mat-card-header>
       <mat-slide-toggle checked="{{item.selected}}" (change)="selectExercices($event,item)" #{{item.header.id}} class="display-toggle">Activé</mat-slide-toggle>
       <span [ngClass]="audience === item.audience ? 'public' : 'private'" class="audience">Privé</span>
-      <div style="height: 180px;
+      <div style="height: auto;
       overflow: hidden;"><img class="img-card" mat-card-image src="{{item.header.image}}" alt=""></div>
-      <mat-card-content>
-        <p class="invisible-scrollbar paragraphe">{{item.header.description}}</p>
+      <mat-card-content style="min-height: 160px;max-height: 160px;">
+        <div style="height: 160px;overflow: auto;margin-top: 5px;"><p class="invisible-scrollbar paragraphe">{{item.header.description}}</p></div>
+       
       </mat-card-content>
       <mat-card-actions>
         <div mat-card-avatar class="header-image"></div>
@@ -109,7 +110,7 @@
   <div *ngIf="displayTypeOf === 'list'">
     <mat-card class="card-list" *ngFor="let item of privateTrainings.cards">
       <div><img class="img-card-list" style="margin:2px;width:150px;" mat-card-image src="{{item.header.image}}" alt=""></div>
-      <div class="display-title-list"><p>{{item.header.title}}</p></div>
+      <div class="display-title-list"><h5>{{item.header.title}}</h5></div>
       <div class="display-desc-list"><p style="width: 80%; overflow: hidden; height: 20px;">{{item.header.description}}</p></div>
       <mat-slide-toggle (change)="selectExercices($event,item)" checked="{{item.selected}}" #{{item.header.id}} style="position: absolute; right: 5px; top: 5px;" class="display-toggle">Activé</mat-slide-toggle>
       <button (click)="openDialog(item)" class="btn-card-list" mat-button><mat-icon> list_alt</mat-icon></button>

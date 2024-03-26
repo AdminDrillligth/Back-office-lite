@@ -20,6 +20,7 @@ export class FirmWareService {
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
 
   constructor(
+    private router:Router,
     private utilsService:UtilsService,
     private http:HttpClient,
     private fireStoreServiceImages:FireStoreServiceImages,
@@ -60,6 +61,10 @@ export class FirmWareService {
     console.log(response)
     response.subscribe((resp:any)=>{
       console.log('ON VEUT LE GLOBAL FIRMWARE : ',resp)
+      if(resp.response.result === "expiredTokenError"){
+        this.utilsService.howToSeeNavigation(false);
+        this.router.navigate(['']);
+      }
     })
     return response;
   }

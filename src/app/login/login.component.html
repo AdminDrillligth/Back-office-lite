@@ -47,6 +47,9 @@
           <span style="color:red;" *ngIf="bademail !== false">
             Email incorrect.
           </span>
+          <span style="color:red;" *ngIf="badWarning !== false">
+            Compte bloqué, veuillez contacter votre administrateur ou le support Drlllight.
+          </span>
           <button (click)="doLogin()" class="login-btn" mat-flat-button >Connexion</button>
         </form>
         <span ><button (click)="resetPassWord()" style="margin-top:20px;color:white;" mat-button>Mot de passe oublié ?</button></span>

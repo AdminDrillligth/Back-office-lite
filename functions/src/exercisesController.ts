@@ -244,6 +244,10 @@ const getExercisesList = async (req: any, res: any) => {
                   }
                 })
               }
+              if(lastPrivateExercisesChangeCount === undefined){
+                privateExercises = [];
+                lastPrivateExercisesChangeCount = 0;
+              }
               // functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",lastPrivateExercisesChangeCount )
               return res.status(200).json({
                 response: {
@@ -294,6 +298,10 @@ const getExercisesList = async (req: any, res: any) => {
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
+                  }
+                  if(lastPrivateExercisesChangeCount === undefined){
+                    privateExercises = [];
+                    lastPrivateExercisesChangeCount = 0;
                   }
                 }
               })
@@ -348,6 +356,10 @@ const getExercisesList = async (req: any, res: any) => {
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
+                  }
+                  if(lastPrivateExercisesChangeCount === undefined){
+                    privateExercises = [];
+                    lastPrivateExercisesChangeCount = 0;
                   }
                 }
               })

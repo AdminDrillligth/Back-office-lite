@@ -1951,13 +1951,20 @@ const getResultsList = async (req: any, res: any) => {
             },
           });
         }else {
-            let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).orderBy("result.infos.startDate", "desc").get();
+            let resultsHandler = await db.collection('results-handler').where('idAccount', '==', idUser).get();
             // functions.logger.log("Result handler resp with Iduser ", resultsHandler)
             if(resultsHandler.size !== 0){
             resultsHandler.forEach(async (doc:any) =>{
                 // functions.logger.log("Result handler resp with Iduser ", doc);
                 results.push(doc.data());
             });
+            functions.logger.log("Result NOT SORT ", results);
+            // results = results.sort(function(a:any,b:any){
+            //   // Turn your strings into dates, and then subtract them
+            //   // to get a value that is either negative, positive, or zero.
+            //   return new Date(b.result.infos.startDate) - new Date(a.result.infos.startDate);
+            // });
+            functions.logger.log("Result SORT ", results[0].result);
             }
 
   //   let decodeds: any;

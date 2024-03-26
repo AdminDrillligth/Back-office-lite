@@ -162,11 +162,13 @@ export class TrainingsComponent implements OnInit {
           if(this.asAdmin === false){
             localStorage.setItem('account', JSON.stringify(response.account));
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            this.getExercicesList()
           }else{
             localStorage.setItem('account-data-user', JSON.stringify(response.account));
             let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
             console.log('LE DETAIL DU USER : ! ',userDetailAccount)
             this.userSource = userDetailAccount;
+            this.getExercicesList()
           }
           
         })
@@ -181,11 +183,13 @@ export class TrainingsComponent implements OnInit {
           if(this.asAdmin === false){
             localStorage.setItem('account', JSON.stringify(response.account));
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            this.getExercicesList()
           }else{
             localStorage.setItem('account-data-user', JSON.stringify(response.account));
             let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
             console.log('LE DETAIL DU USER : ! ',userDetailAccount)
             this.userSource = userDetailAccount;
+            this.getExercicesList()
           }
           
         })
@@ -203,7 +207,7 @@ export class TrainingsComponent implements OnInit {
         resp.subscribe((response:any)=>{
           if(response.response.result === 'success'){
             // console.log('LA RESP DANS TRAINING : ',response)
-            console.log('LA RESP DANS TRAINING : ',response.publicExercises)
+            console.log('LA RESP DANS TRAINING : ',response)
             this.publicTrainings.cards = response.publicExercises;
             this.publicTrainings.cards.forEach((exo:any)=>{
               exo.selected = false;
@@ -242,7 +246,7 @@ export class TrainingsComponent implements OnInit {
       // Lors d'un mode normal
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
-          // console.log('LA RESP DANS TRAINING : ',response)
+          console.log('LA RESP DANS TRAINING : ',response)
           // console.log('LA RESP DANS TRAINING : ',response.publicExercises)
           this.publicTrainings.cards = response.publicExercises;
           this.publicTrainings.cards.forEach((exo:any)=>{

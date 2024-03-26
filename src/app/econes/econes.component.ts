@@ -214,15 +214,7 @@ export class EconesComponent implements OnInit {
               firmware.choosen = false;
             }
           })
-          this.firmWareList = this.firmWareList.sort((a, b) => {
-            if (a.date < b.date) {
-                return -1;
-            }
-            if (a.date > b.date) {
-                return 1;
-            }
-            return 0;
-          });
+
           
         })
       });
@@ -393,17 +385,6 @@ export class EconesComponent implements OnInit {
           console.log('list of firwares: ',list.firmwareList)
           
           this.firmWareList = list.firmwareList;
-          
-
-          this.firmWareList.forEach((firmware:any)=>{
-            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
-            if(this.detailsLastGlobalFirmware.id === firmware.id){
-              console.log('the same id of firm global ! ', firmware.id)
-              firmware.choosen = true;
-            }else{
-              firmware.choosen = false;
-            }
-          })
           this.firmWareList = this.firmWareList.sort((a, b) => {
             if (a.version > b.version) {
                 return -1;
@@ -414,8 +395,16 @@ export class EconesComponent implements OnInit {
             return 0;
           });
 
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+            if(this.detailsLastGlobalFirmware.id === firmware.id){
+              console.log('the same id of firm global ! ', firmware.id)
+              firmware.choosen = true;
+            }else{
+              firmware.choosen = false;
+            }
+          })
 
-          
         })
       });
     // }

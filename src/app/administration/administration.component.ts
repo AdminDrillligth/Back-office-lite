@@ -328,6 +328,8 @@ export class AdministrationComponent implements OnInit{
     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       console.log('admin see as admin : ', asAdmin)
       if(asAdmin == false){
+        this.ownerAccountOf = undefined;
+        this.comeBackToOwner = false;
         this.disabledSpinner = true;
         this.letsee = false;
         this.ProfilAccount = undefined;
@@ -1135,39 +1137,62 @@ export class AdministrationComponent implements OnInit{
 
   letsee = false;
   accountDetailOfUser:any;
+  comeBackToOwner:boolean=false;
+  ownerAccountOf = undefined;
   seeAdmin(account:any){
     this.disabledSpinner = true;
     this.letsee = true;
     this.displayModalAction = false;
-    this.ProfilAccount = account;
-    console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
+    this.displayModalActionOwner = false;
+    // this.ProfilAccount = account;
+    console.log('DETAILS ACCOUNT BEFORE: !',this.ProfilAccount)
+    
 
-    localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
-    let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
 
-    console.log('profil complet userDetailAccount :',userDetailAccount)
-    localStorage.setItem('seeAsAdmin', 'true');
-    let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
-    this.utilsService.sendSeeAsAdmin(true);
-
-    this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
+    this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-        this.ProfilAccount = e.account;
+        
+        if(e.account.role === "staff" || e.account.role === "user" ){
+          this.ownerAccountOf = this.ProfilAccount;
+          this.ProfilAccount = e.account;
+          this.comeBackToOwner = true;
+          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account, e.account.owner)
+          console.log('LE OLD PROFIL : ',this.ownerAccountOf)
+          // this.ownerAccountOf = e.account.owner;
+          this.disabledSpinner = false;
         // users
-        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-
-        // staff
-
-        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-        this.disabledSpinner = false;
+          this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
+          this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
+        }else{
+          this.utilsService.sendSeeAsAdmin(true);
+          this.ProfilAccount = e.account;
+          // users
+          this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+  
+          // staff
+  
+          this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+          this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+          this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+          this.disabledSpinner = false;
+        }
+ 
+        
       })
     });
   }
+
+  comeBacktoProfilOwner(){
+    this.ProfilAccount = this.ownerAccountOf;
+    this.ownerAccountOf = undefined;
+    this.getDetails( this.ProfilAccount.id)
+    this.comeBackToOwner = false;
+
+  }
+
 
 
   updateUsersOfProfilAccount(){

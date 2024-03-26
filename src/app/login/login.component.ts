@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit{
   badpassword : boolean= false;
   badpassuser : boolean= false;
   bademail : boolean= false;
+  badWarning :boolean = false;
   constructor(
     private tokenService:TokenService,
     private utilsService: UtilsService,
@@ -79,6 +80,13 @@ export class LoginComponent implements OnInit{
 
           this.http.get(this.baseURL+'getToken' ,{'headers':{passwordhash:authorizationValue, username:this.emailFormControl.value}}).subscribe((response:any) => {
             console.log('LA REP DU GET TOKEN  : ',response)
+            if(response.response.result === "errorBlockedAccount"){
+              this.disabledSpinner = false;
+              this.badWarning = true;
+              setTimeout(() => {
+                this.badWarning = false;
+              }, 1500);
+            }
             if(response.response.result === "invalidPasswordError"){
               this.disabledSpinner = false;
               this.badpassword = true;
