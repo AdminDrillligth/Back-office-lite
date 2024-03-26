@@ -364,15 +364,20 @@ export class AdministrationComponent implements OnInit{
             console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
             this.ProfilAccount = e.account;
         // users
-        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-
+        if(this.ProfilAccount.users.length > 0 ){
+          this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        }
+        if(this.ProfilAccount.staff.length > 0 ){
         // staff
 
         this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
         this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
         this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+        }
+
+
 
           })
         });
@@ -461,16 +466,21 @@ export class AdministrationComponent implements OnInit{
         localStorage.setItem('account-data-user', JSON.stringify(e.account));
 
         this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+        if(this.ProfilAccount.users.length > 0){
         // users
         this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
         this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
         this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        }
 
+        if(this.ProfilAccount.staff.length > 0){
         // staff
 
         this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
         this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
         this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+        }
+
       })
     });
   }
@@ -1037,67 +1047,10 @@ export class AdministrationComponent implements OnInit{
 
   }
 
-  // onchangeInputZip(zip:any){
-  //   console.log(zip)
-  //   const file = zip.target.files[0];
-  //   this.AccountOfUser.id
-  //   // Encode the file using the FileReader API
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //       console.log(reader.result);
-  //       console.log(reader);
-  //       // this.base64ToBlob(reader.result);
-  //       this.srCzip = reader.result;
-  //       this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
-  //       // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
-  //   };
-  //   reader.readAsDataURL(file);
-
-  //   // this.unzip();
-
-  // }
-
-  // getlastFirmware(){
-  //   this.firmWareService.getFirmware(this.AccountOfUser.id);
-  // }
-
   selectStatus(event:any){
     console.log('VALEUR DE CHANGEMENTS : ! ',event.value)
   }
 
-
-  unzip(){
-    // let blob = this.base64ToBlob(resolved);
-    // let zip = new JSZip();
-    //   zip.loadAsync(blob).then(function(zip) {
-    //     // zip.file("firmware.zip").async("string").then(function (content) {
-    //     //       console.log(content);
-    //     //            // content is the file as a string
-    //     // });
-    // }).catch((e) => {
-
-    // });
-  }
-
-  base64ToBlob(base64:any) {
-    // let json = JSON.parse(base64);
-    // console.log(json)
-    // let binaryString =  window.atob();
-    // let binaryLen = binaryString.length;
-
-    // let ab = new ArrayBuffer(binaryLen);
-    // let ia = new Uint8Array(ab);
-    // for (let i = 0; i < binaryLen; i++) {
-    //    ia[i] = binaryString.charCodeAt(i);
-    // }
-
-    // let bb:any = new Blob([ab]);
-    // bb.lastModifiedDate = new Date();
-    // bb.name = "firmware.zip";
-    // bb.type = "zip";
-    // console.log(bb)
-    // return bb;
-}
 
   selectedCharts :any = []
   Charts :any[]=["Staff/Utilisateurs", "Données Exercices", "Statistiques"];
@@ -1145,10 +1098,7 @@ export class AdministrationComponent implements OnInit{
     this.displayModalAction = false;
     this.displayModalActionOwner = false;
     // this.ProfilAccount = account;
-    console.log('DETAILS ACCOUNT BEFORE: !',this.ProfilAccount)
-    
-
-
+    // console.log('DETAILS ACCOUNT BEFORE: !',this.ProfilAccount)
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
         
@@ -1159,31 +1109,45 @@ export class AdministrationComponent implements OnInit{
           console.log('LA RESP DU ACCOUNT DETAILS: ',e.account, e.account.owner)
           console.log('LE OLD PROFIL : ',this.ownerAccountOf)
           // this.ownerAccountOf = e.account.owner;
+         
+          if(this.ownerAccountOf.users.length > 0){
+            // users
+            this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
+            this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+            this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
+          }
           this.disabledSpinner = false;
-        // users
-          this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
-          this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-          this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
         }else{
           this.utilsService.sendSeeAsAdmin(true);
           this.ProfilAccount = e.account;
-          // users
-          this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-          this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-          this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-  
-          // staff
-  
-          this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-          this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-          this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+          if(this.ProfilAccount.users.length > 0 ){
+            // users
+            this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+            this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+            this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+          }
+          if(this.ProfilAccount.staff.length > 0){
+            // staff
+            this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+            this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+            this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+            
+          }
           this.disabledSpinner = false;
+  
+
         }
  
         
       })
     });
   }
+
+  selectUserOfStaff(event:any,emp:any){
+    console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
+    
+  }
+
 
   comeBacktoProfilOwner(){
     this.ProfilAccount = this.ownerAccountOf;
@@ -1251,71 +1215,6 @@ export class AdministrationComponent implements OnInit{
 
   }
 
-  createfromDashboard(){
-
-  }
-
-  dataOfHistory = [];
-  uploadCsv(event:any){
-    console.log('EVENT : ! ',event)
-    var files = event.target.files; // FileList object
-    var file = files[0];
-
-    console.log('FILE=  ' ,file);
-    var reader = new FileReader();
-    console.log('READER ' ,reader);
-    reader.readAsText(file);
-    reader.onload = ev => {
-      if(reader.result !== null){
-        let csvdata = reader.result.toString();
-        let body = {data:csvdata};
-        // let csvdataJSON = JSON.parse(csvdata);
-        console.log('BODY DATA  : ! ',csvdata);
-        this.userHandlersServiceCustomer.sendCsvToApi(csvdata, this.ProfilAccount).then(el =>{
-
-          this.dataOfHistory = el.exercices;
-          console.log('RESULT :: ! ',this.dataOfHistory)
-        })
-        event.target.value = '';
-        // .then((resp:any)=>{
-        //   console.log('resp from serveur', resp);
-        // })
-      }
-    };
-
-  }
-
-  uploadJsonExercice(event:any){
-    console.log('EVENT : ! ',event)
-    var files = event.target.files; // FileList object
-    var file = files[0];
-
-    console.log('FILE=  ' ,file);
-    var reader = new FileReader();
-    console.log('READER ' ,reader);
-    reader.readAsText(file);
-    reader.onload = ev => {
-      if(reader.result !== null){
-        let jsondata = reader.result.toString();
-        let body = {data:jsondata};
-        // let csvdataJSON = JSON.parse(csvdata);
-        console.log('BODY DATA  : ! ',jsondata);
-        this.userHandlersServiceCustomer.sendJsonToApi(jsondata, file.name, this.ProfilAccount).then(el =>{
-          console.log('RESULT :: ! ',el)
-          // this.dataOfHistory = el.exercices;
-          // console.log('RESULT :: ! ',this.dataOfHistory)
-      })
-      // event.target.value = '';
-     }
-  }
-  }
-
-
-
-  gotoHistory(){
-    this.utilsService.sendNewHistory(this.dataOfHistory);
-    this.router.navigate(['history']);
-  }
 
   letSeeAccount:any;
   seeTheSameAdmin(account:any){
@@ -1446,10 +1345,6 @@ export class AdministrationComponent implements OnInit{
 
   //STAFF
 
-  seeStaffProfil(trained:any){
-
-  }
-
   updateAccountStaff(ProfilAccount:any , trained:any){
     console.log('Create a user of group!', trained);
     let update = {ProfilAccount:ProfilAccount, trained:trained}
@@ -1463,19 +1358,6 @@ export class AdministrationComponent implements OnInit{
     });
   }
 
-  sendResetPasswordStaff(trained:any){
-    console.log(trained)
-      // if (!this.email) {
-      //   alert('Type in your email first');
-      // }
-      // this.auth.resetPasswordInit(this.email)
-      // .then(
-      //   () => alert('A password reset link has been sent to your email
-      //   address'),
-      //   (rejectionReason) => alert(rejectionReason))
-      // .catch(e => alert('An error occurred while attempting to reset
-      //   your password'));
-  }
 
   sendResetPassword(account:any){
     console.log(account.data.email)
@@ -1488,9 +1370,6 @@ export class AdministrationComponent implements OnInit{
        .catch((e:any) => alert('An error occurred while attempting to reset your password'));
   }
 
-  updateCustomer(account:any){
-
-  }
 
   addAccountOfGroup(ProfilAccount:any){
     console.log('Create a user of group!', ProfilAccount);
