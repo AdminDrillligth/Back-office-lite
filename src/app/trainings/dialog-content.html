@@ -2,18 +2,17 @@
 <div class="background-modal">
 
 <mat-dialog-content class="invisible-scrollbar mat-typography">
-  <h2 style="color:antiquewhite">Description de l'exercice</h2>
-  <!-- <div class="container-title"><h1 class="title">{{data.item.text}}</h1></div> -->
+  <div class="container-title"><h1 class="title">{{data.item.header.title}}</h1></div>
 
   <img class="img-dialog" src="{{data.item.header.image}}">
-  <!-- <p  class="desc-dialog" >{{data.item.description}}</p> -->
+  <p  class="desc-dialog" >{{data.item.header.description}}</p>
   <!-- <p  class="title">{{data.item.state}}</p> -->
   <!-- <div  class="title" *ngFor="let categorie of data.item.categorie">{{categorie}}</div> -->
-  <p></p>
+
   <!-- <div  class="title" *ngFor="let thematic of data.item.thematic">{{thematic}}</div> -->
-  <p></p>
+
   <!-- <div  class="title" *ngFor="let sport of data.item.sports">{{sport}}</div> -->
-  <p></p>
+
   <!-- <div  class="title" *ngFor="let age_category of data.item.age_category">{{age_category.name}}</div> -->
 </mat-dialog-content>
 <mat-dialog-actions align="end">

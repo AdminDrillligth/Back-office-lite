@@ -168,6 +168,8 @@ const getExercisesList = async (req: any, res: any) => {
     // let lastUserChangeDate="";
     // let lastPrivateChangeDate="";
     let lastPublicChangeCount="";
+    let privatechanged = false;
+    let publicChanged = false;
     // let publicChanged = false;
     try {
       // sign token
@@ -230,7 +232,7 @@ const getExercisesList = async (req: any, res: any) => {
               }
               else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
                 const querySnapshot = await db.collection('exercise-handler').get();
-
+                privatechanged = true;
                 querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
 
                 allExercises.forEach((exercise:any)=> {
@@ -248,6 +250,11 @@ const getExercisesList = async (req: any, res: any) => {
                 privateExercises = [];
                 lastPrivateExercisesChangeCount = 0;
               }
+              if(userDetail.privateOnly === true){
+                publicExercises = [];
+                publicChanged = false;
+              }
+
               // functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",lastPrivateExercisesChangeCount )
               return res.status(200).json({
                 response: {
@@ -256,8 +263,8 @@ const getExercisesList = async (req: any, res: any) => {
                 },
                 publicExercises:publicExercises,
                 privateExercises:privateExercises,
-                publicChanged:false,
-                privateChanged:false,
+                publicChanged:publicChanged,
+                privateChanged:privatechanged,
                 publicExercisesChangeCount:lastPublicChangeCount,
                 privateExercisesChangeCount:lastPrivateExercisesChangeCount,
                 idUser:idUser,
@@ -292,6 +299,7 @@ const getExercisesList = async (req: any, res: any) => {
                     }
                   }
                   else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
+                    privatechanged = true;
                     if(idUser !== 'null'){
                       if(exercise.data.header.owner  !== undefined){
                         if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
@@ -303,10 +311,15 @@ const getExercisesList = async (req: any, res: any) => {
                     privateExercises = [];
                     lastPrivateExercisesChangeCount = 0;
                   }
+            
+                
                 }
               })
               
-
+              if(userDetail.privateOnly === true){
+                publicExercises = [];
+                publicChanged = false;
+              }
               return res.status(200).json({
                 response: {
                   result:'success',
@@ -314,8 +327,8 @@ const getExercisesList = async (req: any, res: any) => {
                 },
                 publicExercises:publicExercises,
                 privateExercises:privateExercises,
-                publicChanged:true,
-                privateChanged:false,
+                publicChanged:publicChanged,
+                privateChanged:privatechanged,
                 publicExercisesChangeCount:lastPublicChangeCount,
                 privateExercisesChangeCount:lastPrivateExercisesChangeCount,
                 idUser:idUser,
@@ -323,6 +336,7 @@ const getExercisesList = async (req: any, res: any) => {
 
             }
             else if(publicExercisesChangeCount < lastPublicChangeCount && publicExercisesChangeCount !== 0){
+              
               const querySnapshot = await db.collection('exercise-handler').get();
               querySnapshot.forEach((doc: any) => {
                   allExercises.push({data:doc.data(), id: doc.id});
@@ -351,6 +365,7 @@ const getExercisesList = async (req: any, res: any) => {
                   }
                   else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
                     if(idUser !== 'null'){
+                      privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
                         if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
@@ -361,10 +376,16 @@ const getExercisesList = async (req: any, res: any) => {
                     privateExercises = [];
                     lastPrivateExercisesChangeCount = 0;
                   }
+
                 }
               })
               publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
               // publicExercises.sort(compareByName())
+              if(userDetail.privateOnly === true){
+                publicExercises = [];
+                publicChanged = false;
+              }
+           
               return res.status(200).json({
                 response: {
                   result:'success',
@@ -372,8 +393,8 @@ const getExercisesList = async (req: any, res: any) => {
                 },
                 publicExercises:publicExercises,
                 privateExercises:privateExercises,
-                publicChanged:true,
-                privateChanged:false,
+                publicChanged:publicChanged,
+                privateChanged: privatechanged,
                 publicExercisesChangeCount:lastPublicChangeCount,
                 privateExercisesChangeCount:lastPrivateExercisesChangeCount,
                 // lastPublicChangeCount:lastPublicChangeCount,

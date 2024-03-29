@@ -1123,7 +1123,7 @@ export class AdministrationComponent implements OnInit{
           }
           this.disabledSpinner = false;
         }else{
-         
+
           this.ProfilAccount = e.account;
           localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
           let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
@@ -1148,7 +1148,7 @@ export class AdministrationComponent implements OnInit{
           this.utilsService.sendSeeAsAdmin(true);
         }
 
-        
+
       })
     });
   }

@@ -376,8 +376,8 @@ const getAccountDetails = async (req: any, res: any) => {
         if(userDetails.role === 'staff' || userDetails.role === 'user'){
 
           if(userDetails.role === 'staff'){
-            let OwnerDetails = await db.collection('account-handler').where('id', '==', userDetails.owner).get();
-            functions.logger.log("LE DETAILS DU OWNER DE CE STAFF ::::  ",OwnerDetails.users,OwnerDetails )
+            // let OwnerDetails = await db.collection('account-handler').where('id', '==', userDetails.owner).get();
+            // functions.logger.log("LE DETAILS DU OWNER DE CE STAFF ::::  ",OwnerDetails.users,OwnerDetails )
           }
             return res.status(200).json({
               response: {
