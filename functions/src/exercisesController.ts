@@ -202,16 +202,17 @@ const getExercisesList = async (req: any, res: any) => {
                 // idTable = doc.id
             })
             let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
-            functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",userDetail )
+            functions.logger.log("DETAIL DU ROLE DANS LE GET EXERCIES ::::  ",userDetail.role )
             functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",userDetail.trainings )
 
-            
+            functions.logger.log("DETAIL COMPLET DU COMPTE ::::  ",userDetail )
             if(publicExercisesChangeCount === lastPublicChangeCount || publicExercisesChangeCount > lastPublicChangeCount){
 
               if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
-
+                privatechanged = false;
               }
               if(privateExercisesChangeCount === 0){
+                privatechanged = true;
                 const querySnapshot = await db.collection('exercise-handler').get();
 
                 querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
@@ -249,6 +250,7 @@ const getExercisesList = async (req: any, res: any) => {
               if(lastPrivateExercisesChangeCount === undefined){
                 privateExercises = [];
                 lastPrivateExercisesChangeCount = 0;
+                privatechanged = false;
               }
               if(userDetail.privateOnly === true){
                 publicExercises = [];
@@ -288,10 +290,11 @@ const getExercisesList = async (req: any, res: any) => {
                   publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
                 }else{
                   if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
-
+                    privatechanged = false;
                   }
                   if(privateExercisesChangeCount === 0){
                     if(idUser !== 'null'){
+                      privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
                         if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
@@ -310,6 +313,7 @@ const getExercisesList = async (req: any, res: any) => {
                   if(lastPrivateExercisesChangeCount === undefined){
                     privateExercises = [];
                     lastPrivateExercisesChangeCount = 0;
+                    privatechanged = false;
                   }
             
                 
@@ -352,10 +356,11 @@ const getExercisesList = async (req: any, res: any) => {
                   }
                 }else{
                   if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
-
+                    privatechanged = false;
                   }
                   if(privateExercisesChangeCount === 0){
                     if(idUser !== 'null'){
+                      privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
                         if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
@@ -375,6 +380,7 @@ const getExercisesList = async (req: any, res: any) => {
                   if(lastPrivateExercisesChangeCount === undefined){
                     privateExercises = [];
                     lastPrivateExercisesChangeCount = 0;
+                    privatechanged = false;
                   }
 
                 }
