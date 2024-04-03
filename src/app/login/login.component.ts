@@ -111,11 +111,13 @@ export class LoginComponent implements OnInit{
               this.http.get(this.baseURL+'getAccountDetails' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
                 console.log('resp get details of user WHEN WE LOGIN : ', response.account)
                 if(response.response.result === "success"){
+
                   localStorage.setItem('account', JSON.stringify(response.account));
                   this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:tokenlocal, id:userId}}).subscribe((response:any) => {
+                    console.log('LIST DES USERS : ! ', response)
                     if(response.response.result === "success"){
                       localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-                      console.log('LIST DES USERS : ! ', response.accounts)
+                      console.log('LIST DES USERS : ! ', response)
                       this.disabledSpinner = false;
                       this.router.navigate(['dashboard']);
                       this.utilsService.howToSeeNavigation(true);

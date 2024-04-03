@@ -170,6 +170,7 @@ const getExercisesList = async (req: any, res: any) => {
     let lastPublicChangeCount="";
     let privatechanged = false;
     let publicChanged = false;
+    let privateOnly = false;
     // let publicChanged = false;
     try {
       // sign token
@@ -199,13 +200,23 @@ const getExercisesList = async (req: any, res: any) => {
             // // let idOfTokenHandler :string='';
             userhandlerProfil.forEach(async (doc:any) =>{
                 userDetail = doc.data();
-                // idTable = doc.id
             })
-            let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
+            privateOnly = userDetail.privateOnly;
             functions.logger.log("DETAIL DU ROLE DANS LE GET EXERCIES ::::  ",userDetail.role )
             functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",userDetail.trainings )
-
-            functions.logger.log("DETAIL COMPLET DU COMPTE ::::  ",userDetail )
+            functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
+            // functions.logger.log("DETAIL COMPLET DU COMPTE ::::  ",userDetail )
+            if(userDetail.role === 'staff'){
+              functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
+              userhandlerProfil = await db.collection('account-handler').where('id', '==', userDetail.owner).get();
+              userhandlerProfil.forEach(async (doc:any) =>{
+                userDetail = doc.data();
+                if(userDetail.privateOnly === true){
+                  privateOnly = userDetail.privateOnly;
+                }
+            })
+            }
+            let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
             if(publicExercisesChangeCount === lastPublicChangeCount || publicExercisesChangeCount > lastPublicChangeCount){
 
               if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
@@ -252,7 +263,7 @@ const getExercisesList = async (req: any, res: any) => {
                 lastPrivateExercisesChangeCount = 0;
                 privatechanged = false;
               }
-              if(userDetail.privateOnly === true){
+              if(privateOnly === true){
                 publicExercises = [];
                 publicChanged = false;
               }
@@ -320,7 +331,7 @@ const getExercisesList = async (req: any, res: any) => {
                 }
               })
               
-              if(userDetail.privateOnly === true){
+              if(privateOnly === true){
                 publicExercises = [];
                 publicChanged = false;
               }
@@ -387,7 +398,7 @@ const getExercisesList = async (req: any, res: any) => {
               })
               publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
               // publicExercises.sort(compareByName())
-              if(userDetail.privateOnly === true){
+              if(privateOnly === true){
                 publicExercises = [];
                 publicChanged = false;
               }

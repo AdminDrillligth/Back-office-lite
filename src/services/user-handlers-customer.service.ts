@@ -32,38 +32,35 @@ export class UserHandlersServiceCustomer {
 
   getUpdateallUsers(){
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
-      console.log('LA RESP ',response)
-      if(response.response.result === "expiredTokenError"){
-        console.log('go login')
-        this.utilsService.howToSeeNavigation(false);
-        this.router.navigate(['']);
-      }
-      if(response.response.result === "success"){
-        localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-        // console.log('LIST DES USERS : ! ', response.accounts)
-        this.utilsService.sendRequestGetnewAccount(true);
-      }
-    })
+    console.log('on veut get la list avec cet ID DE USER ? ',this.user)
+    if(this.user !== undefined){
+      this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
+        console.log('LA RESP ',response)
+        if(response.response.result === "expiredTokenError"){
+          console.log('go login')
+          this.utilsService.howToSeeNavigation(false);
+          this.router.navigate(['']);
+        }
+        if(response.response.result === "success"){
+          localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
+          // console.log('LIST DES USERS : ! ', response.accounts)
+          this.utilsService.sendRequestGetnewAccount(true);
+        }
+      })
+    }
   }
 
-  async getAccounts(){
+  getAccounts(){
     console.log('we get all accounts : ! ! ');
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
-      console.log('LA RESP ',response)
-      if(response.response.result === "expiredTokenError"){
-        console.log('go login')
-        this.utilsService.howToSeeNavigation(false);
-        this.router.navigate(['']);
-       
-      }
-      if(response.response.result === "success"){
-        localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-        // console.log('LIST DES USERS : ! ', response.accounts)
-        this.utilsService.sendRequestGetnewAccount(true);
+    let resp = this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}})
+    resp.subscribe((rep:any)=>{
+      console.log('LE SUBSCRIBE DE LA REP : ',rep)
+      if(rep.response.result === "expiredTokenError"){
+        this.router.navigate(['login']);
       }
     })
+    return resp;
   }
 
 

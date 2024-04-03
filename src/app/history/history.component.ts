@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UtilsService } from '../../services/utils.service';
 import { Router } from '@angular/router';
 import { UserHandlerHistoricalService } from '../../services/user-handlers-historical.service';
-
+var _ = require('lodash');
 
 @Component({
   selector: 'app-history',
@@ -57,13 +57,16 @@ export class HistoryComponent {
         })
 
   
-        let newArray = this.results.sort((a:any,b:any)=>Number(a.result.infos.startDate) - Number(b.result.infos.startDate))
-        console.log(newArray);
-      });
-
-
-
+      //   let newArray = this.results.sort(
+      //     (a:any,b:any)=> a.result.infos.startDate.getTime()  - b.result.infos.startDate.getTime() )
+      //   console.log(newArray);
+      //   console.log('WANT TO SORT : ',this.results);
+      console.log(_.orderBy(this.results, ['result.infos.startDate'],['desc']));
+      this.results = _.orderBy(this.results, ['result.infos.startDate'],['desc'])
+      // this.results = this.results.reverse()
+    });
     }
+    
     
 
 }

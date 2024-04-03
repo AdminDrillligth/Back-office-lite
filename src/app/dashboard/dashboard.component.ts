@@ -34,18 +34,23 @@ export class DashboardComponent implements OnInit{
      console.log('THEME !: ',theme)
     });
 
-    let card = document.getElementById('cardChart');
-    this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
-    if(card !== null){
-      // console.log(card.offsetWidth)
-        this.widthcard=card.offsetWidth-80;
-        this.heigthCard=card.offsetHeight-80;
-        this.usersData = [
-          { name: "Staff", value:this.AccountOfUser.staff.length},
-          { name: "Participants", value:this.AccountOfUser.users.length}
-        ]
-    }
+
+    setTimeout(() => {
+      let card = document.getElementById('cardChart');
+      this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+      console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+      console.log('INFO : CARD  :! : ', card);
+      if(card !== null){
+        // console.log(card.offsetWidth)
+          this.widthcard=card.offsetWidth-80;
+          this.heigthCard=card.offsetHeight-80;
+          this.usersData = [
+            { name: "Staff", value:this.AccountOfUser.staff.length},
+            { name: "Participants", value:this.AccountOfUser.users.length}
+          ]
+      }
+    }, 1200);
+
 
     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       if(asAdmin !== null){

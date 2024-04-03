@@ -458,7 +458,43 @@ export class AdministrationComponent implements OnInit{
         })
       });
     }
+    if(this.AccountOfUser.role === 'staff'){
+      // this.letsee = true;
+      this.seeAsOwner = true;
+      this.ProfilAccount = this.AccountOfUser;
+      this.disabledSpinner = false;
+
+
+      let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+      console.log('TOUS LES COMPTES : !',allAccounts)
+      allAccounts.forEach((account:any)=>{
+        console.log(account)
+        if(account.role === 'staff' || account.role === 'owner'){
+          this.parseStaff.push(account)
+        }else{
+          this.parseUsers.push(account)
+        }
+      })
+      if(this.parseStaff.length > 0){
+        // staff
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.parseStaff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.parseStaff.length;
+      }
+              // users
+      if(this.parseUsers.length > 0 ){
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.parseUsers);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.parseUsers.length;
+      }
+      // console.log('Notre tableau ParseStaff :  : ! ',this.parseStaff)
+      // this.getDetails(this.ProfilAccount.owner)
+
+    }
   }
+  parseStaff = [];
+  parseUsers = [];
 
 
   // ICI ON GET LES DETAILS D'UN COMPTE EN PARTICULIER : => UN COMPTE SELECTIONNE
@@ -612,7 +648,40 @@ export class AdministrationComponent implements OnInit{
           console.log('la resp du update user: ! ', response.account)
           // console.log(this.)
           this.displayModalUpdateDataProfil = false;
-          this.getDetails(response.account.id);
+          if(response.account.role !== 'staff' || response.account.role !== 'user'){
+            this.getDetails(response.account.id);
+          }else{
+            this.getDetails(response.account.id);
+            this.userHandlersServiceCustomer.getAccounts().subscribe((accounts:any)=>{
+              this.parseStaff = [];
+              this.parseUsers = [];
+              console.log('On subscribe: ',accounts.accounts)
+              localStorage.setItem('accounts-data', JSON.stringify(accounts.accounts));
+              // console.log('LIST DES USERS : ! ', response)
+              accounts.accounts.forEach((account:any)=>{
+                console.log(account)
+                if(account.role === 'staff' || account.role === 'owner'){
+                  this.parseStaff.push(account)
+                }else{
+                  this.parseUsers.push(account)
+                }
+              })
+              if(this.parseStaff.length > 0){
+                // staff
+        
+                this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.parseStaff);
+                this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+                this.resultsLengthStaffAccounts = this.parseStaff.length;
+              }
+                      // users
+              if(this.parseUsers.length > 0 ){
+                this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.parseUsers);
+                this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+                this.resultsLengthUsersAccounts = this.parseUsers.length;
+              }
+            });
+          }
+          
           // localStorage.setItem('account-data-user', JSON.stringify(e.account));
 
           // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');

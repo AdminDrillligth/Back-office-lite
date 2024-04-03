@@ -33,8 +33,30 @@
       </mat-card>
     </div>
     <h3 style="color:white">Données générales</h3>
-    <div id="cardChart" style="color:white" class="card-hight col-md-12">
-      <mat-card  class="card-dashboard">
+    <!-- <div > -->
+      <div style="margin-bottom: 25px;color:white" class="card-hight col-md-12">
+        <mat-card class="card-dashboard">
+          <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>Exercices</mat-card-title>
+          </mat-card-header>
+            <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
+          <mat-card-content  *ngIf="DataUsers.length !== 0">
+            <ngx-charts-bar-vertical
+              [results]="DataUsers"
+              [view]="[widthcard,heigthCard]"
+              [labels]="true"
+              [showXAxisLabel]="true"
+              [showYAxisLabel]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [gradient]="true" >
+            </ngx-charts-bar-vertical>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    <div  id="cardChart" style="color:white" class="card-hight col-md-12">
+      <mat-card   *ngIf="AccountOfUser.role === 'admin' || AccountOfUser.role === 'owner'" class="card-dashboard">
         <mat-card-header>
           <div mat-card-avatar class="example-header-image"></div>
           <mat-card-title>Comptes</mat-card-title>
@@ -54,28 +76,9 @@
         </mat-card-content>
       </mat-card>
     </div>
+    <!-- </div> -->
     <!-- <h1 style="color:white">Actions rapides</h1> -->
-    <div style="margin-bottom: 25px;color:white" class="card-hight col-md-12">
-      <mat-card class="card-dashboard">
-        <mat-card-header>
-          <div mat-card-avatar class="example-header-image"></div>
-          <mat-card-title>Exercices</mat-card-title>
-        </mat-card-header>
-          <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
-        <mat-card-content  *ngIf="DataUsers.length !== 0">
-          <ngx-charts-bar-vertical
-            [results]="DataUsers"
-            [view]="[widthcard,heigthCard]"
-            [labels]="true"
-            [showXAxisLabel]="true"
-            [showYAxisLabel]="true"
-            [xAxis]="true"
-            [yAxis]="true"
-            [gradient]="true" >
-          </ngx-charts-bar-vertical>
-        </mat-card-content>
-      </mat-card>
-    </div>
+    
   </div>
 
 </div>

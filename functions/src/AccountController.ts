@@ -470,7 +470,55 @@ const getAccountsList = async (req: any, res: any) => {
                 });
             }
             if(user.role === 'staff'){
-
+              // const accounts: any[] = [];
+              let UsersOfAccount:any = [];
+              let ownerAccounts:any = [];
+              let owner:any=[];
+              let usersProfils = await db.collection('account-handler').where('owner', '==', user.owner).get();
+              let ownerProfil = await db.collection('account-handler').where('id', '==', user.owner).get();
+              usersProfils.forEach( async (doc:any)  =>{
+                  ownerAccounts.push({data:doc.data()})
+              })
+              ownerProfil.forEach( async (doc:any)  =>{
+                owner.push({data:doc.data()})
+              })
+              ownerAccounts.forEach((account:any)=> {
+                let validate = false;
+                if(account.data.passwordHash !== ""){
+                  validate = true;
+                }
+                  UsersOfAccount.push({
+                    validate:validate,
+                    fullName:account.data.fullName,
+                    familyName:account.data.familyName,
+                    firstName:account.data.firstName,
+                    id:account.data.id,
+                    email:account.data.email,
+                    role:account.data.role
+                  });
+              });
+              owner.forEach((account:any)=> {
+                let validate = false;
+                if(account.data.passwordHash !== ""){
+                  validate = true;
+                }
+                UsersOfAccount.push({
+                  validate:validate,
+                  fullName:account.data.fullName,
+                  familyName:account.data.familyName,
+                  firstName:account.data.firstName,
+                  id:account.data.id,
+                  email:account.data.email,
+                  role:account.data.role
+                });
+              });
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  accounts: UsersOfAccount,
+                });
             }
             if(user.role === 'user'){
 

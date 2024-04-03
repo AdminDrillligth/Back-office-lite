@@ -4,7 +4,7 @@
 
   <mat-form-field>
     <mat-label>Participant</mat-label>
-    <mat-select >
+    <mat-select multiple>
       <mat-option  *ngFor="let user of users" value="{{user.id}}">{{user.fullName}}</mat-option>
     </mat-select>
   </mat-form-field>
