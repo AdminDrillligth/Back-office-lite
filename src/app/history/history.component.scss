@@ -11,10 +11,41 @@
   margin-left:3px;
   max-width: 49%;
   width:49%;
+  // text-align: center;
   // min-width: %;
   display: inline-block;
 }
 
+.calendar{
+  margin-right: 5px;
+}
+
+.para-descri{
+  margin-top:19px;
+}
+
+.left-margin{
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.panel-title{
+  flex-grow: 1!important;
+}
+
+.kpi-header{
+  width: 43%;
+  background: #101C23;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 10px;
+  text-align: left;
+
+}
+
+.container-infos{
+  text-align: center;
+}
 
 @media only screen and (max-width: 768px) {
 
