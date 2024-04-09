@@ -7,13 +7,13 @@
 }
 
 .card-history{
+  margin-left: auto;
+  max-width: 80%;
+  width: 80%;
+  display: block;
+  margin-right: auto;
   margin-bottom: 5px;
-  margin-left:3px;
-  max-width: 49%;
-  width:49%;
-  // text-align: center;
-  // min-width: %;
-  display: inline-block;
+  background: #0b1b21;
 }
 
 .calendar{
@@ -30,12 +30,12 @@
 }
 
 .panel-title{
-  flex-grow: 1!important;
+  flex-grow: 1.5!important;
 }
 
 .kpi-header{
   width: 43%;
-  background: #101C23;
+  background: #14232c;
   border-radius: 8px;
   display: inline-block;
   margin: 10px;
@@ -44,7 +44,25 @@
 }
 
 .container-infos{
-  text-align: center;
+  // text-align: center;
+}
+
+.display-events{
+  margin-bottom: 5px;
+  background: #14232c;
+}
+
+.action-events{
+  // background:red;
+
+}
+
+.vertical-lign{
+  position: absolute;
+  border-left: 3px solid #202931;
+  display: inline-block;
+  height: 130px;
+  margin: -85px 31px;
 }
 
 @media only screen and (max-width: 768px) {

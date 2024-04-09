@@ -90,6 +90,7 @@ export class PasswordComponent {
       setTimeout(() => { this.error = ''; }, 1000); 
     }else{
       if(this.error === ''){
+        console.log(this.firstName, this.familyName, this.phoneNumber)
         console.log( this.form.get('password').value,  this.form.get('samepassword').value)
         this.code = this.route.snapshot.queryParams['oobCode'];
         this.email = this.route.snapshot.queryParams['email'];

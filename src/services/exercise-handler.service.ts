@@ -33,7 +33,7 @@ export class ExerciseService {
   async getExerciceList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les exercices ! ')
-    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id, 'publicExercisesChangeCount':'3',  'privateExercisesChangeCount':'0'}})
+    let response = await this.http.get(this.baseURL+'getExercisesList',{'headers':{ 'token': token, 'id':id,'webapp':'1', 'publicExercisesChangeCount':'0',  'privateExercisesChangeCount':'0'}})
     response.subscribe((rep:any)=>{
       if(rep.response.result === "expiredTokenError"){
         this.utilsService.howToSeeNavigation(false);
@@ -47,7 +47,7 @@ export class ExerciseService {
   async getSessionList(id:any){
     let token = localStorage.getItem('token') || '{}';
     console.log('on va get les Sessions ! ')
-    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id,'publicSessionsChangeCount':'1', 'privateSessionsChangeCount':'0'}})
+    let response = await this.http.get(this.baseURL+'getSessionsList',{'headers':{ 'token': token,'id':id,'publicSessionsChangeCount':'0', 'privateSessionsChangeCount':'0'}})
     console.log(response)
     return response;
   }

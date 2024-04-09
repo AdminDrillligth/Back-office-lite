@@ -34,24 +34,22 @@
     </div>
     <h3 style="color:white">Données générales</h3>
     <!-- <div > -->
-      <div style="margin-bottom: 25px;color:white" class="card-hight col-md-12">
+      <div id="exercicesCharts" style="margin-bottom: 25px;color:white" class="card-hight col-md-12">
         <mat-card class="card-dashboard">
           <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
             <mat-card-title>Exercices</mat-card-title>
           </mat-card-header>
-            <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
-          <mat-card-content  *ngIf="DataUsers.length !== 0">
-            <ngx-charts-bar-vertical
+          <mat-card-content  *ngIf="usersData.length !== 0" >
+            <ngx-charts-bar-horizontal 
+            [view]="[widthcardEx,heigthCardEx]"
               [results]="DataUsers"
-              [view]="[widthcard,heigthCard]"
               [labels]="true"
               [showXAxisLabel]="true"
               [showYAxisLabel]="true"
               [xAxis]="true"
               [yAxis]="true"
-              [gradient]="true" >
-            </ngx-charts-bar-vertical>
+              >
+            </ngx-charts-bar-horizontal>
           </mat-card-content>
         </mat-card>
       </div>
@@ -61,7 +59,6 @@
           <div mat-card-avatar class="example-header-image"></div>
           <mat-card-title>Comptes</mat-card-title>
         </mat-card-header>
-          <!-- <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  /> -->
         <mat-card-content *ngIf="usersData.length !== 0">
           <ngx-charts-bar-horizontal
             [view]="[widthcard,heigthCard]"

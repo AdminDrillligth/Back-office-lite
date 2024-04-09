@@ -156,9 +156,10 @@ export class AppComponent {
           setTimeout(() => {
             let check = this.url.path().split("?")
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-            // console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+            console.log('ACCOUNT OF USER :! : ', seeNav);
             if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
-             
+              this.seeNavigation = false;
+              this.opened = false;
             }else{
               if(this.AccountOfUser.role !== 'admin'){
                 if( this.changeNav == false){
@@ -215,6 +216,7 @@ export class AppComponent {
 
   logOut(){
     // this.afAuth.signOut();
+    this.utilsService.howToSeeNavigation(false);
     this.router.navigate(['login']);
   }
 

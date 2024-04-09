@@ -133,8 +133,8 @@ const updateGlobalFirmware = async (req: any, res: any) =>{
   let reqs = req;
   let bodys = reqs.body;
   let globalHandler :any = [];
-  let headers = reqs.headers;
-  let token = headers.token;
+  // let headers = reqs.headers;
+  // let token = headers.token;
   // let idFirmware = headers.idfirmware;
   functions.logger.log("idFirmware :: ! ",bodys)
   // const querySnapshotGlobalHandler = await db.collection('global_handler').get();
@@ -145,16 +145,16 @@ const updateGlobalFirmware = async (req: any, res: any) =>{
   // globalHandler[0].publicFirmwareId = newUuid;
   try {
     // sign token
-    jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
-      if(err) {
-        return res.status(200).json({
-          response: {
-            result:'expiredTokenError',
-            message:'Votre token a expiré'
-          },
-          token:token,
-        });
-       }else {
+    // jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+    //   if(err) {
+    //     return res.status(200).json({
+    //       response: {
+    //         result:'expiredTokenError',
+    //         message:'Votre token a expiré'
+    //       },
+    //       token:token,
+    //     });
+    //    }else {
         const querySnapshotGlobalHandler = await db.collection('global_handler').get();
         querySnapshotGlobalHandler.forEach((doc: any) => {
           globalHandler.push(doc.data());
@@ -170,8 +170,8 @@ const updateGlobalFirmware = async (req: any, res: any) =>{
           newfirmwareid:bodys.headers.firmwareid
 
         });
-    }
-  })
+  //   }
+  // })
   }
   catch(error:any) { return res.status(500).json(error.message) }
 }

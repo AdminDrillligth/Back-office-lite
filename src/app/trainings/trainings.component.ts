@@ -377,6 +377,7 @@ export class TrainingsComponent implements OnInit {
 
   select(itemer:any){
     this.chooseType = itemer.value;
+    console.log(itemer.value)
     this.itemsNav.forEach((item:any)=>{
       if(item.type === itemer.type){ item.selected = true;
       }else{ item.selected = false;}

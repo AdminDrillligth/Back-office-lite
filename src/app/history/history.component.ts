@@ -61,12 +61,30 @@ export class HistoryComponent {
       //     (a:any,b:any)=> a.result.infos.startDate.getTime()  - b.result.infos.startDate.getTime() )
       //   console.log(newArray);
       //   console.log('WANT TO SORT : ',this.results);
-      console.log(_.orderBy(this.results, ['result.infos.startDate'],['desc']));
-      this.results = _.orderBy(this.results, ['result.infos.startDate'],['desc'])
+      console.log(this.results);
+      // this.results = _.orderBy(this.results, ['result.infos.startDate'],['desc'])
       // this.results = this.results.reverse()
+
     });
     }
     
+    expensionGetInfos(){
+      // let flagbox =  document.getElementsByClassName("flagbox");
+      // console.log(flagbox)
+      // if(flagbox[0]!== undefined){
+      //   // console.log(flagbox[0].getBoundingClientRect())
+      //   // console.log(flagbox[0])
+      // }
+    }
+
+
+    expensionDetails(resultEvent:any, event:any, boolean){
+
+      console.log('Le result  : ',resultEvent)
+
+      resultEvent.opened = boolean;
+      console.log('Le result  : ',resultEvent)
+    }
     
 
 }

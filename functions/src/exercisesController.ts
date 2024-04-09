@@ -13,8 +13,8 @@ var jwt = require("jsonwebtoken");
 
 const createExercise  = async (req: any, res: any) => {
     let reqs = req;
-    let headers = reqs.headers;
-    let token = headers.token;
+    // let headers = reqs.headers;
+    // let token = headers.token;
     let body = reqs.body;
     let globalHandler:any = [];
     // let lastPublicChangeCount="";
@@ -25,16 +25,16 @@ const createExercise  = async (req: any, res: any) => {
     const json = JSON.parse(body);
     let idUser = json.id;
     try {
-      jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
-          if(err) {
-            return res.status(200).json({
-              response: {
-                result:'expiredTokenError',
-                message:'Votre token a expiré'
-              },
-              token:token,
-            });
-           }else {
+      // jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+      //     if(err) {
+      //       return res.status(200).json({
+      //         response: {
+      //           result:'expiredTokenError',
+      //           message:'Votre token a expiré'
+      //         },
+      //         token:token,
+      //       });
+      //      }else {
             const exercise_handler = db.collection('exercise-handler');
             exercise_handler.doc(json.json.header.id).set(json.json).then( async (ref:any) => {
               if(json.json.header.status === 'public'){
@@ -71,7 +71,7 @@ const createExercise  = async (req: any, res: any) => {
                 }
 
                 // userDetail.privateExercisesChangeCount = isoDateString;
-                const account_handler = db.collection('account-handler'); 
+                const account_handler = db.collection('account-handler');
                 account_handler.doc(idTable).update(userDetail);
                  return res.status(200).json({
                   response: {
@@ -85,10 +85,10 @@ const createExercise  = async (req: any, res: any) => {
                  });
                }
 
-               
+
             });
-        }
-      });
+      //   }
+      // });
     } catch(error:any) {
        return res.status(500).json(error.message)
     }
@@ -154,6 +154,7 @@ const getExercisesList = async (req: any, res: any) => {
     let publicExercises:any=[];
     let privateExercises:any=[];
     let token = headers.token;
+    let webapp = headers.webapp
     let publicExercisesChangeCount =  headers.publicexerciseschangecount;
     publicExercisesChangeCount = Number(publicExercisesChangeCount);
     let privateExercisesChangeCount:any =  headers.privateexerciseschangecount;
@@ -195,19 +196,19 @@ const getExercisesList = async (req: any, res: any) => {
             })
             let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
             // // const entryToken = db.collection('token-handler')
-          
+
             // // let tokenHandler :any = '';
             // // let idOfTokenHandler :string='';
             userhandlerProfil.forEach(async (doc:any) =>{
                 userDetail = doc.data();
             })
             privateOnly = userDetail.privateOnly;
-            functions.logger.log("DETAIL DU ROLE DANS LE GET EXERCIES ::::  ",userDetail.role )
-            functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",userDetail.trainings )
-            functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
+            // functions.logger.log("DETAIL DU ROLE DANS LE GET EXERCIES ::::  ",userDetail.role )
+            functions.logger.log("DETAIL TAININGS OF USER ::::  ",userDetail.trainings )
+            // functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
             // functions.logger.log("DETAIL COMPLET DU COMPTE ::::  ",userDetail )
             if(userDetail.role === 'staff'){
-              functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
+              // functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
               userhandlerProfil = await db.collection('account-handler').where('id', '==', userDetail.owner).get();
               userhandlerProfil.forEach(async (doc:any) =>{
                 userDetail = doc.data();
@@ -226,16 +227,29 @@ const getExercisesList = async (req: any, res: any) => {
                 privatechanged = true;
                 const querySnapshot = await db.collection('exercise-handler').get();
 
-                querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
+                querySnapshot.forEach((doc: any) => { 
+                  
+                  allExercises.push({data:doc.data(), id: doc.id});
+                });
 
                 allExercises.forEach((exercise:any)=> {
                   if(exercise.data.header.status === 'private'){
                     if(idUser !== 'null'){
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ 
-                          // if a selection was doing trainings data inside account : 
+                        if(idUser === exercise.data.header.owner.id){
+                          // if a selection was doing trainings data inside account :
                           // if()
-                          privateExercises.push(exercise.data)
+                            functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
                       }
                     }
@@ -251,14 +265,24 @@ const getExercisesList = async (req: any, res: any) => {
                   if(exercise.data.header.status === 'private'){
                     if(idUser !== 'null'){
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                        if(idUser === exercise.data.header.owner.id){ 
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
                   }
                 })
               }
-              if(lastPrivateExercisesChangeCount === undefined){
+              if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
                 privateExercises = [];
                 lastPrivateExercisesChangeCount = 0;
                 privatechanged = false;
@@ -286,17 +310,37 @@ const getExercisesList = async (req: any, res: any) => {
             }
             if(publicExercisesChangeCount === 0){
               const querySnapshot = await db.collection('exercise-handler').get();
+              
               querySnapshot.forEach((doc: any) => {
                   allExercises.push({data:doc.data(), id: doc.id});
               });
               allExercises.forEach((exercise:any)=> {
+                functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
+         
                 if(exercise.data.header.status === 'public'){
                   if(userDetail.privateOnly !== undefined ){
                     if(userDetail.privateOnly === false){
-                      publicExercises.push(exercise.data)  
+                      if(userDetail.trainings.length > 0 && webapp !== '1'){
+                        userDetail.trainings.forEach((training:any)=>{
+                          if(training === exercise.data.header.id){
+                            publicExercises.push(exercise.data)
+                          }
+                        })
+                      }else{
+                        publicExercises.push(exercise.data)
+                      }
+                    
                     }
                   }else{
-                    publicExercises.push(exercise.data)  
+                    if(userDetail.trainings.length > 0 && webapp !== '1'){
+                      userDetail.trainings.forEach((training:any)=>{
+                        if(training === exercise.data.header.id){
+                          publicExercises.push(exercise.data)
+                        }
+                      })
+                    }else{
+                      publicExercises.push(exercise.data)
+                    }
                   }
                   publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
                 }else{
@@ -307,7 +351,17 @@ const getExercisesList = async (req: any, res: any) => {
                     if(idUser !== 'null'){
                       privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                        if(idUser === exercise.data.header.owner.id){ 
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
@@ -316,24 +370,36 @@ const getExercisesList = async (req: any, res: any) => {
                     privatechanged = true;
                     if(idUser !== 'null'){
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                        if(idUser === exercise.data.header.owner.id){ 
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
                   }
-                  if(lastPrivateExercisesChangeCount === undefined){
+                  if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
                     privateExercises = [];
                     lastPrivateExercisesChangeCount = 0;
                     privatechanged = false;
                   }
-            
-                
+
+
                 }
               })
-              
+
               if(privateOnly === true){
                 publicExercises = [];
                 publicChanged = false;
+              }else{
+                publicChanged = true;
               }
               return res.status(200).json({
                 response: {
@@ -351,19 +417,36 @@ const getExercisesList = async (req: any, res: any) => {
 
             }
             else if(publicExercisesChangeCount < lastPublicChangeCount && publicExercisesChangeCount !== 0){
-              
+
               const querySnapshot = await db.collection('exercise-handler').get();
               querySnapshot.forEach((doc: any) => {
                   allExercises.push({data:doc.data(), id: doc.id});
               });
               allExercises.forEach((exercise:any)=> {
+                functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
                 if(exercise.data.header.status === 'public'){
                   if(userDetail.privateOnly !== undefined ){
                     if(userDetail.privateOnly === false){
-                      publicExercises.push(exercise.data)  
+                      if(userDetail.trainings.length > 0 && webapp !== '1'){
+                        userDetail.trainings.forEach((training:any)=>{
+                          if(training === exercise.data.header.id){
+                            publicExercises.push(exercise.data)
+                          }
+                        })
+                      }else{
+                        publicExercises.push(exercise.data)
+                      }
                     }
                   }else{
-                    publicExercises.push(exercise.data)  
+                    if(userDetail.trainings.length > 0 && webapp !== '1'){
+                      userDetail.trainings.forEach((training:any)=>{
+                        if(training === exercise.data.header.id){
+                          publicExercises.push(exercise.data)
+                        }
+                      })
+                    }else{
+                      publicExercises.push(exercise.data)
+                    }
                   }
                 }else{
                   if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
@@ -373,7 +456,17 @@ const getExercisesList = async (req: any, res: any) => {
                     if(idUser !== 'null'){
                       privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                        if(idUser === exercise.data.header.owner.id){ 
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
                         }
                       }
@@ -383,12 +476,22 @@ const getExercisesList = async (req: any, res: any) => {
                     if(idUser !== 'null'){
                       privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
+                        if(idUser === exercise.data.header.owner.id){ 
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
                   }
-                  if(lastPrivateExercisesChangeCount === undefined){
+                  if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
                     privateExercises = [];
                     lastPrivateExercisesChangeCount = 0;
                     privatechanged = false;
@@ -402,7 +505,9 @@ const getExercisesList = async (req: any, res: any) => {
                 publicExercises = [];
                 publicChanged = false;
               }
-           
+              else{
+                publicChanged = true;
+              }
               return res.status(200).json({
                 response: {
                   result:'success',
@@ -428,7 +533,7 @@ const getExercisesList = async (req: any, res: any) => {
 
 
 
-  
+
 
   const updateExercise = async (req: any, res: any) => {
     let reqs = req;

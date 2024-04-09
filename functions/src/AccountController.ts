@@ -2,13 +2,13 @@ import { Response } from "express"
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
-import { sendEmailResetPasswordAccount } from './mailsController';
+import { sendEmailCreate, sendEmailthisanUpdate } from './mailsController';
 var jwt = require("jsonwebtoken");
 // var btoa = require('btoa');
 var DateString = new Date().toLocaleDateString('en-GB');
 var isoDateString = new Date().toISOString();
 // var timeNow = new Date().toLocaleTimeString();
-
+// var _ = require('lodash');
 // Model de type Admin
 // type UsersModel = {
   // email: "xxx@gmail.com",
@@ -118,6 +118,7 @@ const createAccount = async (req: any, res: Response) => {
           id = newUuid;
         }
         functions.logger.log("DATA dataBodyOfRequest LE ACCOUNT  ?  ::::  ",dataBodyOfRequest )
+
         if(dataBodyOfRequest.owner !== undefined){
           let userhandlerProfilOwner = await db.collection('account-handler').where('id', '==', dataBodyOfRequest.owner).get();
           userhandlerProfilOwner.forEach(async (doc:any) =>{
@@ -125,7 +126,7 @@ const createAccount = async (req: any, res: Response) => {
               userDetailOwner = doc.data();
               userDetailOwner.staff.push({id:id})
             }
-            if(dataBodyOfRequest.role === 'user'){
+            if(dataBodyOfRequest.role === 'user' || dataBodyOfRequest.role === undefined  || dataBodyOfRequest.role === null){
               userDetailOwner = doc.data();
               userDetailOwner.users.push({id:id})
             }
@@ -133,11 +134,11 @@ const createAccount = async (req: any, res: Response) => {
             functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",userDetailOwner )
             await entry.doc(dataBodyOfRequest.owner).set(userDetailOwner)
           })
-          
 
-          
+
+
         }
-        functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",dataBodyOfRequest )
+        functions.logger.log("DATA LE ID AVANT LE CREATE  ?  ::::  ",id ,'CELUI DANS LE BODY DATA', dataBodyOfRequest.id )
         if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
         if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
         if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
@@ -209,7 +210,7 @@ const createAccount = async (req: any, res: Response) => {
             // updatedBy:,
 
       }
-
+      sendEmailCreate(userObject)
         await entry.doc(userObject.id).set(userObject).then( async (ref:any) => {
           res.status(200).send({
             response: {
@@ -219,7 +220,7 @@ const createAccount = async (req: any, res: Response) => {
             account:userObject,
           });
         })
-        
+
 
         }else{
           res.status(200).send({
@@ -258,9 +259,9 @@ const getAccountDetails = async (req: any, res: any) => {
   let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
   userhandlerProfil.forEach((doc:any) =>{
   userDetails = doc.data();
-  
+
   })
-  
+
   try {
   // functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails, userDetails.role )
   // sign token
@@ -289,7 +290,7 @@ const getAccountDetails = async (req: any, res: any) => {
               }
                 staffData.push({validate:validateStaff,id: thisStaff.data().id, email:thisStaff.data().email, role:thisStaff.data().role,fullName:thisStaff.data().fullName,familyName:thisStaff.data().familyName,firstName:thisStaff.data().firstName} )
             })
-          
+
             if(staffData.length === userDetails.staff.length){
               // functions.logger.log("END OF STAFF LENGTH ::::  ",staffData.length, userDetails.staff.length, staffData, userData )
               if(userDetails.users.length > 0){
@@ -329,16 +330,16 @@ const getAccountDetails = async (req: any, res: any) => {
                         account: userDetails
                       });
               }
-            
+
             }
             })
-              
+
           }
           else{
             // Si il n'y a pas de staff
             if(userDetails.users.length > 0){
               userDetails.users.forEach(async (user:any,index:number)=>{
-          
+
                 // functions.logger.log("Ce user :   ",user.id )
                 let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
 
@@ -419,7 +420,7 @@ const getAccountsList = async (req: any, res: any) => {
               querySnapshot.forEach((doc: any) => {
                 accounts.push({data:doc.data()});
               });
-             
+
               accounts.forEach((account:any)=> {
                 let validate = false;
                 functions.logger.log("account,account.passwordHash ",account,account.data.passwordHash )
@@ -436,6 +437,7 @@ const getAccountsList = async (req: any, res: any) => {
                     validate: validate
                   })
               });
+              // UsersOfAccount = _.orderBy(UsersOfAccount, ['result.infos.startDate'],['desc'])
                 return res.status(200).json({
                   response: {
                     result:'success',
@@ -575,7 +577,7 @@ const updateAccount = async (req:any, res: any) => {
           userhandlerProfil.forEach((doc:any) =>{
           userDetail = doc.data();
           let idOfUser = doc.id;
-          sendEmailResetPasswordAccount(userDetail)
+          sendEmailthisanUpdate(userDetail)
           if(userDetail !== ""){
             if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
@@ -607,8 +609,8 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
             if(dataBodyOfRequest.privateOnly !== undefined){ userDetail.privateOnly = dataBodyOfRequest.privateOnly }
             if(dataBodyOfRequest.privateFirmwareId !== undefined){ userDetail.privateFirmwareId = dataBodyOfRequest.privateFirmwareId }
-            
-            
+
+
 
             userDetail.update = DateString;
             userDetail.updateIso = isoDateString;
