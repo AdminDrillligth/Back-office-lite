@@ -1,5 +1,4 @@
 import {  Component, OnInit, Inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { trainingService } from '../../services/firebase/get-training-service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +13,9 @@ import ImageResize from 'image-resize';
 import { uid } from 'uid';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
+import { MatDatepickerModule , } from '@angular/material/datepicker';
+import {FormGroup, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+// import {DateAdapter} from '@angular/material';
 
 @Component({
   selector: 'app-trainings',
@@ -34,7 +36,13 @@ export class TrainingsComponent implements OnInit {
     // {type:'Séances', value:'Sessions', selected:false},
     // {type:'Programmes', value:'Programmes', selected:false},
   ];
-
+  today = new Date();
+  month = this.today.getMonth();
+  year = this.today.getFullYear();
+  campaignOne = new FormGroup({
+    start: new FormControl(new Date(this.year, this.month, 13)),
+    end: new FormControl(new Date(this.year, this.month, 16)),
+  });
   levelsArray = [{id:0, name:'Facile'},{id:1, name:'Intermediaire'} ,{id:2, name:'Difficile'} ];
 
   thematics = [{ name: 'Tactique',id:0}, { name: 'Technique',id:1 }, { name: 'Physique', id:2 }, { name: 'Échauffement', id:3 },{ name: 'Finition', id:4 },
@@ -62,6 +70,7 @@ export class TrainingsComponent implements OnInit {
   disabledSpinner = false;
 
   constructor(
+    // private dateAdapter: DateAdapter<any>,
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     private exerciseService:ExerciseService,
     private router:Router,
@@ -70,6 +79,7 @@ export class TrainingsComponent implements OnInit {
     public dialog: MatDialog
     ){}
   ngOnInit(): void {
+    // this.dateAdapter.setLocale('fr');  
     this.disabledSpinner = true;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
@@ -107,14 +117,13 @@ export class TrainingsComponent implements OnInit {
   }
 
   getInfoGLobal(){
-    
     this.getExercicesList();
     // this.getSessionsList();
   }
 
 
   resetSelectedExercices(AccountOfUser:any){
-    console.log('LES TRAININGS DU USER : ! ',AccountOfUser.trainings)
+    // console.log('LES TRAININGS DU USER : ! ',AccountOfUser.trainings)
     let userUpdateSelect :any = [];
     if(this.asAdmin === true){
       userUpdateSelect = this.userSource 
@@ -138,6 +147,77 @@ export class TrainingsComponent implements OnInit {
         this.getExercicesList()
       })
     })
+  }
+
+  selectAllExercices(account:any){
+    console.log(account)
+
+    account.trainings.length = 0;
+    console.log('somme nous en asAdmin?', this.asAdmin)
+
+    let userUpdateSelect :any = [];
+    if(this.asAdmin === true){
+      userUpdateSelect = this.userSource 
+    }else{
+      userUpdateSelect = this.AccountOfUser 
+    }
+    userUpdateSelect.trainings.length = 0;
+    if(this.publicTrainings.cards.length > 0){
+        this.publicTrainings.cards.forEach((exercice:any, index:number)=>{
+        userUpdateSelect.trainings.push(exercice.header.id)
+        console.log(userUpdateSelect)
+        if(index+1 === this.publicTrainings.cards.length){
+          this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
+            resp.subscribe((response:any)=>{
+              // console.log('la resp du update account: ! ', response)
+              // this.getDetails(account.owner);
+              if(this.asAdmin === false){
+                localStorage.setItem('account', JSON.stringify(response.account));
+                this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+                this.getExercicesList()
+              }else{
+                localStorage.setItem('account-data-user', JSON.stringify(response.account));
+                let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+                // console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+                this.userSource = userDetailAccount;
+                this.getExercicesList()
+              }
+            })
+          });
+        }
+      })
+    }
+
+    if(this.privateTrainings.cards.length > 0){
+        this.privateTrainings.cards.forEach((exercice:any, index:number)=>{
+          // console.log('Exercice privés :! ',userUpdateSelect.trainings, exercice.header.id)
+          console.log(this.privateTrainings.cards.length, index+1)
+          userUpdateSelect.trainings.push(exercice.header.id)
+          if(index+1 === this.privateTrainings.cards.length){
+            this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
+              resp.subscribe((response:any)=>{
+                // console.log('la resp du update account: ! ', response)
+                // this.getDetails(account.owner);
+                if(this.asAdmin === false){
+                  localStorage.setItem('account', JSON.stringify(response.account));
+                  this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+                  this.getExercicesList()
+                  // console.log(this.AccountOfUser)
+                }else{
+                  localStorage.setItem('account-data-user', JSON.stringify(response.account));
+                  let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+                  // console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+                  this.userSource = userDetailAccount;
+                  this.getExercicesList()
+                  // console.log(this.userSource)
+                }
+                
+              })
+            });
+          }
+        })
+    }
+
   }
 
   selectExercices(event:any,item:any){
@@ -199,21 +279,23 @@ export class TrainingsComponent implements OnInit {
   }
 
   getExercicesList(){
-  console.log('le user source : ! ',this.userSource)
+  // console.log('le user source : ! ',this.userSource)
   if(this.asAdmin === true){
     if(this.userSource !== undefined ){
       this.exerciseService.getExerciceList(this.userSource.id).then((resp:any)=>{
-        console.log(this.userSource)
+        // console.log(this.userSource)
+        console.log('Nous sommes en mode admin')
         resp.subscribe((response:any)=>{
           if(response.response.result === 'success'){
+            // console.log('LE TRAININGS PUBLIC DU USER : ',this.userSource.trainings)
             // console.log('LA RESP DANS TRAINING : ',response)
-            console.log('LA RESP DANS TRAINING : ',response)
             this.publicTrainings.cards = response.publicExercises;
             this.publicTrainings.cards.forEach((exo:any)=>{
               exo.selected = false;
               this.userSource.trainings.forEach((training:any) =>{
+
                 if(exo.header.id === training ){
-                  console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
+                  // console.log('nous avons trouvé l\'exo selectionné ! ',training, exo.header.id)
                   exo.selected = true;
                 }
               })
@@ -225,8 +307,10 @@ export class TrainingsComponent implements OnInit {
             this.privateTrainings.cards.forEach((exo:any)=>{
               exo.selected = false;
               this.userSource.trainings.forEach((training:any) =>{
+                 
+             
                 if(exo.header.id === training ){
-                  console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
+                  // console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
                   exo.selected = true;
                 }
               })
@@ -234,14 +318,16 @@ export class TrainingsComponent implements OnInit {
                 exo.header.image = '../../../assets/images/default_100.jpg'
               }
             })
-            // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
+            // console.log('LA RESP DANS TRAINING CARD AFTER GET : ',this.publicTrainings.cards)
+            this.disabledSpinner = false;
           }
         })
-        this.disabledSpinner = false;
+        
       });
     }  
   }
   else{
+    console.log('Nous sommes en mode normal ')
     this.exerciseService.getExerciceList(this.idOfOwner).then((resp:any)=>{
       // Lors d'un mode normal
       resp.subscribe((response:any)=>{
@@ -264,13 +350,17 @@ export class TrainingsComponent implements OnInit {
 
           })
           this.privateTrainings.cards = response.privateExercises;
-          
+    
             this.privateTrainings.cards.forEach((exo:any)=>{
-             
+              // let para = document.getElementsByClassName(exo.header.id );
+              // console.log('LE PARA : ',para[0].innerHTML  )
+              // para[0].innerHTML = exo.header.description
               exo.selected = false;
               this.AccountOfUser.trainings.forEach((training:any) =>{
-              if(exo.header.id === training ){
-                console.log('nous avons trouvé l\'exo selectionné Private! ',exo,training)
+          
+                if(exo.header.id === training ){
+
+                // console.log('nous avons trouvé l\'exo selectionné Private! ',exo,training)
                 exo.selected = true;
               }  
             })
@@ -278,64 +368,66 @@ export class TrainingsComponent implements OnInit {
               exo.header.image = '../../../assets/images/default_100.jpg'
             }
           })
+       
           this.disabledSpinner = false;
           // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
       })
       // 
     });
+
   }
   }
 
   getSessionsList(){
-  console.log('SESSION : ',this.userSource)
-  if(this.userSource !== undefined){
-    this.exerciseService.getSessionList(this.userSource.id).then((resp:any)=>{
-      resp.subscribe((response:any)=>{
-        if(response.response.result === 'success'){
-          // console.log('LA RESP DANS SESSIONS : ',response)
-          // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
-          this.publicSessions.cards = response.publicSessions;
-          this.privateSessions.cards = response.privateSessions;
-          this.publicSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          this.privateSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
-        }
-      })
-    });
-  }else{
-    console.log('SESSION : ',this.idOfOwner)
-    this.exerciseService.getSessionList(this.idOfOwner).then((resp:any)=>{
-      console.log(resp)
-      resp.subscribe((response:any)=>{
-        if(response.response.result === 'success'){
-          // console.log('LA RESP DANS SESSIONS : ',response)
-          // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
-          this.publicSessions.cards = response.publicSessions;
-          this.privateSessions.cards = response.privateSessions;
-          this.publicSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          this.privateSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
-        }
-      })
-    });
-  }
+  // console.log('SESSION : ',this.userSource)
+  // if(this.userSource !== undefined){
+  //   this.exerciseService.getSessionList(this.userSource.id).then((resp:any)=>{
+  //     resp.subscribe((response:any)=>{
+  //       if(response.response.result === 'success'){
+  //         // console.log('LA RESP DANS SESSIONS : ',response)
+  //         // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
+  //         this.publicSessions.cards = response.publicSessions;
+  //         this.privateSessions.cards = response.privateSessions;
+  //         this.publicSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         this.privateSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
+  //       }
+  //     })
+  //   });
+  // }else{
+  //   console.log('SESSION : ',this.idOfOwner)
+  //   this.exerciseService.getSessionList(this.idOfOwner).then((resp:any)=>{
+  //     console.log(resp)
+  //     resp.subscribe((response:any)=>{
+  //       if(response.response.result === 'success'){
+  //         // console.log('LA RESP DANS SESSIONS : ',response)
+  //         // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
+  //         this.publicSessions.cards = response.publicSessions;
+  //         this.privateSessions.cards = response.privateSessions;
+  //         this.publicSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         this.privateSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
+  //       }
+  //     })
+  //   });
+  // }
     
   }
 
@@ -349,12 +441,24 @@ export class TrainingsComponent implements OnInit {
     this.displayTypeOf = type; 
   }
 
+  update =  false;
+  tempPrivate : any  [];
+  tempPublic : any  [];
   applyFilter(event: Event) {
-    console.log('LE SEARCH : ',event)
     const filterValue = (event.target as HTMLInputElement).value;
-    console.log('LE SEARCH : ',filterValue.trim().toLowerCase())
-    // this.publicTrainings.cards = 
-    // this.publicTrainings.cards.filter = filterValue.trim().toLowerCase();
+    if(this.update){
+      this.privateTrainings.cards = this.tempPrivate;
+      this.publicTrainings.cards = this.tempPublic;
+      this.privateTrainings.cards = this.privateTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+      this.publicTrainings.cards = this.publicTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+    }else{
+      this.tempPrivate = this.privateTrainings.cards;
+      this.tempPublic = this.publicTrainings.cards;
+      this.update = true;
+      this.privateTrainings.cards = this.privateTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+      this.publicTrainings.cards = this.publicTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+    }
+     console.log('NEW RESLT AFTER FILTER : ',this.privateTrainings.cards)
   }
 
 

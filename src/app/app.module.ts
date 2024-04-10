@@ -167,7 +167,7 @@ export class HammerConfig extends HammerGestureConfig {
     MatDatepickerModule,
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
     MatNativeDateModule,
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }
   ],
   bootstrap: [AppComponent],
   schemas: [

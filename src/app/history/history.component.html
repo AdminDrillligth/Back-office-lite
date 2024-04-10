@@ -1,12 +1,25 @@
 <div class="container-main">
+  <mat-spinner *ngIf="disabledSpinner" class="spinner-display"></mat-spinner>
   <h3 style="color:white" class="header-title">Résultats</h3>
 
 
-  <mat-form-field>
+  <mat-form-field style="margin-left: 110px;">
     <mat-label>Participant</mat-label>
     <mat-select multiple>
       <mat-option  *ngFor="let user of users" value="{{user.id}}">{{user.fullName}}</mat-option>
     </mat-select>
+  </mat-form-field>
+  <mat-form-field  style="margin-left:10px;" class="example-form-field">
+    <mat-label>Période :</mat-label>
+    <mat-date-range-input
+      [formGroup]="campaignOne"
+      [rangePicker]="campaignOnePicker">
+      <input matStartDate placeholder="Start date" formControlName="start">
+      <input matEndDate placeholder="End date" formControlName="end">
+    </mat-date-range-input>
+    <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+    <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+    <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
   </mat-form-field>
   <br>
 
