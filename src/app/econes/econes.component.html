@@ -1,4 +1,5 @@
 <div class="container-main" >
+  <mat-spinner *ngIf="disabledSpinner" class="spinner-display"></mat-spinner>
   <h3 style="color:white" class="header-title">E-Cones</h3>
   <div  style="color:white;margin-bottom: 20px;">
         <button (click)="search()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
@@ -7,19 +8,17 @@
         <button (click)="parameters()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>settings</mat-icon>
         </button>
-        <button *ngIf="account.role == 'admin'"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
+        <button *ngIf="account.role == 'admin' && firmWareList.length !== 0"  (click)="addEconesAsAdmin()" type="button" style="margin: 10px;" mat-mini-fab color="accent">
           <mat-icon>add</mat-icon>
         </button>
-        <div *ngIf="account.role === 'admin'"  style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-3  col-md-4">
+        <div *ngIf="account.role == 'admin' && firmWareList.length !== 0"  style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-3  col-md-4">
           <mat-card  (click)="uploadZip()" class="card-dashboard">
             <mat-card-header>
-              <img class="image-logo" mat-card-image src="assets/icons/add.png"/>
-      
               <mat-card-title style="margin-right: 15px;" class="align-title">Téléverser une mise à jour</mat-card-title>
             </mat-card-header>
           </mat-card>
         </div>
-        <div *ngIf="account.role === 'admin'" style="color:white; margin-bottom: 10px;display: inline-block;margin-left:10px;" class="display-text col-sm-3  col-md-4">
+        <div *ngIf="account.role == 'admin' && firmWareList.length !== 0" style="color:white; margin-bottom: 10px;display: inline-block;margin-left:10px;" class="display-text col-sm-3  col-md-4">
           <mat-card  (click)="chooseFirmwareGlobal()" class="card-dashboard">
             <mat-card-header style="padding-bottom: 19px;">
               <mat-card-title style="margin-right: 15px;" class="align-title">Sélectionner le firmware global</mat-card-title>
@@ -83,13 +82,13 @@
   <div *ngIf="displayModalUpdateFirmware" class="modal-zip" >
     <h2>Modifier la version globale du firmware</h2>
 
-    <h5>Firmware global actuel:{{detailsLastGlobalFirmware.version}} </h5>
+    <h5>Firmware global actuel : {{detailsLastGlobalFirmware.version}} </h5>
     <p>Description : {{detailsLastGlobalFirmware.description}}</p>
-    <p>Date de l'update : {{detailsLastGlobalFirmware.creationDate}}</p>
+    <p>Date de mise à jour : {{detailsLastGlobalFirmware.date}}</p>
     <mat-form-field style="width:98%" class="firmware-select">
       <mat-label>Chosir une version...</mat-label>
       <mat-select  value="">
-        <mat-option (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><p style="font-weigth:500;">Version :{{firmware.version}}</p><p>Date de mise a jour: {{firmware.date}}</p></mat-option>
+        <mat-option style="border-bottom: 5px white dotted;" (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmWareList" [value]="firmware.version" ><div class="choosen-firmware" *ngIf="firmware.choosen !== undefined && firmware.choosen === true"></div><p style="margin-top:4px;display:inline-block;width:80%;">Version : <b>{{firmware.version}}</b></p><p>Description : {{firmware.description}}</p><p>Date de mise à jour : {{firmware.date}}</p></mat-option>
       </mat-select>
     </mat-form-field>
     <div *ngIf="!displayListOfUSer" class="bottom-btn">
@@ -148,8 +147,8 @@
       <td mat-cell *matCellDef="let emp"> {{emp.creationDate}} </td>
     </ng-container>
     <ng-container matColumnDef="client">
-      <th mat-header-cell *matHeaderCellDef> Client </th>
-      <td mat-cell *matCellDef="let emp"> <button *ngIf="emp.name !== ''" class="btn-see-profil">{{emp.name}}</button> </td>
+      <th mat-header-cell *matHeaderCellDef> Utilisateur </th>
+      <td mat-cell *matCellDef="let emp"> <button (click)="seeProfil(emp.account.id)" class="btn-see-profil">{{emp.account.fullName}}</button> </td>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> actions </th>

@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, Inject, ViewChild, inject } from '@angular/core';
+import { Injectable, Component, OnInit, Inject, ViewChild, inject,EventEmitter,Input,AfterViewInit,Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -16,7 +16,6 @@ import { SafeUrl } from '@angular/platform-browser';
 import { FireStoreServiceImages } from '../../services/firebase/firestoreservice-images';
 import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.service';
 import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
-import { UserHandlerHistoricalService } from '../../services/user-handlers-historical.service';
 import { uid } from 'uid';
 import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule } from '@angular/material/slide-toggle';
 import { DatePipe } from '@angular/common';
@@ -35,7 +34,10 @@ import { StripeServices } from '../../services/stripe.service';
 import { MatAccordion } from '@angular/material/expansion';
 import { FirmWareService } from '../../services/firmware.service';
 import { MatRadioModule } from '@angular/material/radio';
-
+import ImageResize from 'image-resize';
+import {Location, Appearance } from '@angular-material-extensions/google-maps-autocomplete';
+declare var google;
+import PlaceResult = google.maps.places.PlaceResult;
 
 type ListType = { title: string; val: number }[];
 
@@ -127,6 +129,20 @@ export interface ProfilAccountDatas{
 
 
 export class AdministrationComponent implements OnInit{
+
+  disabledSpinner = false;
+  // public appearance = Appearance;
+  // public zoom: number;
+  // public latitude: number;
+  // public longitude: number;
+  public selectedAddress: PlaceResult;
+  // AutoComplete Select for Adress Google Maps
+  // @Input() adressType: string;
+  // @Output() setAddress: EventEmitter<any> = new EventEmitter();
+  // @ViewChild('addresstext') addresstext: any;
+  // autocompleteInput: string;
+  // queryWait: boolean;
+
   panelOpenState = false;
   // ,'date'
   displayedColumnsAccounts: string[] = ['firstName',  'moderation', 'actions'];
@@ -240,10 +256,11 @@ export class AdministrationComponent implements OnInit{
   public displayModalActionOwner:boolean = false;
   public displayModalFirmware:boolean = false;
   public privateExerciceOnly = false;
-  public moderationAccount = false; 
+  public moderationAccount = false;
   public firmWareList:any = [];
   public privateFirmwareId = false;
- 
+  public globalFirmwareId = false;
+
 
 
 
@@ -265,7 +282,6 @@ export class AdministrationComponent implements OnInit{
     private afAuth: AngularFireAuth,
     private storageServiceMail:storageServiceMail,
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
-    private userHandlersServiceAdmin:UserHandlersServiceAdmin,
     public dialog: MatDialog,
     private gocardlessService:GocardlessService,
     private router: Router
@@ -297,79 +313,107 @@ export class AdministrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.disabledSpinner = true;
     var widthScreen = window.innerWidth;
     if(widthScreen < 600){
       this.widthScreenMobile = true;
       this.displayedColumnsAccounts = ['firstName','actions'];
 
     }
-    console.log('Le width du screen : !',widthScreen)
+    // console.log('Le width du screen : !',widthScreen)
     this.userHandlersServiceCustomer.getUpdateallUsers();
     this.utilsService._templateOptions.subscribe((theme:any) => {
-      console.log('THEME !: ',theme)
+      // console.log('THEME !: ',theme)
     });
     this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       console.log('admin see as admin : ', asAdmin)
-
       if(asAdmin == false){
+        this.ownerAccountOf = undefined;
+        this.comeBackToOwner = false;
+        this.disabledSpinner = true;
         this.letsee = false;
         this.ProfilAccount = undefined;
-    
+        this.userHandlersServiceCustomer.getUpdateallUsers();
+        this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+        console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+        if(this.AccountOfUser.role === 'admin'){
+          let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+          this.Accounts.length = 0
+          allAccounts.forEach((account:any)=>{
+            if(account.role === 'admin' || account.role === 'owner'){
+              this.Accounts.push(account)
+            }
+          });
+          setTimeout(() => {
+            this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
+            this.dataSourceAccounts.paginator = this.paginatorAccounts;
+            this.resultsLength = this.Accounts.length;
+            this.disabledSpinner = false;
+          }, 1000);
+        }
       }
       if(asAdmin == true){
-        this.letsee = true;
-        console.log('WE COME BACK WITH THIS ACCOUNT : ! ',this.ProfilAccount)
+
+        setTimeout(() => {
+          this.letsee = true;
+          // console.log('WE COME BACK WITH THIS ACCOUNT SEE ADMIN  === TRUE : ! ',this.ProfilAccount)
         let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
 
-        console.log('profil complet userDetailAccount :',userDetailAccount)
+        // console.log('profil complet userDetailAccount ON PASSE ADMIN TRUE:',userDetailAccount)
         this.ProfilAccount = userDetailAccount
         this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
           resp.subscribe((e:any) =>{
-            console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+            // console.log('LA RESP DU ACCOUNT DETAILS: DANS ADMIN TRUE ',e.account)
             this.ProfilAccount = e.account;
-            // users
-            this.ProfilAccount.users.forEach((user:any, index:number)=>{
-              console.log('le user: ', user.id, index)
-              this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-                resp.subscribe((e:any) =>{
-                  console.log('le detail de chaque user du compte owner:! ', e.account)
-                  user = e.account;
-                  this.ProfilAccount.users[index] = e.account
-                  this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-                  this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-                  this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-    
-                })
-              })
-            })
-            // staff
-            this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-              console.log('le staff: ', staff.id, index)
-              this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-                resp.subscribe((e:any) =>{
-                  console.log('le detail de chaque staff du compte owner:! ', e.account)
-                  staff = e.account;
-                  this.ProfilAccount.staff[index] = e.account
-                  console.log(this.ProfilAccount.staff)
-                  this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-                  this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-                  this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-    
-                })
-              })
-            })
+        // users
+        if(this.ProfilAccount.users.length > 0 ){
+          this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        }
+        if(this.ProfilAccount.staff.length > 0 ){
+        // staff
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+        }
+
+
+
           })
         });
+        }, 1000);
+
       }
     })
+    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+      // console.log('list of firwares: ',firmwareList)
+      firmwareList.subscribe((list:any)=>{
+        // console.log('list of firwares: ',list.firmwareList)
+        this.firmWareList = list.firmwareList;
+        this.firmWareList = this.firmWareList.sort((a, b) => {
+          if (a.version > b.version) {
+              return -1;
+          }
+          if (a.version < b.version) {
+              return 1;
+          }
+          return 0;
+        });
+        this.firmWareList.forEach((firmware:any)=>{
+          firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+        })
+
+      })
+    });
     this.utilsService._newaccount.subscribe((update:any) =>{
        if(update !== null){
          if(update == true){
           this.Accounts = [];
           let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
-          console.log('ICI all accounts :: ',allAccounts)
-          console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
+          // console.log('ICI all accounts :: ',allAccounts)
+          // console.log('ICI ADMIN NEW ACCOUNT :: ',this.AccountOfUser)
           this.Accounts.length = 0
           allAccounts.forEach((account:any)=>{
             if(account.role === 'admin' || account.role === 'owner'){
@@ -387,7 +431,7 @@ export class AdministrationComponent implements OnInit{
     })
 
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+    // console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     if(this.AccountOfUser.role === 'admin'){
       let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
       this.Accounts.length = 0
@@ -400,64 +444,98 @@ export class AdministrationComponent implements OnInit{
         this.dataSourceAccounts = new MatTableDataSource(this.Accounts);
         this.dataSourceAccounts.paginator = this.paginatorAccounts;
         this.resultsLength = this.Accounts.length;
+        this.disabledSpinner = false;
       }, 1000);
     }
     if(this.AccountOfUser.role === 'owner'){
       this.seeAsOwner = true;
       this.ProfilAccount = this.AccountOfUser;
-      console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
+      this.disabledSpinner = false;
+      // console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
       this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
         resp.subscribe((e:any) =>{
-          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-          // this.ProfilAccount = e.account;
-          // // users
-          // this.ProfilAccount.users.forEach((user:any, index:number)=>{
-          //   console.log('le user: ', user.id, index)
-          //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-          //     resp.subscribe((e:any) =>{
-          //       console.log('le detail de chaque user du compte owner:! ', e.account)
-          //       user = e.account;
-          //       this.ProfilAccount.users[index] = e.account
-          //       this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-          //       this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-          //       this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-  
-          //     })
-          //   })
-          // })
-          // // staff
-          // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-          //   console.log('le staff: ', staff.id, index)
-          //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-          //     resp.subscribe((e:any) =>{
-          //       console.log('le detail de chaque staff du compte owner:! ', e.account)
-          //       staff = e.account;
-          //       this.ProfilAccount.staff[index] = e.account
-          //       console.log(this.ProfilAccount.staff)
-          //       this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-          //       this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-          //       this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
-  
-          //     })
-          //   })
-          // })
+          // console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
         })
       });
     }
-  }
+    if(this.AccountOfUser.role === 'staff'){
+      // this.letsee = true;
+      this.seeAsOwner = true;
+      this.ProfilAccount = this.AccountOfUser;
+      this.disabledSpinner = false;
 
+
+      let allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
+      console.log('TOUS LES COMPTES : !',allAccounts)
+      allAccounts.forEach((account:any)=>{
+        console.log(account)
+        if(account.role === 'staff' || account.role === 'owner'){
+          this.parseStaff.push(account)
+        }else{
+          this.parseUsers.push(account)
+        }
+      })
+      if(this.parseStaff.length > 0){
+        // staff
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.parseStaff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.parseStaff.length;
+      }
+              // users
+      if(this.parseUsers.length > 0 ){
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.parseUsers);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.parseUsers.length;
+      }
+      // console.log('Notre tableau ParseStaff :  : ! ',this.parseStaff)
+      // this.getDetails(this.ProfilAccount.owner)
+
+    }
+  }
+  parseStaff = [];
+  parseUsers = [];
+
+
+  // ICI ON GET LES DETAILS D'UN COMPTE EN PARTICULIER : => UN COMPTE SELECTIONNE
+  getDetails(accountOwner:any){
+    // console.log("TEST OWNER TO GET THE NEW DATA",accountOwner)
+    this.userHandlersServiceCustomer.getAccountDetails(accountOwner).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+        // console.log('LA RESP DU GET AFTER UPDATE DETAILS: ',e.account)
+        localStorage.setItem('account-data-user', JSON.stringify(e.account));
+
+        this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+        if(this.ProfilAccount.users.length > 0){
+        // users
+        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+        }
+
+        if(this.ProfilAccount.staff.length > 0){
+        // staff
+
+        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+        }
+
+      })
+    });
+  }
 
   // CHARTS LINE UP
   onSelect(data:any): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
   onActivate(data:any): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
+    // console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
   onDeactivate(data:any): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
   // CREATE ADMIN !!
@@ -480,39 +558,200 @@ export class AdministrationComponent implements OnInit{
   uploadZip(){
 
   }
-  
+
+  displayModalUpdateDataProfil = false;
+  familyName = new FormControl(''); //
+  firstName = new FormControl(''); //
+  userEmail = new FormControl(''); //
+  phone = new FormControl(''); //
+  address1 :any= "";
+  address2 = new FormControl('');
+  zip :any= "";
+  city :any= "";
+  region :any = "";
+  selectedFile!: File;
+  comment= new FormControl('');
+  birthdate:any='';
+  simpleBirthdate:any='';
+  audience:string='public';
+  rightsUser:any[]=[];
+  AdminAccounts:any[]=[];
+  eventImageFile:any;
+  uploadedImages:any;
+  update=false;
+  dataBase64 = "";
+
+
+  onAutocompleteSelected(result: PlaceResult) {
+    // console.log('onAutocompleteSelected: ', result.address_components);
+    this.region = result.address_components[5].long_name;
+    this.city = result.address_components[2].long_name;
+    this.zip =  result.address_components[6].long_name;
+    this.address1 = result.address_components[0].long_name + ' ' + result.address_components[1].long_name;
+  }
+
+
+
+  updateProfilDatas(ProfilAccount:any){
+    this.urlImg = undefined;
+    // console.log('PROFILE TO UPDATE :   ! ',ProfilAccount)
+    this.displayModalUpdateDataProfil = true;
+    this.update = true;
+    if(ProfilAccount !== undefined){
+      this.familyName.setValue(ProfilAccount.familyName);
+      this.firstName.setValue(ProfilAccount.firstName);
+      this.phone.setValue(ProfilAccount.personalInfo.phone);
+      this.userEmail.setValue(ProfilAccount.email);
+      this.address1 = ProfilAccount.personalInfo.address1;
+      this.address2.setValue(ProfilAccount.personalInfo.address2);
+      this.zip = ProfilAccount.personalInfo.zip;
+      this.city = ProfilAccount.personalInfo.city;
+      this.region = ProfilAccount.personalInfo.region;
+      this.urlImg = ProfilAccount.avatarURL;
+
+
+    }
+  }
+
+
+  wrongMail = true;
+  updateEmail(){
+    // test REGEX MAIL
+    const re = /\S+@\S+\.\S+/;
+    console.log(re.test(this.userEmail.value));
+    if(!re.test(this.userEmail.value)){ this.wrongMail = false; }else{ this.wrongMail = true; }
+  }
+
+  wrongPhone = true;
+  updatePhone(){
+    const re = /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/;
+    console.log(re.test(this.phone.value));
+    if(!re.test(this.phone.value)){ this.wrongPhone = false; }else{ this.wrongPhone = true; }
+  }
+
+
+  updateProfilSender(ProfilAccount:any){
+    if(this.wrongMail && this.wrongPhone){
+      ProfilAccount.familyName = this.familyName.value;
+      ProfilAccount.firstName = this.firstName.value;
+      ProfilAccount.personalInfo.phone = this.phone.value;
+      ProfilAccount.email = this.userEmail.value;
+      ProfilAccount.personalInfo.address1 = this.address1;
+      ProfilAccount.personalInfo.zip = this.zip;
+      ProfilAccount.personalInfo.city = this.city;
+      ProfilAccount.personalInfo.region = this.region;
+
+      ProfilAccount.avatarURL = this.urlImg;
+      console.log('LES NOUVELLES DATAS DU ACCOUNT : ',ProfilAccount, this.dataBase64)
+      this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update user: ! ', response.account)
+          // console.log(this.)
+          this.displayModalUpdateDataProfil = false;
+          if(response.account.role !== 'staff' || response.account.role !== 'user'){
+            this.getDetails(response.account.id);
+          }else{
+            this.getDetails(response.account.id);
+            this.userHandlersServiceCustomer.getAccounts().subscribe((accounts:any)=>{
+              this.parseStaff = [];
+              this.parseUsers = [];
+              console.log('On subscribe: ',accounts.accounts)
+              localStorage.setItem('accounts-data', JSON.stringify(accounts.accounts));
+              // console.log('LIST DES USERS : ! ', response)
+              accounts.accounts.forEach((account:any)=>{
+                console.log(account)
+                if(account.role === 'staff' || account.role === 'owner'){
+                  this.parseStaff.push(account)
+                }else{
+                  this.parseUsers.push(account)
+                }
+              })
+              if(this.parseStaff.length > 0){
+                // staff
+        
+                this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.parseStaff);
+                this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+                this.resultsLengthStaffAccounts = this.parseStaff.length;
+              }
+                      // users
+              if(this.parseUsers.length > 0 ){
+                this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.parseUsers);
+                this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+                this.resultsLengthUsersAccounts = this.parseUsers.length;
+              }
+            });
+          }
+          
+          // localStorage.setItem('account-data-user', JSON.stringify(e.account));
+
+          // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+          // localStorage.setItem('account', JSON.stringify(response.account));
+          // this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+          // this.getDetails(this.modalAccount.id);
+        })
+      });
+    }
+  }
+
+  urlImg :any= undefined;
+  onchangeInputImg(file:any){
+    //
+    var imageResize = new ImageResize({
+      format: 'jpg',
+      width: 256
+    });
+
+    imageResize.play(file.target.files[0]).then((e:any)=>{
+      this.dataBase64 = e;
+      console.log(file)
+      console.log(this.dataBase64)
+      this.urlImg = this.dataBase64
+    });
+  }
+
+  closeModalUpdateProfil(){
+    this.displayModalUpdateDataProfil = false;
+  }
+
   modalAccount:any;
+  displayButtonSeeAccount = false;
   openModalActions(account:any){
+    this.displayButtonSeeAccount = false;
+    // console.log('ON CHOOS E CE ACCOUNT : ! ',account)
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-        this.modalAccount = e.account;
-        if(this.modalAccount.privateFirmwareId !== undefined){
-          if(this.modalAccount.privateFirmwareId !== ""){
-            this.privateFirmwareId = true;
+        // console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        if(e.account !== undefined){
+          this.displayButtonSeeAccount = true;
+          this.modalAccount = e.account;
+          if(this.modalAccount.privateFirmwareId !== undefined){
+            if(this.modalAccount.privateFirmwareId !== ""){
+              this.privateFirmwareId = true;
+            }
+          }
+          if(this.modalAccount.privateOnly !== undefined){
+            this.privateExerciceOnly = this.modalAccount.privateOnly;
+          }
+          if(this.modalAccount.privateOnly === undefined){
+            this.privateExerciceOnly = false;
+          }
+          if(this.modalAccount.warning !== undefined){
+            this.moderationAccount = this.modalAccount.warning;
+          }
+          if(this.modalAccount.warning === undefined){
+            this.moderationAccount = false;
           }
         }
-        if(this.modalAccount.privateOnly !== undefined){
-          this.privateExerciceOnly = this.modalAccount.privateOnly;
-        }
-        if(this.modalAccount.privateOnly === undefined){
-          this.privateExerciceOnly = false;
-        }
-        if(this.modalAccount.warning !== undefined){
-          this.moderationAccount = this.modalAccount.warning;
-        }
-        if(this.modalAccount.warning === undefined){
-          this.moderationAccount = false;
-        }
+
       })
     })
     if(this.firmWareList.length !== 0 ){
 
     }else{
       this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-        console.log('list of firwares: ',firmwareList)
+        // console.log('list of firwares: ',firmwareList)
         firmwareList.subscribe((list:any)=>{
-          console.log('list of firwares: ',list.firmwareList)
+          // console.log('list of firwares: ',list.firmwareList)
           this.firmWareList = list.firmwareList;
           this.firmWareList = this.firmWareList.sort((a, b) => {
             if (a.version > b.version) {
@@ -523,30 +762,39 @@ export class AdministrationComponent implements OnInit{
             }
             return 0;
           });
+
           this.firmWareList.forEach((firmware:any)=>{
             firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
           })
-        
+
+
         })
       });
     }
-    console.log('QUEL COMPTE : ! ',this.modalAccount)
+    // console.log('QUEL COMPTE : ! ',this.modalAccount)
     // if(this.modalAccount === undefined){
     //   this.router.navigate(['login']);
     // }
     setTimeout(() => {
       this.displayModalAction = true;
     }, 400);
-    
+
   }
 
   modalAccountOwner:any;
-  openModalActionsOwner(account:any){
+  topOfModal = '140px'
+  openModalActionsOwner(account:any,event:any){
+    // console.log('le event de la mouse : ', event)
+    // console.log('le event de la mouse : ', event.layerY)
+    // console.log('LE ACCOUNT SELECT  : ! ',account)
+    this.topOfModal = event.layerY-200+'px'
+    this.modalAccountOwner = account
     this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
+
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+        // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
         this.modalAccountOwner = e.account;
-        console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
+        // console.log('LE ACCOUNT SELECT : ',this.modalAccountOwner)
         if(this.modalAccountOwner.privateOnly !== undefined){
           this.privateExerciceOnly = this.modalAccountOwner.privateOnly;
         }
@@ -559,7 +807,9 @@ export class AdministrationComponent implements OnInit{
         if(this.modalAccountOwner.warning === undefined){
           this.moderationAccount = false;
         }
+
       })
+
     })
     setTimeout(() => {
       this.displayModalActionOwner = true;
@@ -567,23 +817,69 @@ export class AdministrationComponent implements OnInit{
   }
 
   // public privateExerciceOnly = false;
-  // public moderationAccount = false; 
+  // public moderationAccount = false;
   modarateAccount(account:any){
     this.displayModalAction = false;
-    console.log('QUEL COMPTE : ! ',account)
+    // console.log('QUEL COMPTE : ! ',account)
     if(this.moderationAccount){
       this.moderationAccount = false
     }else{
       this.moderationAccount = true
     }
+
     account.warning = this.moderationAccount;
     this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
       resp.subscribe((response:any)=>{
-        console.log('la resp du update user: ! ', response)
+        // console.log('la resp du update user: ! ', response)
 
       })
     });
-    console.log('Warning Only ? :',account.warning);
+    let staffToUpdate:any = [];
+    account.staff.forEach((staff:any)=>{
+      this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          e.account.warning = account.warning;
+          staffToUpdate.push(e.account)
+          // console.log('STAFF ACCOUNT : !',staffToUpdate)
+          if(account.staff.length === staffToUpdate.length){
+            // console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
+            staffToUpdate.forEach((staff:any)=>{
+              this.userHandlersServiceCustomer.updateAccount(staff).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  // console.log('la resp du update Staff Private only: ! ', response)
+                })
+              });
+            })
+          }
+        })
+      })
+    })
+    let userToUpdate:any = [];
+    account.users.forEach((user:any)=>{
+      this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          e.account.warning = account.warning;
+          userToUpdate.push(e.account)
+          // console.log('STAFF ACCOUNT : !',userToUpdate)
+          if(account.users.length === userToUpdate.length){
+            // console.log('SAME LENGTH STAFF ACCOUNT : !',userToUpdate)
+            userToUpdate.forEach((user:any)=>{
+              this.userHandlersServiceCustomer.updateAccount(user).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  // console.log('la resp du update Staff Private only: ! ', response)
+                })
+              });
+            })
+          }
+        })
+      })
+    })
+
+
+
+    // console.log('Warning Only ? :',account.warning);
   }
 
   privateExercice(account:any){
@@ -600,23 +896,155 @@ export class AdministrationComponent implements OnInit{
 
       })
     });
+    let staffToUpdate:any = [];
+    account.staff.forEach((staff:any)=>{
+      this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
+        resp.subscribe((e:any) =>{
+          // console.log('LA RESP DU ACCOUNT DETAILS STAFF OR USER : ',e.account)
+          e.account.privateOnly = account.privateOnly;
+          staffToUpdate.push(e.account)
+          console.log('STAFF ACCOUNT : !',staffToUpdate)
+          if(account.staff.length === staffToUpdate.length){
+            // console.log('SAME LENGTH STAFF ACCOUNT : !',staffToUpdate)
+            staffToUpdate.forEach((staff:any)=>{
+              this.userHandlersServiceCustomer.updateAccount(staff).then((resp:any)=>{
+                resp.subscribe((response:any)=>{
+                  // console.log('la resp du update Staff Private only: ! ', response)
+                })
+              });
+            })
+          }
+        })
+      })
+
+
+    })
+
+
+
     console.log('Private Only ? :',account.privateOnly);
   }
 
+
+  gradeToRole(account:any, type:string){
+    if(type ===  'staff'){
+      account.role = 'user';
+      this.modalAccount.staff.forEach((staff:any, index:number)=>{
+        if(account.id === staff.id){
+          // console.log(staff.id,index)
+          // console.log(this.modalAccount.staff,this.modalAccount.users)
+          this.modalAccount.users.push(account)
+          this.modalAccount.staff = this.modalAccount.staff.filter((staff:any) => staff.id !== account.id)
+          // console.log(this.modalAccount.staff,this.modalAccount.users)
+        }
+      })
+      console.log(this.modalAccount.staff,this.modalAccount.users)
+    }else{
+      account.role = 'staff';
+      this.modalAccount.users.forEach((user:any, index:number)=>{
+        if(account.id === user.id){
+          this.modalAccount.staff.push(account)
+          this.modalAccount.users = this.modalAccount.users.filter((user:any) => user.id !== account.id)
+          // console.log(this.modalAccount.staff,this.modalAccount.users)
+
+          // console.log(user.id,index)
+        }
+      })
+      console.log(this.modalAccount.staff,this.modalAccount.users)
+    }
+    this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user or staff: ! ', response)
+        // this.getDetails(account.owner);
+      })
+    });
+    this.userHandlersServiceCustomer.updateAccount(this.modalAccount).then((resp:any)=>{
+      resp.subscribe((response:any)=>{
+        console.log('la resp du update user or staff: ! ', response)
+        this.getDetails(this.modalAccount.id);
+      })
+    });
+
+  }
+
+
+
   selectedFirmware(firmware:any){
-    console.log('FIRMWARE : ! ',firmware.id,firmware)
+    // console.log('FIRMWARE : ! ',firmware.id,firmware)
     this.selectedVersion = firmware;
   }
 
+
+  globalFirmwareForThisAccount:any=[];
+  privateFirmwareForThisAccount:any=[];
+
   displayModalOfPrivateFirmware(account:any){
-    console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
-    if(account.privateFirmwareId !== undefined){
-      if(account.privateFirmwareId !== ""){
-        this.privateFirmwareId = true;
+    if(account !== undefined){
+      if(account.privateFirmwareId !== undefined){
+        // console.log('RESP OF privateFirmwareId : ? ',account.privateFirmwareId)
+        if(account.privateFirmwareId !== "" ){
+          this.firmWareService.getfirmwareDetails(account.privateFirmwareId).subscribe((element:any)=>{
+            console.log('LE PRIVATE  : ',element)
+            if(element.response.result === "success"){
+                    this.privateFirmwareForThisAccount = element.firmwareDetail;
+                    this.privateFirmwareId = true;
+                    this.globalFirmwareId = false;
+                    console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+                      this.firmWareList.forEach((firmware:any)=>{
+                        if(firmware.id === this.privateFirmwareForThisAccount.id){
+                          firmware.choosen = true;
+                          console.log('LE IDENTIQUE : !',firmware)
+                        }else{
+                          firmware.choosen = false;
+                        }
+                      })
+            }
+          })
+
+        }else{
+          this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+            // console.log('la resp du firmware global : ', element)
+              if(element.response.result === "success"){
+                this.globalFirmwareForThisAccount = element.globalFirmware;
+                this.globalFirmwareId = true;
+                this.privateFirmwareId = false;
+                console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+                this.firmWareList.forEach((firmware:any)=>{
+                  if(firmware.id === this.globalFirmwareForThisAccount.id){
+                    firmware.choosen = true;
+                    // console.log('LE IDENTIQUE : !',firmware)
+                  }else{
+                    firmware.choosen = false;
+                  }
+                })
+              }
+            })
+        }
+      }else{
+        this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+          console.log('la resp du firmware global : ', element)
+          if(element.response.result === "success"){
+            this.globalFirmwareForThisAccount = element.globalFirmware;
+            this.globalFirmwareId = true;
+            this.privateFirmwareId = false;
+            console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount,  this.privateFirmwareForThisAccount)
+            this.firmWareList.forEach((firmware:any)=>{
+              if(firmware.id === this.globalFirmwareForThisAccount.id){
+                firmware.choosen = true;
+                console.log('LE IDENTIQUE : !',firmware)
+              }else{
+                firmware.choosen = false;
+              }
+            })
+          }
+        })
+        this.globalFirmwareId = true;
+        this.privateFirmwareId = false;
       }
     }
 
-    this.firmWareService.getfirmwareDetails("");
+
+    // this.firmWareService.getfirmwareDetails("");
     this.displayModalAction = false;
     console.log('QUEL COMPTE : ! ',account)
     if(this.displayModalFirmware){
@@ -628,7 +1056,7 @@ export class AdministrationComponent implements OnInit{
   }
 
   selectFirmwareForAccount(account:any){
-   
+
     console.log(account,this.selectedVersion)
     if(this.selectedVersion !== ""){
       this.displayModalFirmware = false;
@@ -637,12 +1065,12 @@ export class AdministrationComponent implements OnInit{
       console.log(this.selectedVersion, account)
       this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
         resp.subscribe((response:any)=>{
-          console.log('la resp du update user owner: ! ', response)
+          // console.log('la resp du update user owner: ! ', response)
 
         })
       });
     }
-    // 
+    //
   }
 
   removePrivateFirmware(account:any){
@@ -651,9 +1079,29 @@ export class AdministrationComponent implements OnInit{
     this.privateFirmwareId = false;
     this.userHandlersServiceCustomer.updateAccount(account).then((resp:any)=>{
       resp.subscribe((response:any)=>{
-        console.log('la resp du update user owner: ! ', response)
+        // console.log('la resp du update user owner: ! ', response)
       })
     });
+
+    this.firmWareService.getGlobalFirmware().subscribe((element:any)=>{
+      console.log('la resp du firmware global : ', element)
+      if(element.response.result === "success"){
+        this.globalFirmwareForThisAccount = element.globalFirmware;
+        this.globalFirmwareId = true;
+        this.privateFirmwareId = false;
+        console.log('liste des versions : ',this.firmWareList,this.globalFirmwareForThisAccount)
+        this.firmWareList.forEach((firmware:any)=>{
+          if(firmware.id === this.globalFirmwareForThisAccount.id){
+            firmware.choosen = true;
+            // console.log('LE IDENTIQUE : !',firmware)
+          }else{
+            firmware.choosen = false;
+          }
+        })
+      }
+    })
+    this.globalFirmwareId = true;
+    this.privateFirmwareId = false;
   }
 
   closeModalAction(){
@@ -672,67 +1120,10 @@ export class AdministrationComponent implements OnInit{
 
   }
 
-  // onchangeInputZip(zip:any){
-  //   console.log(zip)
-  //   const file = zip.target.files[0];
-  //   this.AccountOfUser.id
-  //   // Encode the file using the FileReader API
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //       console.log(reader.result);
-  //       console.log(reader);
-  //       // this.base64ToBlob(reader.result);
-  //       this.srCzip = reader.result;
-  //       this.firmWareService.createFirmware(this.srCzip, this.AccountOfUser.id);
-  //       // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
-  //   };
-  //   reader.readAsDataURL(file);
-    
-  //   // this.unzip();
-
-  // }
-
-  // getlastFirmware(){
-  //   this.firmWareService.getFirmware(this.AccountOfUser.id);
-  // }
-
   selectStatus(event:any){
     console.log('VALEUR DE CHANGEMENTS : ! ',event.value)
   }
 
-
-  unzip(){
-    // let blob = this.base64ToBlob(resolved);
-    // let zip = new JSZip();
-    //   zip.loadAsync(blob).then(function(zip) {
-    //     // zip.file("firmware.zip").async("string").then(function (content) {
-    //     //       console.log(content);
-    //     //            // content is the file as a string
-    //     // });
-    // }).catch((e) => {
-
-    // });
-  }
-
-  base64ToBlob(base64:any) {
-    // let json = JSON.parse(base64);
-    // console.log(json)
-    // let binaryString =  window.atob();
-    // let binaryLen = binaryString.length;
-
-    // let ab = new ArrayBuffer(binaryLen);
-    // let ia = new Uint8Array(ab);
-    // for (let i = 0; i < binaryLen; i++) {
-    //    ia[i] = binaryString.charCodeAt(i);
-    // }
-
-    // let bb:any = new Blob([ab]);
-    // bb.lastModifiedDate = new Date();
-    // bb.name = "firmware.zip";
-    // bb.type = "zip";
-    // console.log(bb)
-    // return bb;
-}
 
   selectedCharts :any = []
   Charts :any[]=["Staff/Utilisateurs", "Données Exercices", "Statistiques"];
@@ -772,63 +1163,94 @@ export class AdministrationComponent implements OnInit{
 
   letsee = false;
   accountDetailOfUser:any;
+  comeBackToOwner:boolean=false;
+  ownerAccountOf = undefined;
   seeAdmin(account:any){
-    this.letsee = true;
+    this.disabledSpinner = true;
+
     this.displayModalAction = false;
-    this.ProfilAccount = account;
-    console.log('DETAILS ACCOUNT : !',this.ProfilAccount)
-
-    localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
-    let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
-
-    console.log('profil complet userDetailAccount :',userDetailAccount)
-    localStorage.setItem('seeAsAdmin', 'true');
-    let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
-    this.utilsService.sendSeeAsAdmin(true);
-
-    this.userHandlersServiceCustomer.getAccountDetails(this.ProfilAccount.id).then((resp:any)=>{
+    this.displayModalActionOwner = false;
+    // this.ProfilAccount = account;
+    console.log('DETAILS ACCOUNT BEFORE: WE SEE ADMIN :::  !',account)
+    this.userHandlersServiceCustomer.getAccountDetails(account.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{
-        console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
-        this.ProfilAccount = e.account;
-        // users
-        this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
-        this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
-        this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
-        // this.ProfilAccount.users.forEach((user:any, index:number)=>{
-        //   console.log('le user: ', user.id, index)
-        //   this.userHandlersServiceCustomer.getAccountDetails(user.id).then((resp:any)=>{
-        //     resp.subscribe((e:any) =>{
-        //       console.log('le detail de chaque user du compte owner:! ', e.account)
-        //       user = e.account;
-        //       this.ProfilAccount.users[index] = e.account
-        //       console.log('LES USERS DU ACCOUNT',this.ProfilAccount.users)
-       
 
-        //     })
-        //   })
-        // })
-        // staff
+        if(e.account.role === "staff" || e.account.role === "user" ){
+          this.ownerAccountOf = this.ProfilAccount;
+          this.ProfilAccount = e.account;
+          this.comeBackToOwner = true;
+          console.log('LA RESP DU ACCOUNT DETAILS: ',e.account)
+          // console.log('LE OLD PROFIL : ',this.ownerAccountOf)
+          // this.ownerAccountOf = e.account.owner;
 
-        this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
-        this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
-        this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+          if(this.ownerAccountOf.users.length > 0){
+            // users
 
-        // this.ProfilAccount.staff.forEach((staff:any, index:number)=>{
-        //   console.log('le staff: ', staff.id, index)
-        //   this.userHandlersServiceCustomer.getAccountDetails(staff.id).then((resp:any)=>{
-        //     resp.subscribe((e:any) =>{
-        //       console.log('le detail de chaque staff du compte owner:! ', e.account)
-        //       staff = e.account;
-        //       this.ProfilAccount.staff[index] = e.account
-        //       console.log(this.ProfilAccount.staff)
-      
+            this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ownerAccountOf.users);
+            this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+            this.resultsLengthUsersAccounts = this.ownerAccountOf.users.length;
+          }
+          this.disabledSpinner = false;
+        }else{
 
-        //     })
-        //   })
-        // })
+          this.ProfilAccount = e.account;
+          localStorage.setItem('account-data-user', JSON.stringify(this.ProfilAccount));
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+
+          // console.log('profil complet userDetailAccount :',userDetailAccount)
+          localStorage.setItem('seeAsAdmin', 'true');
+          // if(this.ProfilAccount.users.length > 0 ){
+          //   // users
+          //   this.dataSourceUserOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.users);
+          //   this.dataSourceUserOfChoosenAccount.paginator = this.paginatorAccounts;
+          //   this.resultsLengthUsersAccounts = this.ProfilAccount.users.length;
+          // }
+          if(this.ProfilAccount.staff.length > 0){
+            // staff
+            this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.ProfilAccount.staff);
+            this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
+            this.resultsLengthStaffAccounts = this.ProfilAccount.staff.length;
+
+          }
+          this.disabledSpinner = false;
+          this.letsee = true;
+          this.utilsService.sendSeeAsAdmin(true);
+        }
+
+
       })
     });
   }
+
+  selectUserOfStaff(event:any,emp:any){
+    // console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
+    if(this.ProfilAccount.role === "staff"){
+      // console.log('SELECTIONNER UN NOUVEAU USER POUR LE STAFF : ',this.ProfilAccount,emp, event )
+      if(event.checked){
+        console.log('EVENT CHECKED : ', event.checked )
+        this.ProfilAccount.users.push(emp.id)
+        console.log("this.ProfilAccount.users", this.ProfilAccount.users)
+        this.userHandlersServiceCustomer.updateAccount(this.ProfilAccount).then((resp:any)=>{
+          resp.subscribe((response:any)=>{
+            console.log('la resp du update user staff: ! ', response)
+          })
+        });
+      }else{
+        console.log('EVENT CHECKED : ', event.checked )
+        this.ProfilAccount.users =  this.ProfilAccount.users.filter((user:any) => user !== emp.id)
+        console.log("this.ProfilAccount.users", this.ProfilAccount.users)
+      }
+    }
+  }
+
+
+  comeBacktoProfilOwner(){
+    this.ProfilAccount = this.ownerAccountOf;
+    this.ownerAccountOf = undefined;
+    this.getDetails( this.ProfilAccount.id)
+    this.comeBackToOwner = false;
+  }
+
 
 
   updateUsersOfProfilAccount(){
@@ -887,71 +1309,6 @@ export class AdministrationComponent implements OnInit{
 
   }
 
-  createfromDashboard(){
-
-  }
-
-  dataOfHistory = [];
-  uploadCsv(event:any){
-    console.log('EVENT : ! ',event)
-    var files = event.target.files; // FileList object
-    var file = files[0];
-
-    console.log('FILE=  ' ,file);
-    var reader = new FileReader();
-    console.log('READER ' ,reader);
-    reader.readAsText(file);
-    reader.onload = ev => {
-      if(reader.result !== null){
-        let csvdata = reader.result.toString();
-        let body = {data:csvdata};
-        // let csvdataJSON = JSON.parse(csvdata);
-        console.log('BODY DATA  : ! ',csvdata);
-        this.userHandlersServiceCustomer.sendCsvToApi(csvdata, this.ProfilAccount).then(el =>{
-
-          this.dataOfHistory = el.exercices;
-          console.log('RESULT :: ! ',this.dataOfHistory)
-        })
-        event.target.value = '';
-        // .then((resp:any)=>{
-        //   console.log('resp from serveur', resp);
-        // })
-      }
-    };
-
-  }
-
-  uploadJsonExercice(event:any){
-    console.log('EVENT : ! ',event)
-    var files = event.target.files; // FileList object
-    var file = files[0];
-
-    console.log('FILE=  ' ,file);
-    var reader = new FileReader();
-    console.log('READER ' ,reader);
-    reader.readAsText(file);
-    reader.onload = ev => {
-      if(reader.result !== null){
-        let jsondata = reader.result.toString();
-        let body = {data:jsondata};
-        // let csvdataJSON = JSON.parse(csvdata);
-        console.log('BODY DATA  : ! ',jsondata);
-        this.userHandlersServiceCustomer.sendJsonToApi(jsondata, file.name, this.ProfilAccount).then(el =>{
-          console.log('RESULT :: ! ',el)
-          // this.dataOfHistory = el.exercices;
-          // console.log('RESULT :: ! ',this.dataOfHistory)
-      })
-      // event.target.value = '';
-     }
-  }
-  }
-
-
-
-  gotoHistory(){
-    this.utilsService.sendNewHistory(this.dataOfHistory);
-    this.router.navigate(['history']);
-  }
 
   letSeeAccount:any;
   seeTheSameAdmin(account:any){
@@ -1082,10 +1439,6 @@ export class AdministrationComponent implements OnInit{
 
   //STAFF
 
-  seeStaffProfil(trained:any){
-
-  }
-
   updateAccountStaff(ProfilAccount:any , trained:any){
     console.log('Create a user of group!', trained);
     let update = {ProfilAccount:ProfilAccount, trained:trained}
@@ -1099,19 +1452,6 @@ export class AdministrationComponent implements OnInit{
     });
   }
 
-  sendResetPasswordStaff(trained:any){
-    console.log(trained)
-      // if (!this.email) {
-      //   alert('Type in your email first');
-      // }
-      // this.auth.resetPasswordInit(this.email)
-      // .then(
-      //   () => alert('A password reset link has been sent to your email
-      //   address'),
-      //   (rejectionReason) => alert(rejectionReason))
-      // .catch(e => alert('An error occurred while attempting to reset
-      //   your password'));
-  }
 
   sendResetPassword(account:any){
     console.log(account.data.email)
@@ -1124,9 +1464,6 @@ export class AdministrationComponent implements OnInit{
        .catch((e:any) => alert('An error occurred while attempting to reset your password'));
   }
 
-  updateCustomer(account:any){
-
-  }
 
   addAccountOfGroup(ProfilAccount:any){
     console.log('Create a user of group!', ProfilAccount);

@@ -7,14 +7,75 @@
 }
 
 .card-history{
+  margin-left: auto;
+  max-width: 80%;
+  width: 80%;
+  display: block;
+  margin-right: auto;
   margin-bottom: 5px;
-  margin-left:3px;
-  max-width: 49%;
-  width:49%;
-  // min-width: %;
-  display: inline-block;
+  background: #0b1b21;
 }
 
+.calendar{
+  margin-right: 5px;
+}
+
+.para-descri{
+  margin-top:19px;
+}
+
+.left-margin{
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.panel-title{
+  flex-grow: 1.5!important;
+}
+
+.kpi-header{
+  width: 43%;
+  background: #14232c;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 10px;
+  text-align: left;
+
+}
+
+.spinner-display{
+  position: relative;
+  z-index: 1;
+  margin-top: -100px;
+  top: 420px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.container-infos{
+  // text-align: center;
+}
+
+.display-events{
+  margin-bottom: 5px;
+  background: #14232c;
+}
+
+.action-events{
+  // background:red;
+
+}
+
+.vertical-lign{
+  position: absolute;
+  border-left: 3px solid #202931;
+  display: inline-block;
+  height: 130px;
+  margin: -85px 31px;
+}
 
 @media only screen and (max-width: 768px) {
 

@@ -1,6 +1,6 @@
 // import { Response } from "express"
 import { db } from './config/firebase'
-// import * as functions from 'firebase-functions'
+import * as functions from 'firebase-functions'
 // import { v4 as uuidv4 } from 'uuid';
 var jwt = require("jsonwebtoken");
 // var btoa = require('btoa');
@@ -13,8 +13,8 @@ var jwt = require("jsonwebtoken");
 
 const createExercise  = async (req: any, res: any) => {
     let reqs = req;
-    let headers = reqs.headers;
-    let token = headers.token;
+    // let headers = reqs.headers;
+    // let token = headers.token;
     let body = reqs.body;
     let globalHandler:any = [];
     // let lastPublicChangeCount="";
@@ -25,16 +25,16 @@ const createExercise  = async (req: any, res: any) => {
     const json = JSON.parse(body);
     let idUser = json.id;
     try {
-      jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
-          if(err) {
-            return res.status(200).json({
-              response: {
-                result:'expiredTokenError',
-                message:'Votre token a expiré'
-              },
-              token:token,
-            });
-           }else {
+      // jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+      //     if(err) {
+      //       return res.status(200).json({
+      //         response: {
+      //           result:'expiredTokenError',
+      //           message:'Votre token a expiré'
+      //         },
+      //         token:token,
+      //       });
+      //      }else {
             const exercise_handler = db.collection('exercise-handler');
             exercise_handler.doc(json.json.header.id).set(json.json).then( async (ref:any) => {
               if(json.json.header.status === 'public'){
@@ -71,7 +71,7 @@ const createExercise  = async (req: any, res: any) => {
                 }
 
                 // userDetail.privateExercisesChangeCount = isoDateString;
-                const account_handler = db.collection('account-handler'); 
+                const account_handler = db.collection('account-handler');
                 account_handler.doc(idTable).update(userDetail);
                  return res.status(200).json({
                   response: {
@@ -85,10 +85,10 @@ const createExercise  = async (req: any, res: any) => {
                  });
                }
 
-               
+
             });
-        }
-      });
+      //   }
+      // });
     } catch(error:any) {
        return res.status(500).json(error.message)
     }
@@ -153,7 +153,8 @@ const getExercisesList = async (req: any, res: any) => {
     let allExercises:any = [];
     let publicExercises:any=[];
     let privateExercises:any=[];
-    // let token = headers.token;
+    let token = headers.token;
+    let webapp = headers.webapp
     let publicExercisesChangeCount =  headers.publicexerciseschangecount;
     publicExercisesChangeCount = Number(publicExercisesChangeCount);
     let privateExercisesChangeCount:any =  headers.privateexerciseschangecount;
@@ -168,197 +169,363 @@ const getExercisesList = async (req: any, res: any) => {
     // let lastUserChangeDate="";
     // let lastPrivateChangeDate="";
     let lastPublicChangeCount="";
+    let privatechanged = false;
+    let publicChanged = false;
+    let privateOnly = false;
     // let publicChanged = false;
     try {
-      if(idUser !== undefined){
-        const querySnapshotGlobalHandler = await db.collection('global_handler').get();
-        querySnapshotGlobalHandler.forEach((doc: any) => {
-          globalHandler.push(doc.data());
-        });
-        globalHandler.forEach((global:any)=>{
-          if(global.publicExercisesChangeCount !== undefined){
-            lastPublicChangeCount = global.publicExercisesChangeCount;
-          }
-        })
-        let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
-        // // const entryToken = db.collection('token-handler')
-      
-        // // let tokenHandler :any = '';
-        // // let idOfTokenHandler :string='';
-        userhandlerProfil.forEach(async (doc:any) =>{
-            userDetail = doc.data();
-            // idTable = doc.id
-        })
-        let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
-        if(publicExercisesChangeCount === lastPublicChangeCount || publicExercisesChangeCount > lastPublicChangeCount){
-
-          if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
-
-          }
-          if(privateExercisesChangeCount === 0){
-            const querySnapshot = await db.collection('exercise-handler').get();
-
-            querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
-
-            allExercises.forEach((exercise:any)=> {
-              if(exercise.data.header.status === 'private'){
-                if(idUser !== 'null'){
-                  if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data)
-                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
-                  }
-                }
-              }
-            })
-          }
-          else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
-            const querySnapshot = await db.collection('exercise-handler').get();
-
-            querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
-
-            allExercises.forEach((exercise:any)=> {
-              if(exercise.data.header.status === 'private'){
-                if(idUser !== 'null'){
-                  if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
-                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
-                  }
-                }
-              }
-            })
-          }
+      // sign token
+      jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+        if(err) {
           return res.status(200).json({
             response: {
-              result:'success',
-              message:''
+              result:'expiredTokenError',
+              message:'Votre token a expiré'
             },
-            publicExercises:publicExercises,
-            privateExercises:privateExercises,
-            publicChanged:false,
-            privateChanged:false,
-            publicExercisesChangeCount:lastPublicChangeCount,
-            privateExercisesChangeCount:1,
-            idUser:idUser,
           });
+        }else {
+          if(idUser !== undefined){
+            const querySnapshotGlobalHandler = await db.collection('global_handler').get();
+            querySnapshotGlobalHandler.forEach((doc: any) => {
+              globalHandler.push(doc.data());
+            });
+            globalHandler.forEach((global:any)=>{
+              if(global.publicExercisesChangeCount !== undefined){
+                lastPublicChangeCount = global.publicExercisesChangeCount;
+              }
+            })
+            let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
+            // // const entryToken = db.collection('token-handler')
 
-        }
-        if(publicExercisesChangeCount === 0){
-          const querySnapshot = await db.collection('exercise-handler').get();
-          querySnapshot.forEach((doc: any) => {
-              allExercises.push({data:doc.data(), id: doc.id});
-          });
-          allExercises.forEach((exercise:any)=> {
-            if(exercise.data.header.status === 'public'){
-              if(userDetail.privateOnly !== undefined ){
-                if(userDetail.privateOnly === false){
-                  publicExercises.push(exercise.data)  
+            // // let tokenHandler :any = '';
+            // // let idOfTokenHandler :string='';
+            userhandlerProfil.forEach(async (doc:any) =>{
+                userDetail = doc.data();
+            })
+            privateOnly = userDetail.privateOnly;
+            // functions.logger.log("DETAIL DU ROLE DANS LE GET EXERCIES ::::  ",userDetail.role )
+            functions.logger.log("DETAIL TAININGS OF USER ::::  ",userDetail.trainings )
+            // functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
+            // functions.logger.log("DETAIL COMPLET DU COMPTE ::::  ",userDetail )
+            if(userDetail.role === 'staff'){
+              // functions.logger.log("NOUS ALLONS CHERCHER LES EXERCIES ATTRIBUES AU OWNER ::::  ",userDetail.owner )
+              userhandlerProfil = await db.collection('account-handler').where('id', '==', userDetail.owner).get();
+              userhandlerProfil.forEach(async (doc:any) =>{
+                userDetail = doc.data();
+                if(userDetail.privateOnly === true){
+                  privateOnly = userDetail.privateOnly;
                 }
-              }else{
-                publicExercises.push(exercise.data)  
-              }
-              publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
-            }else{
-              if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
-
-              }
-              if(privateExercisesChangeCount === 0){
-                if(idUser !== 'null'){
-                  if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
-                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
-                  }
-                }
-              }
-              else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
-                if(idUser !== 'null'){
-                  if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
-                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
-                  }
-                }
-              }
+            })
             }
-          })
-          
+            let lastPrivateExercisesChangeCount = userDetail.privateExercisesChangeCount;
+            if(userDetail.trainings.length > 0){
+              const querySnapshot = await db.collection('exercise-handler').get();
 
-          return res.status(200).json({
-            response: {
-              result:'success',
-              message:''
-            },
-            publicExercises:publicExercises,
-            privateExercises:privateExercises,
-            publicChanged:true,
-            privateChanged:false,
-            publicExercisesChangeCount:lastPublicChangeCount,
-            privateExercisesChangeCount:1,
-            idUser:idUser,
-          });
-
-        }
-        else if(publicExercisesChangeCount < lastPublicChangeCount && publicExercisesChangeCount !== 0){
-          const querySnapshot = await db.collection('exercise-handler').get();
-          querySnapshot.forEach((doc: any) => {
-              allExercises.push({data:doc.data(), id: doc.id});
-          });
-          allExercises.forEach((exercise:any)=> {
-            if(exercise.data.header.status === 'public'){
-              if(userDetail.privateOnly !== undefined ){
-                if(userDetail.privateOnly === false){
-                  publicExercises.push(exercise.data)  
-                }
-              }else{
-                publicExercises.push(exercise.data)  
-              }
-            }else{
-              if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
-
-              }
-              if(privateExercisesChangeCount === 0){
-                if(idUser !== 'null'){
-                  if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
-                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+              querySnapshot.forEach((doc: any) => { 
+                allExercises.push({data:doc.data(), id: doc.id});
+              });
+              allExercises.forEach((exercise:any)=> {
+                if(exercise.data.header.status === 'public'){
+                  if(userDetail.privateOnly !== undefined ){
+                    if(userDetail.privateOnly === false){
+                      publicChanged = true;
+                      if(userDetail.trainings.length > 0 && webapp !== '1'){
+                        userDetail.trainings.forEach((training:any)=>{
+                          if(training === exercise.data.header.id){
+                            publicExercises.push(exercise.data)
+                          }
+                        })
+                      }else{
+                        publicExercises.push(exercise.data)
+                      }
+                    }
+                  }else{
+                    publicChanged = true;
+                    if(userDetail.trainings.length > 0 && webapp !== '1'){
+                      userDetail.trainings.forEach((training:any)=>{
+                        if(training === exercise.data.header.id){
+                          publicExercises.push(exercise.data)
+                        }
+                      })
+                    }else{
+                      publicExercises.push(exercise.data)
                     }
                   }
-                }
-              }
-              else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
-                if(idUser !== 'null'){
-                  if(exercise.data.header.owner  !== undefined){
-                    if(idUser === exercise.data.header.owner.id){ privateExercises.push(exercise.data) 
-                      privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
+                  publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+                }else{
+                  if(idUser !== 'null'){
+                    if(lastPrivateExercisesChangeCount > 0){
+                      privatechanged = true;
+                      if(exercise.data.header.owner  !== undefined){
+                        if(idUser === exercise.data.header.owner.id){ 
+                          if(userDetail.trainings.length > 0 && webapp !== '1'){
+                            userDetail.trainings.forEach((training:any)=>{
+                              if(training === exercise.data.header.id){
+                                privateExercises.push(exercise.data)
+                              }
+                            })
+                          }else{
+                            privateExercises.push(exercise.data)
+                          }
+                          
+                          privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
+                      }
+                    }
+                    
                   }
+
                 }
+              })
+              if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
+                privateExercises = [];
+                lastPrivateExercisesChangeCount = 0;
+                privatechanged = false;
+              }
+              return res.status(200).json({
+                response: {
+                  result:'success',
+                  message:''
+                },
+                publicExercises:publicExercises,
+                privateExercises:privateExercises,
+                publicChanged:publicChanged,
+                privateChanged:privatechanged,
+                publicExercisesChangeCount:0,
+                privateExercisesChangeCount:0,
+                idUser:idUser,
+              });
+            }else{
+              if(publicExercisesChangeCount === lastPublicChangeCount || publicExercisesChangeCount > lastPublicChangeCount){
+
+                if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
+                  privatechanged = false;
+                }
+                if(privateExercisesChangeCount === 0){
+                  privatechanged = true;
+                  const querySnapshot = await db.collection('exercise-handler').get();
+  
+                  querySnapshot.forEach((doc: any) => { 
+                    
+                    allExercises.push({data:doc.data(), id: doc.id});
+                  });
+  
+                  allExercises.forEach((exercise:any)=> {
+                    if(exercise.data.header.status === 'private'){
+                      if(idUser !== 'null'){
+                        if(exercise.data.header.owner  !== undefined){
+                          if(idUser === exercise.data.header.owner.id){
+                            // if a selection was doing trainings data inside account :
+                            // if()
+                            functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
+                            privateExercises.push(exercise.data)
+                            privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize())); }
+                        }
+                      }
+                    }
+                  })
+                }
+                else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
+                  const querySnapshot = await db.collection('exercise-handler').get();
+                  privatechanged = true;
+                  querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
+  
+                  allExercises.forEach((exercise:any)=> {
+                    if(exercise.data.header.status === 'private'){
+                      if(idUser !== 'null'){
+                        if(exercise.data.header.owner  !== undefined){
+                          if(idUser === exercise.data.header.owner.id){ 
+                            privateExercises.push(exercise.data)
+                            privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
+                        }
+                      }
+                    }
+                  })
+                }
+                if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
+                  privateExercises = [];
+                  lastPrivateExercisesChangeCount = 0;
+                  privatechanged = false;
+                }
+                if(privateOnly === true){
+                  publicExercises = [];
+                  publicChanged = false;
+                }
+  
+                // functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",lastPrivateExercisesChangeCount )
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  publicExercises:publicExercises,
+                  privateExercises:privateExercises,
+                  publicChanged:publicChanged,
+                  privateChanged:privatechanged,
+                  publicExercisesChangeCount:lastPublicChangeCount,
+                  privateExercisesChangeCount:lastPrivateExercisesChangeCount,
+                  idUser:idUser,
+                });
+  
+              }
+              if(publicExercisesChangeCount === 0){
+                const querySnapshot = await db.collection('exercise-handler').get();
+                
+                querySnapshot.forEach((doc: any) => {
+                    allExercises.push({data:doc.data(), id: doc.id});
+                });
+                allExercises.forEach((exercise:any)=> {
+                  functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
+           
+                  if(exercise.data.header.status === 'public'){
+                    if(userDetail.privateOnly !== undefined ){
+                      if(userDetail.privateOnly === false){
+                          publicExercises.push(exercise.data)
+                      }
+                    }else{
+                        publicExercises.push(exercise.data)
+                    }
+                    publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+                  }else{
+                    if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
+                      privatechanged = false;
+                    }
+                    if(privateExercisesChangeCount === 0){
+                      if(idUser !== 'null'){
+                        privatechanged = true;
+                        if(exercise.data.header.owner  !== undefined){
+                          if(idUser === exercise.data.header.owner.id){
+                            privateExercises.push(exercise.data)
+                            privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
+                        }
+                      }
+                    }
+                    else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
+                      privatechanged = true;
+                      if(idUser !== 'null'){
+                        if(exercise.data.header.owner  !== undefined){
+                          if(idUser === exercise.data.header.owner.id){ 
+                            privateExercises.push(exercise.data)
+                            privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
+                        }
+                      }
+                    }
+                    if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
+                      privateExercises = [];
+                      lastPrivateExercisesChangeCount = 0;
+                      privatechanged = false;
+                    }
+  
+  
+                  }
+                })
+  
+                if(privateOnly === true){
+                  publicExercises = [];
+                  publicChanged = false;
+                }else{
+                  publicChanged = true;
+                }
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  publicExercises:publicExercises,
+                  privateExercises:privateExercises,
+                  publicChanged:publicChanged,
+                  privateChanged:privatechanged,
+                  publicExercisesChangeCount:lastPublicChangeCount,
+                  privateExercisesChangeCount:lastPrivateExercisesChangeCount,
+                  idUser:idUser,
+                });
+  
+              }
+              else if(publicExercisesChangeCount < lastPublicChangeCount && publicExercisesChangeCount !== 0){
+  
+                const querySnapshot = await db.collection('exercise-handler').get();
+                querySnapshot.forEach((doc: any) => {
+                    allExercises.push({data:doc.data(), id: doc.id});
+                });
+                allExercises.forEach((exercise:any)=> {
+                  functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
+                  if(exercise.data.header.status === 'public'){
+                    if(userDetail.privateOnly !== undefined ){
+                      if(userDetail.privateOnly === false){
+                          publicExercises.push(exercise.data)
+                      }
+                    }else{
+                          publicExercises.push(exercise.data)
+                    }
+                  }else{
+                    if(privateExercisesChangeCount === lastPrivateExercisesChangeCount || privateExercisesChangeCount > lastPrivateExercisesChangeCount){
+                      privatechanged = false;
+                    }
+                    if(privateExercisesChangeCount === 0){
+                      if(idUser !== 'null'){
+                        privatechanged = true;
+                        if(exercise.data.header.owner  !== undefined){
+                          if(idUser === exercise.data.header.owner.id){ 
+                            privateExercises.push(exercise.data)
+                            privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+                          }
+                        }
+                      }
+                    }
+                    else if(privateExercisesChangeCount < lastPrivateExercisesChangeCount && privateExercisesChangeCount !== 0){
+                      if(idUser !== 'null'){
+                        privatechanged = true;
+                        if(exercise.data.header.owner  !== undefined){
+                          if(idUser === exercise.data.header.owner.id){ 
+                            privateExercises.push(exercise.data)
+                            privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
+                        }
+                      }
+                    }
+                    if(lastPrivateExercisesChangeCount === undefined || lastPrivateExercisesChangeCount === 0){
+                      privateExercises = [];
+                      lastPrivateExercisesChangeCount = 0;
+                      privatechanged = false;
+                    }
+  
+                  }
+                })
+                publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
+                // publicExercises.sort(compareByName())
+                if(privateOnly === true){
+                  publicExercises = [];
+                  publicChanged = false;
+                }
+                else{
+                  publicChanged = true;
+                }
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  publicExercises:publicExercises,
+                  privateExercises:privateExercises,
+                  publicChanged:publicChanged,
+                  privateChanged: privatechanged,
+                  publicExercisesChangeCount:lastPublicChangeCount,
+                  privateExercisesChangeCount:lastPrivateExercisesChangeCount,
+                  // lastPublicChangeCount:lastPublicChangeCount,
+                  idUser:idUser,
+                });
+  
               }
             }
-          })
-          publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
-          // publicExercises.sort(compareByName())
-          return res.status(200).json({
-            response: {
-              result:'success',
-              message:''
-            },
-            publicExercises:publicExercises,
-            privateExercises:privateExercises,
-            publicChanged:true,
-            privateChanged:false,
-            publicExercisesChangeCount:lastPublicChangeCount,
-            privateExercisesChangeCount:lastPrivateExercisesChangeCount,
-            // lastPublicChangeCount:lastPublicChangeCount,
-            idUser:idUser,
-          });
-
-        }
-      }
+            }
+            
     //  });
+        }
+      })
     } catch(error:any) { return res.status(500).json(error.message) }
   }
 
 
 
-  
+
 
   const updateExercise = async (req: any, res: any) => {
     let reqs = req;

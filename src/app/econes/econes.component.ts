@@ -157,6 +157,8 @@ export class EconesComponent implements OnInit {
     this.width = this.data_model.width
   }
 
+
+  disabledSpinner = false;
   UserDataAccount:any[]=[];
   user:any;
   account:any;
@@ -168,13 +170,23 @@ export class EconesComponent implements OnInit {
   selectedUser:string ="";
   private:boolean=false;
   ngOnInit(): void {
+    this.disabledSpinner = true;
     this.allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.allAccounts.forEach((account:any) =>{
       if(account.role === 'admin' || account.role === 'owner'){
         this.allAccountsAdminOwner.push(account)
+        console.log('LES COMPTES : !',this.allAccountsAdminOwner)
       }
     })
+    this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
+      console.log('Last global firmware  :  ',response)
+      if(response !== undefined){
+        console.log('la resp du details', response.globalFirmware)
+        this.detailsLastGlobalFirmware = response.globalFirmware
+        this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
+      }
+    });
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme);
@@ -182,29 +194,8 @@ export class EconesComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.account = JSON.parse(localStorage.getItem('account') || '{}');
     console.log('account : ! ',this.account)
-    if(this.account.role ==="admin"){
-      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-        console.log('list of firwares: ',firmwareList)
-        firmwareList.subscribe((list:any)=>{
-          console.log('list of firwares: ',list.firmwareList)
-          this.firmWareList = list.firmwareList;
-          this.firmWareList = this.firmWareList.sort((a, b) => {
-            if (a.version > b.version) {
-                return -1;
-            }
-            if (a.version < b.version) {
-                return 1;
-            }
-            return 0;
-          });
-          this.firmWareList.forEach((firmware:any)=>{
-            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
-          })
-        
-        })
-      });
-    }
-    // this.getEconesFromDataBase();
+    this.getFirmwareList()
+    this.getEconesFromDataBase();
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
       this.Econes = listEcones;
@@ -234,11 +225,61 @@ export class EconesComponent implements OnInit {
       })
   }
 
+
+  seeProfil(accountId:string){
+    console.log('On va sur cette page : ',accountId)
+  }
+
+  getFirmwareList(){
+    if(this.account.role ==="admin"){
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          console.log('list of firwares: ',list.firmwareList)
+          this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+            if(this.detailsLastGlobalFirmware.id === firmware.id){
+              console.log('the same id of firm global ! ', firmware.id)
+              firmware.choosen = true;
+            }else{
+              firmware.choosen = false;
+            }
+          })
+          this.disabledSpinner = false;
+          
+        })
+      });
+      this.firmWareList.forEach((firmware:any)=>{
+        firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+        if(this.detailsLastGlobalFirmware.id === firmware.id){
+          console.log('the same id of firm global ! ', firmware.id)
+          firmware.choosen = true;
+        }else{
+          firmware.choosen = false;
+        }
+      })
+
+
+    }
+  }
+
   parserEconesToCustomers(){
     if(this.Econes !== null){
       if(this.Econes.length > 0){
+        console.log('ECONE LIST : ',this.Econes)
         for (let i = 0; i < this.Econes.length; i++) {
           this.UserDataAccount.forEach((user:any) =>{
+            
             if(this.Econes[i].customerId === user.data.id){
               this.Econes[i].name = user.data.firstName +' '+ user.data.personalInfos.familyName;
             }
@@ -251,8 +292,9 @@ export class EconesComponent implements OnInit {
   getEconesFromDataBase(){
     this.UserDataAccount = [];
     this.Econes = [];
-    // this.econesService.getAllEcones();
-    this.userHandlersServiceAdmin.getAccountAdmin()
+    console.log('get all econes !')
+    this.econesService.getAllEcones();
+    // this.userHandlersServiceAdmin.getAccountAdmin()
   }
 
   search(){
@@ -362,7 +404,38 @@ export class EconesComponent implements OnInit {
       console.log('LE ZIP SRC : ',this.srCzip)
       let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
       this.firmWareService.createFirmware(firmwareData, this.AccountOfUser.id,false);
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          console.log('list of firwares: ',list.firmwareList)
+          
+          this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+            if(this.detailsLastGlobalFirmware.id === firmware.id){
+              console.log('the same id of firm global ! ', firmware.id)
+              firmware.choosen = true;
+            }else{
+              firmware.choosen = false;
+            }
+          })
+
+        })
+      });
     }
+    // if(this.account.role ==="admin"){
+      
+    // }
     this.displayModal = false;
     this._snackBar.openFromComponent(snackComponent, { duration:  1000,});
     
@@ -399,18 +472,13 @@ export class EconesComponent implements OnInit {
     this.displayModalUpdateFirmware = true
     console.log("on va choose le firmware : !")
 
-    this.firmWareService.getGlobalFirmware().then((response)=>{
+    this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
       console.log('Last global firmware  :  ',response)
-      response.subscribe((resp:any)=>{
-        if(resp !== undefined){
-          console.log('la resp du details', resp.globalFirmware)
-          this.detailsLastGlobalFirmware = resp.globalFirmware
-        }
-  
-        // 
-
-
-      })
+      if(response !== undefined){
+        console.log('la resp du details', response.globalFirmware)
+        this.detailsLastGlobalFirmware = response.globalFirmware
+        this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
+      }
     });
    
   }
@@ -456,8 +524,9 @@ export class EconesComponent implements OnInit {
   }
 
   addEconesAsAdmin(){
+    // console.log(this.allAccountsAdminOwner)
     const dialogRef = this.dialog.open(addEconesAdmin, {
-      data:this.UserDataAccount,
+      data:{allAccounts:this.allAccountsAdminOwner, account:this.account, firmwareList:  this.firmWareList },
       panelClass: 'bg-color',
       width:'80%',
       height:'80%'
@@ -622,13 +691,14 @@ export class DialogUpdateMaster implements OnInit{
 
 export class addEconesAdmin implements OnInit{
   serialNumber = new FormControl('', [ Validators.required ]);
-  Customers :any[]=[];
-  selectedCustomer:any ='';
-  firmware= new FormControl('', [ Validators.required ]);
-  SSID= new FormControl('', [ Validators.required ]);
-  PassWordOfSSID= new FormControl('', [ Validators.required ]);
+  Accounts :any[]=[];
+  selectedAccount:any ='';
+  firmware:any = [];
+  // SSID= new FormControl('', [ Validators.required ]);
+  // PassWordOfSSID= new FormControl('', [ Validators.required ]);
   asMaster = true;
   password = new FormControl('', [ Validators.required ]);
+  firmwareList:any=[];
   constructor(
     private econesService:EconesService,
     private utilsService:UtilsService,
@@ -636,36 +706,35 @@ export class addEconesAdmin implements OnInit{
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     public dialogRef: MatDialogRef<addEconesAdmin>,
     @Inject(MAT_DIALOG_DATA) public data:any,
+    @Inject(MAT_DIALOG_DATA) public account:any,
   ){}
 
   ngOnInit(): void {
-   console.log('LES DATAS MODALS NEW ECONES ',this.data);
-   this.data.forEach((customer:any) =>{
-    console.log(customer);
-    // si il n'est pas Admin
-    if(customer.data.asAdmin !== true){
-      this.Customers.push(customer);
-      console.log(this.Customers);
-    }else{
-    // ou 
-
-    }
-   })
+  //  console.log('COMPTE EN COURS  : !  ',this.data.account);
+  //  console.log('ALL ACCOUNTS',this.data.allAccounts)
+   this.Accounts = this.data.allAccounts;
+   this.firmwareList = this.data.firmwareList;
   }
 
   close(){
-    console.log(this.serialNumber.value, this.selectedCustomer, this.firmware.value, this.SSID.value)
+    // SSID:this.SSID.value, passwordSSID: this.password.value,
+    // this.SSID.value
+    console.log(this.serialNumber.value, this.selectedAccount, this.firmware.value)
     if(this.serialNumber.value !== ''){
-      console.log(this.serialNumber.value, this.selectedCustomer)
-      this.econesService.addEcones({serial:this.serialNumber.value, firmware:this.firmware.value, SSID:this.SSID.value, passwordSSID: this.password.value, idOfCustomer:this.selectedCustomer });
+      console.log(this.serialNumber.value, this.selectedAccount)
+      this.econesService.addEcones({asMaster:this.asMaster, serial:this.serialNumber.value, firmware:this.firmware,selectedAccount:this.selectedAccount });
     }
     this.dialogRef.close();
   }
 
+  selectedFirmware(firmware:any){
+    console.log('Choix du firmware : ',firmware.id,firmware.version)
+    this.firmware = {id:firmware.id, version:firmware.version}
+  }
+
   selectChangeClient(event:any){
-    console.log('ON CHANGE LE CUSTOMER : !  ', event.value);
-    this.selectedCustomer = event.value;
-    this.selectedCustomer = this.selectedCustomer.data.id
+    console.log('ON CHANGE LE CUSTOMER : !  ', event.value.email,event.value.id,event.value.fullName);
+    this.selectedAccount = {email:event.value.email, id:event.value.id,fullName: event.value.fullName}
   }
 
 }

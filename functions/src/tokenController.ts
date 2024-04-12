@@ -35,7 +35,16 @@ const getToken = async (req: any, res: any) => {
             // si le token de ce user existe
             userhandlerProfil.forEach(async (doc:any) =>{
               userDetail = doc.data();
-              if(userDetail.passwordHash === passwordhash){
+              functions.logger.log("USER DETAIL THIS PROFIL WITH WARNING : !   ::::  ", userDetail.warning )
+              if(userDetail.warning){
+                return res.status(200).json({
+                  response: {
+                    result:'errorBlockedAccount',
+                    message:''
+                  },
+                });
+              }
+              else if(userDetail.passwordHash === passwordhash){
                 functions.logger.log("account detail with token : ",userDetail )
                 // Si le hash est correct : 
                 jwt.sign({
@@ -83,7 +92,7 @@ const getToken = async (req: any, res: any) => {
           
           return res.status(200).json({
             response: {
-              result:'error',
+              result:'errorNoAccount',
               message:'aucun utilisateur'
             },
           });
@@ -98,25 +107,52 @@ const validateToken = async  (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
   let token = headers.token;
+  let idUser = headers.id;
+  let userDetail:any=[];
+
+  functions.logger.log("account detail with token : ",idUser );
+  if(idUser !== undefined){
+    let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
+    functions.logger.log("LENGTH ACCOUNT : ",userhandlerProfil );
+  
+    if( userhandlerProfil._size !== 0 ){
+      // si le token de ce user existe
+      userhandlerProfil.forEach(async (doc:any) =>{
+        userDetail = doc.data();
+      })
+    }
+  }
+
   try{
-    jwt.verify(token, 'secret', { expiresIn: '7d' },  function(err:any, decoded:any) {
-      if(err){
-        return res.status(200).json({
-          response: {
-            result:'expiredTokenError',
-            message:''
-          },
-        });
-      }else{
-        return res.status(200).json({
-          response: {
-            result:'success',
-            message:''
-          },
-          token:token,
-        });
-      }
-    })
+
+    if(userDetail.warning ){
+      return res.status(200).json({
+        response: {
+          result:'errorBlockedAccount',
+          message:''
+        },
+      });
+    }else{
+      jwt.verify(token, 'secret', { expiresIn: '7d' },  function(err:any, decoded:any) {
+        if(err){
+          return res.status(200).json({
+            response: {
+              result:'expiredTokenError',
+              message:''
+            },
+          });
+        }else{
+          return res.status(200).json({
+            response: {
+              result:'success',
+              message:''
+            },
+            token:token,
+          });
+        }
+      })
+    }
+  
   }
   catch(error:any) {
       return res.status(500).json(error.message)

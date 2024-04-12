@@ -1,5 +1,4 @@
 import {  Component, OnInit, Inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { trainingService } from '../../services/firebase/get-training-service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +11,11 @@ import { ExerciseService } from '../../services/exercise-handler.service';
 import { MatRadioModule } from '@angular/material/radio';
 import ImageResize from 'image-resize';
 import { uid } from 'uid';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
+import { MatDatepickerModule , } from '@angular/material/datepicker';
+import {FormGroup, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+// import {DateAdapter} from '@angular/material';
 
 @Component({
   selector: 'app-trainings',
@@ -28,11 +32,17 @@ export class TrainingsComponent implements OnInit {
   theme = new FormControl('');
   categorieslist = ['U7', 'U9', 'U11', 'U13', 'U15', 'U17', 'U19', 'SENIOR'];
   itemsNav = [
-    {type:'Exercices', value:'Exercices', selected:true},
-    {type:'Séances', value:'Sessions', selected:false},
-    {type:'Programmes', value:'Programmes', selected:false},
+    // {type:'Exercices', value:'Exercices', selected:true},
+    // {type:'Séances', value:'Sessions', selected:false},
+    // {type:'Programmes', value:'Programmes', selected:false},
   ];
-
+  today = new Date();
+  month = this.today.getMonth();
+  year = this.today.getFullYear();
+  campaignOne = new FormGroup({
+    start: new FormControl(new Date(this.year, this.month, 13)),
+    end: new FormControl(new Date(this.year, this.month, 16)),
+  });
   levelsArray = [{id:0, name:'Facile'},{id:1, name:'Intermediaire'} ,{id:2, name:'Difficile'} ];
 
   thematics = [{ name: 'Tactique',id:0}, { name: 'Technique',id:1 }, { name: 'Physique', id:2 }, { name: 'Échauffement', id:3 },{ name: 'Finition', id:4 },
@@ -54,8 +64,14 @@ export class TrainingsComponent implements OnInit {
   chooseType:string='Exercices';
   audience:string='public';
   userSource:any;
+  AccountOfUser:any
   idOfOwner:any;
+  asAdmin = false;
+  disabledSpinner = false;
+
   constructor(
+    // private dateAdapter: DateAdapter<any>,
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     private exerciseService:ExerciseService,
     private router:Router,
     private utilsService: UtilsService,
@@ -63,11 +79,15 @@ export class TrainingsComponent implements OnInit {
     public dialog: MatDialog
     ){}
   ngOnInit(): void {
+    // this.dateAdapter.setLocale('fr');  
+    this.disabledSpinner = true;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-   
+    this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     if(AccountOfUser !== undefined ){
+      
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
+      // console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
       this.idOfOwner = AccountOfUser.id;
       
     }
@@ -78,13 +98,18 @@ export class TrainingsComponent implements OnInit {
      this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
       if(asAdmin !== null){
         if(asAdmin === true){
+          this.asAdmin = true;
           // if(JSON.parse(localStorage.getItem('account-data-user') || '{}') !== undefined){
             let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
             console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+            console.log('LE DETAIL DU USER : ! EXERCICES:! : ', userDetailAccount.trainings);
             this.userSource = userDetailAccount;
             this.getInfoGLobal();
           // }
 
+        }else{
+          this.asAdmin = false;
+          this.userSource = undefined;
         }
       }
     });
@@ -92,112 +117,317 @@ export class TrainingsComponent implements OnInit {
   }
 
   getInfoGLobal(){
-    
     this.getExercicesList();
-    this.getSessionsList();
+    // this.getSessionsList();
   }
 
 
-  getExercicesList(){
-  console.log('le user source : ! ',this.userSource)
-  if(this.userSource !== undefined ){
-    this.exerciseService.getExerciceList(this.userSource.id).then((resp:any)=>{
-      console.log(this.userSource.id)
+  resetSelectedExercices(AccountOfUser:any){
+    // console.log('LES TRAININGS DU USER : ! ',AccountOfUser.trainings)
+    let userUpdateSelect :any = [];
+    if(this.asAdmin === true){
+      userUpdateSelect = this.userSource 
+    }else{
+      userUpdateSelect = this.AccountOfUser 
+    }
+    userUpdateSelect.trainings = [];
+    this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
       resp.subscribe((response:any)=>{
-        if(response.response.result === 'success'){
-          console.log('LA RESP DANS TRAINING : ',response)
-          console.log('LA RESP DANS TRAINING : ',response.publicExercises)
-          this.publicTrainings.cards = response.publicExercises;
-          this.publicTrainings.cards.forEach((exo:any)=>{
-            if(exo.header.image === ''){
-              exo.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          this.privateTrainings.cards = response.privateExercises;
-          this.privateTrainings.cards.forEach((exo:any)=>{
-            if(exo.header.image === ''){
-              exo.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
+        console.log('la resp du update account: ! ', response)
+        // this.getDetails(account.owner);
+        if(this.asAdmin === false){
+          localStorage.setItem('account', JSON.stringify(response.account));
+          this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+        }else{
+          localStorage.setItem('account-data-user', JSON.stringify(response.account));
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+          console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+          this.userSource = userDetailAccount;
         }
+        this.getExercicesList()
       })
-    });
-  }else{
-    this.exerciseService.getExerciceList(this.idOfOwner).then((resp:any)=>{
-      resp.subscribe((response:any)=>{
-        if(response.response.result === 'success'){
-          console.log('LA RESP DANS TRAINING : ',response)
-          console.log('LA RESP DANS TRAINING : ',response.publicExercises)
-          this.publicTrainings.cards = response.publicExercises;
-          this.publicTrainings.cards.forEach((exo:any)=>{
-            if(exo.header.image === ''){
-              exo.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          this.privateTrainings.cards = response.privateExercises;
-          this.privateTrainings.cards.forEach((exo:any)=>{
-            if(exo.header.image === ''){
-              exo.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
-        }
-      })
-    });
+    })
   }
+
+  selectAllExercices(account:any){
+    console.log(account)
+
+    account.trainings.length = 0;
+    console.log('somme nous en asAdmin?', this.asAdmin)
+
+    let userUpdateSelect :any = [];
+    if(this.asAdmin === true){
+      userUpdateSelect = this.userSource 
+    }else{
+      userUpdateSelect = this.AccountOfUser 
+    }
+    userUpdateSelect.trainings.length = 0;
+    if(this.publicTrainings.cards.length > 0){
+        this.publicTrainings.cards.forEach((exercice:any, index:number)=>{
+        userUpdateSelect.trainings.push(exercice.header.id)
+        console.log(userUpdateSelect)
+        if(index+1 === this.publicTrainings.cards.length){
+          this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
+            resp.subscribe((response:any)=>{
+              // console.log('la resp du update account: ! ', response)
+              // this.getDetails(account.owner);
+              if(this.asAdmin === false){
+                localStorage.setItem('account', JSON.stringify(response.account));
+                this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+                this.getExercicesList()
+              }else{
+                localStorage.setItem('account-data-user', JSON.stringify(response.account));
+                let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+                // console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+                this.userSource = userDetailAccount;
+                this.getExercicesList()
+              }
+            })
+          });
+        }
+      })
+    }
+
+    if(this.privateTrainings.cards.length > 0){
+        this.privateTrainings.cards.forEach((exercice:any, index:number)=>{
+          // console.log('Exercice privés :! ',userUpdateSelect.trainings, exercice.header.id)
+          console.log(this.privateTrainings.cards.length, index+1)
+          userUpdateSelect.trainings.push(exercice.header.id)
+          if(index+1 === this.privateTrainings.cards.length){
+            this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
+              resp.subscribe((response:any)=>{
+                // console.log('la resp du update account: ! ', response)
+                // this.getDetails(account.owner);
+                if(this.asAdmin === false){
+                  localStorage.setItem('account', JSON.stringify(response.account));
+                  this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+                  this.getExercicesList()
+                  // console.log(this.AccountOfUser)
+                }else{
+                  localStorage.setItem('account-data-user', JSON.stringify(response.account));
+                  let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+                  // console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+                  this.userSource = userDetailAccount;
+                  this.getExercicesList()
+                  // console.log(this.userSource)
+                }
+                
+              })
+            });
+          }
+        })
+    }
+
+  }
+
+  selectExercices(event:any,item:any){
+    console.log('Choose de l\'exercice :',event.checked,item)
+    console.log('somme nous en asAdmin?', this.asAdmin)
+
+    let userUpdateSelect :any = [];
+    if(this.asAdmin === true){
+      userUpdateSelect = this.userSource 
+    }else{
+      userUpdateSelect = this.AccountOfUser 
+    }
+    console.log(userUpdateSelect.trainings)
+    if(event.checked === true){
+      userUpdateSelect.trainings.push(item.header.id)
+      // update Account :
+      console.log(userUpdateSelect.trainings)
+      this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update account: ! ', response)
+          // this.getDetails(account.owner);
+          if(this.asAdmin === false){
+            localStorage.setItem('account', JSON.stringify(response.account));
+            this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            this.getExercicesList()
+          }else{
+            localStorage.setItem('account-data-user', JSON.stringify(response.account));
+            let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+            console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+            this.userSource = userDetailAccount;
+            this.getExercicesList()
+          }
+          
+        })
+      });
+    }else{
+      userUpdateSelect.trainings = userUpdateSelect.trainings.filter((training:any) => training !== item.header.id)
+      console.log('Le nouvel array : ! ',userUpdateSelect.trainings)
+      this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
+        resp.subscribe((response:any)=>{
+          console.log('la resp du update account: ! ', response)
+          // this.getDetails(account.owner);
+          if(this.asAdmin === false){
+            localStorage.setItem('account', JSON.stringify(response.account));
+            this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+            this.getExercicesList()
+          }else{
+            localStorage.setItem('account-data-user', JSON.stringify(response.account));
+            let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+            console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+            this.userSource = userDetailAccount;
+            this.getExercicesList()
+          }
+          
+        })
+      });
+    }
    
   }
 
-  getSessionsList(){
-  console.log('SESSION : ',this.userSource)
-  if(this.userSource !== undefined){
-    this.exerciseService.getSessionList(this.userSource.id).then((resp:any)=>{
-      resp.subscribe((response:any)=>{
-        if(response.response.result === 'success'){
-          console.log('LA RESP DANS SESSIONS : ',response)
-          console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
-          this.publicSessions.cards = response.publicSessions;
-          this.privateSessions.cards = response.privateSessions;
-          this.publicSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          this.privateSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
-        }
-      })
-    });
-  }else{
-    console.log('SESSION : ',this.idOfOwner)
-    this.exerciseService.getSessionList(this.idOfOwner).then((resp:any)=>{
-      console.log(resp)
-      resp.subscribe((response:any)=>{
-        if(response.response.result === 'success'){
-          console.log('LA RESP DANS SESSIONS : ',response)
-          console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
-          this.publicSessions.cards = response.publicSessions;
-          this.privateSessions.cards = response.privateSessions;
-          this.publicSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          this.privateSessions.cards.forEach((session:any)=>{
-            if(session.header.image === ''){
-              session.header.image = '../../../assets/images/default_100.jpg'
-            }
-          })
-          console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
-        }
-      })
-    });
+  getExercicesList(){
+  // console.log('le user source : ! ',this.userSource)
+  if(this.asAdmin === true){
+    if(this.userSource !== undefined ){
+      this.exerciseService.getExerciceList(this.userSource.id).then((resp:any)=>{
+        // console.log(this.userSource)
+        console.log('Nous sommes en mode admin')
+        resp.subscribe((response:any)=>{
+          if(response.response.result === 'success'){
+            // console.log('LE TRAININGS PUBLIC DU USER : ',this.userSource.trainings)
+            // console.log('LA RESP DANS TRAINING : ',response)
+            this.publicTrainings.cards = response.publicExercises;
+            this.publicTrainings.cards.forEach((exo:any)=>{
+              exo.selected = false;
+              this.userSource.trainings.forEach((training:any) =>{
+
+                if(exo.header.id === training ){
+                  // console.log('nous avons trouvé l\'exo selectionné ! ',training, exo.header.id)
+                  exo.selected = true;
+                }
+              })
+              if(exo.header.image === ''){
+                exo.header.image = '../../../assets/images/default_100.jpg'
+              }
+            })
+            this.privateTrainings.cards = response.privateExercises;
+            this.privateTrainings.cards.forEach((exo:any)=>{
+              exo.selected = false;
+              this.userSource.trainings.forEach((training:any) =>{
+                 
+             
+                if(exo.header.id === training ){
+                  // console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
+                  exo.selected = true;
+                }
+              })
+              if(exo.header.image === ''){
+                exo.header.image = '../../../assets/images/default_100.jpg'
+              }
+            })
+            // console.log('LA RESP DANS TRAINING CARD AFTER GET : ',this.publicTrainings.cards)
+            this.disabledSpinner = false;
+          }
+        })
+        
+      });
+    }  
   }
+  else{
+    console.log('Nous sommes en mode normal ')
+    this.exerciseService.getExerciceList(this.idOfOwner).then((resp:any)=>{
+      // Lors d'un mode normal
+      resp.subscribe((response:any)=>{
+        if(response.response.result === 'success'){
+          console.log('LA RESP DANS TRAINING : ',response)
+          // console.log('LA RESP DANS TRAINING : ',response.publicExercises)
+          this.publicTrainings.cards = response.publicExercises;
+          this.publicTrainings.cards.forEach((exo:any)=>{
+              exo.selected = false;
+              this.AccountOfUser.trainings.forEach((training:any) =>{
+              if(exo.header.id === training ){
+                console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
+                exo.selected = true;
+              }
+            })
+            if(exo.header.image === ''){
+              exo.header.image = '../../../assets/images/default_100.jpg'
+            }
+            // console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
+
+          })
+          this.privateTrainings.cards = response.privateExercises;
+    
+            this.privateTrainings.cards.forEach((exo:any)=>{
+              // let para = document.getElementsByClassName(exo.header.id );
+              // console.log('LE PARA : ',para[0].innerHTML  )
+              // para[0].innerHTML = exo.header.description
+              exo.selected = false;
+              this.AccountOfUser.trainings.forEach((training:any) =>{
+          
+                if(exo.header.id === training ){
+
+                // console.log('nous avons trouvé l\'exo selectionné Private! ',exo,training)
+                exo.selected = true;
+              }  
+            })
+            if(exo.header.image === ''){
+              exo.header.image = '../../../assets/images/default_100.jpg'
+            }
+          })
+       
+          this.disabledSpinner = false;
+          // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
+        }
+      })
+      // 
+    });
+
+  }
+  }
+
+  getSessionsList(){
+  // console.log('SESSION : ',this.userSource)
+  // if(this.userSource !== undefined){
+  //   this.exerciseService.getSessionList(this.userSource.id).then((resp:any)=>{
+  //     resp.subscribe((response:any)=>{
+  //       if(response.response.result === 'success'){
+  //         // console.log('LA RESP DANS SESSIONS : ',response)
+  //         // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
+  //         this.publicSessions.cards = response.publicSessions;
+  //         this.privateSessions.cards = response.privateSessions;
+  //         this.publicSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         this.privateSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
+  //       }
+  //     })
+  //   });
+  // }else{
+  //   console.log('SESSION : ',this.idOfOwner)
+  //   this.exerciseService.getSessionList(this.idOfOwner).then((resp:any)=>{
+  //     console.log(resp)
+  //     resp.subscribe((response:any)=>{
+  //       if(response.response.result === 'success'){
+  //         // console.log('LA RESP DANS SESSIONS : ',response)
+  //         // console.log('LA RESP DANS SESSIONS : ',response.publicSessions)
+  //         this.publicSessions.cards = response.publicSessions;
+  //         this.privateSessions.cards = response.privateSessions;
+  //         this.publicSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         this.privateSessions.cards.forEach((session:any)=>{
+  //           if(session.header.image === ''){
+  //             session.header.image = '../../../assets/images/default_100.jpg'
+  //           }
+  //         })
+  //         // console.log('LA RESP DANS SESSIONS : ',this.publicSessions.cards)
+  //       }
+  //     })
+  //   });
+  // }
     
   }
 
@@ -206,18 +436,41 @@ export class TrainingsComponent implements OnInit {
   }
   
 
+  displayTypeOf:any = "list"
+  changeDisplay(type:any){
+    this.displayTypeOf = type; 
+  }
+
+  update =  false;
+  tempPrivate : any  [];
+  tempPublic : any  [];
   applyFilter(event: Event) {
-    console.log('LE SEARCH : ',event)
     const filterValue = (event.target as HTMLInputElement).value;
-    console.log('LE SEARCH : ',filterValue.trim().toLowerCase())
-    // this.publicTrainings.cards = 
-    // this.publicTrainings.cards.filter = filterValue.trim().toLowerCase();
+    if(this.update){
+      this.privateTrainings.cards = this.tempPrivate;
+      this.publicTrainings.cards = this.tempPublic;
+      this.privateTrainings.cards = this.privateTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+      this.publicTrainings.cards = this.publicTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+    }else{
+      this.tempPrivate = this.privateTrainings.cards;
+      this.tempPublic = this.publicTrainings.cards;
+      this.update = true;
+      this.privateTrainings.cards = this.privateTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+      this.publicTrainings.cards = this.publicTrainings.cards.filter((card) => card.header.title.toLowerCase().includes(filterValue.trim().toLowerCase()));
+    }
+     console.log('NEW RESLT AFTER FILTER : ',this.privateTrainings.cards)
   }
 
 
   openDialog(item:any) {
+    let dataAccount:any=[];
+    // if(this.userSource !== undefined ){
+    //   dataAccount = this.userSource;
+    // }else{
+      dataAccount = this.AccountOfUser;
+    // }
     const dialogRef = this.dialog.open(DialogContentExampleDialog, {
-      data: {item: item},
+      data: {item: item, account:dataAccount },
       panelClass: 'bg-color',
       width:'80%'
     });
@@ -228,6 +481,7 @@ export class TrainingsComponent implements OnInit {
 
   select(itemer:any){
     this.chooseType = itemer.value;
+    console.log(itemer.value)
     this.itemsNav.forEach((item:any)=>{
       if(item.type === itemer.type){ item.selected = true;
       }else{ item.selected = false;}
@@ -266,7 +520,7 @@ export class TrainingsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       setTimeout(() => {
-        this.getSessionsList();
+        // this.getSessionsList();
       }, 1000);
 
       console.log(`Dialog session result: ${result}`);
@@ -276,6 +530,7 @@ export class TrainingsComponent implements OnInit {
   createSession(){
 
   }
+
 }
 
 
@@ -296,13 +551,29 @@ export class DialogContentExampleDialog implements OnInit{
 
   ngOnInit(): void {
     console.log('LES DATAS MODALS  : ! ',this.data)
-   console.log('LES DATAS MODALS ',)
+   console.log('LES DATAS MODALS ',this.data.account.role)
   }
 
   addVideoToExercice(data:any){
     console.log('Les datas de l\'exercices',data)
   }
 
+  downloadJson(dataJson:any){
+    console.log('DATA EXO ; : §',dataJson)
+    let fileName = dataJson.header.id+'.json';
+    var blob = new Blob([JSON.stringify(dataJson)], { type: 'application/json;charset=utf-8' });
+    console.log('UPDATE JSON:',blob)
+    var a = document.createElement("a"),
+    url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+   setTimeout(function() {
+     document.body.removeChild(a);
+     window.URL.revokeObjectURL(url);
+   }, 0);
+  }
 
 }
 

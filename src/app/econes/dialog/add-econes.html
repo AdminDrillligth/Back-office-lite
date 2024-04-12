@@ -7,16 +7,24 @@
         </mat-form-field>
       </div>
       <div class="col-12 divdial" mat-dialog-content>
-        <mat-form-field class="form-fielder">
+        <!-- <mat-form-field class="form-fielder">
           <mat-label style="color:white">Firmware : </mat-label>
            <input type='number' [formControl]="firmware" maxlength="13" min="0.1" max="10" required matInput placeholder="0.1">
         </mat-form-field>
+       -->
+       <mat-form-field style="width:98%" class="firmware-select">
+        <mat-label>Chosir une version de fimrware...</mat-label>
+        <mat-select  value="">
+          <mat-option style="border-bottom: 5px white dotted;" (onSelectionChange)="selectedFirmware(firmware)" *ngFor="let firmware of firmwareList" [value]="firmware.version" ><div class="choosen-firmware" *ngIf="firmware.choosen !== undefined && firmware.choosen === true"></div><p style="margin-top:4px;display:inline-block;width:80%;">Version : <b>{{firmware.version}}</b></p><p>Description : {{firmware.description}}</p><p>Date de mise à jour : {{firmware.date}}</p></mat-option>
+        </mat-select>
+      </mat-form-field>
       </div>
+      <!--  -->
       <div class="col-12 divdial" mat-dialog-content>
           <mat-label style="color:white"><b>En tant que Master : </b></mat-label>
           <mat-checkbox class=""></mat-checkbox>
       </div>
-      <div class="col-12 divdial" mat-dialog-content>
+      <!-- <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
           <mat-label style="color:white">SSID : </mat-label>
           <input [formControl]="SSID" maxlength="13" required matInput placeholder="nom du SSID">
@@ -27,12 +35,12 @@
           <mat-label style="color:white">Mot de passe SSID : </mat-label>
           <input [formControl]="password" maxlength="13" required matInput placeholder="nom du SSID">
         </mat-form-field>
-      </div>
+      </div> -->
       <div class="col-12 divdial" mat-dialog-content>
         <mat-form-field class="form-fielder">
-          <mat-label>Clients : </mat-label>
-          <mat-select  [(ngModel)]="selectedCustomer" (selectionChange)="selectChangeClient($event)">
-            <mat-option  *ngFor="let Customer of Customers" [value]="Customer">{{Customer.data.personalInfos.familyName + ' ' + Customer.data.firstName}}</mat-option>
+          <mat-label>Utilisateur : </mat-label>
+          <mat-select (selectionChange)="selectChangeClient($event)">
+            <mat-option [ngClass]="{'admin-row': account.role === 'admin'}" *ngFor="let account of Accounts" [value]="account">{{account.familyName + ' ' + account.firstName}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

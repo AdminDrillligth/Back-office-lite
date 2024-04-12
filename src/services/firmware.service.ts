@@ -20,6 +20,7 @@ export class FirmWareService {
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
 
   constructor(
+    private router:Router,
     private utilsService:UtilsService,
     private http:HttpClient,
     private fireStoreServiceImages:FireStoreServiceImages,
@@ -54,19 +55,23 @@ export class FirmWareService {
   }
 
 
-  async getGlobalFirmware(){
+  getGlobalFirmware(){
     let token = localStorage.getItem('token') || '{}';
-    let response = await this.http.get(this.baseURL+'getGlobalFirmware', {'headers':{ 'token': token}})
+    let response = this.http.get(this.baseURL+'getGlobalFirmware', {'headers':{ 'token': token}})
     console.log(response)
     response.subscribe((resp:any)=>{
-      console.log(resp)
+      console.log('ON VEUT LE GLOBAL FIRMWARE : ',resp)
+      if(resp.response.result === "expiredTokenError"){
+        this.utilsService.howToSeeNavigation(false);
+        this.router.navigate(['']);
+      }
     })
     return response;
   }
   
 
   async getFirmwareList(){
-    console.log('get la list')
+    // console.log('get la list')
     let token = localStorage.getItem('token') || '{}';
     let response = this.http.get(this.baseURL+'getFirmwaresList', {'headers':{ 'token': token}})
     return response;
@@ -77,9 +82,14 @@ export class FirmWareService {
     if(idFirmware !== undefined || idFirmware !== ""){
       idOfFirmware = idFirmware;
       let token = localStorage.getItem('token') || '{}';
-      this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'firmwareid':idOfFirmware}}).subscribe((rep:any) =>{
+      let response = this.http.get(this.baseURL+'getFirmwareDetails', {'headers':{ 'token': token, 'firmwareid':idOfFirmware}});
+      response.subscribe((rep:any) =>{
         console.log('LA REP DU GET FIRMWAREDETAILS : ! ',rep)
       });
+
+      return response;
+    }else{
+      return null;
     }
   }
 

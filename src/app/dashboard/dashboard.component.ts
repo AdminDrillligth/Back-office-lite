@@ -14,13 +14,17 @@ import { UserHandlersServiceAdmin } from '../../services/user-handlers-admin.ser
 
 
 export class DashboardComponent implements OnInit{
-  widthcard:number=0;
-  heigthCard:number=0;
-  saleData :any[] = [];
+  widthcard:number=700;
+  heigthCard:number=300;
+  widthcardEx:number= 700;
+  heigthCardEx:number=300;
+  usersData :any[] = [];
   DataUsers:any[] = [];
   theme : any = "";
   user:any;
   AccountOfUser:any=[];
+  asAdmin = false;
+  userSource:any = undefined;
   constructor(
     private userHandlersServiceAdmin:UserHandlersServiceAdmin,
     private utilsService: UtilsService,
@@ -31,35 +35,112 @@ export class DashboardComponent implements OnInit{
     this.utilsService._templateOptions.subscribe((theme:any) => {
      console.log('THEME !: ',theme)
     });
-    // this.utilsService._seeCustumorProfilOptions.subscribe((account:any) => {
-    //   console.log('ACCOUNT !: ',account)
-    //   // Set local storage of user data !
-    //  });
-    
+
+
     setTimeout(() => {
-        let card = document.getElementById('cardChart');
-        if(card !== null){
-          // console.log(card.offsetWidth)
-          this.widthcard=card.offsetWidth-80;
-          this.heigthCard=card.offsetHeight-80;
-          this.saleData = [
-            { name: "Utilisateurs total", value: 56 },
-            { name: "Administrateurs", value:3},
-            { name: "Clients", value:3 },
-            { name: "Staff Clients", value:3},
-            { name: "Utilisateurs Clients", value:3},
-            { name: "Exercices", value: 122 },
-            { name: "Vidéos", value: 50 },
-          ]
+      let card = document.getElementById('cardChart');
+      this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+      console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
+      console.log('INFO : CARD  :! : ', card);
+      if(card !== null){
+        // console.log(card.offsetWidth)
+          this.widthcard=Math.round(card.offsetWidth-90);
+          this.heigthCard=Math.round(card.offsetHeight-90);
+          console.log(this.userSource)
+          if(this.AccountOfUser.staff.length > 0 ||this.AccountOfUser.users.length > 0){
+            this.usersData = [
+              { name: "Staff", value:this.AccountOfUser.staff.length},
+              { name: "Participants", value:this.AccountOfUser.users.length}
+            ]
+          }
+          
+      }
+      let cardEx = document.getElementById('exercicesCharts');
+      if(cardEx !== null){
+        // console.log(card.offsetWidth)
+          this.widthcardEx=Math.round(cardEx.offsetWidth-90);
+          this.heigthCardEx=Math.round(cardEx.offsetHeight-90);
+          console.log(this.userSource)
+         
           this.DataUsers = [
-            { name: "Entraineurs", value: 56 },
-            { name: "Joueurs", value: 122 },
-            { name: "Staff Technique", value: 50 },
+            {
+              "name": "12-03-2024",
+              "value": 112
+            },
+            {
+              "name": "13-03-2024",
+              "value": 170
+            },
+            {
+              "name": "14-03-2024",
+              "value": 108
+            },
+            {
+              "name": "15-03-2024",
+              "value": 203
+            },
+            {
+              "name": "16-03-2024",
+              "value": 133
+            },
+            {
+              "name": "17-03-2024",
+              "value": 20
+            },
+            {
+              "name": "18-03-2024",
+              "value": 53
+            }
           ]
+      }
+
+    }, 1200);
+
+   
+    this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
+      if(asAdmin !== null){
+        if(asAdmin === true){
+          this.asAdmin = true;
+          console.log('on est en visu admin : ! ')
+          let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
+          console.log('LE DETAIL DU USER : ! ',userDetailAccount)
+          console.log('LE DETAIL DU USER : ! EXERCICES:! : ', userDetailAccount.trainings);
+          this.userSource = userDetailAccount;
+          let card = document.getElementById('cardChart');
+          if(card !== null){
+            // console.log(card.offsetWidth)
+            this.widthcard=Math.round(card.offsetWidth-90);
+            this.heigthCard=Math.round(card.offsetHeight-90);
+            if(this.userSource.staff.length > 0 || this.userSource.users.length > 0){
+              this.usersData = [
+                { name: "Staff", value:this.userSource.staff.length},
+                { name: "Participants", value:this.userSource.users.length}
+              ]
+            }
+           
+          }
+
         }
+        if(asAdmin === false){
+          console.log('on est en visu non admin : ! ')
+
+        let card = document.getElementById('cardChart');
+    
         this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
         console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
-    }, 1000);
+        if(card !== null){
+          // console.log(card.offsetWidth)
+            this.widthcard=Math.round(card.offsetWidth-90);
+            this.heigthCard=Math.round(card.offsetHeight-90);
+            this.usersData = [
+              { name: "Staff", value:this.AccountOfUser.staff.length},
+              { name: "Participants", value:this.AccountOfUser.users.length}
+            ]
+          }
+        }
+      }
+    })
+
   }
 
   addVideo(){
@@ -68,9 +149,9 @@ export class DashboardComponent implements OnInit{
 
   createClient(){
     this.router.navigate(['administration']);
-    setTimeout(() => {
-      this.administrationComponent.createCustomer();
-    }, 1000);
+    // setTimeout(() => {
+    //   this.administrationComponent.createCustomer();
+    // }, 1000);
 
   }
 }

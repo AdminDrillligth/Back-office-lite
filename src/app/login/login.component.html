@@ -1,11 +1,6 @@
 <div class="login">
   <div class="container">
-    <!-- <mat-progress-spinner
-    class="spinner-valid"
-    [color]="color"
-    [mode]="mode"
-    [value]="value">
-  </mat-progress-spinner> -->
+    <mat-spinner *ngIf="disabledSpinner" class="spinner-display"></mat-spinner>
     <mat-card style="text-align: center;" class="card-login">
       <mat-card-header>
         <div mat-card-avatar class="example-header-image"></div>
@@ -48,6 +43,12 @@
           </mat-form-field>
           <span style="color:red;" *ngIf="badpassword !== false">
             Erreur dans le mot de passe.
+          </span>
+          <span style="color:red;" *ngIf="bademail !== false">
+            Email incorrect.
+          </span>
+          <span style="color:red;" *ngIf="badWarning !== false">
+            Compte bloqué, veuillez contacter votre administrateur ou le support Drlllight.
           </span>
           <button (click)="doLogin()" class="login-btn" mat-flat-button >Connexion</button>
         </form>

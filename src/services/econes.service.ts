@@ -33,7 +33,8 @@ export class EconesService {
       let token = localStorage.getItem('token') || '{}';
       console.log('LE TOKEN',token);
       const body = JSON.stringify({data:data, token:token});
-      this.http.post(this.baseURL+'econe' , body,{'headers':this.headers}).subscribe((response:any) => {
+      console.log('DATA : !',body)
+      this.http.post(this.baseURL+'createEcone' , body,{'headers':this.headers}).subscribe((response:any) => {
         console.log('LA REP DU SERVEUR : ! ',response)
         if(response.decodeds !== 'err'){
           this.getAllEcones();
@@ -50,8 +51,8 @@ export class EconesService {
     getAllEcones(){
       let token = localStorage.getItem('token') || '{}';
       console.log('LE TOKEN',token);
-       this.http.get(this.baseURL+'econe' ,{'params':{'token':token}}).subscribe((response:any) => {
-        console.log('LA REP DU SERVEUR : ! ',response)
+       this.http.get(this.baseURL+'getEconeDetails' ,{'params':{'token':token}}).subscribe((response:any) => {
+        console.log('LA REP DU SERVEUR DU GET ALL ECONES: ! ',response)
         if(response.decodeds !== 'err'){
           this.utilsService.seeEconesList(response.ListEcones);
         }else{

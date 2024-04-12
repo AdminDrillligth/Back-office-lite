@@ -12,11 +12,21 @@
   margin-bottom: 20px!important;
 }
 
+
+.header-title{
+  margin-left: 15px;
+}
+
 .card-dashboard{
+  height: 70px;
   overflow: auto;
   margin-top: 4px;
   border: 1px solid transparent;
   background: radial-gradient(90.16% 143.26% at 15.32% 20.99%, rgba(235, 236, 240, 0.2) 0%, rgba(235, 236, 240, 0.0447917) 77.08%, rgba(235, 236, 240, 0) 100%);
+}
+
+.admin-row{
+  border-left: #0d6efd 6px solid;
 }
 
 .modal-zip{
@@ -31,6 +41,17 @@
   padding-left: 10px;
 }
 
+.spinner-display{
+  position: relative;
+  z-index: 1;
+  margin-top: -100px;
+  top: 420px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .image-logo{
   width: 50px;
   top: -7px;
@@ -43,8 +64,11 @@
 
 .btn-see-profil{
   border-radius: 8px;
-  background: #a1eafb;
+  border: 1px solid #0048BA; 
+  background: #0048BA;
   width: 100%;
+  color:white;
+  cursor:pointer;
   height: 40px;
 }
 
@@ -132,6 +156,17 @@
   -ms-transition: 0.70s;
   -o-transition: 0.70s;
 }
+
+
+.choosen-firmware{
+  display: inline-block;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  margin-right: 10px;
+  background:#3855ff;
+}
+
 
 .rotate:hover {
   transition: 0.70s;

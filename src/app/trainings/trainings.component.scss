@@ -18,10 +18,28 @@
   cursor: pointer;
  }
 
+
+ .header-title{
+  margin-left: 15px;
+}
+
+ .spinner-display{
+  position: relative;
+  z-index: 1;
+  margin-top: -100px;
+  top: 420px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
  .scroll{
   overflow: auto;
-  white-space: nowrap;
+  white-space: pre-line;
   flex-wrap: nowrap;
+  margin-bottom: 10px;
  }
 
 .search{
@@ -33,9 +51,19 @@
   padding-top: 8px!important;
 }
 
+.display-toggle{
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom:5px;
+  font-size: large;
+}
+
 .mat-mdc-card-header{
   padding-top: 5px !important;
   height: 60px;
+  font-size: large;
+  font-weight: 500;
   text-align: center;
   display: block;
 }
@@ -50,6 +78,27 @@
 .selectors{
   height: 70px;
   margin-left: 5px;
+}
+
+.card-list{
+  margin: 7px;
+  background: #101C23;
+}
+
+.img-card-list{
+  height:80%;
+}
+
+.display-title-list{
+  position: absolute;
+  margin-left: 160px;
+  margin-top: 10px;
+}
+
+.display-desc-list{
+  position: absolute;
+  margin-left: 160px;
+  margin-top: 30px;
 }
 
 .card-exo{
@@ -89,7 +138,7 @@
   margin-top: auto;
   top: 3px;
   position: relative;
-  margin-left: 10px;
+  margin-left: 3px;
 }
 
 .btn-add{
@@ -104,6 +153,19 @@
   margin-right: 10px;
   background-color: #ff4081;
 }
+
+.btn-card-list{
+  position: absolute;
+  border-radius: 8px;
+  color: white;
+  height: 30px !important;
+  background-color: #ff4081;
+  right: 5px;
+  top: 35px;
+  padding-left: 15px;
+}
+
+
 
 .im-card-btn{
   width: 40px;
@@ -142,9 +204,9 @@
 }
 
 .paragraphe{
-  overflow: auto;
-  text-overflow: ellipsis;
-  height: 70px;
+  height: auto;
+  margin-right: 4px;
+  width: fit-content;
 }
 
 .mostly-customized-scrollbar::-webkit-scrollbar {
@@ -166,7 +228,8 @@
 }
 
 ::-webkit-scrollbar {
-  width: 20px;
+  width: 8px;
+  height: 11px;
 }
 
 /* Track */
@@ -203,6 +266,9 @@
 
 }
 
+
+
+
 .background-modal{
   cursor:pointer;
   text-align: center;
@@ -210,8 +276,10 @@
 
 .btn-add-ex{
   border-radius: 8px;
-  background: #a1eafb;
+  background: #3f51b5;
+  color: white;
   width: 100%;
+  border: 1px solid #3f51b5;
   height: 40px;
 }
 

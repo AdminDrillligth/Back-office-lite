@@ -1,28 +1,110 @@
 <div class="container-main">
+  <mat-spinner *ngIf="disabledSpinner" class="spinner-display"></mat-spinner>
   <h3 style="color:white" class="header-title">Résultats</h3>
 
 
-  <mat-form-field>
+  <mat-form-field style="margin-left: 110px;">
     <mat-label>Participant</mat-label>
-    <mat-select >
+    <mat-select multiple>
       <mat-option  *ngFor="let user of users" value="{{user.id}}">{{user.fullName}}</mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field  style="margin-left:10px;" class="example-form-field">
+    <mat-label>Période :</mat-label>
+    <mat-date-range-input
+      [formGroup]="campaignOne"
+      [rangePicker]="campaignOnePicker">
+      <input matStartDate placeholder="Start date" formControlName="start">
+      <input matEndDate placeholder="End date" formControlName="end">
+    </mat-date-range-input>
+    <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+    <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+    <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+  </mat-form-field>
   <br>
-  <mat-card *ngFor="let result of results" class="card-history">
-    <mat-card-header>
-      <mat-card-title-group>
-       <mat-card-title>{{result.result.kpi.name}}</mat-card-title> 
-        <mat-card-subtitle>{{result.result.infos.date+'   '+  result.result.infos.time}} </mat-card-subtitle> 
-      </mat-card-title-group>
+
+  <mat-expansion-panel (opened)="expensionGetInfos()" *ngFor="let result of results" class="card-history">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="panel-title">
+        {{result.result.kpi.name}}
+      </mat-panel-title>
+      <mat-panel-description>
+        <img class="calendar" mat-card-image src="assets/icons/results/calendar.svg"  />
+        <p class="para-descri">{{result.result.infos.date+' '+  result.result.infos.time}}</p>
+        <img *ngIf="result.result.infos.isModeTime === true" class="left-margin" mat-card-image src="assets/icons/results/time.svg"  />
+        <p class="para-descri" *ngIf="result.result.infos.isModeTime === true">{{result.result.kpi.timeTotal}}</p>
+        <img *ngIf="result.result.infos.isModeTime === false" class="left-margin" mat-card-image src="assets/icons/results/loop.svg"  />
+        <p class="para-descri" *ngIf="result.result.infos.isModeTime === false">{{result.result.kpi.loop}}</p>
+        <img  class="left-margin" mat-card-image src="assets/icons/results/factor.svg"  />
+        <p class="para-descri" >{{result.result.kpi.factor}}</p>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div class="container-infos">
+      <div class="kpi-header">
+        <p style="  margin-left: 10px;color: #77858D;">Durée totale</p>
+        <div>
+          <img  class="left-margin" mat-card-image src="assets/icons/results/clockchronos.svg"  />
+          {{result.result.kpi.time}}</div>
+      </div>
+      <div class="kpi-header">
+        <p style="  margin-left: 10px;color: #77858D;">Erreurs</p>
+        <div>
+          <img  class="left-margin" mat-card-image src="assets/icons/results/fails.svg"  />
+          {{result.result.kpi.fail}}</div>
+      </div>
+      <p>Détails des résultats</p>
+      <mat-expansion-panel class="display-events" id="indexEvent{{result.idResult+resultEvent.index}}" (opened)="expensionDetails(resultEvent,$event, true)" (closed)="expensionDetails(resultEvent,$event, false)" *ngFor="let resultEvent of result.result.eventToDisplay">
+        <!-- <img  [ngStyle]="{'left': '70px'}" class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/Grey-point.svg"  />
+        <p [ngStyle]="{'left': '75px'}" style="position:relative;display: inline-block;margin-top: 0px;margin-left: 5px;color: #77858D;width: 20%;text-align:left;"><b>00:00</b>.00</p> -->
+        <div class="action-events" *ngFor="let actionsEvent of resultEvent.actions">
+          <p  style="position:relative;margin-top: 0px;margin-left: 5px;color: #D2D6D9;width: 20%;text-align:left;">{{actionsEvent.deltaLastAction}}</p>
+          <br>
+          <!-- <img [ngStyle]="{'left': '70px'}" class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/Grey-point.svg"  /> -->
+          <img  *ngIf="actionsEvent.icon === 'passleft'" [ngStyle]="{'left': '100px'}"   class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/left.svg"  />
+          <img  *ngIf="actionsEvent.icon === 'passright'" [ngStyle]="{'left': '100px'}"   class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/right.svg"  />
+          <img  *ngIf="actionsEvent.icon === 'touch'" [ngStyle]="{'left': '100px'}"   class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/hand.svg"  />
+          <img   *ngIf="actionsEvent.fail === false"  [ngStyle]="{'left': '45px'}"   class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/roundfull.svg"  />
+          <img *ngIf="actionsEvent.fail === true"  [ngStyle]="{'left': '45px'}"   class="left-margin" style="position:relative;display:inline-block;" mat-card-image src="assets/icons/results/failsround.svg"  />
+          <span class="vertical-lign"></span>
+          <p *ngIf="actionsEvent.icon === 'passleft'" [ngStyle]="{'left': '75px'}"   style="position:relative;display: inline-block;margin-top: 0px;margin-left: 5px;color: #D2D6D9;width: 20%;text-align:left;">Gauche</p>
+          <p *ngIf="actionsEvent.icon === 'passright'" [ngStyle]="{'left': '75px'}"   style="position:relative;display: inline-block;margin-top: 0px;margin-left: 5px;color: #D2D6D9;width: 20%;text-align:left;">Droite</p>
+          <p *ngIf="actionsEvent.icon === 'touch'" [ngStyle]="{'left': '75px'}"   style="position:relative;display: inline-block;margin-top: 0px;margin-left: 5px;color: #D2D6D9;width: 20%;text-align:left;">Touche</p>
+
+        </div>
+        <img  *ngIf="resultEvent.opened !== false && result.result.infos.isModeTime === false"  [ngStyle]="{'left': '72px'}"  style="display:inline-block; position: relative;" class="left-margin" mat-card-image src="assets/icons/results/flag.svg"  />
+        <p *ngIf="resultEvent.opened !== false  && resultEvent.isBest " [ngStyle]="{'left': '80px'}" style="display:inline-block;color: #0fc740;position: relative;">{{resultEvent.endTime}}</p>
+        <p *ngIf="resultEvent.opened !== false  && resultEvent.isWorst" [ngStyle]="{'left': '80px'}" style="display:inline-block;color: #dc2b1e;position: relative;">{{resultEvent.endTime}}</p>
+        <p *ngIf="resultEvent.opened !== false  && !resultEvent.isBest && !resultEvent.isWorst" [ngStyle]="{'left': '80px'}" style="font-size:medium;display:inline-block; color: #D2D6D9;position: relative;">{{resultEvent.endTime}}</p>
       
-    </mat-card-header>
-    <mat-card-content>
-      <mat-card-subtitle style="color:#88e8ff">Temps total :{{result.result.infos.totalTime}}</mat-card-subtitle> 
-      <button (click)="seeDetailOfResult(result)" mat-raised-button color="primary">Voir le détail</button>
-      <!-- gfgiyfgyiguyfhyfgbh_yughu -->
-    </mat-card-content>
-  </mat-card>
+        <mat-expansion-panel-header>
+          <mat-panel-title class="panel-title">
+            <!-- // index -->
+            <img *ngIf="result.result.infos.isModeTime === false" class="left-margin" mat-card-image src="assets/icons/results/loop.svg"  />
+            
+            <p *ngIf="result.result.infos.isModeTime === false && resultEvent.isBest" style="margin-top: 16px;margin-left: 10px;color: #0fc740;">{{resultEvent.index}}</p>
+            <p *ngIf="result.result.infos.isModeTime === false && resultEvent.isWorst" style="margin-top: 16px;margin-left: 10px;color: #dc2b1e;">{{resultEvent.index}}</p>
+            <p *ngIf="result.result.infos.isModeTime === false && !resultEvent.isBest && !resultEvent.isWorst" style="    margin-top: 16px;  margin-left: 10px;color: #77858D;">{{resultEvent.index}}</p>
+            <!-- Mode Open -->            
+            <img *ngIf="resultEvent.opened === true  && result.result.infos.isModeTime === false" style="margin-left:30px;"  class="left-margin" mat-card-image src="assets/icons/results/Grey-point.svg"  />
+            <p *ngIf="resultEvent.opened === true  && result.result.infos.isModeTime === false && resultEvent.isBest" style="margin-top: 16px;margin-left: 10px;color: #0fc740;">00:00.00</p>
+            <p *ngIf="resultEvent.opened === true  && result.result.infos.isModeTime === false && resultEvent.isWorst" style="margin-top: 16px;margin-left: 10px;color: #dc2b1e;">00:00.00</p>
+            <p *ngIf="resultEvent.opened === true  && result.result.infos.isModeTime === false && !resultEvent.isBest && !resultEvent.isWorst" style="    margin-top: 16px;  margin-left: 10px;color: #D2D6D9;">00:00.00</p>
+            <!-- Mode close -->
+            <img  *ngIf="resultEvent.opened !== true && result.result.infos.isModeTime === false" style="margin-left:30px;" class="flagbox left-margin" mat-card-image src="assets/icons/results/flag.svg"  />
+            <p *ngIf="resultEvent.opened !== true  && resultEvent.isBest " style="margin-top: 16px;  margin-left: 10px;color: #0fc740;">{{resultEvent.endTime}}</p>
+            <p *ngIf="resultEvent.opened !== true  && resultEvent.isWorst" style="margin-top: 16px;  margin-left: 10px;color: #dc2b1e;">{{resultEvent.endTime}}</p>
+            <p *ngIf="resultEvent.opened !== true  && !resultEvent.isBest && !resultEvent.isWorst" style="margin-top: 16px;  margin-left: 10px;color: #77858D;">{{resultEvent.endTime}}</p>
+          
+          </mat-panel-title>
+          <mat-panel-description>
+
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+      </mat-expansion-panel>
+    </div>
+
+  </mat-expansion-panel>
 </div>
 
 

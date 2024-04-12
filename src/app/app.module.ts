@@ -69,6 +69,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PasswordComponent } from './password/password.component';
 import { InscriptionComponent } from './inscription/inscription.component';
+import {MatGoogleMapsAutocompleteModule} from '@angular-material-extensions/google-maps-autocomplete';
 
 
 @Injectable()
@@ -124,6 +125,7 @@ export class HammerConfig extends HammerGestureConfig {
     MatSlideToggleModule,
     MatCheckboxModule,
     _MatSlideToggleRequiredValidatorModule,
+    MatGoogleMapsAutocompleteModule.forRoot('AIzaSyBlMog5bETr1hOZK0KG6UTqWrMW9f3C10k'),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     MatButtonModule,
@@ -165,7 +167,7 @@ export class HammerConfig extends HammerGestureConfig {
     MatDatepickerModule,
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
     MatNativeDateModule,
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }
   ],
   bootstrap: [AppComponent],
   schemas: [

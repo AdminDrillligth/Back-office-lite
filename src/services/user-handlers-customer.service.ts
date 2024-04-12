@@ -18,6 +18,7 @@ export class UserHandlersServiceCustomer {
   headers = { 'content-type': 'application/json'}
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
   constructor(
+    private router:Router,
     private utilsService:UtilsService,
     private http:HttpClient,
     private fireStoreServiceImages:FireStoreServiceImages,
@@ -31,25 +32,35 @@ export class UserHandlersServiceCustomer {
 
   getUpdateallUsers(){
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
-      if(response.response.result === "success"){
-        localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-        // console.log('LIST DES USERS : ! ', response.accounts)
-        this.utilsService.sendRequestGetnewAccount(true);
-      }
-    })
+    console.log('on veut get la list avec cet ID DE USER ? ',this.user)
+    if(this.user !== undefined){
+      this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
+        console.log('LA RESP ',response)
+        if(response.response.result === "expiredTokenError"){
+          console.log('go login')
+          this.utilsService.howToSeeNavigation(false);
+          this.router.navigate(['']);
+        }
+        if(response.response.result === "success"){
+          localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
+          // console.log('LIST DES USERS : ! ', response.accounts)
+          this.utilsService.sendRequestGetnewAccount(true);
+        }
+      })
+    }
   }
 
-  async getAccounts(){
+  getAccounts(){
     console.log('we get all accounts : ! ! ');
     let token = localStorage.getItem('token') || '{}';
-    this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}}).subscribe((response:any) => {
-      if(response.response.result === "success"){
-        localStorage.setItem('accounts-data', JSON.stringify(response.accounts));
-        // console.log('LIST DES USERS : ! ', response.accounts)
-        this.utilsService.sendRequestGetnewAccount(true);
+    let resp = this.http.get(this.baseURL+'getAccountsList' ,{'headers':{token:token, id:this.user}})
+    resp.subscribe((rep:any)=>{
+      console.log('LE SUBSCRIBE DE LA REP : ',rep)
+      if(rep.response.result === "expiredTokenError"){
+        this.router.navigate(['login']);
       }
     })
+    return resp;
   }
 
 
@@ -58,6 +69,13 @@ export class UserHandlersServiceCustomer {
     let token = localStorage.getItem('token') || '{}';
     let header = {'id':id, 'token':token }
     let response = await this.http.get(this.baseURL+'getAccountDetails', {'headers':header} )
+    console.log('LA RESP ',response)
+    response.subscribe((rep:any)=>{
+      console.log('LE SUBSCRIBE DE LA REP : ',rep)
+    })
+    // if(response.response.result === "expiredTokenError"){
+    //   this.router.navigate(['login']);
+    // }
     return response;
   }
 
@@ -65,6 +83,7 @@ export class UserHandlersServiceCustomer {
     console.log('EMAIL PASSWORD: ! ', email, passwordHash)
     let headers = {'username':email , 'passwordhash':passwordHash}
     this.http.get(this.baseURL+'passwordHash', {'headers':headers} ).subscribe((response:any) => {
+      
       console.log('LA REP : ! ',response)
       this.getTokenSession(headers);
     })
@@ -84,6 +103,10 @@ export class UserHandlersServiceCustomer {
     console.log('createAccount : ! ', body);
     let token = localStorage.getItem('token') || '{}';
     let resp =  await this.http.post(this.baseURL+'createAccount' , body)
+    console.log('LA RESP ',resp)
+    // if(resp.response.result === "expiredTokenError"){
+    //   this.router.navigate(['login']);
+    // }
     return resp ;
   }
 
@@ -97,6 +120,10 @@ export class UserHandlersServiceCustomer {
     const body = {data:data };
     console.log('On va envoyer ce body : ',body)
     let resp = await this.http.put(this.baseURL+'updateAccount' , body,{'headers':{token:token}});
+    console.log('LA RESP ',resp)
+    // if(resp.response.result === "expiredTokenError"){
+    //   this.router.navigate(['login']);
+    // }
     return resp ;
   }
 

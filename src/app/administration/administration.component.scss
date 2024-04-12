@@ -39,6 +39,7 @@
 }
 
 .card-dashboard{
+  height: 60px;
   overflow: auto;
   margin-top: 4px;
   border: 1px solid transparent;
@@ -49,11 +50,31 @@
   background-color: #878787!important;
 }
 
+.header-icon{
+  position: relative;
+}
+
+.spinner-display{
+  position: relative;
+  z-index: 1;
+  margin-top: -100px;
+  top: 420px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-row{
+  border-left: #0d6efd 6px solid;
+}
+
 .display-modal-action{
   padding-top: 20px;
   padding-left: 20px;
   padding-right: 20px;
   width: 40%;
+  z-index: 1;
   position: absolute;
   // height: 470px;
   background: #303030;
@@ -63,11 +84,24 @@
   box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.3803921569);
 }
 
+.choosen-firmware{
+  z-index:1;
+  display: inline-block;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  margin-right: 10px;
+  background:#3855ff;
+}
+
+
+
 .display-modal-firmware{
   padding-top: 20px;
   padding-left: 20px;
   padding-right: 20px;
   width: 50%;
+  z-index: 1;
   position: absolute;
   height: 450px;
   background: #303030;
@@ -77,8 +111,32 @@
   box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.3803921569);
 }
 
+.field-update{
+  margin: 3px;
+  display: inline-block;
+  width: 48%;
+}
+
+.display-modal-update{
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 70%;
+  z-index: 1;
+  position: absolute;
+  background: #303030;
+  top: 60px;
+  right: 110px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.3803921569);
+}
+
 .header-of-actions{
 
+}
+
+.header-title{
+  margin-left: 15px;
 }
 
 .action-btn-modal{
@@ -114,7 +172,7 @@
 }
 
 .align-title{
-  margin-top: 6px;
+  // margin-top: 6px;
 }
 
 ::ng-deep mat-dialog-container {
@@ -263,11 +321,14 @@
 
 
 .container-img-avatar{
-  max-width:40%;
+  max-width:20%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .container-img-display{
-  min-height: 55%;
+  min-height: 20%;
   max-height: 222px;
   display: contents;
 }
@@ -286,6 +347,14 @@
 
 .comment-line{
   margin-left:10px;
+}
+
+.display-toggle{
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom:5px;
+  font-size: large;
 }
 
 .profil-container{
@@ -316,7 +385,7 @@
 
 ::ng-deep .ngx-charts {
   text{
-      fill: #000000!important;
+      fill: #fff!important;
   }
 }
 

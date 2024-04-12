@@ -2,12 +2,13 @@ import { Response } from "express"
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
+import { sendEmailCreate, sendEmailthisanUpdate } from './mailsController';
 var jwt = require("jsonwebtoken");
 // var btoa = require('btoa');
 var DateString = new Date().toLocaleDateString('en-GB');
 var isoDateString = new Date().toISOString();
 // var timeNow = new Date().toLocaleTimeString();
-
+// var _ = require('lodash');
 // Model de type Admin
 // type UsersModel = {
   // email: "xxx@gmail.com",
@@ -64,150 +65,173 @@ const createAccount = async (req: any, res: Response) => {
   let bodyOfRequest = req.body;
   // let dataBodyOfRequest = JSON.parse(bodyOfRequest);
   let dataBodyOfRequest = bodyOfRequest.data
+  // let reqs = req;
+  // let headers = reqs.headers;
+  // let token = headers.token;
   // let token = bodyOfRequest.token;
   // let decodeds:any;
   let newUuid = uuidv4();
 
   try {
-    const entry = db.collection('account-handler');
-    let email = "";
-    let passwordHash = "";
-    let firstName = "";
-    let familyName = "";
-    let fullName = "";
-    let avatarURL = "";
-    let birthdate = "";
-    let simpleBirthdate = "";
-    let address1 = "";
-    let address2 = "";
-    let zip = "";
-    let city = "";
-    let region = "";
-    let phone = "";
-    let comment = "";
-    let rights = [];
-    let users = [];
-    let staff = [];
-    let econes = [];
-    let trainings = [];
-    let videos = [];
-    let licensed = 10;
-    let warning = false;
-    let owner = "";
-    let role = "user";
-    let id = "";
-    let privateOnly = false;
-    let userDetailOwner:any = []
-    if(dataBodyOfRequest.id !== undefined){
-      id = dataBodyOfRequest.id;
-    }else{
-      id = newUuid;
-    }
-    if(dataBodyOfRequest.owner !== undefined){
-      let userhandlerProfilOwner = await db.collection('account-handler').where('id', '==', dataBodyOfRequest.owner).get();
-      userhandlerProfilOwner.forEach(async (doc:any) =>{
-        userDetailOwner = doc.data();
-        userDetailOwner.users.push({id:id})
-        functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",userDetailOwner.users )
-        await entry.doc(dataBodyOfRequest.owner).set(userDetailOwner)
-      })
-      
+    // sign token
+    // jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+    //   if(err) {
+    //     return res.status(200).json({
+    //       response: {
+    //         result:'expiredTokenError',
+    //         message:'Votre token a expiré'
+    //       },
+    //     });
+    //   }else {
+        const entry = db.collection('account-handler');
+        let email = "";
+        let passwordHash = "";
+        let firstName = "";
+        let familyName = "";
+        let fullName = "";
+        let avatarURL = "";
+        let birthdate = "";
+        let simpleBirthdate = "";
+        let address1 = "";
+        let address2 = "";
+        let zip = "";
+        let city = "";
+        let region = "";
+        let phone = "";
+        let comment = "";
+        let rights = [];
+        let users = [];
+        let staff = [];
+        let econes = [];
+        let trainings = [];
+        let videos = [];
+        let licensed = 10;
+        let warning = false;
+        let owner = "";
+        let role = "user";
+        let id = "";
+        let privateOnly = false;
+        let userDetailOwner:any = []
+        if(dataBodyOfRequest.id !== undefined){
+          id = dataBodyOfRequest.id;
+        }else{
+          id = newUuid;
+        }
+        functions.logger.log("DATA dataBodyOfRequest LE ACCOUNT  ?  ::::  ",dataBodyOfRequest )
 
-      
-    }
-    functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",dataBodyOfRequest )
-    if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
-    if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
-    if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
-    if(dataBodyOfRequest.fullName !== undefined){ fullName = dataBodyOfRequest.fullName}
-    if(dataBodyOfRequest.avatarURL !== undefined){ avatarURL = dataBodyOfRequest.avatarURL}
+        if(dataBodyOfRequest.owner !== undefined){
+          let userhandlerProfilOwner = await db.collection('account-handler').where('id', '==', dataBodyOfRequest.owner).get();
+          userhandlerProfilOwner.forEach(async (doc:any) =>{
+            if(dataBodyOfRequest.role === 'staff'){
+              userDetailOwner = doc.data();
+              userDetailOwner.staff.push({id:id})
+            }
+            if(dataBodyOfRequest.role === 'user' || dataBodyOfRequest.role === undefined  || dataBodyOfRequest.role === null){
+              userDetailOwner = doc.data();
+              userDetailOwner.users.push({id:id})
+            }
 
-    if(dataBodyOfRequest.birthdate !== undefined){ birthdate = dataBodyOfRequest.birthdate}
-    if(dataBodyOfRequest.simpleBirthdate !== undefined){ simpleBirthdate = dataBodyOfRequest.simpleBirthdate}
-    if(dataBodyOfRequest.address1 !== undefined){ address1 = dataBodyOfRequest.address1}
-    if(dataBodyOfRequest.address2 !== undefined){ address2 = dataBodyOfRequest.address2}
-    if(dataBodyOfRequest.zip !== undefined){ zip = dataBodyOfRequest.zip}
-    if(dataBodyOfRequest.city !== undefined){ city = dataBodyOfRequest.city}
-    if(dataBodyOfRequest.region !== undefined){ region = dataBodyOfRequest.region}
-    if(dataBodyOfRequest.phone !== undefined){ phone = dataBodyOfRequest.phone}
-    if(dataBodyOfRequest.comment !== undefined){ comment = dataBodyOfRequest.comment}
+            functions.logger.log("DATA dataBodyOfRequest BODY CREATE  ::::  ",userDetailOwner )
+            await entry.doc(dataBodyOfRequest.owner).set(userDetailOwner)
+          })
 
-    if(dataBodyOfRequest.rights !== undefined){ rights = dataBodyOfRequest.rights}
-    if(dataBodyOfRequest.users !== undefined){ users = dataBodyOfRequest.users}
-    if(dataBodyOfRequest.staff !== undefined){ staff = dataBodyOfRequest.staff}
-    if(dataBodyOfRequest.econes !== undefined){ econes = dataBodyOfRequest.econes}
-    if(dataBodyOfRequest.trainings !== undefined){ trainings = dataBodyOfRequest.trainings}
-    if(dataBodyOfRequest.videos !== undefined){ videos = dataBodyOfRequest.videos}
-    if(dataBodyOfRequest.licensed !== undefined){ licensed = dataBodyOfRequest.licensed}
-    if(dataBodyOfRequest.warning !== undefined){ warning = dataBodyOfRequest.warning}
 
-    if(dataBodyOfRequest.owner !== undefined){ owner = dataBodyOfRequest.owner}
-    if(dataBodyOfRequest.role !== undefined){ role = dataBodyOfRequest.role}
-    if(dataBodyOfRequest.privateOnly !== undefined){ privateOnly = dataBodyOfRequest.privateOnly}
 
-    if(dataBodyOfRequest.email){
-      email = dataBodyOfRequest.email;
-      const userObject = {
-        id: id,
-        owner:owner,
-        role:role,
-        email: email,
-        passwordHash:passwordHash,
-        firstName: firstName,
-        familyName: familyName,
-        fullName: fullName,
-        avatarURL: avatarURL,
-        personalInfo: {
-            birthdate: birthdate,
-            simpleBirthdate: simpleBirthdate,
-            address1: address1,
-            address2: address2,
-            zip: zip,
-            city: city,
-            region: region,
-            phone: phone,
-            comment: comment
-        },
-        privileges: {
-            rights: rights
-        },
-        users:users,
-        staff: staff,
-        econes: econes,
-        trainings: trainings,
-        videos: videos,
-        licensed: licensed,
-        warning:warning,
-        date:DateString,
-        dateIso:isoDateString,
-        update:DateString,
-        updateIso:isoDateString,
-        privateOnly:privateOnly
-        // createdBy:,
-        // updatedBy:,
+        }
+        functions.logger.log("DATA LE ID AVANT LE CREATE  ?  ::::  ",id ,'CELUI DANS LE BODY DATA', dataBodyOfRequest.id )
+        if(dataBodyOfRequest.passwordHash !== undefined){ passwordHash = dataBodyOfRequest.passwordHash}
+        if(dataBodyOfRequest.firstName !== undefined){ firstName = dataBodyOfRequest.firstName}
+        if(dataBodyOfRequest.familyName !== undefined){ familyName = dataBodyOfRequest.familyName}
+        if(dataBodyOfRequest.fullName !== undefined){ fullName = dataBodyOfRequest.firstName  + ' ' +dataBodyOfRequest.familyName}
+        if(dataBodyOfRequest.avatarURL !== undefined){ avatarURL = dataBodyOfRequest.avatarURL}
 
-  }
+        if(dataBodyOfRequest.birthdate !== undefined){ birthdate = dataBodyOfRequest.birthdate}
+        if(dataBodyOfRequest.simpleBirthdate !== undefined){ simpleBirthdate = dataBodyOfRequest.simpleBirthdate}
+        if(dataBodyOfRequest.address1 !== undefined){ address1 = dataBodyOfRequest.address1}
+        if(dataBodyOfRequest.address2 !== undefined){ address2 = dataBodyOfRequest.address2}
+        if(dataBodyOfRequest.zip !== undefined){ zip = dataBodyOfRequest.zip}
+        if(dataBodyOfRequest.city !== undefined){ city = dataBodyOfRequest.city}
+        if(dataBodyOfRequest.region !== undefined){ region = dataBodyOfRequest.region}
+        if(dataBodyOfRequest.phone !== undefined){ phone = dataBodyOfRequest.phone}
+        if(dataBodyOfRequest.comment !== undefined){ comment = dataBodyOfRequest.comment}
 
-    await entry.doc(userObject.id).set(userObject).then( async (ref:any) => {
-      res.status(200).send({
-        response: {
-          result:'success',
-          message:''
-        },
-        account:userObject,
-      });
-    })
-    
+        if(dataBodyOfRequest.rights !== undefined){ rights = dataBodyOfRequest.rights}
+        if(dataBodyOfRequest.users !== undefined){ users = dataBodyOfRequest.users}
+        if(dataBodyOfRequest.staff !== undefined){ staff = dataBodyOfRequest.staff}
+        if(dataBodyOfRequest.econes !== undefined){ econes = dataBodyOfRequest.econes}
+        if(dataBodyOfRequest.trainings !== undefined){ trainings = dataBodyOfRequest.trainings}
+        if(dataBodyOfRequest.videos !== undefined){ videos = dataBodyOfRequest.videos}
+        if(dataBodyOfRequest.licensed !== undefined){ licensed = dataBodyOfRequest.licensed}
+        if(dataBodyOfRequest.warning !== undefined){ warning = dataBodyOfRequest.warning}
 
-    }else{
-      res.status(200).send({
-        response: {
-          result:'emailError',
-          message:'email obligatoire'
-        },
-      })
-    }
+        if(dataBodyOfRequest.owner !== undefined){ owner = dataBodyOfRequest.owner}
+        if(dataBodyOfRequest.role !== undefined){ role = dataBodyOfRequest.role}
+        if(dataBodyOfRequest.privateOnly !== undefined){ privateOnly = dataBodyOfRequest.privateOnly}
 
+        if(dataBodyOfRequest.email){
+          email = dataBodyOfRequest.email;
+          const userObject = {
+            id: id,
+            owner:owner,
+            role:role,
+            email: email,
+            passwordHash:passwordHash,
+            firstName: firstName,
+            familyName: familyName,
+            fullName: fullName,
+            avatarURL: avatarURL,
+            personalInfo: {
+                birthdate: birthdate,
+                simpleBirthdate: simpleBirthdate,
+                address1: address1,
+                address2: address2,
+                zip: zip,
+                city: city,
+                region: region,
+                phone: phone,
+                comment: comment
+            },
+            privileges: {
+                rights: rights
+            },
+            users:users,
+            staff: staff,
+            econes: econes,
+            trainings: trainings,
+            videos: videos,
+            licensed: licensed,
+            warning:warning,
+            date:DateString,
+            dateIso:isoDateString,
+            update:DateString,
+            updateIso:isoDateString,
+            privateOnly:privateOnly
+            // createdBy:,
+            // updatedBy:,
+
+      }
+      sendEmailCreate(userObject)
+        await entry.doc(userObject.id).set(userObject).then( async (ref:any) => {
+          res.status(200).send({
+            response: {
+              result:'success',
+              message:''
+            },
+            account:userObject,
+          });
+        })
+
+
+        }else{
+          res.status(200).send({
+            response: {
+              result:'emailError',
+              message:'email obligatoire'
+            },
+          })
+        }
+  //   }
+  // })
   } catch(error:any) {
       res.status(500).send({
         result: 'error',
@@ -215,6 +239,12 @@ const createAccount = async (req: any, res: Response) => {
         error:error.message,
       })
   }
+
+}
+
+
+const sendCreateAccount = async (data:any) =>{
+  functions.logger.log("ON VA CREER UN SERVICE MAIL AU TOP  ::::  ",data )
 }
 
 
@@ -222,146 +252,144 @@ const getAccountDetails = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
   let userId = headers.id;
-  // let token = headers.token;
+  let token = headers.token;
   let userDetails :any = '';
   let staffData:any = [];
   let userData:any = [];
   let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
   userhandlerProfil.forEach((doc:any) =>{
   userDetails = doc.data();
-  
+
   })
-  
+
   try {
   // functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails, userDetails.role )
+  // sign token
+  jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
+    if(err) {
+      return res.status(200).json({
+        response: {
+          result:'expiredTokenError',
+          message:'Votre token a expiré'
+        },
+      });
+    }else {
+        if(userDetails.role === 'owner' || userDetails.role === 'admin'){
+          functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
+          userDetails.owner = [];
+          delete userDetails.passwordHash;
+          functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
+          if(userDetails.staff.length > 0){
+            userDetails.staff.forEach(async (staff:any, index:number)=>{
+            let userhandlerProfilStaff = await db.collection('account-handler').where('id', '==', staff.id).get();
 
-  if(userDetails.role === 'owner' || userDetails.role === 'admin'){
-    functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
-    userDetails.owner = [];
-    if(userDetails.staff.length > 0){
-      userDetails.staff.forEach(async (staff:any, index:number)=>{
-      let userhandlerProfilStaff = await db.collection('account-handler').where('id', '==', staff.id).get();
-
-      userhandlerProfilStaff.forEach(async (thisStaff:any) =>{
-          staffData.push({id: thisStaff.data().id, email:thisStaff.data().email, role:thisStaff.data().role,fullName:thisStaff.data().fullName} )
-      })
-    
-      if(staffData.length === userDetails.staff.length){
-        // functions.logger.log("END OF STAFF LENGTH ::::  ",staffData.length, userDetails.staff.length, staffData, userData )
-        if(userDetails.users.length > 0){
-          // functions.logger.log("IL Y A DES USERS :   ",userDetails.users.length )
-          userDetails.users.forEach(async (user:any,index:number)=>{
-            // functions.logger.log("Ce user :   ",user.id )
-            let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
-
-            userhandlerProfilUser.forEach(async (thisUser:any) =>{
-              userData.push({id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
-              if(userData.length === userDetails.users.length){
-                // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
-                userDetails.users = userData;
-                userDetails.staff = staffData;
-                return res.status(200).json({
-                  response: {
-                    result:'success',
-                    message:''
-                  },
-                  account: userDetails
-                });
+            userhandlerProfilStaff.forEach(async (thisStaff:any) =>{
+              let validateStaff = false;
+              if(thisStaff.data().passwordHash !== ""){
+                validateStaff = true;
               }
+                staffData.push({validate:validateStaff,id: thisStaff.data().id, email:thisStaff.data().email, role:thisStaff.data().role,fullName:thisStaff.data().fullName,familyName:thisStaff.data().familyName,firstName:thisStaff.data().firstName} )
             })
-          })
-        }else{
-          // il n'y a pas encore de users
-                userDetails.staff = staffData;
-                return res.status(200).json({
-                  response: {
-                    result:'success',
-                    message:''
-                  },
-                  account: userDetails
-                });
-        }
-       
-      }
-      })
-        
-    }
-    else{
-      // Si il n'y a pas de staff
-      if(userDetails.users.length > 0){
-        userDetails.users.forEach(async (user:any,index:number)=>{
-          // functions.logger.log("Ce user :   ",user.id )
-          let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
 
-          userhandlerProfilUser.forEach(async (thisUser:any) =>{
-            userData.push({id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName} )
-            if(userData.length === userDetails.users.length){
-              // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
-              userDetails.users = userData;
-              return res.status(200).json({
-                response: {
-                  result:'success',
-                  message:''
-                },
-                account: userDetails
-              });
+            if(staffData.length === userDetails.staff.length){
+              // functions.logger.log("END OF STAFF LENGTH ::::  ",staffData.length, userDetails.staff.length, staffData, userData )
+              if(userDetails.users.length > 0){
+                // functions.logger.log("IL Y A DES USERS :   ",userDetails.users.length )
+                userDetails.users.forEach(async (user:any,index:number)=>{
+                  // functions.logger.log("Ce user :   ",user.id )
+                  let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
+
+                  userhandlerProfilUser.forEach(async (thisUser:any) =>{
+                    let validate = false;
+                    if(thisUser.data().passwordHash !== ""){
+                      validate = true;
+                    }
+                    userData.push({validate:validate,id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName,familyName:thisUser.data().familyName,firstName:thisUser.data().firstName} )
+                    if(userData.length === userDetails.users.length){
+                      // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
+                      userDetails.users = userData;
+                      userDetails.staff = staffData;
+                      return res.status(200).json({
+                        response: {
+                          result:'success',
+                          message:''
+                        },
+                        account: userDetails
+                      });
+                    }
+                  })
+                })
+              }else{
+                // il n'y a pas encore de users
+                      userDetails.staff = staffData;
+                      return res.status(200).json({
+                        response: {
+                          result:'success',
+                          message:''
+                        },
+                        account: userDetails
+                      });
+              }
+
             }
-          })
-        })
-      }
+            })
+
+          }
+          else{
+            // Si il n'y a pas de staff
+            if(userDetails.users.length > 0){
+              userDetails.users.forEach(async (user:any,index:number)=>{
+
+                // functions.logger.log("Ce user :   ",user.id )
+                let userhandlerProfilUser = await db.collection('account-handler').where('id', '==', user.id).get();
+
+                userhandlerProfilUser.forEach(async (thisUser:any) =>{
+                  let validate = false;
+                  if(thisUser.data().passwordHash !== ""){
+                    validate = true;
+                  }
+                  userData.push({validate:validate, id: thisUser.data().id, email:thisUser.data().email, role:thisUser.data().role,fullName:thisUser.data().fullName,familyName:thisUser.data().familyName,firstName:thisUser.data().firstName} )
+                  if(userData.length === userDetails.users.length){
+                    // functions.logger.log("END OF STAFF LENGTH WITH STAFF AND USER ::::  ",userData.length, userDetails.users.length, userData )
+                    userDetails.users = userData;
+                    return res.status(200).json({
+                      response: {
+                        result:'success',
+                        message:''
+                      },
+                      account: userDetails
+                    });
+                  }
+                })
+              })
+            }else{
+              return res.status(200).json({
+                      response: {
+                        result:'success',
+                        message:''
+                      },
+                      account: userDetails
+                    });
+            }
+          }
+
+        }
+        if(userDetails.role === 'staff' || userDetails.role === 'user'){
+
+          if(userDetails.role === 'staff'){
+            // let OwnerDetails = await db.collection('account-handler').where('id', '==', userDetails.owner).get();
+            // functions.logger.log("LE DETAILS DU OWNER DE CE STAFF ::::  ",OwnerDetails.users,OwnerDetails )
+          }
+            return res.status(200).json({
+              response: {
+                result:'success',
+                message:''
+              },
+              account: userDetails
+            });
+        }
     }
-
-  }
-
-
-
-        // jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
-        //     if(err) {
-        //       return res.status(200).json({
-        //         response: {
-        //           result:'expiredTokenError',
-        //           message:'Votre token a expiré'
-        //         },
-        //         token:token,
-        //       });
-        //     }else {
-              // functions.logger.log("USER DETAILS ALL ::::  ",userDetails,staffData, userData)  
-                // if(userDetails !== ""){
-                //   // if(userData.length === userDetails.users.length && staffData.length === userDetails.staff.length){
-                //     functions.logger.log("USER DETAILS ALL ::::  ",userDetails,staffData, userData)  
-                //     return res.status(200).json({
-                //         response: {
-                //           result:'success',
-                //           message:''
-                //         },
-                //       account: userDetails
-                //     });
-                //   }else{
-                //     return res.status(200).json({
-                //       response: {
-                //         result:'noAccountError',
-                //         message:''
-                //       },
-                //     });
-                //   // }
-                //   }
-                  
-              // }
-         
-              // If user is Owner, Admin, get all details of users and staff
-              // UsersOfAccount.push({
-              //   fullName:account.data.fullName,
-              //   id:account.data.id,
-              //   email:account.data.email,
-              //   validate: validate
-              // })
-
-              // If Staff je recupere l'ensemble des staff du owner, l'ensemble des users du owner, avec leurs roles, email, fullname et id
-              // Aussi le owner devient membre de staff
-              
-              // })
-        
-
+  })
   } catch(error:any) { return res.status(500).json(error.message) }
 }
 
@@ -392,7 +420,7 @@ const getAccountsList = async (req: any, res: any) => {
               querySnapshot.forEach((doc: any) => {
                 accounts.push({data:doc.data()});
               });
-             
+
               accounts.forEach((account:any)=> {
                 let validate = false;
                 functions.logger.log("account,account.passwordHash ",account,account.data.passwordHash )
@@ -401,12 +429,15 @@ const getAccountsList = async (req: any, res: any) => {
                 }
                   UsersOfAccount.push({
                     fullName:account.data.fullName,
+                    familyName:account.data.familyName,
+                    firstName:account.data.firstName,
                     id:account.data.id,
                     email:account.data.email,
                     role:account.data.role,
                     validate: validate
                   })
               });
+              // UsersOfAccount = _.orderBy(UsersOfAccount, ['result.infos.startDate'],['desc'])
                 return res.status(200).json({
                   response: {
                     result:'success',
@@ -425,6 +456,8 @@ const getAccountsList = async (req: any, res: any) => {
                 accounts.forEach((account:any)=> {
                   UsersOfAccount.push({
                     fullName:account.data.fullName,
+                    familyName:account.data.familyName,
+                    firstName:account.data.firstName,
                     id:account.data.id,
                     email:account.data.email,
                     role:account.data.role
@@ -439,7 +472,55 @@ const getAccountsList = async (req: any, res: any) => {
                 });
             }
             if(user.role === 'staff'){
-
+              // const accounts: any[] = [];
+              let UsersOfAccount:any = [];
+              let ownerAccounts:any = [];
+              let owner:any=[];
+              let usersProfils = await db.collection('account-handler').where('owner', '==', user.owner).get();
+              let ownerProfil = await db.collection('account-handler').where('id', '==', user.owner).get();
+              usersProfils.forEach( async (doc:any)  =>{
+                  ownerAccounts.push({data:doc.data()})
+              })
+              ownerProfil.forEach( async (doc:any)  =>{
+                owner.push({data:doc.data()})
+              })
+              ownerAccounts.forEach((account:any)=> {
+                let validate = false;
+                if(account.data.passwordHash !== ""){
+                  validate = true;
+                }
+                  UsersOfAccount.push({
+                    validate:validate,
+                    fullName:account.data.fullName,
+                    familyName:account.data.familyName,
+                    firstName:account.data.firstName,
+                    id:account.data.id,
+                    email:account.data.email,
+                    role:account.data.role
+                  });
+              });
+              owner.forEach((account:any)=> {
+                let validate = false;
+                if(account.data.passwordHash !== ""){
+                  validate = true;
+                }
+                UsersOfAccount.push({
+                  validate:validate,
+                  fullName:account.data.fullName,
+                  familyName:account.data.familyName,
+                  firstName:account.data.firstName,
+                  id:account.data.id,
+                  email:account.data.email,
+                  role:account.data.role
+                });
+              });
+                return res.status(200).json({
+                  response: {
+                    result:'success',
+                    message:''
+                  },
+                  accounts: UsersOfAccount,
+                });
             }
             if(user.role === 'user'){
 
@@ -480,6 +561,7 @@ const updateAccount = async (req:any, res: any) => {
   let idUser =dataBodyOfRequest.id;
   let userDetail :any = '';
   functions.logger.log("ACCOUNT UPDATE DETAILS ",bodyOfRequest.data, 'ID : ',dataBodyOfRequest.id )
+
   // functions.logger.log("account,account.passwordHash ",account,account.data.passwordHash )
    try {
     jwt.verify(token, 'secret', { expiresIn: '24h' }, async function(err:any, decoded:any) {
@@ -495,12 +577,13 @@ const updateAccount = async (req:any, res: any) => {
           userhandlerProfil.forEach((doc:any) =>{
           userDetail = doc.data();
           let idOfUser = doc.id;
+          sendEmailthisanUpdate(userDetail)
           if(userDetail !== ""){
             if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
             if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
             if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
             if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }
-            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.fullName }
+            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.firstName + ' '+dataBodyOfRequest.familyName }
             if(dataBodyOfRequest.avatarURL !== undefined){ userDetail.avatarURL = dataBodyOfRequest.avatarURL }
             if(dataBodyOfRequest.role !== undefined){ userDetail.role = dataBodyOfRequest.role }
                 if(dataBodyOfRequest.personalInfo !== undefined){
@@ -526,8 +609,8 @@ const updateAccount = async (req:any, res: any) => {
             if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
             if(dataBodyOfRequest.privateOnly !== undefined){ userDetail.privateOnly = dataBodyOfRequest.privateOnly }
             if(dataBodyOfRequest.privateFirmwareId !== undefined){ userDetail.privateFirmwareId = dataBodyOfRequest.privateFirmwareId }
-            
-            
+
+
 
             userDetail.update = DateString;
             userDetail.updateIso = isoDateString;
@@ -576,6 +659,6 @@ const deleteAccount = async (req: any, res: Response) => {
   catch(error:any) { return res.status(500).json(error.message) }
 }
 
-export { createAccount, getAccountsList, getAccountDetails, updateAccount, deleteAccount }
+export { sendCreateAccount, createAccount, getAccountsList, getAccountDetails, updateAccount, deleteAccount }
 
 

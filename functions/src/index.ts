@@ -5,8 +5,7 @@ import * as functions from 'firebase-functions';
 import * as express from 'express';
 //  var router = express.Router();
 // const nodemailer = require('nodemailer');
-import { addEntry, getAllEntries, updateEntry, deleteEntry } from './entryController';
-import { addAdmin, getAdmins, updateAdmin, deleteAdmin } from './adminsController';
+
 import { createAccount, getAccountDetails, getAccountsList, updateAccount, deleteAccount } from './AccountController';
 import { createEcone, getEconeDetails, updateEcone, deleteEcone } from './econesController';
 import { connectToAccount } from './loggerController';
@@ -70,16 +69,16 @@ app.post('/file', (req:any, res:any) => {
 
 // app.patch('/token', updateEntry)
 // app.delete('/token', deleteEntry)
-app.post('/entries', addEntry)
-app.get('/entries', getAllEntries)
-app.patch('/entries/:entryId', updateEntry)
-app.delete('/entries/:entryId', deleteEntry)
+// app.post('/entries', addEntry)
+// app.get('/entries', getAllEntries)
+// app.patch('/entries/:entryId', updateEntry)
+// app.delete('/entries/:entryId', deleteEntry)
 
 //
-app.post('/admin', addAdmin)
-app.get('/admin', getAdmins)
-app.put('/admin', updateAdmin)
-app.delete('/admin', deleteAdmin)
+// app.post('/admin', addAdmin)
+// app.get('/admin', getAdmins)
+// app.put('/admin', updateAdmin)
+// app.delete('/admin', deleteAdmin)
 
 //
 app.post('/createAccount', createAccount)
