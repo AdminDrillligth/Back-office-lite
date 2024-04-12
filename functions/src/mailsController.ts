@@ -93,11 +93,11 @@ const sendEmailthisanUpdate = async (data:any) =>{
     ".bg-top { background-size: cover !important;}} .text-center {text-align: center;}.w-100 { width: 100%;}.d-block { display: block;"+
     "}td.d-flex.textContentLast:after {clear: both; content: ''; display: block;}.mf-bg { background: radial-gradient(50% 50% at 50% 50%, #424657 0%, #0C0F20 100%);} .mf-logo {display: block;margin: 45px auto 65px; max-width: 265px;}"+
     ".mf-title {display: block; margin-left: 13px;margin-top: 56px;}.position-relative { position: relative;}"+
-    ".page-top { background: radial-gradient(90.16% 143.26% at 15.32% 20.99%, rgba(235, 236, 240, 0.2) 0%, rgba(235, 236, 240, 0.0447917) 77.08%, rgba(235, 236, 240, 0) 100%); border: 1px solid; border-image-source: radial-gradient(106.72% 284.69% at 100% 100%, #A1EAFB 0%, rgba(255, 255, 255, 0) 51.04%, #A1EAFB 100%); border-radius: 12px;margin-bottom: 55px; width: calc(100% - 120px); margin-left: 60px;margin-right: 60px; }"+
+    ".page-top { background:#12222B; border: 1px solid; border-image-source: radial-gradient(106.72% 284.69% at 100% 100%, #A1EAFB 0%, rgba(255, 255, 255, 0) 51.04%, #A1EAFB 100%); border-radius: 12px;margin-bottom: 55px; width: calc(100% - 120px); margin-left: 60px;margin-right: 60px; }"+
     ".email-title {color: #FDFDFD;font-family: 'Be Vietnam Pro', sans-serif;font-weight: 700;font-size: 36px;line-height: 48px;margin: 50px 0 20px;text-align: center;}"+
     ".email-sub-title {color: rgba(61, 54, 84, .7);font-weight: bold;font-size: 16px;line-height: 24px;text-align: center;}"+
     ".email-content, .email-content p {color: #FDFDFD;font-family: 'Be Vietnam Pro', sans-serif;font-size: 18px;font-weight: 400;line-height: 28px;text-align: center;}"+
-    ".email-content button {cursor:pointer;color: #0C0F20;width: 300px;height: 40px;background: #A1EAFB;border: 1px solid #A1EAFB;border-radius: 8px; padding: 12px 0;font-family: 'Be Vietnam Pro', sans-serif;font-weight: 600;font-size: 14px;line-height: 16px; margin: 50px auto; text-align: center; }"+
+    ".email-content button {cursor:pointer;color: #0C0F20;width: 300px;height: 40px;background: #336DC8;border: 1px solid #336DC8;border-radius: 8px; padding: 12px 0;font-family: 'Be Vietnam Pro', sans-serif;font-weight: 600;font-size: 14px;line-height: 16px; margin: 50px auto; text-align: center; }"+
     ".mf-footer {margin-bottom: 50px;}.mf-footer p { color: #5183ff;font-family: lato;font-size: 17px;font-weight: 300;line-height: 1.53;}"+
     ".drill-footer tr td {text-align: center; display: table;margin: 0 auto 65px;}"+
     ".mf-copyrights, .mf-copyrights a { color: #FDFDFD; font-family: 'Be Vietnam Pro', sans-serif; font-size: 17px;font-weight: 300;line-height: 26px;margin-bottom: 30px;text-align: center; }"+
@@ -112,12 +112,14 @@ const sendEmailthisanUpdate = async (data:any) =>{
     "</td></tr></table><table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' valign='top'><table class='page-top' border='0' cellpadding='0' cellspacing='0' class='flexibleContainer'>"+
     "<tr><td valign='top' class=''><table class='flexibleContainer text-center' align='center' border='0' cellpadding='0' cellspacing='0'><tr><h2 class='email-title'>Bienvenue sur <br> Drilllight !</h2><td></td></tr></table>"+
     "<table align='center' border='0' cellpadding='0' cellspacing='0' class='flexibleContainer text-center w-100'><tr><td valign='top' class='d-block textContentLast email-content'><p>Bonjour</p><p>"+
-    "un update viens d'être effectué"+data.fullName+
+    "un update viens d'être effectué"+data.fullName+' son ID est  '+data.id+
 
-    "</p><a  style='cursor:pointer;' href='https://drilllight.web.app/password?email=snaimuh@googlemail.com'><button style='cursor:pointer;'>Continuer sur Drilllight</button></a> </td> </tr> </table> </td> </tr></table>"+
+    "</p><a  style='cursor:pointer;' href='https://drilllight.web.app/password?id="+data.id+
+    
+    +"><button style='cursor:pointer;'>Continuer sur Drilllight</button></a> </td> </tr> </table> </td> </tr></table>"+
     "<table class='mf-footer w-100' cellpadding='0' cellspacing='0'><tr><td><tr class='mf-copyrights'><td>Pour vos questions et suggestions, nous vous invitons à nous<br>contacter sur <a href='mailto:contact@drilllight.fr'>contact@drilllight.fr</a>"+
-    "</td></tr></td></tr></table><table class='drill-footer w-100' cellpadding='0' cellspacing='0'><tr><td class='social-icons'><a href='https://www.facebook.com/' title='Facebook'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ffacebook.png?alt=media&token=91f5edc6-ae6f-4403-86a7-ac72f036970d' style='margin-right: 30px;' alt='Facebook'></a>"+
-    "<a href='https://www.instagram.com/' title='Instagram'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Finstagram.png?alt=media&token=a576f53a-91ac-44ba-a701-c1d3b8e918df' style='margin-right: 30px;' alt='Instagram'></a><a href='https://twitter.com/' title='Twitter'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ftwitter.png?alt=media&token=40dae9b3-1c85-4956-bb47-2df12cf37c00' style='margin-right: 30px;' alt='Twitter'></a></td>"+
+    "</td></tr></td></tr></table><table class='drill-footer w-100' cellpadding='0' cellspacing='0'><tr><td class='social-icons'><a href='https://www.facebook.com/drilllight' title='Facebook'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ffacebook.png?alt=media&token=91f5edc6-ae6f-4403-86a7-ac72f036970d' style='margin-right: 30px;' alt='Facebook'></a>"+
+    "<a href='https://www.instagram.com/drilllight_fr/' title='Instagram'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Finstagram.png?alt=media&token=a576f53a-91ac-44ba-a701-c1d3b8e918df' style='margin-right: 30px;' alt='Instagram'></a><a href='https://twitter.com/' title='Twitter'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ftwitter.png?alt=media&token=40dae9b3-1c85-4956-bb47-2df12cf37c00' style='margin-right: 30px;' alt='Twitter'></a></td>"+
     "</tr></table></td></tr></table></td></tr></table></td></tr><tr><td align='center' valign='top'></td></tr></table></td></tr></table></center></body></html>",
 
     subject:'Ceci est un update'},
@@ -156,11 +158,11 @@ const sendEmailCreate = async (data:any) =>{
     ".bg-top { background-size: cover !important;}} .text-center {text-align: center;}.w-100 { width: 100%;}.d-block { display: block;"+
     "}td.d-flex.textContentLast:after {clear: both; content: ''; display: block;}.mf-bg { background: radial-gradient(50% 50% at 50% 50%, #424657 0%, #0C0F20 100%);} .mf-logo {display: block;margin: 45px auto 65px; max-width: 265px;}"+
     ".mf-title {display: block; margin-left: 13px;margin-top: 56px;}.position-relative { position: relative;}"+
-    ".page-top { background: radial-gradient(90.16% 143.26% at 15.32% 20.99%, rgba(235, 236, 240, 0.2) 0%, rgba(235, 236, 240, 0.0447917) 77.08%, rgba(235, 236, 240, 0) 100%); border: 1px solid; border-image-source: radial-gradient(106.72% 284.69% at 100% 100%, #A1EAFB 0%, rgba(255, 255, 255, 0) 51.04%, #A1EAFB 100%); border-radius: 12px;margin-bottom: 55px; width: calc(100% - 120px); margin-left: 60px;margin-right: 60px; }"+
+    ".page-top { background:#12222B; border: 1px solid; border-image-source: radial-gradient(106.72% 284.69% at 100% 100%, #A1EAFB 0%, rgba(255, 255, 255, 0) 51.04%, #A1EAFB 100%); border-radius: 12px;margin-bottom: 55px; width: calc(100% - 120px); margin-left: 60px;margin-right: 60px; }"+
     ".email-title {color: #FDFDFD;font-family: 'Be Vietnam Pro', sans-serif;font-weight: 700;font-size: 36px;line-height: 48px;margin: 50px 0 20px;text-align: center;}"+
     ".email-sub-title {color: rgba(61, 54, 84, .7);font-weight: bold;font-size: 16px;line-height: 24px;text-align: center;}"+
     ".email-content, .email-content p {color: #FDFDFD;font-family: 'Be Vietnam Pro', sans-serif;font-size: 18px;font-weight: 400;line-height: 28px;text-align: center;}"+
-    ".email-content button {cursor:pointer;color: #0C0F20;width: 300px;height: 40px;background: #A1EAFB;border: 1px solid #A1EAFB;border-radius: 8px; padding: 12px 0;font-family: 'Be Vietnam Pro', sans-serif;font-weight: 600;font-size: 14px;line-height: 16px; margin: 50px auto; text-align: center; }"+
+    ".email-content button {cursor:pointer;color: #0C0F20;width: 300px;height: 40px;background: #336DC8;border: 1px solid #336DC8;border-radius: 8px; padding: 12px 0;font-family: 'Be Vietnam Pro', sans-serif;font-weight: 600;font-size: 14px;line-height: 16px; margin: 50px auto; text-align: center; }"+
     ".mf-footer {margin-bottom: 50px;}.mf-footer p { color: #5183ff;font-family: lato;font-size: 17px;font-weight: 300;line-height: 1.53;}"+
     ".drill-footer tr td {text-align: center; display: table;margin: 0 auto 65px;}"+
     ".mf-copyrights, .mf-copyrights a { color: #FDFDFD; font-family: 'Be Vietnam Pro', sans-serif; font-size: 17px;font-weight: 300;line-height: 26px;margin-bottom: 30px;text-align: center; }"+
@@ -175,12 +177,14 @@ const sendEmailCreate = async (data:any) =>{
     "</td></tr></table><table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' valign='top'><table class='page-top' border='0' cellpadding='0' cellspacing='0' class='flexibleContainer'>"+
     "<tr><td valign='top' class=''><table class='flexibleContainer text-center' align='center' border='0' cellpadding='0' cellspacing='0'><tr><h2 class='email-title'>Bienvenue sur <br> Drilllight !</h2><td></td></tr></table>"+
     "<table align='center' border='0' cellpadding='0' cellspacing='0' class='flexibleContainer text-center w-100'><tr><td valign='top' class='d-block textContentLast email-content'><p>Bonjour</p><p>"+
-    "un create viens d'être effectué"+data.fullName+
+    "un create viens d'être effectué"+data.fullName+' son ID est  '+data.id+
 
-    "</p><a  style='cursor:pointer;' href='https://drilllight.web.app/password?email=snaimuh@googlemail.com'><button style='cursor:pointer;'>Continuer sur Drilllight</button></a> </td> </tr> </table> </td> </tr></table>"+
+    "</p><a  style='cursor:pointer;' href='https://drilllight.web.app/password?id="+data.id+
+    
+    +"><button style='cursor:pointer;'>Continuer sur Drilllight</button></a> </td> </tr> </table> </td> </tr></table>"+
     "<table class='mf-footer w-100' cellpadding='0' cellspacing='0'><tr><td><tr class='mf-copyrights'><td>Pour vos questions et suggestions, nous vous invitons à nous<br>contacter sur <a href='mailto:contact@drilllight.fr'>contact@drilllight.fr</a>"+
-    "</td></tr></td></tr></table><table class='drill-footer w-100' cellpadding='0' cellspacing='0'><tr><td class='social-icons'><a href='https://www.facebook.com/' title='Facebook'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ffacebook.png?alt=media&token=91f5edc6-ae6f-4403-86a7-ac72f036970d' style='margin-right: 30px;' alt='Facebook'></a>"+
-    "<a href='https://www.instagram.com/' title='Instagram'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Finstagram.png?alt=media&token=a576f53a-91ac-44ba-a701-c1d3b8e918df' style='margin-right: 30px;' alt='Instagram'></a><a href='https://twitter.com/' title='Twitter'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ftwitter.png?alt=media&token=40dae9b3-1c85-4956-bb47-2df12cf37c00' style='margin-right: 30px;' alt='Twitter'></a></td>"+
+    "</td></tr></td></tr></table><table class='drill-footer w-100' cellpadding='0' cellspacing='0'><tr><td class='social-icons'><a href='https://www.facebook.com/drilllight' title='Facebook'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ffacebook.png?alt=media&token=91f5edc6-ae6f-4403-86a7-ac72f036970d' style='margin-right: 30px;' alt='Facebook'></a>"+
+    "<a href='https://www.instagram.com/drilllight_fr/' title='Instagram'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Finstagram.png?alt=media&token=a576f53a-91ac-44ba-a701-c1d3b8e918df' style='margin-right: 30px;' alt='Instagram'></a><a href='https://twitter.com/' title='Twitter'><img src='https://firebasestorage.googleapis.com/v0/b/drilllight.appspot.com/o/IMG_MAIL%2Ftwitter.png?alt=media&token=40dae9b3-1c85-4956-bb47-2df12cf37c00' style='margin-right: 30px;' alt='Twitter'></a></td>"+
     "</tr></table></td></tr></table></td></tr></table></td></tr><tr><td align='center' valign='top'></td></tr></table></td></tr></table></center></body></html>",
 
     subject:'Ceci est un create'},

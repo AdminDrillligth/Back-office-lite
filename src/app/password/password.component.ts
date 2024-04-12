@@ -22,8 +22,10 @@ export class PasswordComponent {
   form:any;
   error:string='';
   code:any;
+  id:any="";
   email:any="";
   seeChangePage = false;
+  account:any=[];
   constructor(
     private utilsService: UtilsService,
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
@@ -43,19 +45,37 @@ export class PasswordComponent {
   // 
 
   ngOnInit(): void {
-    this.email = this.route.snapshot.queryParams['email'];
-    console.log('email : ! ', this.email)
-    if(this.email !== ""){
+    this.id = this.route.snapshot.queryParams['id'];
+    console.log('id : ! ', this.id)
+    if(this.id !== ""){
       // const authorizationValue = 'Basic ' + btoa( this.email + ':' + this.form.get('password').value );
       // console.log('Le auth:!', authorizationValue)
     }
-    this.userHandlersServiceCustomer.getAccountDetails(this.email);
+    this.userHandlersServiceCustomer.getAccountDetails(this.id).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+      console.log('LE SUBSCRIBE DE LA REP In PASSWORD: ',e.account)
+      this.account = e.account;
+      this.email = e.account.email;
+      console.log('ON GET LE MAIL : ! ',this.email)
+      if(e.account.familyName !== undefined){
+        this.familyName.setValue(e.account.familyName);
+        console.log(this.familyName)
+      }
+      if(e.account.firstName !== undefined){
+        this.firstName.setValue(e.account.firstName);
+      }
+      if(e.account.firstName !== undefined){
+        this.phoneNumber.setValue(e.account.personalInfo.phone);
+      }
+      })
+      
+    });
     this.utilsService._dataOfAccountDetails.subscribe((dataAccount:any) => {
       if(dataAccount !== null){
         console.log('new Account DataDetails !: ',dataAccount.userDetails)
-        this.familyName = dataAccount.userDetails.familyName;
-        this.firstName = dataAccount.userDetails.firstName;
-        this.phoneNumber = dataAccount.userDetails.personalInfo.phone;
+        // this.familyName = dataAccount.userDetails.familyName;
+        // this.firstName = dataAccount.userDetails.firstName;
+        // this.phoneNumber = dataAccount.userDetails.personalInfo.phone;
       }
     });
   }
@@ -93,13 +113,34 @@ export class PasswordComponent {
         console.log(this.firstName, this.familyName, this.phoneNumber)
         console.log( this.form.get('password').value,  this.form.get('samepassword').value)
         this.code = this.route.snapshot.queryParams['oobCode'];
-        this.email = this.route.snapshot.queryParams['email'];
+        // this.email = this.route.snapshot.queryParams['email'];
         console.log('LE EMAIL :: ! ',this.email, this.code);
         if(this.email !== ""){
           const authorizationValue = 'Basic ' + Buffer.from( this.email + ':' + this.form.get('password').value ).toString('base64');
           console.log('Le auth:!', authorizationValue)
+          if(this.familyName.value !== "" && this.firstName.value !== ""){
+            console.log(this.firstName.value, this.familyName, this.phoneNumber)
+            this.account.firstName = this.firstName.value
+            this.account.familyName = this.familyName.value
+            this.account.personalInfo.phone = this.phoneNumber.value
+            this.userHandlersServiceCustomer.updateAccount(this.account).then((resp:any)=>{
+              resp.subscribe((response:any)=>{
+                console.log('la resp du update user owner: ! ', response)
+              })
+            });
+        
+          }
+
           // Let save passwordHash with API function
+          // this.userHandlersServiceCustomer.updateAccount(ProfilAccount).then((resp:any)=>{
+          //   resp.subscribe((response:any)=>{
+          //     console.log('la resp du update user: ! ', response.account)
+          //   })
+          // })
+
           this.userHandlersServiceCustomer.setPasswordHash(this.email, authorizationValue);
+          
+          
           this.router.navigate(['dashboard']);
         }
 

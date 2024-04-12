@@ -78,6 +78,7 @@ export class AppComponent {
   seeAsAccount:any;
   seeNavBar = true;
   changeNav =  false;
+  userDetails:any=[];
   // 0 FULL, 1 AUTORITE, 2 UNDER AUTORITE, 3 USER
   constructor(
     private url:LocationStrategy,
@@ -105,6 +106,8 @@ export class AppComponent {
 
         let seeAsAdmin = JSON.parse(localStorage.getItem('seeAsAdmin') || '{}');
         // console.log('VOIR EN TANT QUE ADMIN : ! ',seeAsAdmin)
+        this.userDetails = JSON.parse(localStorage.getItem('account') || '{}');
+        console.log('Detail du user en cours : ',this.userDetails)
         this.utilsService._seeAsAdmin.subscribe((asAdmin:any) => {
           let userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
           // this.seeAsAccount = account;

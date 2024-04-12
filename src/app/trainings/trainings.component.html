@@ -37,8 +37,8 @@
   <!-- LIST OF EXERCIES OF DRILLLIGHT -->
   <button *ngIf="displayTypeOf === 'module'" style="margin: 2px;" (click)="changeDisplay('list')" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">view_list</mat-icon></button>
   <button *ngIf="displayTypeOf === 'list'" style="margin: 2px;" (click)="changeDisplay('module')" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">view_module</mat-icon></button>
-  <button *ngIf="AccountOfUser.trainings.length > 0 && asAdmin == false"  style="margin: 2px;" (click)="resetSelectedExercices(AccountOfUser)" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">clear</mat-icon>Supprimer la sélection d'exercices</button>
-  <button *ngIf="userSource!== undefined && userSource.trainings.length > 0 && asAdmin == true"  style="margin: 2px;" (click)="resetSelectedExercices(AccountOfUser)" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">clear</mat-icon>Supprimer la sélection d'exercices</button>
+  <button *ngIf="AccountOfUser.trainings.length > 0 && asAdmin == false"  style="margin: 2px;" (click)="resetSelectedExercices(AccountOfUser)" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">clear</mat-icon>Tout désélectionner</button>
+  <button *ngIf="userSource!== undefined && userSource.trainings.length > 0 && asAdmin == true"  style="margin: 2px;" (click)="resetSelectedExercices(AccountOfUser)" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">clear</mat-icon>Tout désélectionner</button>
   <button  style="margin: 2px;" (click)="selectAllExercices(AccountOfUser)" mat-raised-button color="primary"><mat-icon style="margin-left: 10px;">swap_horiz</mat-icon>Tout sélectionner</button>
   <div *ngIf="chooseType === 'Exercices'">
   <!-- <h4 class="title">Bouquet d'exercices Drilllight</h4>
