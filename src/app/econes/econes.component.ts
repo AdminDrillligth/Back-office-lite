@@ -226,6 +226,10 @@ export class EconesComponent implements OnInit {
   }
 
 
+  seeProfil(accountId:string){
+    console.log('On va sur cette page : ',accountId)
+  }
+
   getFirmwareList(){
     if(this.account.role ==="admin"){
       this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
@@ -272,8 +276,10 @@ export class EconesComponent implements OnInit {
   parserEconesToCustomers(){
     if(this.Econes !== null){
       if(this.Econes.length > 0){
+        console.log('ECONE LIST : ',this.Econes)
         for (let i = 0; i < this.Econes.length; i++) {
           this.UserDataAccount.forEach((user:any) =>{
+            
             if(this.Econes[i].customerId === user.data.id){
               this.Econes[i].name = user.data.firstName +' '+ user.data.personalInfos.familyName;
             }
@@ -704,21 +710,10 @@ export class addEconesAdmin implements OnInit{
   ){}
 
   ngOnInit(): void {
-   console.log('COMPTE EN COURS  : !  ',this.data.account);
-   console.log('ALL ACCOUNTS',this.data.allAccounts)
+  //  console.log('COMPTE EN COURS  : !  ',this.data.account);
+  //  console.log('ALL ACCOUNTS',this.data.allAccounts)
    this.Accounts = this.data.allAccounts;
    this.firmwareList = this.data.firmwareList;
-  //  this.data.forEach((customer:any) =>{
-  //   console.log(customer);
-  //   // si il n'est pas Admin
-  //   if(customer.data.asAdmin !== true){
-  //     this.Customers.push(customer);
-  //     console.log(this.Customers);
-  //   }else{
-  //   // ou 
-
-  //   }
-  //  })
   }
 
   close(){
@@ -740,8 +735,6 @@ export class addEconesAdmin implements OnInit{
   selectChangeClient(event:any){
     console.log('ON CHANGE LE CUSTOMER : !  ', event.value.email,event.value.id,event.value.fullName);
     this.selectedAccount = {email:event.value.email, id:event.value.id,fullName: event.value.fullName}
-    // this.selectedCustomer = event.value;
-    // this.selectedCustomer = this.selectedCustomer.data.id
   }
 
 }

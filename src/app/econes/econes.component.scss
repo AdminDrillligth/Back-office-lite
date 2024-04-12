@@ -64,8 +64,11 @@
 
 .btn-see-profil{
   border-radius: 8px;
-  background: #a1eafb;
+  border: 1px solid #0048BA; 
+  background: #0048BA;
   width: 100%;
+  color:white;
+  cursor:pointer;
   height: 40px;
 }
 
