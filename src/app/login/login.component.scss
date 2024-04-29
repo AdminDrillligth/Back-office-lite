@@ -14,13 +14,11 @@
 }
 
 .spinner-display{
-    position: relative;
-    z-index: 1;
-    top: 50%;
-    width: 100px;
-    height: 100px;
-    margin-left: auto;
-    margin-right: auto;
+  position: absolute;
+  z-index: 1;
+  top: 38%;
+  margin-left: 34%;
+  margin-right: auto;
 }
 
 .card-login{

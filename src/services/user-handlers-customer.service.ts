@@ -66,8 +66,16 @@ export class UserHandlersServiceCustomer {
 
   async getAccountDetails(id:string){
     console.log(id)
+    let email = "";
+    let idUser = "";
+    console.log('Si c\'est un email',id.includes('@'))
+    if(id.includes('@') === true){
+      email = id
+    }else{
+      idUser = id
+    }
     let token = localStorage.getItem('token') || '{}';
-    let header = {'id':id, 'token':token }
+    let header = {'id':idUser, 'token':token , 'email': email }
     let response = await this.http.get(this.baseURL+'getAccountDetails', {'headers':header} )
     console.log('LA RESP ',response)
     response.subscribe((rep:any)=>{

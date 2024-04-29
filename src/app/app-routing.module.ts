@@ -5,6 +5,7 @@ import { MainComponent } from './main/main.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdministrationComponent } from './administration/administration.component';
 import { FinderComponent } from './finder/finder.component';
+import { HelpComponent } from './help/help.component';
 import { TrainingsComponent } from './trainings/trainings.component';
 import { ParametersComponent } from './parameters/parameters.component';
 import { LogsComponent } from './logs/logs.component';
@@ -22,6 +23,8 @@ import { ExercicesCategoriesComponent } from './exercices-editor/exercices-categ
 import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/exercices-drawer.component';
 import { SubscribesComponent } from './subscribes/subscribes.component';
 import { PasswordComponent } from './password/password.component';
+import { ResetComponent } from './reset/reset.component';
+
 import { InscriptionComponent } from './inscription/inscription.component';
 
 
@@ -69,6 +72,12 @@ const routes: Routes = [
   },
   { path:'password',
    component:PasswordComponent
+  },
+  { path:'reset',
+   component:ResetComponent
+  },
+  { path:'help',
+   component:HelpComponent
   },
   { path:'inscription',
   component:InscriptionComponent

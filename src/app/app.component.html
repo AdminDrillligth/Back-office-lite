@@ -3,6 +3,9 @@
     <mat-drawer-container class="container-side">
       <mat-drawer #drawer class="sidenav" mode="side" opened="{{opened}}">
         <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  />
+        <div style="margin-top:5px;">
+          <p class="info-account">{{userDetails.fullName}}</p>
+        </div>
         <!-- <p *ngIf="AccountOfUser" class='status-ranking'>Statut : {{AccountOfUser.privileges.role}}</p> -->
         <div class="button-nav" *ngFor="let item of sideBarItems">
           <button (click)="navigateTo(item)" class="btn-nav" mat-raised-button>
@@ -10,10 +13,7 @@
             <span class="span-btn">{{item.name}}</span>
           </button>
         </div>
-        <div style="margin-top:60px;">
-          <p class="info-account">{{userDetails.fullName}}</p>
-          <p class="info-account"> rôle: {{userDetails.role}}</p>
-        </div>
+
         <!-- <mat-toolbar style="text-align: center; display: block;margin-top: 20%;
         padding-top: 8%;" color="primary">
           <div class="flex-stretch"></div>
@@ -22,17 +22,19 @@
           </mat-slide-toggle>
           <mat-icon>bedtime</mat-icon>
         </mat-toolbar> -->
+        <img class="logo-img" src="assets/images/econe-background.png">
       <div class="btn-nav-bottom">
         <button (click)="logOut()" class="btn-bottom" mat-raised-button>
           <img src="assets/icons/logout.svg">
           <span class="span-btn">Déconnection</span>
         </button>
+    
       </div>
       </mat-drawer>
       <div *ngIf="seeNavigation" class="sidenav-content">
         <!-- *ngIf="seeNavBar !== true" -->
         <div style="display: inline-block;">
-          <button  type="button" mat-mini-fab color="accent" (click)="drawer.toggle();updateData();setSeenavBar(drawer)">
+          <button  type="button" mat-mini-fab class="btn-toggle-app" (click)="drawer.toggle();updateData();setSeenavBar(drawer)">
             <mat-icon>menu</mat-icon>
           </button>
         </div>
@@ -44,6 +46,7 @@
             <mat-icon>highlight_off</mat-icon>
           </button>
         </div>
+       
       </div>
       <router-outlet></router-outlet>
     </mat-drawer-container>

@@ -160,7 +160,7 @@ export class AppComponent {
             let check = this.url.path().split("?")
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
             console.log('ACCOUNT OF USER :! : ', seeNav);
-            if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
+            if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password" || check[0] === "/reset"){  
               this.seeNavigation = false;
               this.opened = false;
             }else{
@@ -229,7 +229,7 @@ export class AppComponent {
 
   updateData(){
     let check = this.url.path().split("?")
-    if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password"){  
+    if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password" || check[0] === "/reset"){  
       console.log(this.router, this.url.path())
       this.seeNavigation = false;
       this.opened = false;

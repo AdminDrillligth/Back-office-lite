@@ -1,0 +1,32 @@
+<div class="login">
+    <div class="container">
+      <mat-card style="text-align: center;" class="card-login">
+        <mat-card-header>
+          <h5 style="margin-left:auto;margin-right:auto;color:white;" color="white">Réinitialisation de mot de passe</h5>
+        </mat-card-header>
+          <img class="image-logo" mat-card-image src="assets/images/Drilllight-logo.svg"  />
+        <mat-card-content>
+          <form *ngIf="!seeChangePage" class="form-login"  [formGroup]="form" (ngSubmit)="onFormSubmit()">
+            <mat-form-field >
+              <mat-label>Nouveau mot de passe</mat-label>
+              <input class="full-width" (keyup)='onchangepassword($event)' formControlName="password"  type="password" matInput placeholder="Ex. xxx@example.com">
+            </mat-form-field>
+            <mat-form-field >
+                <mat-label>Confirmer le mot de passe</mat-label>
+                <input class="full-width" (keyup)='onchangepassword($event)' formControlName="samepassword" type="password" matInput placeholder="Ex. xxx@example.com">
+              </mat-form-field>
+              <p>Minimum 8 caractères<br> 2 chiffres et un caractère spécial</p>
+            <button *ngIf="!seeChangePage" class="login-btn" (click)='confirmPassWord()' mat-flat-button >Mettre à jour le mot de passe</button>
+          </form>
+
+          <button *ngIf="seeChangePage" class="login-btn" (click)='goToDashboard()' mat-flat-button >Page de connexion</button>
+          
+          <p style="margin-top:10px;color:red;">{{error}}</p>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div>
+  </div>
+  

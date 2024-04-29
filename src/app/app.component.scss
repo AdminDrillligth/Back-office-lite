@@ -12,6 +12,10 @@
   }
 }
 
+.btn-toggle-app{
+  background-color:#101C23;
+}
+
 .info-account{
   margin-left:15px;
 }
@@ -33,6 +37,12 @@
   height: 100%;
 }
 
+.logo-img{
+  width: 70%;
+  bottom: 0px;
+  position: absolute;
+}
+
 .sidenav{
   display:block;
   width: 210px;
@@ -50,7 +60,7 @@
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 20px;
+  margin-bottom: -5px;
 }
 
 .button-nav{

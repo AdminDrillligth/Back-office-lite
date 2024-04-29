@@ -26,6 +26,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { AdministrationComponent } from './administration/administration.component';
 import { FinderComponent } from './finder/finder.component';
+import { HelpComponent } from './help/help.component';
 import { TrainingsComponent } from './trainings/trainings.component';
 import { ParametersComponent } from './parameters/parameters.component';
 import { LogsComponent } from './logs/logs.component';
@@ -68,6 +69,7 @@ import { ExercicesDrawerComponent } from './exercices-editor/exercices-drawer/ex
 import { MatBadgeModule } from '@angular/material/badge';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PasswordComponent } from './password/password.component';
+import { ResetComponent } from './reset/reset.component';
 import { InscriptionComponent } from './inscription/inscription.component';
 import {MatGoogleMapsAutocompleteModule} from '@angular-material-extensions/google-maps-autocomplete';
 
@@ -92,6 +94,7 @@ export class HammerConfig extends HammerGestureConfig {
     DashboardComponent,
     AdministrationComponent,
     FinderComponent,
+    HelpComponent,
     TrainingsComponent,
     ParametersComponent,
     LogsComponent,
@@ -113,6 +116,7 @@ export class HammerConfig extends HammerGestureConfig {
     ExercicesCategoriesComponent,
     ExercicesDrawerComponent,
     PasswordComponent,
+    ResetComponent,
     InscriptionComponent
 
   ],

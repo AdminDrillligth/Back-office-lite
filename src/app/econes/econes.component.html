@@ -13,14 +13,14 @@
         </button>
         <div *ngIf="account.role == 'admin' && firmWareList.length !== 0"  style="color:white; margin-bottom: 10px;    display: inline-block;" class="display-text col-sm-3  col-md-4">
           <mat-card  (click)="uploadZip()" class="card-dashboard">
-            <mat-card-header>
+            <mat-card-header style="display: block;">
               <mat-card-title style="margin-right: 15px;" class="align-title">Téléverser une mise à jour</mat-card-title>
             </mat-card-header>
           </mat-card>
         </div>
         <div *ngIf="account.role == 'admin' && firmWareList.length !== 0" style="color:white; margin-bottom: 10px;display: inline-block;margin-left:10px;" class="display-text col-sm-3  col-md-4">
           <mat-card  (click)="chooseFirmwareGlobal()" class="card-dashboard">
-            <mat-card-header style="padding-bottom: 19px;">
+            <mat-card-header style="display: block;padding-bottom: 19px;">
               <mat-card-title style="margin-right: 15px;" class="align-title">Sélectionner le firmware global</mat-card-title>
             </mat-card-header>
           </mat-card>

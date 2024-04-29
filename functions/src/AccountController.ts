@@ -252,15 +252,25 @@ const getAccountDetails = async (req: any, res: any) => {
   let reqs = req;
   let headers = reqs.headers;
   let userId = headers.id;
+  let userEmail = headers.email;
   let token = headers.token;
   let userDetails :any = '';
   let staffData:any = [];
   let userData:any = [];
-  let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
-  userhandlerProfil.forEach((doc:any) =>{
-  userDetails = doc.data();
-
-  })
+  if(userId !== undefined){
+    let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
+    userhandlerProfil.forEach((doc:any) =>{
+    userDetails = doc.data();
+  
+    })
+  }
+  if(userEmail !== undefined){
+    let userhandlerProfil = await db.collection('account-handler').where('email', '==', userEmail).get();
+    userhandlerProfil.forEach((doc:any) =>{
+    userDetails = doc.data();
+  
+    })
+  }
 
   try {
   // functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails, userDetails.role )
