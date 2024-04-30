@@ -283,12 +283,12 @@ export class TrainingsComponent implements OnInit {
   if(this.asAdmin === true){
     if(this.userSource !== undefined ){
       this.exerciseService.getExerciceList(this.userSource.id).then((resp:any)=>{
-        // console.log(this.userSource)
+        console.log(this.userSource)
         console.log('Nous sommes en mode admin')
         resp.subscribe((response:any)=>{
           if(response.response.result === 'success'){
             // console.log('LE TRAININGS PUBLIC DU USER : ',this.userSource.trainings)
-            // console.log('LA RESP DANS TRAINING : ',response)
+            console.log('LA RESP DANS TRAINING : ',response)
             this.publicTrainings.cards = response.publicExercises;
             this.publicTrainings.cards.forEach((exo:any)=>{
               exo.selected = false;
@@ -333,7 +333,7 @@ export class TrainingsComponent implements OnInit {
       resp.subscribe((response:any)=>{
         if(response.response.result === 'success'){
           console.log('LA RESP DANS TRAINING : ',response)
-          // console.log('LA RESP DANS TRAINING : ',response.publicExercises)
+          console.log('LA RESP DANS TRAINING : ',response)
           this.publicTrainings.cards = response.publicExercises;
           this.publicTrainings.cards.forEach((exo:any)=>{
               exo.selected = false;

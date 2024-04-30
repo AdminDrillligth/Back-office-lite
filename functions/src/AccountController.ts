@@ -2,7 +2,7 @@ import { Response } from "express"
 import { db } from './config/firebase'
 import * as functions from 'firebase-functions'
 import { v4 as uuidv4 } from 'uuid';
-import { sendEmailCreate, sendEmailthisanUpdate } from './mailsController';
+import { sendEmailCreate, sendEmailthisanUpdate, sendEmailResetPassword, sendEmailResetPasswordAccount  } from './mailsController';
 var jwt = require("jsonwebtoken");
 // var btoa = require('btoa');
 var DateString = new Date().toLocaleDateString('en-GB');
@@ -195,6 +195,7 @@ const createAccount = async (req: any, res: Response) => {
                 rights: rights
             },
             users:users,
+            privateExercisesChangeCount:0,
             staff: staff,
             econes: econes,
             trainings: trainings,
@@ -243,6 +244,7 @@ const createAccount = async (req: any, res: Response) => {
 }
 
 
+
 const sendCreateAccount = async (data:any) =>{
   functions.logger.log("ON VA CREER UN SERVICE MAIL AU TOP  ::::  ",data )
 }
@@ -257,15 +259,16 @@ const getAccountDetails = async (req: any, res: any) => {
   let userDetails :any = '';
   let staffData:any = [];
   let userData:any = [];
+  let userhandlerProfil:any="";
   if(userId !== undefined){
-    let userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
+    userhandlerProfil = await db.collection('account-handler').where('id', '==', userId).get();
     userhandlerProfil.forEach((doc:any) =>{
     userDetails = doc.data();
   
     })
   }
   if(userEmail !== undefined){
-    let userhandlerProfil = await db.collection('account-handler').where('email', '==', userEmail).get();
+    userhandlerProfil = await db.collection('account-handler').where('email', '==', userEmail).get();
     userhandlerProfil.forEach((doc:any) =>{
     userDetails = doc.data();
   
@@ -284,6 +287,14 @@ const getAccountDetails = async (req: any, res: any) => {
         },
       });
     }else {
+        if(userDetails === ''){
+          return res.status(200).json({
+            response: {
+              result:'noAccountError',
+              message:''
+            },
+          });
+        }
         if(userDetails.role === 'owner' || userDetails.role === 'admin'){
           functions.logger.log("USER DETAILS GET ACCOUNT DETAIL ::::  ",userDetails )
           userDetails.owner = [];
@@ -566,6 +577,7 @@ const getAccountsList = async (req: any, res: any) => {
 const updateAccount = async (req:any, res: any) => {
   let bodyOfRequest = req.body;
   let dataBodyOfRequest = bodyOfRequest.data;
+  let resetPassword = bodyOfRequest.resetpassword;
   let headers = req.headers;
   let token = headers.token;
   let idUser =dataBodyOfRequest.id;
@@ -583,67 +595,83 @@ const updateAccount = async (req:any, res: any) => {
           },
         });
       } else {
-          let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
-          userhandlerProfil.forEach((doc:any) =>{
-          userDetail = doc.data();
-          let idOfUser = doc.id;
-          sendEmailthisanUpdate(userDetail)
-          if(userDetail !== ""){
-            if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
-            if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
-            if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
-            if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }
-            if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.firstName + ' '+dataBodyOfRequest.familyName }
-            if(dataBodyOfRequest.avatarURL !== undefined){ userDetail.avatarURL = dataBodyOfRequest.avatarURL }
-            if(dataBodyOfRequest.role !== undefined){ userDetail.role = dataBodyOfRequest.role }
-                if(dataBodyOfRequest.personalInfo !== undefined){
-                    if(dataBodyOfRequest.personalInfo.birthdate !== undefined){ userDetail.personalInfo.birthdate = dataBodyOfRequest.personalInfo.birthdate }
-                    if(dataBodyOfRequest.personalInfo.simpleBirthdate !== undefined){ userDetail.personalInfo.simpleBirthdate = dataBodyOfRequest.personalInfo.simpleBirthdate }
-                    if(dataBodyOfRequest.personalInfo.address1 !== undefined){ userDetail.personalInfo.address1 = dataBodyOfRequest.personalInfo.address1 }
-                    if(dataBodyOfRequest.personalInfo.address2 !== undefined){ userDetail.personalInfo.address2 = dataBodyOfRequest.personalInfo.address2 }
-                    if(dataBodyOfRequest.personalInfo.zip !== undefined){ userDetail.personalInfo.zip = dataBodyOfRequest.personalInfo.zip }
-                    if(dataBodyOfRequest.personalInfo.city !== undefined){ userDetail.personalInfo.city = dataBodyOfRequest.personalInfo.city }
-                    if(dataBodyOfRequest.personalInfo.region !== undefined){ userDetail.personalInfo.region = dataBodyOfRequest.personalInfo.region }
-                    if(dataBodyOfRequest.personalInfo.phone !== undefined){ userDetail.personalInfo.phone = dataBodyOfRequest.personalInfo.phone }
-                    if(dataBodyOfRequest.personalInfo.comment !== undefined){ userDetail.personalInfo.comment = dataBodyOfRequest.personalInfo.comment }
-                }
-                if(dataBodyOfRequest.privileges !== undefined){
-                      if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
-                }
-            if(dataBodyOfRequest.users !== undefined){ userDetail.users = dataBodyOfRequest.users }
-            if(dataBodyOfRequest.staff !== undefined){ userDetail.staff = dataBodyOfRequest.staff }
-            if(dataBodyOfRequest.econes !== undefined){ userDetail.econes = dataBodyOfRequest.econes }
-            if(dataBodyOfRequest.trainings !== undefined){ userDetail.trainings = dataBodyOfRequest.trainings }
-            if(dataBodyOfRequest.videos !== undefined){ userDetail.videos = dataBodyOfRequest.videos }
-            if(dataBodyOfRequest.licensed !== undefined){ userDetail.licensed = dataBodyOfRequest.licensed }
-            if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
-            if(dataBodyOfRequest.privateOnly !== undefined){ userDetail.privateOnly = dataBodyOfRequest.privateOnly }
-            if(dataBodyOfRequest.privateFirmwareId !== undefined){ userDetail.privateFirmwareId = dataBodyOfRequest.privateFirmwareId }
-
-
-
-            userDetail.update = DateString;
-            userDetail.updateIso = isoDateString;
-            functions.logger.log("ACCOUNT UPDATE DETAILS NEW USER DETAIL : ",userDetail )
-            const account_handler = db.collection('account-handler');
-            account_handler.doc(idOfUser).update(userDetail).then((ref:any) => {
-                return res.status(200).json({
-                  response: {
-                    result:'success',
-                    message:''
-                  },
-                  account:userDetail
-                });
-              });
-          }else{
+        
+          if(resetPassword === true){
+            sendEmailResetPasswordAccount(dataBodyOfRequest)
+            sendEmailResetPassword(dataBodyOfRequest)
             return res.status(200).json({
               response: {
-                result:'noUserError',
-                message:''
+                result:'success',
+                message:'resetPassword'
               },
+              resetPassword:resetPassword,
+              dataBodyOfRequest:dataBodyOfRequest
             });
+          }else{
+            let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
+            
+            userhandlerProfil.forEach((doc:any) =>{
+            userDetail = doc.data();
+            let idOfUser = doc.id;
+            sendEmailthisanUpdate(userDetail)
+            if(userDetail !== ""){
+              if(dataBodyOfRequest.email !== undefined){ userDetail.email = dataBodyOfRequest.email }
+              if(dataBodyOfRequest.passwordHash !== undefined){ userDetail.passwordHash = dataBodyOfRequest.passwordHash }
+              if(dataBodyOfRequest.firstName !== undefined){ userDetail.firstName = dataBodyOfRequest.firstName }
+              if(dataBodyOfRequest.familyName !== undefined){ userDetail.familyName = dataBodyOfRequest.familyName }
+              if(dataBodyOfRequest.fullName !== undefined){ userDetail.fullName = dataBodyOfRequest.firstName + ' '+dataBodyOfRequest.familyName }
+              if(dataBodyOfRequest.avatarURL !== undefined){ userDetail.avatarURL = dataBodyOfRequest.avatarURL }
+              if(dataBodyOfRequest.role !== undefined){ userDetail.role = dataBodyOfRequest.role }
+                  if(dataBodyOfRequest.personalInfo !== undefined){
+                      if(dataBodyOfRequest.personalInfo.birthdate !== undefined){ userDetail.personalInfo.birthdate = dataBodyOfRequest.personalInfo.birthdate }
+                      if(dataBodyOfRequest.personalInfo.simpleBirthdate !== undefined){ userDetail.personalInfo.simpleBirthdate = dataBodyOfRequest.personalInfo.simpleBirthdate }
+                      if(dataBodyOfRequest.personalInfo.address1 !== undefined){ userDetail.personalInfo.address1 = dataBodyOfRequest.personalInfo.address1 }
+                      if(dataBodyOfRequest.personalInfo.address2 !== undefined){ userDetail.personalInfo.address2 = dataBodyOfRequest.personalInfo.address2 }
+                      if(dataBodyOfRequest.personalInfo.zip !== undefined){ userDetail.personalInfo.zip = dataBodyOfRequest.personalInfo.zip }
+                      if(dataBodyOfRequest.personalInfo.city !== undefined){ userDetail.personalInfo.city = dataBodyOfRequest.personalInfo.city }
+                      if(dataBodyOfRequest.personalInfo.region !== undefined){ userDetail.personalInfo.region = dataBodyOfRequest.personalInfo.region }
+                      if(dataBodyOfRequest.personalInfo.phone !== undefined){ userDetail.personalInfo.phone = dataBodyOfRequest.personalInfo.phone }
+                      if(dataBodyOfRequest.personalInfo.comment !== undefined){ userDetail.personalInfo.comment = dataBodyOfRequest.personalInfo.comment }
+                  }
+                  if(dataBodyOfRequest.privileges !== undefined){
+                        if(dataBodyOfRequest.privileges.rights !== undefined){ userDetail.privileges.rights = dataBodyOfRequest.privileges.rights }
+                  }
+              if(dataBodyOfRequest.users !== undefined){ userDetail.users = dataBodyOfRequest.users }
+              if(dataBodyOfRequest.staff !== undefined){ userDetail.staff = dataBodyOfRequest.staff }
+              if(dataBodyOfRequest.econes !== undefined){ userDetail.econes = dataBodyOfRequest.econes }
+              if(dataBodyOfRequest.trainings !== undefined){ userDetail.trainings = dataBodyOfRequest.trainings }
+              if(dataBodyOfRequest.videos !== undefined){ userDetail.videos = dataBodyOfRequest.videos }
+              if(dataBodyOfRequest.licensed !== undefined){ userDetail.licensed = dataBodyOfRequest.licensed }
+              if(dataBodyOfRequest.warning !== undefined){ userDetail.warning = dataBodyOfRequest.warning }
+              if(dataBodyOfRequest.privateOnly !== undefined){ userDetail.privateOnly = dataBodyOfRequest.privateOnly }
+              if(dataBodyOfRequest.privateFirmwareId !== undefined){ userDetail.privateFirmwareId = dataBodyOfRequest.privateFirmwareId }
+  
+  
+  
+              userDetail.update = DateString;
+              userDetail.updateIso = isoDateString;
+              functions.logger.log("ACCOUNT UPDATE DETAILS NEW USER DETAIL : ",userDetail )
+              const account_handler = db.collection('account-handler');
+              account_handler.doc(idOfUser).update(userDetail).then((ref:any) => {
+                  return res.status(200).json({
+                    response: {
+                      result:'success',
+                      message:''
+                    },
+                    account:userDetail
+                  });
+                });
+            }else{
+              return res.status(200).json({
+                response: {
+                  result:'noUserError',
+                  message:''
+                },
+              });
+            }
+          });
           }
-        });
+        
       }
     });
    }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit, Injectable, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
@@ -21,7 +21,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from '../../services/utils.service';
 import { TokenService } from '../../services/token.service';
 import { Buffer } from 'buffer';
-
+import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
 
 @Component({
   selector: 'app-login',
@@ -154,8 +154,8 @@ export class LoginComponent implements OnInit{
   }
 
   resetPassWord(){
-    console.log('on reset le password')
-    const dialogRef = this.dialog.open(resetPasswordDialog, { panelClass: 'panel-class'});
+    console.log('on reset le password',this.emailFormControl.value )
+    const dialogRef = this.dialog.open(resetPasswordDialog, {data:this.emailFormControl.value, panelClass: 'panel-class'});
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
@@ -188,7 +188,46 @@ export class LoginComponent implements OnInit{
 
 })
 
-export class resetPasswordDialog {
+export class resetPasswordDialog implements OnInit{
+  constructor(
+    public dialogRef: MatDialogRef<resetPasswordDialog>,
+    private userHandlersServiceCustomer:UserHandlersServiceCustomer,
+    @Inject(MAT_DIALOG_DATA) public data:any,
+  ){}
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   badpassuser : boolean= false;
+  bademailuser:boolean=false;
+  ngOnInit(): void {
+    console.log('LES DATAS MODALS MODERATE',this.data)
+    this.emailFormControl.setValue(this.data);
+    // this.emailFormControl = this.data;
+  }
+
+
+  sendResetPassword(){
+    console.log('email reset : ',this.emailFormControl.value)
+    this.userHandlersServiceCustomer.getAccountDetails(this.emailFormControl.value).then((resp:any)=>{
+      resp.subscribe((e:any) =>{
+      console.log('LE SUBSCRIBE DE LA REP In PASSWORD: ',e.account)
+
+      console.log('LE SUBSCRIBE : ',e.response.result)
+      if(e.response.result === "noAccountError"){
+        this.bademailuser = true;
+        setTimeout(() => { this.bademailuser = false; }, 1500);
+      }else{
+        let ProfilAccount = e.account;
+        this.userHandlersServiceCustomer.updateAccountResetPassword(ProfilAccount).then((resp:any)=>{
+          resp.subscribe((response:any)=>{
+            console.log('la resp du user update reset password : ! ', response)
+          });
+        });
+        // this.dialogRef.close();
+      }
+      // this.account = e.account;
+      // this.email = e.account.email;
+      // console.log('ON GET LE MAIL : ! ',this.email)
+      })
+    });
+  }
+
 }

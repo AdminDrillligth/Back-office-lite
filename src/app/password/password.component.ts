@@ -48,8 +48,8 @@ export class PasswordComponent {
     this.id = this.route.snapshot.queryParams['id'];
     console.log('id : ! ', this.id)
     if(this.id !== ""){
-      // const authorizationValue = 'Basic ' + btoa( this.email + ':' + this.form.get('password').value );
-      // console.log('Le auth:!', authorizationValue)
+      const authorizationValue = 'Basic ' + btoa( this.email + ':' + this.form.get('password').value );
+      console.log('Le auth:!', authorizationValue)
     }
     this.userHandlersServiceCustomer.getAccountDetails(this.id).then((resp:any)=>{
       resp.subscribe((e:any) =>{

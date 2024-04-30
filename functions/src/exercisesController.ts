@@ -37,6 +37,7 @@ const createExercise  = async (req: any, res: any) => {
       //      }else {
             const exercise_handler = db.collection('exercise-handler');
             exercise_handler.doc(json.json.header.id).set(json.json).then( async (ref:any) => {
+              functions.logger.log("JSON DETAIL STATUS  ::::  ",json.json.header.status)
               if(json.json.header.status === 'public'){
                 const querySnapshotGlobalHandler = await db.collection('global_handler').get();
                 querySnapshotGlobalHandler.forEach((doc: any) => {
@@ -57,10 +58,12 @@ const createExercise  = async (req: any, res: any) => {
                   });
                 })
               }else{
-                let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
 
+                let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
+                
                 userhandlerProfil.forEach(async (doc:any) =>{
                     userDetail = doc.data();
+                    functions.logger.log("DETAIL DU PROFIL ::::  ",userDetail)
                     idTable = doc.id
                 });
                 if(userDetail.privateExercisesChangeCount === undefined){

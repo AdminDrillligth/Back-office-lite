@@ -122,6 +122,19 @@ export class UserHandlersServiceCustomer {
 
   }
 
+  async updateAccountResetPassword(data:any){
+    console.log('DATA UPDATE RESET PASSWORD  :: ',data)
+    let token = localStorage.getItem('token') || '{}';
+    const body = {data:data, resetpassword:true };
+    // console.log('On va envoyer ce body : ',body)
+    let resp = await this.http.put(this.baseURL+'updateAccount' , body,{'headers':{token:token}});
+    // console.log('LA RESP EMAIL RESET ',resp)
+    // if(resp.response.result === "expiredTokenError"){
+    //   this.router.navigate(['login']);
+    // }
+    return resp ;
+  }
+
   async updateAccount(data:any){
     console.log('DATA UPDATE CUSTOMER :: ',data)
     let token = localStorage.getItem('token') || '{}';
