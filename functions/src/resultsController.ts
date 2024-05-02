@@ -44,10 +44,20 @@ const createResult = async (req: any, res: any) => {
   saveDataReports(body.data);
   results.forEach((result:any) =>{
     let newUuidResult = uuidv4();
-    reslutsParse.push({result:result, idExercice:result.results.infos.idExercise, idResult:newUuidResult, idAccount:result.coach.id })
+    reslutsParse.push({result:result.results, idExercice:result.results.infos.idExercise, idResult:newUuidResult, idAccount:result.coach.id })
     // functions.logger.log("LOG body RESULT ", result );
     functions.logger.log("LOG body RESULT ", reslutsParse );
     saveIndataBase(newUuidResult,result.results, result.coach)
+    if(reslutsParse.length === results.length){
+      return res.status(200).json({
+        response: {
+            result:'success',
+            message:''
+        },
+
+        results:reslutsParse
+    })
+    }
   })
 
   try {
@@ -78,14 +88,14 @@ const createResult = async (req: any, res: any) => {
           // results = _.orderBy(results, ['result.infos.startDate'],['desc'])
           // functions.logger.log("Result SORT ", results);
           // }
-            return res.status(200).json({
-                response: {
-                    result:'success',
-                    message:''
-                },
+            // return res.status(200).json({
+            //     response: {
+            //         result:'success',
+            //         message:''
+            //     },
 
-                results:results
-            })
+            //     results:results
+            // })
         }
     })
   }

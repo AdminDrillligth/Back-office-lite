@@ -75,3 +75,13 @@
   background-color: rgb(171, 171, 171) !important;
   border-radius: 5px;
 }
+
+.panel-class{
+  background-color:red;
+}
+
+:host {
+  display: block;
+  border: 1px solid #ffffff33;
+  background: #101C23;
+ }
