@@ -88,11 +88,13 @@ export class AppComponent {
     public utilsService: UtilsService,
     private router:Router
   ){
+    localStorage.removeItem('backEnd');
     localStorage.removeItem('account-data-user');
   }
 
 
   ngOnInit(): void {
+
         //*
         let backend = localStorage.getItem('backEnd');
         console.log('backend General : ! ',backend)

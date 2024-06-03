@@ -183,7 +183,14 @@ export class EconesComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('user') || '{}');
     this.account = JSON.parse(localStorage.getItem('account') || '{}');
     if(backend){
-
+      this.firmWareService.getGlobalFirmwareApi().subscribe((response:any)=>{
+        console.log('Last global firmware  :  ',response)
+        // if(response !== undefined){
+        //   console.log('la resp du details', response.globalFirmware)
+        //   this.detailsLastGlobalFirmware = response.globalFirmware
+        //   this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
+        // }
+      });
     }else{
       this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
         console.log('Last global firmware  :  ',response)
@@ -241,7 +248,7 @@ export class EconesComponent implements OnInit {
 
   getFirmwareListFromApi(){
     if(this.account.role ==="admin"){
-      // this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+      // this.firmWareService.getFirmwareListApi().then((firmwareList:any)=>{
       //   console.log('list of firwares: ',firmwareList)
       // })
     }
