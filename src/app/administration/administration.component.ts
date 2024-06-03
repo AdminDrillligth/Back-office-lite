@@ -313,6 +313,8 @@ export class AdministrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    let backend = localStorage.getItem('backEnd');
+    console.log('backend administration: ! ',backend)
     this.disabledSpinner = true;
     var widthScreen = window.innerWidth;
     if(widthScreen < 600){
@@ -320,8 +322,44 @@ export class AdministrationComponent implements OnInit{
       this.displayedColumnsAccounts = ['firstName','actions'];
 
     }
+    if(backend === 'true'){
+      this.firmWareService.getFirmwareListApi().subscribe((firmwareList:any)=>{
+        console.log('FIRMWARE LIST DETAILS : ',firmwareList.firmwareList)
+        this.firmWareList  = firmwareList.firmwareList;
+        this.firmWareList = this.firmWareList.sort((a, b) => {
+          if (a.version > b.version) { return -1; }
+          if (a.version < b.version) { return 1; }
+          return 0;
+        });
+        this.firmWareList.forEach((firmware:any)=>{
+          firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+          console.log('FIRMWARE LIST DETAILS : ' ,this.firmWareList)
+        })
+      })
+    }else{
+      this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+        // console.log('list of firwares: ',firmwareList)
+        firmwareList.subscribe((list:any)=>{
+          // console.log('list of firwares: ',list.firmwareList)
+          this.firmWareList = list.firmwareList;
+          this.firmWareList = this.firmWareList.sort((a, b) => {
+            if (a.version > b.version) {
+                return -1;
+            }
+            if (a.version < b.version) {
+                return 1;
+            }
+            return 0;
+          });
+          this.firmWareList.forEach((firmware:any)=>{
+            firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+          })
+
+        })
+      });
+    }
     // console.log('Le width du screen : !',widthScreen)
-    this.userHandlersServiceCustomer.getUpdateallUsers();
+    // this.userHandlersServiceCustomer.getUpdateallUsers();
     this.utilsService._templateOptions.subscribe((theme:any) => {
       // console.log('THEME !: ',theme)
     });
@@ -387,26 +425,7 @@ export class AdministrationComponent implements OnInit{
 
       }
     })
-    this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
-      // console.log('list of firwares: ',firmwareList)
-      firmwareList.subscribe((list:any)=>{
-        // console.log('list of firwares: ',list.firmwareList)
-        this.firmWareList = list.firmwareList;
-        this.firmWareList = this.firmWareList.sort((a, b) => {
-          if (a.version > b.version) {
-              return -1;
-          }
-          if (a.version < b.version) {
-              return 1;
-          }
-          return 0;
-        });
-        this.firmWareList.forEach((firmware:any)=>{
-          firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
-        })
 
-      })
-    });
     this.utilsService._newaccount.subscribe((update:any) =>{
        if(update !== null){
          if(update == true){
@@ -608,8 +627,6 @@ export class AdministrationComponent implements OnInit{
       this.city = ProfilAccount.personalInfo.city;
       this.region = ProfilAccount.personalInfo.region;
       this.urlImg = ProfilAccount.avatarURL;
-
-
     }
   }
 
@@ -668,7 +685,7 @@ export class AdministrationComponent implements OnInit{
               })
               if(this.parseStaff.length > 0){
                 // staff
-        
+
                 this.dataSourceStaffOfChoosenAccount = new MatTableDataSource(this.parseStaff);
                 this.dataSourceStaffOfChoosenAccount.paginator = this.paginatorAccounts;
                 this.resultsLengthStaffAccounts = this.parseStaff.length;
@@ -681,7 +698,7 @@ export class AdministrationComponent implements OnInit{
               }
             });
           }
-          
+
           // localStorage.setItem('account-data-user', JSON.stringify(e.account));
 
           // this.ProfilAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
@@ -1519,7 +1536,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './dialog/dialog-create-admin.html',
   styleUrls: ['./administration.component.scss'],
   standalone: true,
-  imports: [  ReactiveFormsModule, MatNativeDateModule, MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
+  imports: [ ReactiveFormsModule, MatNativeDateModule, MatDatepickerModule, MatSelectModule, MatInputModule, CommonModule, MatFormFieldModule, MatDialogModule, FormsModule, MatButtonModule],
 })
 
 export class DialogCreateAdmin implements OnInit{

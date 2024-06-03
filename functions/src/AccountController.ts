@@ -64,7 +64,7 @@ var isoDateString = new Date().toISOString();
 const createAccount = async (req: any, res: Response) => {
   let bodyOfRequest = req.body;
   // let dataBodyOfRequest = JSON.parse(bodyOfRequest);
-  let dataBodyOfRequest = bodyOfRequest.data
+  let dataBodyOfRequest = bodyOfRequest.data;
   // let reqs = req;
   // let headers = reqs.headers;
   // let token = headers.token;

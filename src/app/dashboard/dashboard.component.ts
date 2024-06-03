@@ -32,6 +32,8 @@ export class DashboardComponent implements OnInit{
     private router: Router ){}
 
   ngOnInit(): void {
+    let backend = localStorage.getItem('backEnd');
+    console.log('backend dashboard: ! ',backend)
     this.utilsService._templateOptions.subscribe((theme:any) => {
      console.log('THEME !: ',theme)
     });

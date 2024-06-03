@@ -118,6 +118,20 @@ export class UserHandlersServiceCustomer {
     return resp ;
   }
 
+  async addAccountAPI(data:any){
+    const body = {data:data};
+    console.log('createAccount : ! ', body);
+    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+    let resp =  await this.http.post(this.baseURL+'createAccount' , body,{'headers':{token:tokenAPI}})
+    console.log('LA RESP DU CREATE ACCOUTN API : ',resp)
+    // if(resp.response.result === "expiredTokenError"){
+    //   this.router.navigate(['login']);
+    // }
+    return resp ;
+  }
+
+  
+
   updateModarations(){
 
   }

@@ -18,6 +18,8 @@ export class FirmWareService {
 
   headers = { 'content-type': 'application/json'};
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
+  linuxBackEnd: string = "https://devserver.drilllight.com/";
+
 
   constructor(
     private router:Router,
@@ -27,10 +29,24 @@ export class FirmWareService {
     private datePipe: DatePipe,
     private db: AngularFirestore
 
-  ) { 
+  ) {
 
 
   }
+
+
+
+  createFirmwareBackEndAPi(firmwareData:any, id:any, privated:boolean){
+    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+    console.log('ZIP BASE 64 : !',firmwareData, id)
+    const body = {firmwareData:firmwareData, id:id, privated:privated};
+    console.log(body);
+    this.http.post(this.linuxBackEnd+'firmware/createFirmware', body,{'headers':{ 'token': tokenAPI}}).subscribe((rep:any) =>{
+      console.log('LA REP DU CREATE FIRMWARE : ! ',rep)
+    });
+
+  }
+
 
   createFirmware(firmwareData:any, id:any, privated:boolean){
     let token = localStorage.getItem('token') || '{}';
@@ -68,7 +84,7 @@ export class FirmWareService {
     })
     return response;
   }
-  
+
 
   async getFirmwareList(){
     // console.log('get la list')
@@ -76,6 +92,21 @@ export class FirmWareService {
     let response = this.http.get(this.baseURL+'getFirmwaresList', {'headers':{ 'token': token}})
     return response;
   }
+
+  getFirmwareListApi(){
+    // console.log('get la list')
+    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+    let response = this.http.get(this.linuxBackEnd+'firmware/getFirmwaresList', {'headers':{ 'token': tokenAPI}})
+    response.subscribe((firmresp:any)=>{
+      // console.log('LOG RESP LIN API : FIRM : ',firmresp)
+      if(firmresp.response.result === "expiredTokenError"){
+        this.utilsService.howToSeeNavigation(false);
+        this.router.navigate(['']);
+      }
+    })
+    return response;
+  }
+
 
   getfirmwareDetails(idFirmware:string){
     let idOfFirmware = "";

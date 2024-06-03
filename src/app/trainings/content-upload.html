@@ -7,10 +7,20 @@
 <mat-dialog-content class="invisible-scrollbar mat-typography">
   <input type="file" class="file-upload" (change)="onchangeInputImg($event)" accept="image/jpeg">
 </mat-dialog-content>
+
+
 <mat-radio-group aria-label="Select an option">
   <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_private" value="status_private">Privé</mat-radio-button>
   <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_public" value="status_public">Public</mat-radio-button>
 </mat-radio-group>
+
+
+<div class="col-12 divdial" >
+  <mat-form-field class="form-fielder">
+    <mat-label style="color:white">Titre : </mat-label>
+    <input  maxlength="25" required matInput placeholder="choisir le titre.. ">
+  </mat-form-field>
+</div>
 
 <mat-dialog-actions align="end">
   <!-- <button class="btn-delete" (click)="addVideoToExercice(data)" mat-button mat-dialog-close>Ajouter une vidéo</button> -->

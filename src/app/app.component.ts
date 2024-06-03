@@ -94,6 +94,8 @@ export class AppComponent {
 
   ngOnInit(): void {
         //*
+        let backend = localStorage.getItem('backEnd');
+        console.log('backend General : ! ',backend)
         this.seeNavBar = true;
         const darkClassName = 'darkMode';
         this.className = true ? darkClassName : '';

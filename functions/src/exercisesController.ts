@@ -60,7 +60,7 @@ const createExercise  = async (req: any, res: any) => {
               }else{
 
                 let userhandlerProfil = await db.collection('account-handler').where('id', '==', idUser).get();
-                
+
                 userhandlerProfil.forEach(async (doc:any) =>{
                     userDetail = doc.data();
                     functions.logger.log("DETAIL DU PROFIL ::::  ",userDetail)
@@ -224,7 +224,7 @@ const getExercisesList = async (req: any, res: any) => {
             if(userDetail.trainings.length > 0){
               const querySnapshot = await db.collection('exercise-handler').get();
 
-              querySnapshot.forEach((doc: any) => { 
+              querySnapshot.forEach((doc: any) => {
                 allExercises.push({data:doc.data(), id: doc.id});
               });
               allExercises.forEach((exercise:any)=> {
@@ -260,7 +260,7 @@ const getExercisesList = async (req: any, res: any) => {
                     if(lastPrivateExercisesChangeCount > 0){
                       privatechanged = true;
                       if(exercise.data.header.owner  !== undefined){
-                        if(idUser === exercise.data.header.owner.id){ 
+                        if(idUser === exercise.data.header.owner.id){
                           if(userDetail.trainings.length > 0 && webapp !== '1'){
                             userDetail.trainings.forEach((training:any)=>{
                               if(training === exercise.data.header.id){
@@ -270,11 +270,11 @@ const getExercisesList = async (req: any, res: any) => {
                           }else{
                             privateExercises.push(exercise.data)
                           }
-                          
+
                           privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                       }
                     }
-                    
+
                   }
 
                 }
@@ -306,12 +306,12 @@ const getExercisesList = async (req: any, res: any) => {
                 if(privateExercisesChangeCount === 0){
                   privatechanged = true;
                   const querySnapshot = await db.collection('exercise-handler').get();
-  
-                  querySnapshot.forEach((doc: any) => { 
-                    
+
+                  querySnapshot.forEach((doc: any) => {
+
                     allExercises.push({data:doc.data(), id: doc.id});
                   });
-  
+
                   allExercises.forEach((exercise:any)=> {
                     if(exercise.data.header.status === 'private'){
                       if(idUser !== 'null'){
@@ -331,12 +331,12 @@ const getExercisesList = async (req: any, res: any) => {
                   const querySnapshot = await db.collection('exercise-handler').get();
                   privatechanged = true;
                   querySnapshot.forEach((doc: any) => { allExercises.push({data:doc.data(), id: doc.id});});
-  
+
                   allExercises.forEach((exercise:any)=> {
                     if(exercise.data.header.status === 'private'){
                       if(idUser !== 'null'){
                         if(exercise.data.header.owner  !== undefined){
-                          if(idUser === exercise.data.header.owner.id){ 
+                          if(idUser === exercise.data.header.owner.id){
                             privateExercises.push(exercise.data)
                             privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                         }
@@ -353,7 +353,7 @@ const getExercisesList = async (req: any, res: any) => {
                   publicExercises = [];
                   publicChanged = false;
                 }
-  
+
                 // functions.logger.log("DETAIL LAST PRIVATE EXERCISE ::::  ",lastPrivateExercisesChangeCount )
                 return res.status(200).json({
                   response: {
@@ -368,17 +368,17 @@ const getExercisesList = async (req: any, res: any) => {
                   privateExercisesChangeCount:lastPrivateExercisesChangeCount,
                   idUser:idUser,
                 });
-  
+
               }
               if(publicExercisesChangeCount === 0){
                 const querySnapshot = await db.collection('exercise-handler').get();
-                
+
                 querySnapshot.forEach((doc: any) => {
                     allExercises.push({data:doc.data(), id: doc.id});
                 });
                 allExercises.forEach((exercise:any)=> {
                   functions.logger.log("DETAIL TAININGS OF USER :::: + HEADER EX ",userDetail.trainings , exercise.data.header.id)
-           
+
                   if(exercise.data.header.status === 'public'){
                     if(userDetail.privateOnly !== undefined ){
                       if(userDetail.privateOnly === false){
@@ -406,7 +406,7 @@ const getExercisesList = async (req: any, res: any) => {
                       privatechanged = true;
                       if(idUser !== 'null'){
                         if(exercise.data.header.owner  !== undefined){
-                          if(idUser === exercise.data.header.owner.id){ 
+                          if(idUser === exercise.data.header.owner.id){
                             privateExercises.push(exercise.data)
                             privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                         }
@@ -417,11 +417,11 @@ const getExercisesList = async (req: any, res: any) => {
                       lastPrivateExercisesChangeCount = 0;
                       privatechanged = false;
                     }
-  
-  
+
+
                   }
                 })
-  
+
                 if(privateOnly === true){
                   publicExercises = [];
                   publicChanged = false;
@@ -441,10 +441,10 @@ const getExercisesList = async (req: any, res: any) => {
                   privateExercisesChangeCount:lastPrivateExercisesChangeCount,
                   idUser:idUser,
                 });
-  
+
               }
               else if(publicExercisesChangeCount < lastPublicChangeCount && publicExercisesChangeCount !== 0){
-  
+
                 const querySnapshot = await db.collection('exercise-handler').get();
                 querySnapshot.forEach((doc: any) => {
                     allExercises.push({data:doc.data(), id: doc.id});
@@ -467,7 +467,7 @@ const getExercisesList = async (req: any, res: any) => {
                       if(idUser !== 'null'){
                         privatechanged = true;
                         if(exercise.data.header.owner  !== undefined){
-                          if(idUser === exercise.data.header.owner.id){ 
+                          if(idUser === exercise.data.header.owner.id){
                             privateExercises.push(exercise.data)
                             privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
                           }
@@ -478,7 +478,7 @@ const getExercisesList = async (req: any, res: any) => {
                       if(idUser !== 'null'){
                         privatechanged = true;
                         if(exercise.data.header.owner  !== undefined){
-                          if(idUser === exercise.data.header.owner.id){ 
+                          if(idUser === exercise.data.header.owner.id){
                             privateExercises.push(exercise.data)
                             privateExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));}
                         }
@@ -489,7 +489,7 @@ const getExercisesList = async (req: any, res: any) => {
                       lastPrivateExercisesChangeCount = 0;
                       privatechanged = false;
                     }
-  
+
                   }
                 })
                 publicExercises.sort((a:any, b:any) => a.header.title.normalize().localeCompare(b.header.title.normalize()));
@@ -515,11 +515,11 @@ const getExercisesList = async (req: any, res: any) => {
                   // lastPublicChangeCount:lastPublicChangeCount,
                   idUser:idUser,
                 });
-  
+
               }
             }
             }
-            
+
     //  });
         }
       })

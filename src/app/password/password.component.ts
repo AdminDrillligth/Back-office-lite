@@ -45,6 +45,8 @@ export class PasswordComponent {
   // 
 
   ngOnInit(): void {
+    let backend = localStorage.getItem('backEnd');
+    console.log('backend Password: ! ',backend)
     this.id = this.route.snapshot.queryParams['id'];
     console.log('id : ! ', this.id)
     if(this.id !== ""){

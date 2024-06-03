@@ -16,6 +16,7 @@ import { UserHandlersServiceCustomer } from '../../services/user-handlers-custom
 import { MatDatepickerModule , } from '@angular/material/datepicker';
 import {FormGroup, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 // import {DateAdapter} from '@angular/material';
+import { MatFormFieldModule} from '@angular/material/form-field';
 
 @Component({
   selector: 'app-trainings',
@@ -78,15 +79,24 @@ export class TrainingsComponent implements OnInit {
     // private trainingservice:trainingService,
     public dialog: MatDialog
     ){}
+
+
+
   ngOnInit(): void {
+    let backend = localStorage.getItem('backEnd');
+    console.log('backend Exercises : ! ',backend)
     // this.dateAdapter.setLocale('fr');  
     this.disabledSpinner = true;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
+    
+    
     if(AccountOfUser !== undefined ){
       
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
+      console.log('ACCOUNT OF USER TRAININGS WITH THIS:! : ', this.AccountOfUser);
+      // this.AccountOfUser =AccountOfUser;
       // console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
       this.idOfOwner = AccountOfUser.id;
       
@@ -113,13 +123,27 @@ export class TrainingsComponent implements OnInit {
         }
       }
     });
-    this.getInfoGLobal();
+    if(backend){
+      this.getExerciseGlobalBackEnd();
+    }else{
+      this.getInfoGLobal();
+    }
+    
   }
 
   getInfoGLobal(){
     this.getExercicesList();
-    // this.getSessionsList();
+
   }
+
+
+  getExerciseGlobalBackEnd(){
+    // 
+    this.getExercicesListBackEnd();
+
+  }
+
+
 
 
   resetSelectedExercices(AccountOfUser:any){
@@ -260,6 +284,8 @@ export class TrainingsComponent implements OnInit {
         resp.subscribe((response:any)=>{
           console.log('la resp du update account: ! ', response)
           // this.getDetails(account.owner);
+          //API BACK END TEST BLOCK !
+          this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
           if(this.asAdmin === false){
             localStorage.setItem('account', JSON.stringify(response.account));
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
@@ -278,10 +304,40 @@ export class TrainingsComponent implements OnInit {
    
   }
 
+
+  getExercicesListBackEnd(){
+    if(this.asAdmin === true){
+      // When we want see as Admin : !
+      if(this.userSource !== undefined ){
+    
+      }
+    }else{
+      console.log('LE ID DU COMPTE EN COURS AVANT L\'APPEL AU BACK END',this.idOfOwner)
+      this.exerciseService.getExerciceListBackEnd(this.idOfOwner).subscribe((resp:any)=>{
+        console.log('GET EXO LIST API : ! ', resp);
+        // resp.subscribe((exercises:any)=>{
+        //   console.log(exercises)
+        // })
+        this.publicTrainings.cards = resp.publicExercises;
+        this.publicTrainings.cards.forEach((exo:any)=>{
+          exo.selected = false;
+          if(exo.header.image === ''){
+            exo.header.image = '../../../assets/images/default_100.jpg'
+          }
+        });
+
+
+        this.disabledSpinner = false;
+      });
+    }
+  }
+
   getExercicesList(){
-  // console.log('le user source : ! ',this.userSource)
+  console.log('le user source : ! ',this.userSource , 'or user:', this.AccountOfUser.id, 'mode admin ? ', this.asAdmin)
+
   if(this.asAdmin === true){
     if(this.userSource !== undefined ){
+
       this.exerciseService.getExerciceList(this.userSource.id).then((resp:any)=>{
         console.log(this.userSource)
         console.log('Nous sommes en mode admin')
@@ -574,7 +630,6 @@ export class DialogContentExampleDialog implements OnInit{
      window.URL.revokeObjectURL(url);
    }, 0);
   }
-
 }
 
 
@@ -583,7 +638,7 @@ export class DialogContentExampleDialog implements OnInit{
   templateUrl: 'content-upload.html',
   styleUrls: ['./trainings.component.scss'],
   standalone: true,
-  imports: [ MatRadioModule, CommonModule, MatDialogModule, FormsModule, MatButtonModule],
+  imports: [  MatFormFieldModule, ReactiveFormsModule, MatRadioModule, CommonModule, MatDialogModule, FormsModule, MatButtonModule],
 })
 export class ContentUploadDialog implements OnInit{
   // audience:string='public';
@@ -594,6 +649,7 @@ export class ContentUploadDialog implements OnInit{
   status_public =false;
   idOfUser = "";
   userDetailAccount:any;
+  title = new FormControl('');
   constructor(
     private utilsService: UtilsService,
     public exerciseService:ExerciseService,
@@ -623,7 +679,9 @@ export class ContentUploadDialog implements OnInit{
       if(fileReader.result !== null){
         //console.log(fileReader.result.toString());
       let jsonObj = (JSON.parse(fileReader.result.toString()));
-      console.log(jsonObj)
+      console.log('LE JSON DE L\'exo en cours de chargement : ! ', jsonObj.header );
+      console.log('LE JSON DE L\'exo en cours de chargement : ! ', jsonObj.header.title );
+      this.title = jsonObj.header.title;
       this.dataJson = jsonObj;
         if(this.dataJson.header.status === 'public' ){
           this.status_public = true;
@@ -678,14 +736,17 @@ export class ContentUploadDialog implements OnInit{
         console.log('DATA DU JSON : ', this.dataJson )
         console.log('On va update un private : ', this.userDetailAccount )
         // update en base
-        this.exerciseService.updateExercise(this.dataJson, this.userDetailAccount.id);
+        //this.exerciseService.updateExercise(this.dataJson, this.userDetailAccount.id);
+
+        this.exerciseService.updateExerciseBackEndApi(this.dataJson, this.userDetailAccount.id);
       }
     }else{
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('LE DETAIL DU USER : ! ',AccountOfUser, uuid)
       //
   
-      this.exerciseService.updateExercise(this.dataJson, AccountOfUser.id);
+      //this.exerciseService.updateExercise(this.dataJson, AccountOfUser.id);
+      this.exerciseService.updateExerciseBackEndApi(this.dataJson, AccountOfUser.id);
     }
     
   }

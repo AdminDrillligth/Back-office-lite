@@ -120,7 +120,6 @@ export class EconesComponent implements OnInit {
   public firmWareList:any = [];
   public privateFirmwareId = false;
 
-
   @ViewChild('paginatorEcones')
   paginatorEcones!: MatPaginator;
 
@@ -171,6 +170,8 @@ export class EconesComponent implements OnInit {
   private:boolean=false;
   ngOnInit(): void {
     this.disabledSpinner = true;
+    let backend = localStorage.getItem('backEnd');
+    console.log('backend Econes: ! ',backend)
     this.allAccounts = JSON.parse(localStorage.getItem('accounts-data') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.allAccounts.forEach((account:any) =>{
@@ -179,23 +180,30 @@ export class EconesComponent implements OnInit {
         console.log('LES COMPTES : !',this.allAccountsAdminOwner)
       }
     })
-    this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
-      console.log('Last global firmware  :  ',response)
-      if(response !== undefined){
-        console.log('la resp du details', response.globalFirmware)
-        this.detailsLastGlobalFirmware = response.globalFirmware
-        this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
-      }
-    });
+    this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.account = JSON.parse(localStorage.getItem('account') || '{}');
+    if(backend){
+
+    }else{
+      this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
+        console.log('Last global firmware  :  ',response)
+        if(response !== undefined){
+          console.log('la resp du details', response.globalFirmware)
+          this.detailsLastGlobalFirmware = response.globalFirmware
+          this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
+        }
+      });
+      this.getFirmwareList()
+      this.getEconesFromDataBase();
+    }
+
     console.log('ACCOUNT OF USER :! : ', this.AccountOfUser);
     this.utilsService._templateOptions.subscribe((theme:any) => {
       console.log('THEME !: ',theme);
     });
-    this.user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.account = JSON.parse(localStorage.getItem('account') || '{}');
+
     console.log('account : ! ',this.account)
-    this.getFirmwareList()
-    this.getEconesFromDataBase();
+
     // on récuprére les données relatives a tous les pods
     this.utilsService._dataOfEconesSend.subscribe((listEcones:any) =>{
       this.Econes = listEcones;
@@ -228,6 +236,15 @@ export class EconesComponent implements OnInit {
 
   seeProfil(accountId:string){
     console.log('On va sur cette page : ',accountId)
+  }
+
+
+  getFirmwareListFromApi(){
+    if(this.account.role ==="admin"){
+      // this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
+      //   console.log('list of firwares: ',firmwareList)
+      // })
+    }
   }
 
   getFirmwareList(){
@@ -403,6 +420,8 @@ export class EconesComponent implements OnInit {
     if(this.srCzip !== ''){
       console.log('LE ZIP SRC : ',this.srCzip)
       let firmwareData = { base64:this.srCzip, comment:this.commentOfFirmwareValue, version:this.versionOfFirmwareValue }
+      console.log('log before sending to the back end api: ', firmwareData, this.AccountOfUser.id)
+      this.firmWareService.createFirmwareBackEndAPi(firmwareData, this.AccountOfUser.id,false);
       this.firmWareService.createFirmware(firmwareData, this.AccountOfUser.id,false);
       this.firmWareService.getFirmwareList().then((firmwareList:any)=>{
         console.log('list of firwares: ',firmwareList)

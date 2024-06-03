@@ -17,6 +17,7 @@ export class ExerciseService {
 
   headers = { 'content-type': 'application/json'}
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
+  linuxBackEnd: string = "https://devserver.drilllight.com/";
   constructor(
     private router:Router,
     private utilsService:UtilsService,
@@ -43,6 +44,21 @@ export class ExerciseService {
     return response;
   }
 
+  getExerciceListBackEnd(id:any){
+    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+    console.log('on va get les exercices ! ')
+    let response = this.http.get(this.linuxBackEnd+'exercise/getExercisesList',{'headers':{ 'token': tokenAPI, 'id':id, 'webapp':'1', 'publicExercisesChangeCount':'0',  'privateExercisesChangeCount':'0'}})
+    response.subscribe((rep:any)=>{
+      if(rep.response.result === "expiredTokenError"){
+        this.utilsService.howToSeeNavigation(false);
+        this.router.navigate(['']);
+      }
+    })
+    return response;
+  }
+
+
+  
 
   async getSessionList(id:any){
     let token = localStorage.getItem('token') || '{}';
@@ -61,6 +77,17 @@ export class ExerciseService {
       console.log('LA REP DU CREATE EXERCISE : ! ',rep)
     });
   }
+
+  updateExerciseBackEndApi(json:any, id:any){
+    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+    console.log('LE TOKEN',tokenAPI,json,id );
+    const body = {json:json, id:id};
+    console.log(body)
+    this.http.post(this.linuxBackEnd+'exercise/createExercise', body,{'headers':{ 'token': tokenAPI}}).subscribe((rep:any) =>{
+      console.log('LA REP DU CREATE EXERCISE : ! ',rep)
+    });
+  }
+
 
   updateSession(json:any, id:any){
     let token = localStorage.getItem('token') || '{}';
