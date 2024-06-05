@@ -187,10 +187,13 @@ export class EconesComponent implements OnInit {
         console.log('Last global firmware  :  ',response)
         // if(response !== undefined){
         //   console.log('la resp du details', response.globalFirmware)
-        //   this.detailsLastGlobalFirmware = response.globalFirmware
-        //   this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
+        this.detailsLastGlobalFirmware = response.globalFirmware
+        this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
+        console.log('Le detail du dernier firmware global : ',this.detailsLastGlobalFirmware)
         // }
+  
       });
+      this.getFirmwareListFromApi();
     }else{
       this.firmWareService.getGlobalFirmware().subscribe((response:any)=>{
         console.log('Last global firmware  :  ',response)
@@ -200,7 +203,7 @@ export class EconesComponent implements OnInit {
           this.detailsLastGlobalFirmware.date =   new Date(this.detailsLastGlobalFirmware.creationDate).toLocaleDateString('en-GB');
         }
       });
-      this.getFirmwareList()
+      this.getFirmwareList();
       this.getEconesFromDataBase();
     }
 
@@ -248,9 +251,30 @@ export class EconesComponent implements OnInit {
 
   getFirmwareListFromApi(){
     if(this.account.role ==="admin"){
-      // this.firmWareService.getFirmwareListApi().then((firmwareList:any)=>{
-      //   console.log('list of firwares: ',firmwareList)
-      // })
+      this.firmWareService.getFirmwareListApi().subscribe((firmwareList:any)=>{
+        console.log('list of firwares: ',firmwareList)
+        this.firmWareList = firmwareList.firmwareList
+        this.firmWareList = this.firmWareList.sort((a, b) => {
+          if (a.version > b.version) {
+              return -1;
+          }
+          if (a.version < b.version) {
+              return 1;
+          }
+          return 0;
+        });
+        this.firmWareList.forEach((firmware:any)=>{
+          firmware.date = new Date(firmware.creationDate).toLocaleDateString('en-GB')
+          if(this.detailsLastGlobalFirmware.id === firmware.id){
+            console.log('the same id of firm global ! ', firmware.id)
+            firmware.choosen = true;
+          }else{
+            firmware.choosen = false;
+          }
+        })
+        this.disabledSpinner = false;
+        
+      })
     }
   }
 

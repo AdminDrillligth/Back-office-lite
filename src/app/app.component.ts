@@ -122,7 +122,7 @@ export class AppComponent {
               if(userDetailAccount.role === 'admin'){
                 console.log(this.sideBarItems.length)
                 if(this.sideBarItems.length !== 5){
-                  this.sideBarItems.splice(3, 0, 
+                  this.sideBarItems.splice(3, 0,
                     {
                       id: 4,
                       name: 'E-Cones',
@@ -132,18 +132,18 @@ export class AppComponent {
                       activatedRight:[]
                     });
                 }
-                
+
               }
               if(userDetailAccount.role === 'owner'){
                 if(this.sideBarItems.length === 5){
                   this.sideBarItems.splice(3,1)
                 }
-                
+
               }
             }else{
               console.log('seeasadmin === false')
               if(this.sideBarItems.length !== 5){
-                this.sideBarItems.splice(3, 0, 
+                this.sideBarItems.splice(3, 0,
                   {
                     id: 4,
                     name: 'E-Cones',
@@ -164,7 +164,7 @@ export class AppComponent {
             let check = this.url.path().split("?")
             this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
             console.log('ACCOUNT OF USER :! : ', seeNav);
-            if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password" || check[0] === "/reset"){  
+            if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password" || check[0] === "/reset"){
               this.seeNavigation = false;
               this.opened = false;
             }else{
@@ -177,21 +177,21 @@ export class AppComponent {
             }
             // console.log('NEW SIDE NAV BAR ',  this.sideBarItems)
           }, 400);
-         
-          
+
+
           if(seeNav === false){
             this.seeNavigation = false;
             this.opened = false;
             // this.updateData()
           }
-          
+
           if(seeNav == true){
 
             this.seeNavigation = true;
             this.opened = true;
           }
         })
-        
+
         this.updateData();
   }
 
@@ -233,7 +233,7 @@ export class AppComponent {
 
   updateData(){
     let check = this.url.path().split("?")
-    if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password" || check[0] === "/reset"){  
+    if (this.router.url.includes('/login') || this.url.path() === '/' || check[0] === "/password" || check[0] === "/reset"){
       console.log(this.router, this.url.path())
       this.seeNavigation = false;
       this.opened = false;

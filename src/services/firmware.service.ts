@@ -90,7 +90,7 @@ export class FirmWareService {
     let response = this.http.get(this.linuxBackEnd+'firmware/getGlobalFirmware', {'headers':{ 'token': tokenAPI}})
     console.log('RESPONSE GLOBAL FIRMWARE : ', response)
     response.subscribe((resp:any)=>{
-      console.log('ON VEUT LE GLOBAL FIRMWARE 2: ',resp)
+      // console.log('ON VEUT LE GLOBAL FIRMWARE 2: ',resp)
       if(resp.response.result === "expiredTokenError"){
         this.utilsService.howToSeeNavigation(false);
         this.router.navigate(['']);
@@ -112,7 +112,7 @@ export class FirmWareService {
     let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
     let response = this.http.get(this.linuxBackEnd+'firmware/getFirmwaresList', {'headers':{ 'token': tokenAPI}})
     response.subscribe((firmresp:any)=>{
-      // console.log('LOG RESP LIN API : FIRM : ',firmresp)
+      console.log('LOG RESP LIST : FIRM : ',firmresp)
       if(firmresp.response.result === "expiredTokenError"){
         this.utilsService.howToSeeNavigation(false);
         this.router.navigate(['']);
