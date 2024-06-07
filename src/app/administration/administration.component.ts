@@ -312,9 +312,11 @@ export class AdministrationComponent implements OnInit{
     this.width = this.data_model.width
   }
 
+  backend :any =false;
+
   ngOnInit(): void {
-    let backend = localStorage.getItem('backEnd');
-    console.log('backend administration: ! ',backend)
+    this.backend = localStorage.getItem('backEnd');
+    console.log('backend administration: ! ',this.backend)
     this.disabledSpinner = true;
     var widthScreen = window.innerWidth;
     if(widthScreen < 600){
@@ -322,7 +324,7 @@ export class AdministrationComponent implements OnInit{
       this.displayedColumnsAccounts = ['firstName','actions'];
 
     }
-    if(backend === 'true'){
+    if(this.backend === 'true' || this.backend === true){
       this.firmWareService.getFirmwareListApi().subscribe((firmwareList:any)=>{
         console.log('FIRMWARE LIST DETAILS : ',firmwareList.firmwareList)
         this.firmWareList  = firmwareList.firmwareList;
@@ -564,7 +566,12 @@ export class AdministrationComponent implements OnInit{
       width:'80%',
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.userHandlersServiceCustomer.getUpdateallUsers();
+      if(this.backend){
+
+      }else{
+        this.userHandlersServiceCustomer.getUpdateallUsers();
+      }
+
       // this.getAdminCustomerUsers();
     });
   }
@@ -1562,6 +1569,7 @@ export class DialogCreateAdmin implements OnInit{
   eventImageFile:any;
   uploadedImages:any;
   update=false;
+  backend :any = false;
   constructor(
     private userHandlersServiceCustomer:UserHandlersServiceCustomer,
     private utilsService:UtilsService,
@@ -1575,24 +1583,27 @@ export class DialogCreateAdmin implements OnInit{
   ) {}
 
   ngOnInit(): void {
-   console.log('LES DATAS MODALS ',this.data)
-   if(this.data !== null){
-    if(this.data.data !== null){
-      this.update = true;
-      this.familyName.setValue(this.data.personalInfos.familyName);
-      this.firstName.setValue(this.data.personalInfos.firstName);
-      this.email.setValue(this.data.personalInfos.email);
-      this.phone.setValue(this.data.personalInfos.phone);
-      this.address.setValue(this.data.personalInfos.address);
-      this.zip.setValue(this.data.personalInfos.zip);
-      this.city.setValue(this.data.personalInfos.city);
-      this.comment.setValue(this.data.personalInfos.comment);
-      this.selectedRights =  this.data.privileges.rights;
-      this.simpleBirthdate = this.data.personalInfos.simpleBirthdate;
-      console.log( 'SELECTED RIGHTS :! ',this.data, this.selectedRights)
-     }
+    this.backend = localStorage.getItem('backEnd');
+    console.log('backend Create Admin: ! ',this.backend)
+    console.log('LES DATAS MODALS ',this.data)
+    if(this.data !== null){
+      if(this.data.data !== null){
+        this.update = true;
+        this.familyName.setValue(this.data.personalInfos.familyName);
+        this.firstName.setValue(this.data.personalInfos.firstName);
+        this.email.setValue(this.data.personalInfos.email);
+        this.phone.setValue(this.data.personalInfos.phone);
+        this.address.setValue(this.data.personalInfos.address);
+        this.zip.setValue(this.data.personalInfos.zip);
+        this.city.setValue(this.data.personalInfos.city);
+        this.comment.setValue(this.data.personalInfos.comment);
+        this.selectedRights =  this.data.privileges.rights;
+        this.simpleBirthdate = this.data.personalInfos.simpleBirthdate;
+        console.log( 'SELECTED RIGHTS :! ',this.data, this.selectedRights)
+      }
     }
   }
+
   closeModal(){
     // avatarimages: this.eventImageFile,
     // let data = {
@@ -1617,7 +1628,7 @@ export class DialogCreateAdmin implements OnInit{
       familyName: this.familyName.value,
       fullName: this.firstName.value + ' ' +  this.familyName.value,
       avatarURL: "",
-      role: "admin",
+      role: "user",
       personalInfo: {
           birthdate: this.birthdate,
           simpleBirthdate: this.simpleBirthdate,
@@ -1639,42 +1650,49 @@ export class DialogCreateAdmin implements OnInit{
       videos: [],
       warning: false
     }
-    if(this.update === false){
-      // this.userHandlersServiceAdmin.addAccountAdmin(data);
-      this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
-        resp.subscribe((response:any)=>{
-          console.log('la resp', response)
-        })
+    if(this.backend){
+      console.log('On va create une fois ?? ')
+      this.userHandlersServiceCustomer.addAccountApi(data).subscribe((resp:any)=>{
+          console.log('la resp du create API : ', resp)
       });
+    }else{
+      if(this.update === false){
+
+        this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
+          resp.subscribe((response:any)=>{
+            console.log('la resp', response)
+          })
+        });
+        setTimeout(() => {
+          this.dialogRef.close(data);
+          console.log('on email user aout')
+          let passWord = 'Drilllight2023';
+
+          this.dialogRef.close(data);
+          if(this.email.value !== null ){
+            if(this.update === false){
+              this.update = false;
+              // the create user on Firebase
+              this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
+                // window.alert('You have been successfully registered!');
+                console.log('You have been successfully registered!',result.user);
+                this.storageServiceMail.addMailAdmin(this.email.value, this.familyName.value)
+              })
+              .catch((error) => {
+                window.alert(error.message);
+              });
+            }
+          }
+          console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
+        }, 700);
+      // this.userHandlersServiceAdmin.addAccountAdmin(data);
     }else{
       console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
       this.fireStoreServiceImages.addImagesOfAdministrator(this.data.id, this.eventImageFile);
       this.userHandlersServiceAdmin.updateAccountAdmin(this.data.id, data);
     }
-    setTimeout(() => {
-      this.dialogRef.close(data);
-      console.log('on email user aout')
-      let passWord = 'Drilllight2023';
 
-      this.dialogRef.close(data);
-      if(this.email.value !== null ){
-        if(this.update === false){
-          this.update = false;
-          // the create user on Firebase
-          this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
-            // window.alert('You have been successfully registered!');
-            console.log('You have been successfully registered!',result.user);
-            this.storageServiceMail.addMailAdmin(this.email.value, this.familyName.value)
-          })
-          .catch((error) => {
-            window.alert(error.message);
-          });
-        }
-      }
-      console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
-
-    }, 700);
-
+    }
   }
 
   sendResetPassword(account:any){

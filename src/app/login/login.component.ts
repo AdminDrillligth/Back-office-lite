@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit{
   badpassuser : boolean= false;
   bademail : boolean= false;
   badWarning :boolean = false;
-  isChecked = false;
+  isChecked:any = true;
   constructor(
     private tokenService:TokenService,
     private utilsService: UtilsService,
@@ -57,7 +57,9 @@ export class LoginComponent implements OnInit{
   dataOfUser:any = [];
   disabledSpinner = false;
   ngOnInit(): void {
+
     this.getIPAddress();
+    localStorage.setItem('backEnd', this.isChecked);
   }
 
 

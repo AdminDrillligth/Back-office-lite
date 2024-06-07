@@ -17,6 +17,8 @@ export class UserHandlersServiceCustomer {
 
   headers = { 'content-type': 'application/json'}
   baseURL: string = "https://us-central1-drilllight.cloudfunctions.net/app/";
+  linuxBackEnd: string = "https://devserver.drilllight.com/";
+
   constructor(
     private router:Router,
     private utilsService:UtilsService,
@@ -106,6 +108,36 @@ export class UserHandlersServiceCustomer {
   }
 
 
+  addAccountApi(data:any){
+    let adderAccount = false;
+    const body = {data:data};
+    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+    if(!adderAccount){
+      console.log('on passe dans le service une fois .. ? create ')
+      adderAccount = true;
+      let resp = this.http.post(this.linuxBackEnd+'account/createAccount' , body,{'headers':{token:tokenAPI}})
+      console.log('LA RESP DU CREATE ACCOUNT API : ',resp)
+  
+      // resp.subscribe((rep:any)=>{
+      //   console.log('LE SUBSCRIBE DE LA REP CREATE ACCOUNT : ',rep)
+      // })
+      // if(response.response.result === "expiredTokenError"){
+      //   this.router.navigate(['login']);
+      // }
+      setTimeout(() => {
+        adderAccount = false;
+      }, 1000);
+      return resp;
+
+    }else{
+    
+      return null;
+    }
+   
+
+  }
+
+
   async addAccount(data:any){
     const body = {data:data};
     console.log('createAccount : ! ', body);
@@ -118,17 +150,17 @@ export class UserHandlersServiceCustomer {
     return resp ;
   }
 
-  async addAccountAPI(data:any){
-    const body = {data:data};
-    console.log('createAccount : ! ', body);
-    let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
-    let resp =  await this.http.post(this.baseURL+'createAccount' , body,{'headers':{token:tokenAPI}})
-    console.log('LA RESP DU CREATE ACCOUTN API : ',resp)
-    // if(resp.response.result === "expiredTokenError"){
-    //   this.router.navigate(['login']);
-    // }
-    return resp ;
-  }
+  // async addAccountAPI(data:any){
+  //   const body = {data:data};
+  //   console.log('createAccount : ! ', body);
+  //   let tokenAPI = localStorage.getItem('tokenAPI') || '{}';
+  //   let resp =  await this.http.post(this.baseURL+'createAccount' , body,{'headers':{token:tokenAPI}})
+  //   console.log('LA RESP DU CREATE ACCOUTN API : ',resp)
+  //   // if(resp.response.result === "expiredTokenError"){
+  //   //   this.router.navigate(['login']);
+  //   // }
+  //   return resp ;
+  // }
 
   
 
