@@ -79,9 +79,6 @@ export class TrainingsComponent implements OnInit {
     // private trainingservice:trainingService,
     public dialog: MatDialog
     ){}
-
-
-
   ngOnInit(): void {
     let backend = localStorage.getItem('backEnd');
     console.log('backend Exercises : ! ',backend)
@@ -89,9 +86,7 @@ export class TrainingsComponent implements OnInit {
     this.disabledSpinner = true;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
-    
-    
-    if(AccountOfUser !== undefined ){
+        if(AccountOfUser !== undefined ){
       
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
@@ -122,21 +117,18 @@ export class TrainingsComponent implements OnInit {
           this.userSource = undefined;
         }
       }
-    });
+    });    
     if(backend){
       this.getExerciseGlobalBackEnd();
     }else{
       this.getInfoGLobal();
     }
-    
   }
 
   getInfoGLobal(){
     this.getExercicesList();
 
   }
-
-
   getExerciseGlobalBackEnd(){
     // 
     this.getExercicesListBackEnd();
