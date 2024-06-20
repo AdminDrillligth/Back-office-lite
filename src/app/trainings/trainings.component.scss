@@ -266,8 +266,20 @@
 
 }
 
+input::file-selector-button {
+  font-weight: bold;
+  color: black;
+  padding: 0.5em;
+  border: thin solid grey;
+  border-radius: 3px;
+}
 
 
+
+.form-fielder{
+  margin-top:5px;
+  width: 90%;
+}
 
 .background-modal{
   cursor:pointer;

@@ -1354,8 +1354,11 @@ export class AdministrationComponent implements OnInit{
       width:'80%'
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.userHandlersServiceCustomer.getUpdateallUsers();
-      // this.getAdminCustomerUsers();
+      if(this.backend){
+
+      }else{
+        this.userHandlersServiceCustomer.getUpdateallUsers();
+      }
     });
   }
 
@@ -1628,7 +1631,7 @@ export class DialogCreateAdmin implements OnInit{
       familyName: this.familyName.value,
       fullName: this.firstName.value + ' ' +  this.familyName.value,
       avatarURL: "",
-      role: "user",
+      role: "admin",
       personalInfo: {
           birthdate: this.birthdate,
           simpleBirthdate: this.simpleBirthdate,
@@ -1787,7 +1790,7 @@ export class DialogCreateCustomer implements OnInit{
   eventImageFile:any;
   uploadedImages:any;
   licences = new FormControl('10', [ Validators.required ]);
-
+  backend:any = false;
   constructor(
     private afAuth: AngularFireAuth,
     private storageServiceMail:storageServiceMail,
@@ -1799,7 +1802,9 @@ export class DialogCreateCustomer implements OnInit{
   ) {}
 
   ngOnInit(): void {
-   console.log('LES DATAS MODALS ',this.data, this.data.personalInfos)
+   console.log('LES DATAS MODALS ',this.data, this.data)
+   this.backend = localStorage.getItem('backEnd');
+   console.log('backend Create Admin: ! ',this.backend)
    if(this.data !== null){
       this.update = true;
       this.firstName.setValue(this.data.firstName);
@@ -1857,35 +1862,41 @@ export class DialogCreateCustomer implements OnInit{
       licensed: this.licences.value,
       warning: false
     }
-    if(this.update === false){
-      this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
-        resp.subscribe((response:any)=>{
-          console.log('la resp', response)
-        })
+    if(this.backend){
+      console.log('On va create une fois OWNER?? ')
+      this.userHandlersServiceCustomer.addAccountApi(data).subscribe((resp:any)=>{
+          console.log('la resp du create API OWNER: ', resp)
       });
     }else{
-      console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
-      this.fireStoreServiceImages.addImagesOfCustomers(this.data.id, this.eventImageFile);
-      // this.userHandlersServiceCustomer.updateAccountCustomer(this.data.id, data);
+      if(this.update === false){
+        this.userHandlersServiceCustomer.addAccount(data).then((resp:any)=>{
+          resp.subscribe((response:any)=>{
+            console.log('la resp', response)
+          })
+        });
+      }else{
+        console.log('SELECTED RIGHTS : ',this.selectedRights,this.rightsUser)
+        this.fireStoreServiceImages.addImagesOfCustomers(this.data.id, this.eventImageFile);
+        // this.userHandlersServiceCustomer.updateAccountCustomer(this.data.id, data);
+      }
+      setTimeout(() => {
+        let passWord = 'Drilllight2023';
+        this.dialogRef.close(data);
+        if(this.email.value !== null ){
+          if(this.update === false){
+            this.update = false;
+          this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
+            console.log('You have been successfully registered!',result.user);
+            this.storageServiceMail.addMailCustomer(this.email.value, this.firstName.value)
+          }).catch((error) => {
+            window.alert(error.message);
+          });
+        }
+        }
+        console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
+      }, 700);
     }
 
-    setTimeout(() => {
-      let passWord = 'Drilllight2023';
-      this.dialogRef.close(data);
-      if(this.email.value !== null ){
-        if(this.update === false){
-          this.update = false;
-        this.afAuth.createUserWithEmailAndPassword(this.email.value, passWord).then((result) => {
-          console.log('You have been successfully registered!',result.user);
-          this.storageServiceMail.addMailCustomer(this.email.value, this.firstName.value)
-        }).catch((error) => {
-          window.alert(error.message);
-        });
-      }
-      }
-      console.log('ON VA SAVE AVEC CET EMAIL 2::',this.email.value, passWord)
-
-    }, 700);
   }
 
   selectChangeRights(event:any){

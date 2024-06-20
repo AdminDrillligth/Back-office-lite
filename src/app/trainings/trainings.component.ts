@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ExerciseService } from '../../services/exercise-handler.service';
 import { MatRadioModule } from '@angular/material/radio';
 import ImageResize from 'image-resize';
+import { MatInputModule } from '@angular/material/input';
 import { uid } from 'uid';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { UserHandlersServiceCustomer } from '../../services/user-handlers-customer.service';
@@ -82,21 +83,21 @@ export class TrainingsComponent implements OnInit {
   ngOnInit(): void {
     let backend = localStorage.getItem('backEnd');
     console.log('backend Exercises : ! ',backend)
-    // this.dateAdapter.setLocale('fr');  
+    // this.dateAdapter.setLocale('fr');
     this.disabledSpinner = true;
     let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
     this.AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
         if(AccountOfUser !== undefined ){
-      
+
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('ACCOUNT OF USER TRAININGS :! : ', AccountOfUser);
       console.log('ACCOUNT OF USER TRAININGS WITH THIS:! : ', this.AccountOfUser);
       // this.AccountOfUser =AccountOfUser;
       // console.log('ACCOUNT OF USER TRAININGS NOMBRE D\'EXOS SELECTIONNés:! : ', this.AccountOfUser.trainings);
       this.idOfOwner = AccountOfUser.id;
-      
+
     }
-  
+
     // this.utilsService._templateOptions.subscribe((theme:any) => {
     //   console.log('THEME !: ',theme)
     //  });
@@ -117,7 +118,7 @@ export class TrainingsComponent implements OnInit {
           this.userSource = undefined;
         }
       }
-    });    
+    });
     if(backend){
       this.getExerciseGlobalBackEnd();
     }else{
@@ -130,7 +131,7 @@ export class TrainingsComponent implements OnInit {
 
   }
   getExerciseGlobalBackEnd(){
-    // 
+    //
     this.getExercicesListBackEnd();
 
   }
@@ -142,9 +143,9 @@ export class TrainingsComponent implements OnInit {
     // console.log('LES TRAININGS DU USER : ! ',AccountOfUser.trainings)
     let userUpdateSelect :any = [];
     if(this.asAdmin === true){
-      userUpdateSelect = this.userSource 
+      userUpdateSelect = this.userSource
     }else{
-      userUpdateSelect = this.AccountOfUser 
+      userUpdateSelect = this.AccountOfUser
     }
     userUpdateSelect.trainings = [];
     this.userHandlersServiceCustomer.updateAccount(userUpdateSelect).then((resp:any)=>{
@@ -173,9 +174,9 @@ export class TrainingsComponent implements OnInit {
 
     let userUpdateSelect :any = [];
     if(this.asAdmin === true){
-      userUpdateSelect = this.userSource 
+      userUpdateSelect = this.userSource
     }else{
-      userUpdateSelect = this.AccountOfUser 
+      userUpdateSelect = this.AccountOfUser
     }
     userUpdateSelect.trainings.length = 0;
     if(this.publicTrainings.cards.length > 0){
@@ -227,7 +228,7 @@ export class TrainingsComponent implements OnInit {
                   this.getExercicesList()
                   // console.log(this.userSource)
                 }
-                
+
               })
             });
           }
@@ -242,9 +243,9 @@ export class TrainingsComponent implements OnInit {
 
     let userUpdateSelect :any = [];
     if(this.asAdmin === true){
-      userUpdateSelect = this.userSource 
+      userUpdateSelect = this.userSource
     }else{
-      userUpdateSelect = this.AccountOfUser 
+      userUpdateSelect = this.AccountOfUser
     }
     console.log(userUpdateSelect.trainings)
     if(event.checked === true){
@@ -266,7 +267,7 @@ export class TrainingsComponent implements OnInit {
             this.userSource = userDetailAccount;
             this.getExercicesList()
           }
-          
+
         })
       });
     }else{
@@ -289,11 +290,11 @@ export class TrainingsComponent implements OnInit {
             this.userSource = userDetailAccount;
             this.getExercicesList()
           }
-          
+
         })
       });
     }
-   
+
   }
 
 
@@ -301,7 +302,7 @@ export class TrainingsComponent implements OnInit {
     if(this.asAdmin === true){
       // When we want see as Admin : !
       if(this.userSource !== undefined ){
-    
+
       }
     }else{
       console.log('LE ID DU COMPTE EN COURS AVANT L\'APPEL AU BACK END',this.idOfOwner)
@@ -355,8 +356,8 @@ export class TrainingsComponent implements OnInit {
             this.privateTrainings.cards.forEach((exo:any)=>{
               exo.selected = false;
               this.userSource.trainings.forEach((training:any) =>{
-                 
-             
+
+
                 if(exo.header.id === training ){
                   // console.log('nous avons trouvé l\'exo selectionné ! ',training, exo)
                   exo.selected = true;
@@ -370,9 +371,9 @@ export class TrainingsComponent implements OnInit {
             this.disabledSpinner = false;
           }
         })
-        
+
       });
-    }  
+    }
   }
   else{
     console.log('Nous sommes en mode normal ')
@@ -398,30 +399,30 @@ export class TrainingsComponent implements OnInit {
 
           })
           this.privateTrainings.cards = response.privateExercises;
-    
+
             this.privateTrainings.cards.forEach((exo:any)=>{
               // let para = document.getElementsByClassName(exo.header.id );
               // console.log('LE PARA : ',para[0].innerHTML  )
               // para[0].innerHTML = exo.header.description
               exo.selected = false;
               this.AccountOfUser.trainings.forEach((training:any) =>{
-          
+
                 if(exo.header.id === training ){
 
                 // console.log('nous avons trouvé l\'exo selectionné Private! ',exo,training)
                 exo.selected = true;
-              }  
+              }
             })
             if(exo.header.image === ''){
               exo.header.image = '../../../assets/images/default_100.jpg'
             }
           })
-       
+
           this.disabledSpinner = false;
           // console.log('LA RESP DANS TRAINING : ',this.publicTrainings.cards)
         }
       })
-      // 
+      //
     });
 
   }
@@ -476,17 +477,17 @@ export class TrainingsComponent implements OnInit {
   //     })
   //   });
   // }
-    
+
   }
 
   compareByName(a:any, b:any) {
     return a.header.title.localeCompare(b.header.title);
   }
-  
+
 
   displayTypeOf:any = "list"
   changeDisplay(type:any){
-    this.displayTypeOf = type; 
+    this.displayTypeOf = type;
   }
 
   update =  false;
@@ -630,7 +631,7 @@ export class DialogContentExampleDialog implements OnInit{
   templateUrl: 'content-upload.html',
   styleUrls: ['./trainings.component.scss'],
   standalone: true,
-  imports: [  MatFormFieldModule, ReactiveFormsModule, MatRadioModule, CommonModule, MatDialogModule, FormsModule, MatButtonModule],
+  imports: [ MatInputModule, MatFormFieldModule, ReactiveFormsModule, MatRadioModule, CommonModule, MatDialogModule, FormsModule, MatButtonModule],
 })
 export class ContentUploadDialog implements OnInit{
   // audience:string='public';
@@ -641,7 +642,8 @@ export class ContentUploadDialog implements OnInit{
   status_public =false;
   idOfUser = "";
   userDetailAccount:any;
-  title = new FormControl('');
+  title = "";
+  description = "";
   constructor(
     private utilsService: UtilsService,
     public exerciseService:ExerciseService,
@@ -654,7 +656,7 @@ export class ContentUploadDialog implements OnInit{
   ngOnInit(): void {
     this.userDetailAccount = JSON.parse(localStorage.getItem('account-data-user') || '{}');
     console.log('LE DETAIL DU USER : ! ',this.userDetailAccount)
-    console.log('LES DATAS MODALS  : ! ',this.data.header.image)
+    // console.log('LES DATAS MODALS  : ! ',this.data.header.image)
     if(this.userDetailAccount.id !== undefined){
       this.idOfUser = this.userDetailAccount.id;
     }
@@ -674,6 +676,7 @@ export class ContentUploadDialog implements OnInit{
       console.log('LE JSON DE L\'exo en cours de chargement : ! ', jsonObj.header );
       console.log('LE JSON DE L\'exo en cours de chargement : ! ', jsonObj.header.title );
       this.title = jsonObj.header.title;
+      this.description = jsonObj.header.description;
       this.dataJson = jsonObj;
         if(this.dataJson.header.status === 'public' ){
           this.status_public = true;
@@ -691,25 +694,36 @@ export class ContentUploadDialog implements OnInit{
 
 
   selectStatus(value:any){
-    console.log('LA VALUE DU CHECK: ! ',value.value, this.dataJson)
+    console.log('LA VALUE DU CHECK: ! ',value, this.dataJson)
     if(this.dataJson !== undefined){
       this.dataJson.header.status = value.value;
+      // if()
     }
   }
 
   // https://www.npmjs.com/package/image-resize
   onchangeInputImg(file:any){
-    // 
+    //
     var imageResize = new ImageResize({
       format: 'jpg',
       width: 256
     });
-    
+
     imageResize.play(file.target.files[0]).then((e:any)=>{
       this.dataBase64 = e;
       console.log(file)
       console.log(this.dataBase64)
     });
+  }
+
+  changeTitle(changeTitle){
+    console.log('Title ; ',changeTitle.value)
+    this.dataJson.header.title = changeTitle.value;
+  }
+
+  changeDesc(changeDesc){
+    console.log('desc: ;',changeDesc.value)
+    this.dataJson.header.description = changeDesc.value;
   }
 
   saveDataFromJson(){
@@ -721,7 +735,7 @@ export class ContentUploadDialog implements OnInit{
     }else{
       this.dataJson.header.image = "";
     }
-
+    
     if(this.idOfUser !== ""){
       if(this.dataJson.header.status === 'private'){
         console.log('On va update un private : ', this.idOfUser, this.userDetailAccount,this.userDetailAccount.trainings )
@@ -733,14 +747,15 @@ export class ContentUploadDialog implements OnInit{
         this.exerciseService.updateExerciseBackEndApi(this.dataJson, this.userDetailAccount.id);
       }
     }else{
+
       let AccountOfUser = JSON.parse(localStorage.getItem('account') || '{}');
       console.log('LE DETAIL DU USER : ! ',AccountOfUser, uuid)
       //
-  
+
       //this.exerciseService.updateExercise(this.dataJson, AccountOfUser.id);
       this.exerciseService.updateExerciseBackEndApi(this.dataJson, AccountOfUser.id);
     }
-    
+
   }
 
 }
@@ -854,7 +869,7 @@ export class SessionUploadDialog implements OnInit{
 
         this.exerciseService.updateSession(this.dataJson, AccountOfUser.id);
     }
- 
+
   }
 
 }

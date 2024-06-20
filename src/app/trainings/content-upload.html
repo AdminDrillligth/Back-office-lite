@@ -10,15 +10,23 @@
 
 
 <mat-radio-group aria-label="Select an option">
-  <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_private" value="status_private">Privé</mat-radio-button>
-  <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_public" value="status_public">Public</mat-radio-button>
+  <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_private" value="private">Privé</mat-radio-button>
+  <mat-radio-button (click)="selectStatus($event.target)" [checked]="status_public" value="public">Public</mat-radio-button>
 </mat-radio-group>
 
 
 <div class="col-12 divdial" >
   <mat-form-field class="form-fielder">
     <mat-label style="color:white">Titre : </mat-label>
-    <input  maxlength="25" required matInput placeholder="choisir le titre.. ">
+    <input (keyup)="changeTitle($event.target)" maxlength="55" required matInput value="{{title}}" placeholder="choisir le titre.. ">
+  </mat-form-field>
+</div>
+
+
+<div class="col-12 divdial" >
+  <mat-form-field class="form-fielder">
+    <mat-label style="color:white">Description : </mat-label>
+    <input  (keyup)="changeDesc($event.target)" maxlength="400" required matInput value="{{description}}" placeholder="choisir la description.. ">
   </mat-form-field>
 </div>
 

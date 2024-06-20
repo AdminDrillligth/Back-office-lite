@@ -87,8 +87,6 @@ const createExercise  = async (req: any, res: any) => {
                   idTable:idTable
                  });
                }
-
-
             });
       //   }
       // });
@@ -512,7 +510,6 @@ const getExercisesList = async (req: any, res: any) => {
                   privateChanged: privatechanged,
                   publicExercisesChangeCount:lastPublicChangeCount,
                   privateExercisesChangeCount:lastPrivateExercisesChangeCount,
-                  // lastPublicChangeCount:lastPublicChangeCount,
                   idUser:idUser,
                 });
 
